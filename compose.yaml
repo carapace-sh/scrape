@@ -1,4 +1,7 @@
 services:
+  gh:
+    build:
+      context: gh
   jj:
     build:
       context: jj
