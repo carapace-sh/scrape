@@ -1,0 +1,81 @@
+diff --git a/cli/src/commands/mod.rs b/cli/src/commands/mod.rs
+index 549ca2941..502131749 100644
+--- a/cli/src/commands/mod.rs
++++ b/cli/src/commands/mod.rs
+@@ -79,6 +79,9 @@ use crate::cli_util::CommandHelper;
+ use crate::command_error::CommandError;
+ use crate::complete;
+ use crate::ui::Ui;
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
+
+ const STYLES: Styles = Styles::styled()
+     .header(AnsiColor::Yellow.on_default().bold())
+@@ -168,63 +171,9 @@ pub fn default_app() -> clap::Command {
+ }
+
+ #[instrument(skip_all)]
+-pub fn run_command(ui: &mut Ui, command_helper: &CommandHelper) -> Result<(), CommandError> {
+-    let subcommand = Command::from_arg_matches(command_helper.matches()).unwrap();
+-    match &subcommand {
+-        Command::Abandon(args) => abandon::cmd_abandon(ui, command_helper, args),
+-        Command::Absorb(args) => absorb::cmd_absorb(ui, command_helper, args),
+-        Command::Backout(args) => backout::cmd_backout(ui, command_helper, args),
+-        #[cfg(feature = "bench")]
+-        Command::Bench(args) => bench::cmd_bench(ui, command_helper, args),
+-        Command::Bisect(args) => bisect::cmd_bisect(ui, command_helper, args),
+-        Command::Bookmark(args) => bookmark::cmd_bookmark(ui, command_helper, args),
+-        Command::Commit(args) => commit::cmd_commit(ui, command_helper, args),
+-        Command::Config(args) => config::cmd_config(ui, command_helper, args),
+-        Command::Debug(args) => debug::cmd_debug(ui, command_helper, args),
+-        Command::Describe(args) => describe::cmd_describe(ui, command_helper, args),
+-        Command::Diff(args) => diff::cmd_diff(ui, command_helper, args),
+-        Command::Diffedit(args) => diffedit::cmd_diffedit(ui, command_helper, args),
+-        Command::Duplicate(args) => duplicate::cmd_duplicate(ui, command_helper, args),
+-        Command::Edit(args) => edit::cmd_edit(ui, command_helper, args),
+-        Command::Evolog(args) => evolog::cmd_evolog(ui, command_helper, args),
+-        Command::File(args) => file::cmd_file(ui, command_helper, args),
+-        Command::Fix(args) => fix::cmd_fix(ui, command_helper, args),
+-        #[cfg(feature = "git")]
+-        Command::Gerrit(sub_args) => gerrit::cmd_gerrit(ui, command_helper, sub_args),
+-        #[cfg(feature = "git")]
+-        Command::Git(args) => git::cmd_git(ui, command_helper, args),
+-        Command::Help(args) => help::cmd_help(ui, command_helper, args),
+-        Command::Interdiff(args) => interdiff::cmd_interdiff(ui, command_helper, args),
+-        Command::Log(args) => log::cmd_log(ui, command_helper, args),
+-        Command::Metaedit(args) => metaedit::cmd_metaedit(ui, command_helper, args),
+-        Command::New(args) => new::cmd_new(ui, command_helper, args),
+-        Command::Next(args) => next::cmd_next(ui, command_helper, args),
+-        Command::Operation(args) => operation::cmd_operation(ui, command_helper, args),
+-        Command::Parallelize(args) => parallelize::cmd_parallelize(ui, command_helper, args),
+-        Command::Prev(args) => prev::cmd_prev(ui, command_helper, args),
+-        Command::Rebase(args) => rebase::cmd_rebase(ui, command_helper, args),
+-        Command::Redo(args) => redo::cmd_redo(ui, command_helper, args),
+-        Command::Resolve(args) => resolve::cmd_resolve(ui, command_helper, args),
+-        Command::Restore(args) => restore::cmd_restore(ui, command_helper, args),
+-        Command::Revert(args) => revert::cmd_revert(ui, command_helper, args),
+-        Command::Root(args) => root::cmd_root(ui, command_helper, args),
+-        Command::Run(args) => run::cmd_run(ui, command_helper, args),
+-        Command::SimplifyParents(args) => {
+-            simplify_parents::cmd_simplify_parents(ui, command_helper, args)
+-        }
+-        Command::Show(args) => show::cmd_show(ui, command_helper, args),
+-        Command::Sign(args) => sign::cmd_sign(ui, command_helper, args),
+-        Command::Sparse(args) => sparse::cmd_sparse(ui, command_helper, args),
+-        Command::Split(args) => split::cmd_split(ui, command_helper, args),
+-        Command::Squash(args) => squash::cmd_squash(ui, command_helper, args),
+-        Command::Status(args) => status::cmd_status(ui, command_helper, args),
+-        Command::Tag(args) => tag::cmd_tag(ui, command_helper, args),
+-        Command::Undo(args) => undo::cmd_undo(ui, command_helper, args),
+-        Command::Unsign(args) => unsign::cmd_unsign(ui, command_helper, args),
+-        Command::Util(args) => util::cmd_util(ui, command_helper, args),
+-        Command::Version(args) => version::cmd_version(ui, command_helper, args),
+-        Command::Workspace(args) => workspace::cmd_workspace(ui, command_helper, args),
+-    }
++pub fn run_command(_ui: &mut Ui, _command_helper: &CommandHelper) -> Result<(), CommandError> {
++    generate(Spec, &mut default_app().clone(), "jj", &mut io::stdout());
++    Ok(())
+ }
+
+ /// Wraps deprecated command of `old_name` which has been renamed to `new_name`.
