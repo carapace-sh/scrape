@@ -1,4 +1,7 @@
 services:
+  cargo:
+    build:
+      context: cargo
   gh:
     build:
       context: gh
