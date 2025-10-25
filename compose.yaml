@@ -1,4 +1,7 @@
 services:
+  atuin:
+    build:
+      context: atuin
   cargo:
     build:
       context: cargo

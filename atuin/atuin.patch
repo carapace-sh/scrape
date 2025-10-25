@@ -1,0 +1,30 @@
+diff --git a/crates/atuin/src/main.rs b/crates/atuin/src/main.rs
+index eaa58664..b9ce9c07 100644
+--- a/crates/atuin/src/main.rs
++++ b/crates/atuin/src/main.rs
+@@ -1,11 +1,16 @@
+ #![warn(clippy::pedantic, clippy::nursery)]
+ #![allow(clippy::use_self, clippy::missing_const_for_fn)] // not 100% reliable
+ 
+-use clap::Parser;
++use clap::{CommandFactory, Parser};
+ use eyre::Result;
+ 
+ use command::AtuinCmd;
+ 
++use carapace_spec_clap::Spec;
++use clap::{Arg, ArgAction, Command};
++use clap_complete::generate;
++use std::io;
++
+ mod command;
+ 
+ #[cfg(feature = "sync")]
+@@ -43,5 +48,6 @@ impl Atuin {
+ }
+ 
+ fn main() -> Result<()> {
+-    Atuin::parse().run()
++    generate(Spec, &mut Atuin::command(), "cargo", &mut io::stdout());
++    return Ok(());
+ }
