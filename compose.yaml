@@ -1,16 +1,6 @@
 services:
-  atuin:
-    build:
-      context: atuin
-  cargo:
-    build:
-      context: cargo
-  gh:
-    build:
-      context: gh
-  goreleaser:
-    build:
-      context: goreleaser
-  jj:
-    build:
-      context: jj
+  atuin: { build: {context: atuin, args: {VERSION: v18.10.0}}}
+  cargo: { build: {context: cargo, args: {VERSION: 0.91.0}}}
+  gh: { build: {context: gh, args: {VERSION: v2.82.1}}}
+  goreleaser: { build: {context: goreleaser, args: {VERSION: v2.12.7}}}
+  jj: { build: {context: jj, args: {VERSION: v0.34.0 }}}

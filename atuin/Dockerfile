@@ -1,6 +1,7 @@
 FROM rust
+ARG VERSION
 
-RUN git clone https://github.com/atuinsh/atuin --branch v18.10.0 --depth 1
+RUN git clone https://github.com/atuinsh/atuin --branch "${VERSION}" --depth 1
 
 ADD atuin.patch /
 

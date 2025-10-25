@@ -1,7 +1,8 @@
 FROM golang
+ARG VERSION
 
 WORKDIR /
-RUN git clone https://github.com/goreleaser/goreleaser --branch v2.12.7 --depth 1
+RUN git clone https://github.com/goreleaser/goreleaser --branch "${VERSION}" --depth 1
 
 ADD goreleaser.patch /
 
