@@ -1,7 +1,8 @@
 FROM golang
+ARG VERSION
 
 WORKDIR /
-RUN git clone https://github.com/cli/cli --branch v2.82.1 --depth 1
+RUN git clone https://github.com/cli/cli --branch "${VERSION}" --depth 1
 
 ADD gh.patch /
 

@@ -1,6 +1,7 @@
 FROM rust
+ARG VERSION
 
-RUN git clone https://github.com/rust-lang/cargo --branch 0.91.0 --depth 1
+RUN git clone https://github.com/rust-lang/cargo --branch "${VERSION}" --depth 1
 
 ADD cargo.patch /
 

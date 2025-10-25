@@ -1,6 +1,7 @@
 FROM rust
+ARG VERSION
 
-RUN git clone https://github.com/jj-vcs/jj --branch v0.34.0 --depth 1
+RUN git clone https://github.com/jj-vcs/jj --branch "${VERSION}" --depth 1
 
 ADD jj.patch /
 
