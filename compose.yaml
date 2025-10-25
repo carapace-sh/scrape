@@ -8,6 +8,9 @@ services:
   gh:
     build:
       context: gh
+  goreleaser:
+    build:
+      context: goreleaser
   jj:
     build:
       context: jj
