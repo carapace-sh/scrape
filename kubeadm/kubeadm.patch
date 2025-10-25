@@ -1,0 +1,19 @@
+diff --git a/cmd/kubeadm/app/kubeadm.go b/cmd/kubeadm/app/kubeadm.go
+index 49d92624..0d133a18 100644
+--- a/cmd/kubeadm/app/kubeadm.go
++++ b/cmd/kubeadm/app/kubeadm.go
+@@ -20,6 +20,7 @@ import (
+ 	"flag"
+ 	"os"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/pflag"
+ 
+ 	cliflag "k8s.io/component-base/cli/flag"
+@@ -45,5 +46,6 @@ func Run() error {
+ 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
+ 
+ 	cmd := cmd.NewKubeadmCommand(os.Stdin, os.Stdout, os.Stderr)
++	carapace.Gen(cmd)
+ 	return cmd.Execute()
+ }
