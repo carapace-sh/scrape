@@ -18,18 +18,20 @@ jobs:
 
       - name: scrape
         run: |
-            ./parse.sh > compose.yaml
-            ./scrape.sh "${{ inputs.command }}"
+            ./init.sh
+            ./.github/workflows/scrape.sh "${{ inputs.command }}"
 
       - name: "push gh-pages"
         if: github.ref == 'refs/heads/master'
         run: |
             cd gh-pages
-            git config user.name rsteube
-            git config user.email rsteube@users.noreply.github.com
-            git add .
-            git commit -m "updated ${{ inputs.command }}"
-            git pull --rebase
-            git push https://rsteube:${GITHUB_TOKEN}@github.com/carapace-sh/scrape.git gh-pages:gh-pages
+            if [ ! -z "$(git status --porcelain)" ]; then 
+              git config user.name rsteube
+              git config user.email rsteube@users.noreply.github.com
+              git add .
+              git commit -m "updated ${{ inputs.command }}"
+              git pull --rebase
+              git push https://rsteube:${GITHUB_TOKEN}@github.com/carapace-sh/scrape.git gh-pages:gh-pages
+            fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
