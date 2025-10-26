@@ -1,0 +1,20 @@
+diff --git a/pkg/commands/root.go b/pkg/commands/root.go
+index 3a160bea..69ca2057 100644
+--- a/pkg/commands/root.go
++++ b/pkg/commands/root.go
+@@ -6,6 +6,7 @@ import (
+ 	"os"
+ 	"slices"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/fatih/color"
+ 	"github.com/spf13/cobra"
+ 	"github.com/spf13/pflag"
+@@ -48,6 +49,7 @@ func newRootCommand(info BuildInfo) *rootCommand {
+ 			return cmd.Help()
+ 		},
+ 	}
++	carapace.Gen(rootCmd)
+ 
+ 	fs := rootCmd.Flags()
+ 	fs.BoolVar(&c.opts.PrintVersion, "version", false, color.GreenString("Print version"))
