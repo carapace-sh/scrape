@@ -8,6 +8,7 @@
     "jj": "https://github.com/jj-vcs/jj#v0.34.0",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.34.1",
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.34.1",
+    "minikube": "https://github.com/kubernetes/minikube#v1.36.0",
     "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.9.8"
   }
 }

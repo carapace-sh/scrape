@@ -10,7 +10,7 @@ mapfile -t lines <<< "${lines}"
   echo 'services:'
   for line in "${lines[@]}"; do
     read command version <<< "$line"
-    echo "  ${command}: { build: {context: scrapers\/\1, args: {VERSION: ${version}}}}"
+    echo "  ${command}: { build: {context: scrapers/${command}, args: {VERSION: ${version}}}}"
   done
 ) > compose.yaml
 
