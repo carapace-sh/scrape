@@ -4,6 +4,7 @@
     "cargo": "https://github.com/rust-lang/cargo#0.91.0",
     "gh": "https://github.com/cli/cli#v2.82.1",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.74.0",
+    "golangci-lint": "https://github.com/golangci/golangci-lint#v2.4.0",
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.12.7",
     "jj": "https://github.com/jj-vcs/jj#v0.34.0",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.34.1",
