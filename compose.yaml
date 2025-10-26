@@ -6,3 +6,4 @@ services:
   jj: { build: {context: jj, args: {VERSION: v0.34.0 }}}
   kubeadm: { build: {context: kubeadm, args: {VERSION: v1.34.1}}}
   kubectl: { build: {context: kubectl, args: {VERSION: v1.34.1}}}
+  zoxide: { build: {context: zoxide, args: {VERSION: v0.9.8}}}

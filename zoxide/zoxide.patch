@@ -1,0 +1,30 @@
+diff --git a/src/main.rs b/src/main.rs
+index d4ddd6e..9cc2280 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -11,16 +11,24 @@ use std::env;
+ use std::io::{self, Write};
+ use std::process::ExitCode;
+ 
+-use clap::Parser;
++use clap::{CommandFactory, Parser};
+ 
+ use crate::cmd::{Cmd, Run};
+ use crate::error::SilentExit;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++
+ pub fn main() -> ExitCode {
+     // Forcibly disable backtraces.
+     unsafe { env::remove_var("RUST_LIB_BACKTRACE") };
+     unsafe { env::remove_var("RUST_BACKTRACE") };
+ 
++    generate(Spec, &mut Cmd::command(), "zoxide", &mut io::stdout());
++    if true {
++        return ExitCode::SUCCESS;
++    }
++
+     match Cmd::parse().run() {
+         Ok(()) => ExitCode::SUCCESS,
+         Err(e) => match e.downcast::<SilentExit>() {

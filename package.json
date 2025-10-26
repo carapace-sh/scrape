@@ -6,6 +6,7 @@
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.12.7",
     "jj": "https://github.com/jj-vcs/jj#v0.34.0",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.34.1",
-    "kubectl": "https://github.com/kubernetes/kubernetes#v1.34.1"
+    "kubectl": "https://github.com/kubernetes/kubernetes#v1.34.1",
+    "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.9.8"
   }
 }
