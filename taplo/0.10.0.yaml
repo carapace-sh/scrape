@@ -1,0 +1,227 @@
+name: taplo
+description: ''
+flags:
+  -h, --help: Print help (see more with '--help')
+  -V, --version: Print version
+persistentflags:
+  --colors=: ''
+  --log-spans: Enable logging spans
+  --verbose: Enable a verbose logging format
+completion:
+  flag:
+    colors:
+    - "auto\tDetermine whether to colorize output automatically"
+    - "always\tAlways colorize output"
+    - "never\tNever colorize output"
+commands:
+- name: lint
+  aliases:
+  - check
+  - validate
+  description: Lint TOML documents
+  flags:
+    --cache-path=: Set a cache path
+    -c, --config=: Path to the Taplo configuration file
+    --default-schema-catalogs: Use the default online catalogs for schemas
+    -h, --help: Print help (see more with '--help')
+    --no-auto-config: Do not search for a configuration file
+    --no-schema: Disable all schema validations
+    --schema=: URL to the schema to be used for validation
+    --schema-catalog=*: URL to a schema catalog (index) that is compatible with Schema Store or Taplo catalogs
+  completion:
+    flag:
+      cache-path:
+      - $files
+      colors:
+      - "auto\tDetermine whether to colorize output automatically"
+      - "always\tAlways colorize output"
+      - "never\tNever colorize output"
+      config:
+      - $files
+- name: format
+  aliases:
+  - fmt
+  description: Format TOML documents
+  flags:
+    --cache-path=: Set a cache path
+    --check: Dry-run and report any files that are not correctly formatted
+    -c, --config=: Path to the Taplo configuration file
+    --diff: Print the differences in patch formatting to `stdout`
+    -f, --force: Ignore syntax errors and force formatting
+    -h, --help: Print help (see more with '--help')
+    --no-auto-config: Do not search for a configuration file
+    -o, --option=*: A formatter option given as a "key=value", can be set multiple times
+    --stdin-filepath=: A path to the file that the Taplo CLI will treat like stdin
+  completion:
+    flag:
+      cache-path:
+      - $files
+      colors:
+      - "auto\tDetermine whether to colorize output automatically"
+      - "always\tAlways colorize output"
+      - "never\tNever colorize output"
+      config:
+      - $files
+- name: lsp
+  description: Language server operations
+  flags:
+    --cache-path=: Set a cache path
+    -c, --config=: Path to the Taplo configuration file
+    -h, --help: Print help (see more with '--help')
+    --no-auto-config: Do not search for a configuration file
+  completion:
+    flag:
+      cache-path:
+      - $files
+      colors:
+      - "auto\tDetermine whether to colorize output automatically"
+      - "always\tAlways colorize output"
+      - "never\tNever colorize output"
+      config:
+      - $files
+  commands:
+  - name: tcp
+    description: Run the language server and listen on a TCP address
+    flags:
+      --address=: The address to listen on
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        colors:
+        - "auto\tDetermine whether to colorize output automatically"
+        - "always\tAlways colorize output"
+        - "never\tNever colorize output"
+  - name: stdio
+    description: Run the language server over the standard input and output
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        colors:
+        - "auto\tDetermine whether to colorize output automatically"
+        - "always\tAlways colorize output"
+        - "never\tNever colorize output"
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: tcp
+      description: Run the language server and listen on a TCP address
+    - name: stdio
+      description: Run the language server over the standard input and output
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: config
+  aliases:
+  - cfg
+  description: Operations with the Taplo config file
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      colors:
+      - "auto\tDetermine whether to colorize output automatically"
+      - "always\tAlways colorize output"
+      - "never\tNever colorize output"
+  commands:
+  - name: default
+    description: Print the default `.taplo.toml` configuration file
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        colors:
+        - "auto\tDetermine whether to colorize output automatically"
+        - "always\tAlways colorize output"
+        - "never\tNever colorize output"
+  - name: schema
+    description: Print the JSON schema of the `.taplo.toml` configuration file
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        colors:
+        - "auto\tDetermine whether to colorize output automatically"
+        - "always\tAlways colorize output"
+        - "never\tNever colorize output"
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: default
+      description: Print the default `.taplo.toml` configuration file
+    - name: schema
+      description: Print the JSON schema of the `.taplo.toml` configuration file
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: get
+  description: Extract a value from the given TOML document
+  flags:
+    -f, --file-path=: Path to the TOML document, if omitted the standard input will be used
+    -h, --help: Print help (see more with '--help')
+    -o, --output-format=: The format specifying how the output is printed
+    --separator=: A string that separates array values when printing to stdout
+    -s, --strip-newline: Strip the trailing newline from the output
+  completion:
+    flag:
+      colors:
+      - "auto\tDetermine whether to colorize output automatically"
+      - "always\tAlways colorize output"
+      - "never\tNever colorize output"
+      file-path:
+      - $files
+      output-format:
+      - "value\tExtract the value outputting it in a text format"
+      - "json\tOutput format in JSON"
+      - "toml\tOutput format in TOML"
+    positional:
+    - []
+- name: toml-test
+  description: Start a decoder for `toml-test` (https://github.com/BurntSushi/toml-test)
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      colors:
+      - "auto\tDetermine whether to colorize output automatically"
+      - "always\tAlways colorize output"
+      - "never\tNever colorize output"
+- name: completions
+  description: Generate completions for Taplo CLI
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      colors:
+      - "auto\tDetermine whether to colorize output automatically"
+      - "always\tAlways colorize output"
+      - "never\tNever colorize output"
+    positional:
+    - []
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: lint
+    description: Lint TOML documents
+  - name: format
+    description: Format TOML documents
+  - name: lsp
+    description: Language server operations
+    commands:
+    - name: tcp
+      description: Run the language server and listen on a TCP address
+    - name: stdio
+      description: Run the language server over the standard input and output
+  - name: config
+    description: Operations with the Taplo config file
+    commands:
+    - name: default
+      description: Print the default `.taplo.toml` configuration file
+    - name: schema
+      description: Print the JSON schema of the `.taplo.toml` configuration file
+  - name: get
+    description: Extract a value from the given TOML document
+  - name: toml-test
+    description: Start a decoder for `toml-test` (https://github.com/BurntSushi/toml-test)
+  - name: completions
+    description: Generate completions for Taplo CLI
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
