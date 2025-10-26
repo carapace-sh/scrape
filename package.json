@@ -12,6 +12,7 @@
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.34.1",
     "minikube": "https://github.com/kubernetes/minikube#v1.37.0",
     "mise": "https://github.com/jdx/mise#v2025.10.18",
+    "taplo": "https://github.com/tamasfe/taplo#0.10.0",
     "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.9.8"
   }
 }
