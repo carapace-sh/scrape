@@ -1,0 +1,20 @@
+diff --git a/cmd/compose/compose.go b/cmd/compose/compose.go
+index 2be3ab157..0e2c4fe9f 100644
+--- a/cmd/compose/compose.go
++++ b/cmd/compose/compose.go
+@@ -29,6 +29,7 @@ import (
+ 	"strings"
+ 	"syscall"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/compose-spec/compose-go/v2/cli"
+ 	"github.com/compose-spec/compose-go/v2/dotenv"
+ 	"github.com/compose-spec/compose-go/v2/loader"
+@@ -671,6 +672,7 @@ func RootCommand(dockerCli command.Cli, backend Backend) *cobra.Command { //noli
+ 	c.Flags().MarkHidden("no-ansi") //nolint:errcheck
+ 	c.Flags().BoolVar(&verbose, "verbose", false, "Show more output")
+ 	c.Flags().MarkHidden("verbose") //nolint:errcheck
++	carapace.Gen(c)
+ 	return c
+ }
+
