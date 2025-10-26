@@ -1,0 +1,28 @@
+diff --git a/crates/taplo-cli/bin/taplo.rs b/crates/taplo-cli/bin/taplo.rs
+index aaf1aef..cee500c 100644
+--- a/crates/taplo-cli/bin/taplo.rs
++++ b/crates/taplo-cli/bin/taplo.rs
+@@ -1,4 +1,4 @@
+-use clap::Parser;
++use clap::{CommandFactory, Parser};
+ use std::process::exit;
+ use taplo_cli::{
+     args::{Colors, TaploArgs},
+@@ -7,8 +7,17 @@ use taplo_cli::{
+ use taplo_common::{environment::native::NativeEnvironment, log::setup_stderr_logging};
+ use tracing::Instrument;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ #[tokio::main]
+ async fn main() {
++    generate(Spec, &mut TaploArgs::command(), "taplo", &mut io::stdout());
++    if true {
++        return;
++    }
++
+     let cli = TaploArgs::parse();
+     setup_stderr_logging(
+         NativeEnvironment::new(),
