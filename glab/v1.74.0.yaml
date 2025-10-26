@@ -1,0 +1,1279 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: glab <command> <subcommand> [flags]
+description: A GitLab CLI tool.
+flags:
+    -v, --version: show glab version information
+persistentflags:
+    -R, --repo&=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+    -h, --help: Show help for this command.
+commands:
+    - name: alias [command] [flags]
+      description: Create, list, and delete aliases.
+      commands:
+        - name: delete <alias name> [flags]
+          description: Delete an alias.
+        - name: list [flags]
+          description: List the available aliases.
+        - name: set <alias name> '<command>' [flags]
+          description: Set an alias for a longer command.
+          flags:
+            -s, --shell: Declare an alias to be passed through a shell interpreter.
+    - name: api <endpoint>
+      description: Make an authenticated request to the GitLab API.
+      flags:
+        --hostname=: The GitLab hostname for the request. Defaults to 'gitlab.com', or the authenticated host in the current Git directory.
+        --input=: The file to use as the body for the HTTP request.
+        --paginate: Make additional HTTP requests to fetch all pages of results.
+        --silent: Do not print the response body.
+        -F, --field*=: Add a parameter of inferred type. Changes the default HTTP method to "POST".
+        -H, --header*=: Add an additional HTTP request header.
+        -X, --method=: The HTTP method for the request.
+        -f, --raw-field*=: Add a string parameter.
+        -i, --include: Include HTTP response headers in the output.
+    - name: auth <command>
+      description: Manage glab's authentication state.
+      commands:
+        - name: configure-docker
+          description: Register glab as a Docker credential helper
+        - name: docker-helper
+          description: A Docker credential helper for GitLab container registries
+        - name: dpop-gen [flags]
+          description: Generates a DPoP (demonstrating-proof-of-possession) proof JWT. (EXPERIMENTAL)
+          flags:
+            --hostname=: The hostname of the GitLab instance to authenticate with. Defaults to 'gitlab.com'.
+            --pat=: Personal Access Token (PAT) to generate a DPoP proof for. Defaults to the token set with 'glab auth login'. Returns an error if both are empty.
+            -p, --private-key!=: Location of the private SSH key on the local system.
+        - name: git-credential
+          description: Implements Git credential helper manager.
+          hidden: true
+        - name: login
+          description: Authenticate with a GitLab instance.
+          flags:
+            --hostname=: The hostname of the GitLab instance to authenticate with.
+            --stdin: Read token from standard input.
+            --use-keyring: Store token in your operating system's keyring.
+            -a, --api-host=: API host url.
+            -g, --git-protocol=: 'Git protocol: ssh, https, http'
+            -j, --job-token=: CI job token.
+            -p, --api-protocol=: 'API protocol: https, http'
+            -t, --token=: Your GitLab access token.
+        - name: logout
+          description: Logout from a GitLab instance.
+          flags:
+            --hostname!=: The hostname of the GitLab instance.
+        - name: status
+          description: View authentication status.
+          flags:
+            --hostname=: Check a specific instance's authentication status.
+            -t, --show-token: Display the authentication token.
+    - name: changelog <command> [flags]
+      description: Interact with the changelog API.
+      commands:
+        - name: generate [flags]
+          description: Generate a changelog for the repository or project.
+          flags:
+            --config-file=: Path of the changelog configuration file in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'.
+            --date=: Date and time of the release. Uses ISO 8601 (`2016-03-11T03:45:40Z`) format. Defaults to the current time.
+            --from=: Start of the range of commits (as a SHA) to use when generating the changelog. This commit itself isn't included in the list.
+            --to=: End of the range of commits (as a SHA) to use when generating the changelog. This commit is included in the list. Defaults to the HEAD of the project's default branch.
+            --trailer=: The Git trailer to use for including commits. Defaults to 'Changelog'.
+            -v, --version=: Version to generate the changelog for. Must follow semantic versioning. Defaults to the version of the local checkout, like using 'git describe'.
+    - name: check-update
+      aliases:
+        - update
+      description: Check for latest glab releases.
+    - name: ci <command> [flags]
+      aliases:
+        - pipe
+        - pipeline
+      description: Work with GitLab CI/CD pipelines and jobs.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: cancel <command>
+          description: Cancel a running pipeline or job.
+          commands:
+            - name: job <id> [flags]
+              description: Cancel CI/CD jobs.
+              flags:
+                --dry-run: Simulates process, but does not cancel anything.
+            - name: pipeline <id> [flags]
+              description: Cancel CI/CD pipelines.
+              flags:
+                --dry-run: Simulates process, but does not cancel anything.
+        - name: config <command> [flags]
+          description: Work with GitLab CI/CD configuration.
+          commands:
+            - name: compile
+              description: View the fully expanded CI/CD configuration.
+        - name: delete <id> [flags]
+          description: Delete CI/CD pipelines.
+          flags:
+            --dry-run: Simulate process, but do not delete anything.
+            --older-than=: 'Filter pipelines older than the given duration. Valid units: h, m, s, ms, us, ns.'
+            --page=: Page number.
+            --paginate: Make additional HTTP requests to fetch all pages of projects before cloning. Respects '--per-page'.
+            --per-page=: Number of items to list per page.
+            --source=: 'Filter pipelines by source: api, chat, external, external_pull_request_event, merge_request_event, ondemand_dast_scan, ondemand_dast_validation, parent_pipeline, pipeline, push, schedule, security_orchestration_policy, trigger, web, webide.'
+            -s, --status=: 'Delete pipelines by status: running, pending, success, failed, canceled, skipped, created, manual.'
+        - name: get [flags]
+          aliases:
+            - stats
+          description: Get JSON of a running CI/CD pipeline on the current or other specified branch.
+          flags:
+            --with-variables: Show variables in pipeline. Requires the Maintainer role.
+            -F, --output=: 'Format output. Options: text, json.'
+            -b, --branch=: Check pipeline status for a branch. (default current branch)
+            -d, --with-job-details: Show extended job information.
+            -o, --output-format&=: Use output.
+            -p, --pipeline-id=: Provide pipeline ID.
+        - name: lint
+          description: Checks if your `.gitlab-ci.yml` file is valid.
+          flags:
+            --dry-run: Run pipeline creation simulation.
+            --include-jobs: Response includes the list of jobs that would exist in a static check or pipeline simulation.
+            --ref=: When 'dry-run' is true, sets the branch or tag context for validating the CI/CD YAML configuration.
+        - name: list [flags]
+          description: Get the list of CI/CD pipelines.
+          flags:
+            --scope=: 'Return only pipelines with the given scope: {running|pending|finished|branches|tags}'
+            --sha=: Return only pipelines with the given SHA.
+            --sort=: 'Sort pipelines. Options: asc, desc.'
+            --source=: 'Return only pipelines triggered via the given source. See https://docs.gitlab.com/ci/jobs/job_rules/#ci_pipeline_source-predefined-variable for full list. Commonly used options: {merge_request_event|parent_pipeline|pipeline|push|trigger}'
+            -F, --output=: 'Format output. Options: text, json.'
+            -P, --per-page=: Number of items to list per page.
+            -a, --updated-after=: Return only pipelines updated after the specified date. Expected in ISO 8601 format (2019-03-15T08:00:00Z).
+            -b, --updated-before=: Return only pipelines updated before the specified date. Expected in ISO 8601 format (2019-03-15T08:00:00Z).
+            -n, --name=: Return only pipelines with the given name.
+            -o, --orderBy=: 'Order pipelines by this field. Options: id, status, ref, updated_at, user_id.'
+            -p, --page=: Page number.
+            -r, --ref=: Return only pipelines for given ref.
+            -s, --status=: 'Get pipeline with this status. Options: running, pending, success, failed, canceled, skipped, created, manual, waiting_for_resource, preparing, scheduled'
+            -u, --username=: Return only pipelines triggered by the given username.
+            -y, --yaml-errors: Return only pipelines with invalid configurations.
+        - name: retry <job-id>
+          description: Retry a CI/CD job.
+          flags:
+            -b, --branch=: The branch to search for the job. (default current branch)
+            -p, --pipeline-id=: The pipeline ID to search for the job.
+        - name: run [flags]
+          aliases:
+            - create
+          description: Create or run a new CI/CD pipeline.
+          flags:
+            --mr: Run merge request pipeline instead of branch pipeline.
+            --variables*=: Pass variables to pipeline in format <key>:<value>. Cannot be used for MR pipelines.
+            --variables-env*=: Pass variables to pipeline in format <key>:<value>. Cannot be used for MR pipelines.
+            --variables-file*=: Pass file contents as a file variable to pipeline in format <key>:<filename>. Cannot be used for MR pipelines.
+            -b, --branch=: Create pipeline on branch/ref <string>.
+            -f, --variables-from=: JSON file with variables for pipeline execution. Expects array of hashes, each with at least 'key' and 'value'. Cannot be used for MR pipelines.
+            -i, --input*=: Pass inputs to pipeline in format '<key>:<value>'. Cannot be used for merge request pipelines. See documentation for examples.
+            -w, --web: Open pipeline in a browser. Uses default browser, or browser specified in BROWSER environment variable.
+        - name: run-trig [flags]
+          aliases:
+            - run-trig
+          description: Run a CI/CD pipeline trigger.
+          flags:
+            --variables*=: Pass variables to pipeline in the format <key>:<value>.
+            -b, --branch=: Create pipeline on branch or reference <string>.
+            -i, --input*=: Pass inputs to pipeline in format '<key>:<value>'. Cannot be used for merge request pipelines. See documentation for examples.
+            -t, --token=: Pipeline trigger token. Can be omitted only if the `CI_JOB_TOKEN` environment variable is set.
+        - name: status [flags]
+          aliases:
+            - stats
+          description: View a running CI/CD pipeline on current or other branch specified.
+          flags:
+            -b, --branch=: Check pipeline status for a branch. (default current branch)
+            -c, --compact: Show status in compact format.
+            -l, --live: Show status in real time until the pipeline ends.
+        - name: trace [<job-id>] [flags]
+          description: Trace a CI/CD job log in real time.
+          flags:
+            -b, --branch=: The branch to search for the job. (default current branch)
+            -p, --pipeline-id=: The pipeline ID to search for the job.
+        - name: trigger <job-id>
+          description: Trigger a manual CI/CD job.
+          flags:
+            -b, --branch=: The branch to search for the job. (default current branch)
+            -p, --pipeline-id=: The pipeline ID to search for the job.
+        - name: view [branch/tag]
+          description: View, run, trace, log, and cancel CI/CD job's current pipeline.
+          flags:
+            -b, --branch=: Check pipeline status for a branch or tag. Defaults to the current branch.
+            -w, --web: Open pipeline in a browser. Uses default browser, or browser specified in BROWSER variable.
+    - name: cluster <command> [flags]
+      description: Manage GitLab Agents for Kubernetes and their clusters.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: agent <command> [flags]
+          description: Manage GitLab Agents for Kubernetes.
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+          commands:
+            - name: bootstrap agent-name [flags]
+              aliases:
+                - bs
+              description: Bootstrap a GitLab Agent for Kubernetes in a project.
+              flags:
+                --commit-author-email=: The Git commit author email to use. Conflicts with the --use-api-commit-author flag.
+                --commit-author-name=: The Git commit author name to use. Conflicts with the --use-api-commit-author flag.
+                --create-environment: Create an environment for the GitLab Agent.
+                --create-flux-environment: Create an environment for FluxCD. Affects only the environment creation, not the use of Flux itself. Flux is always required for the bootstrap process.
+                --environment-flux-resource-path=: Flux resource path of the environment for the GitLab Agent.
+                --environment-name=: Name of the environment for the GitLab Agent.
+                --environment-namespace=: Kubernetes namespace of the environment for the GitLab Agent.
+                --flux-environment-flux-resource-path=: Flux resource path of the environment for FluxCD.
+                --flux-environment-name=: Name of the environment for FluxCD.
+                --flux-environment-namespace=: Kubernetes namespace of the environment for FluxCD.
+                --flux-source-name=: Flux source name.
+                --flux-source-namespace=: Flux source namespace.
+                --flux-source-type=: Source type of the flux-system, like Git, OCI, or Helm.
+                --gitlab-agent-token-secret-name=: Name of the Secret where the token for the GitLab Agent is stored. The helm-release-target-namespace is implied for the namespace of the Secret.
+                --helm-release-filepath=: File path within the GitLab Agent project to commit the Flux HelmRelease to.
+                --helm-release-name=: Name of the Flux HelmRelease manifest.
+                --helm-release-namespace=: Namespace of the Flux HelmRelease manifest.
+                --helm-release-target-namespace=: Namespace of the GitLab Agent deployment.
+                --helm-release-values*=: Local path to values.yaml files
+                --helm-release-values-from*=: 'Kubernetes object reference that contains the values.yaml data key in the format ''<kind>/<name>'', where ''kind'' must be one of: (Secret, ConfigMap)'
+                --helm-repository-address=: Address of the HelmRepository.
+                --helm-repository-filepath=: File path within the GitLab Agent project to commit the Flux HelmRepository to.
+                --helm-repository-name=: Name of the Flux HelmRepository manifest.
+                --helm-repository-namespace=: Namespace of the Flux HelmRepository manifest.
+                --no-reconcile: Do not trigger Flux reconciliation for GitLab Agent for Kubernetes Flux resource.
+                --use-api-commit-author: When creating Git commits use the user from the authenticated API request. Conflicts with the --commit-author-name and --commit-author-email flags.
+                -b, --manifest-branch=: Branch to commit the Flux Manifests to. (default to the project default branch)
+                -p, --manifest-path=: Location of directory in Git repository for storing the GitLab Agent for Kubernetes Helm resources.
+            - name: check_manifest_usage [flags]
+              description: Check agent configuration files for built-in GitOps manifests usage. (EXPERIMENTAL)
+              flags:
+                -A, --agent-per-page=: Number of projects to list per page.
+                -P, --per-page=: Number of projects to list per page.
+                -a, --agent-page=: Page number for projects.
+                -g, --group!=: Group ID to check.
+                -p, --page=: Page number for projects.
+                -r, --recursive: Recursively check subgroups.
+            - name: get-token [flags]
+              description: Create and return a k8s_proxy-scoped personal access token to authenticate with a GitLab Agents for Kubernetes.
+              flags:
+                --check-revoked: Check if a cached token is revoked. This requires an API call to GitLab which adds latency every time a cached token is accessed.
+                --token-expiry-duration=: Duration for how long the generated tokens should be valid for. Minimum is 1 day and the effective expiry is always at the end of the day, the time is ignored.
+                -a, --agent!=: The numerical Agent ID to connect to.
+                -c, --cache-mode=: 'Mode to use for caching the token. Allowed values: keyring-filesystem-fallback, force-keyring, force-filesystem, no'
+            - name: list [flags]
+              aliases:
+                - ls
+              description: List GitLab Agents for Kubernetes in a project.
+              flags:
+                -P, --per-page=: Number of items to list per page.
+                -p, --page=: Page number.
+            - name: token <command> [flags]
+              description: Manage GitLab Agents for Kubernetes tokens.
+              commands:
+                - name: list <agent-id> [flags]
+                  description: List tokens of an agent.
+                - name: revoke <agent-id> <token-id>
+                  description: Revoke a token of an agent.
+            - name: update-kubeconfig [flags]
+              description: Update selected kubeconfig.
+              flags:
+                --check-revoked: Check if a cached token is revoked. Requires an API call to GitLab, which adds latency every time a cached token is accessed.
+                --kubeconfig=: Use a particular kubeconfig file.
+                --token-expiry-duration=: Duration for generated token's validity. Minimum is 1 day. Expires at end of day, and ignores time.
+                -a, --agent!=: The numeric agent ID to create the kubeconfig entry for.
+                -c, --cache-mode=: 'Mode to use for caching the token. Allowed values: keyring-filesystem-fallback, force-keyring, force-filesystem, no'
+                -u, --use-context: Use as default context.
+        - name: graph [flags]
+          description: Queries the Kubernetes object graph, using the GitLab Agent for Kubernetes. (EXPERIMENTAL)
+          flags:
+            --apps: Watch deployments, replicasets, daemonsets, and statefulsets in apps/v1 group.
+            --batch: Watch jobs and cronjobs in the batch/v1 group.
+            --cluster-rbac: Watch clusterroles and clusterrolebindings in the rbac.authorization.k8s.io/v1 group.
+            --core: Watch pods, secrets, configmaps, and serviceaccounts in the core/v1 group
+            --crd: Watch customresourcedefinitions in the apiextensions.k8s.io/v1 group.
+            --ignore-arc-direction: Ignore arc direction when evaluating roots connectivity. GitLab and agent 18.3+ required.
+            --listen-addr=: Address to listen on.
+            --listen-net=: Network on which to listen for connections.
+            --log-watch-request: Log watch request to stdout. Helpful for debugging.
+            --ns-expression=: CEL expression to select namespaces. Evaluated before a namespace is watched and on any updates for the namespace object.
+            --ns-field-selector=: Field selector to select namespaces.
+            --ns-label-selector=: Label selector to select namespaces.
+            --rbac: Watch roles, and rolebindings in the rbac.authorization.k8s.io/v1 group.
+            --root-expression*=: CEL expression to select root objects. GitLab and agent 18.3+ required.
+            --stdin: Read watch request from standard input.
+            -a, --agent!=: The numerical Agent ID to connect to.
+            -n, --namespace*=: Namespaces to watch. If not specified, all namespaces are watched with label and field selectors filtering.
+            -r, --resource*=: A list of resources to watch. You can see the list of resources your cluster supports by running 'kubectl api-resources'.
+    - name: completion
+      description: Generate shell completion scripts.
+      flags:
+        --no-desc: Do not include shell completion description.
+        -s, --shell=: 'Shell type: bash, zsh, fish, powershell.'
+    - name: config [flags]
+      aliases:
+        - conf
+      description: Manage glab settings.
+      flags:
+        -g, --global: Use global config file.
+      commands:
+        - name: edit
+          description: Opens the glab configuration file.
+          flags:
+            -l, --local: Open '.git/glab-cli/config.yml' file instead of the global '~/.config/glab-cli/config.yml' file.
+        - name: get <key>
+          description: Prints the value of a given configuration key.
+          flags:
+            --host=: Get per-host setting.
+            -g, --global: Read from global config file (~/.config/glab-cli/config.yml). (default checks 'Environment variables → Local → Global')
+        - name: set <key> <value>
+          description: Updates configuration with the value of a given key.
+          flags:
+            --host=: Set per-host setting.
+            -g, --global: Write to global '~/.config/glab-cli/config.yml' file rather than the repository's '.git/glab-cli/config.yml' file.
+    - name: deploy-key <command>
+      description: Manage deploy keys.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: add [key-file]
+          description: Add a deploy key to a GitLab project.
+          flags:
+            -c, --can-push: If true, deploy keys can be used for pushing code to the repository.
+            -e, --expires-at=: 'The expiration date of the deploy key, using the ISO-8601 format: YYYY-MM-DDTHH:MM:SSZ.'
+            -t, --title!=: New deploy key's title.
+        - name: delete <key-id>
+          description: Deletes a single deploy key specified by the ID.
+        - name: get <key-id>
+          description: Returns a single deploy key specified by the ID.
+        - name: list
+          description: Get a list of deploy keys for the current project.
+          flags:
+            --show-id: Shows IDs of deploy keys.
+            -P, --per-page=: Number of items to list per page.
+            -p, --page=: Page number.
+    - name: duo <command> prompt
+      description: Work with GitLab Duo
+      commands:
+        - name: ask <prompt>
+          description: Generate Git commands from natural language.
+          flags:
+            --git: Ask a question about Git.
+    - name: help [command]
+      description: Help about any command
+    - name: incident [command] [flags]
+      description: Work with GitLab incidents.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: close [<id> | <url>] [flags]
+          aliases:
+            - resolve
+          description: Close an incident.
+        - name: list [flags]
+          aliases:
+            - ls
+          description: List project incidents.
+          flags:
+            --author=: Filter incident by author <username>.
+            --in=: 'search in: title, description.'
+            --not-assignee=: Filter incident by not being assigned to <username>.
+            --not-author=: Filter incident by not being by author(s) <username>.
+            --not-label*=: Filter incident by lack of label <name>.
+            --order=: 'Order incident by <field>. Order options: created_at, updated_at, priority, due_date, relative_position, label_priority, milestone_due, popularity, weight.'
+            --search=: Search <string> in the fields defined by '--in'.
+            --sort=: Return incident sorted in asc or desc order.
+            -A, --all: Get all incidents.
+            -C, --confidential: Filter by confidential incidents.
+            -F, --output-format=: 'Options: ''details'', ''ids'', ''urls''.'
+            -M, --mine&: Filter only incidents assigned to me.
+            -O, --output=: 'Options: ''text'' or ''json''.'
+            -P, --per-page=: Number of items to list per page.
+            -a, --assignee=: Filter incident by assignee <username>.
+            -c, --closed: Get only closed incidents.
+            -e, --epic=: List issues belonging to a given epic (requires --group, no pagination support).
+            -l, --label*=: Filter incident by label <name>.
+            -m, --milestone=: Filter incident by milestone <id>.
+            -o, --opened&: Get only open incidents.
+            -p, --page=: Page number.
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+            -g, --group=: Select a group or subgroup. Ignored if a repo argument is set.
+        - name: note <incident-id>
+          aliases:
+            - comment
+          description: Comment on an incident in GitLab.
+          flags:
+            -m, --message=: Message text.
+        - name: reopen [<id> | <url>] [flags]
+          aliases:
+            - open
+          description: Reopen a resolved incident.
+        - name: subscribe <id>
+          aliases:
+            - sub
+          description: Subscribe to an incident.
+        - name: unsubscribe <id>
+          aliases:
+            - unsub
+          description: Unsubscribe from an incident.
+        - name: view <id>
+          aliases:
+            - show
+          description: Display the title, body, and other information about an incident.
+          flags:
+            -F, --output=: 'Format output as: text, json.'
+            -P, --per-page=: Number of items to list per page.
+            -c, --comments: Show incident comments and activities.
+            -p, --page=: Page number.
+            -s, --system-logs: Show system activities and logs.
+            -w, --web: Open incident in a browser. Uses the default browser, or the browser specified in the $BROWSER variable.
+    - name: issue [command] [flags]
+      description: Work with GitLab issues.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: board [command] [flags]
+          description: Work with GitLab issue boards in the given project.
+          persistentflags:
+            -R, --repo=: Select another repository using the OWNER/REPO format or the project ID. Supports group namespaces.
+          commands:
+            - name: create [flags]
+              aliases:
+                - new
+              description: Create a project issue board.
+              flags:
+                -n, --name=: The name of the new board
+            - name: view [flags]
+              description: View project issue board.
+              flags:
+                -a, --assignee=: Filter board issues by assignee username.
+                -l, --labels*=: Filter board issues by labels, comma separated.
+                -m, --milestone=: Filter board issues by milestone.
+        - name: close [<id> | <url>] [flags]
+          description: Close an issue.
+        - name: create [flags]
+          aliases:
+            - new
+          description: Create an issue.
+          flags:
+            --due-date=: A date in 'YYYY-MM-DD' format.
+            --epic=: ID of the epic to add the issue to.
+            --link-type=: Type for the issue link
+            --linked-issues*=: The IIDs of issues that this issue links to.
+            --linked-mr=: The IID of a merge request in which to resolve all issues.
+            --no-editor: Don't open editor to enter a description. If set to true, uses prompt. (default false)
+            --recover: Save the options to a file if the issue fails to be created. If the file exists, the options will be loaded from the recovery file. (EXPERIMENTAL)
+            --web: Continue issue creation with web interface.
+            -a, --assignee*=: Assign issue to people by their `usernames`.
+            -c, --confidential: Set an issue to be confidential. (default false)
+            -d, --description=: Issue description.
+            -e, --time-estimate=: Set time estimate for the issue.
+            -l, --label*=: Add label by name. Multiple labels should be comma-separated.
+            -m, --milestone=: The global ID or title of a milestone to assign.
+            -s, --time-spent=: Set time spent for the issue.
+            -t, --title=: Issue title.
+            -w, --weight=: Issue weight. Valid values are greater than or equal to 0.
+            -y, --yes: Don't prompt for confirmation to submit the issue.
+        - name: delete <id>
+          aliases:
+            - del
+          description: Delete an issue.
+        - name: list [flags]
+          aliases:
+            - ls
+          description: List project issues.
+          flags:
+            --author=: Filter issue by author <username>.
+            --in=: 'search in: title, description.'
+            --not-assignee=: Filter issue by not being assigned to <username>.
+            --not-author=: Filter issue by not being by author(s) <username>.
+            --not-label*=: Filter issue by lack of label <name>.
+            --order=: 'Order issue by <field>. Order options: created_at, updated_at, priority, due_date, relative_position, label_priority, milestone_due, popularity, weight.'
+            --search=: Search <string> in the fields defined by '--in'.
+            --sort=: Return issue sorted in asc or desc order.
+            -A, --all: Get all issues.
+            -C, --confidential: Filter by confidential issues.
+            -F, --output-format=: 'Options: ''details'', ''ids'', ''urls''.'
+            -M, --mine&: Filter only issues assigned to me.
+            -O, --output=: 'Options: ''text'' or ''json''.'
+            -P, --per-page=: Number of items to list per page.
+            -a, --assignee=: Filter issue by assignee <username>.
+            -c, --closed: Get only closed issues.
+            -e, --epic=: List issues belonging to a given epic (requires --group, no pagination support).
+            -i, --iteration=: Filter issue by iteration <id>.
+            -l, --label*=: Filter issue by label <name>.
+            -m, --milestone=: Filter issue by milestone <id>.
+            -o, --opened&: Get only open issues.
+            -p, --page=: Page number.
+            -t, --issue-type=: 'Filter issue by its type. Options: issue, incident, test_case.'
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+            -g, --group=: Select a group or subgroup. Ignored if a repo argument is set.
+        - name: note <issue-id>
+          aliases:
+            - comment
+          description: Comment on an issue in GitLab.
+          flags:
+            -m, --message=: Message text.
+        - name: reopen [<id> | <url>] [flags]
+          aliases:
+            - open
+          description: Reopen a closed issue.
+        - name: subscribe <id>
+          aliases:
+            - sub
+          description: Subscribe to an issue.
+        - name: unsubscribe <id>
+          aliases:
+            - unsub
+          description: Unsubscribe from an issue.
+        - name: update <id>
+          description: Update issue
+          flags:
+            --due-date=: A date in 'YYYY-MM-DD' format.
+            --lock-discussion: Lock discussion on issue.
+            --unassign: Unassign all users.
+            --unlock-discussion: Unlock discussion on issue.
+            -a, --assignee*=: Assign users by username. Prefix with '!' or '-' to remove from existing assignees, or '+' to add new. Otherwise, replace existing assignees with these users.
+            -c, --confidential: Make issue confidential
+            -d, --description=: Issue description. Set to "-" to open an editor.
+            -l, --label*=: Add labels.
+            -m, --milestone=: Title of the milestone to assign Set to "" or 0 to unassign.
+            -p, --public: Make issue public.
+            -t, --title=: Title of issue.
+            -u, --unlabel*=: Remove labels.
+            -w, --weight=: Set weight of the issue.
+        - name: view <id>
+          aliases:
+            - show
+          description: Display the title, body, and other information about an issue.
+          flags:
+            -F, --output=: 'Format output as: text, json.'
+            -P, --per-page=: Number of items to list per page.
+            -c, --comments: Show issue comments and activities.
+            -p, --page=: Page number.
+            -s, --system-logs: Show system activities and logs.
+            -w, --web: Open issue in a browser. Uses the default browser, or the browser specified in the $BROWSER variable.
+    - name: iteration <command> [flags]
+      description: Retrieve iteration information.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: list [flags]
+          aliases:
+            - ls
+          description: List project iterations
+          flags:
+            -F, --output=: 'Format output as: text, json.'
+            -P, --per-page=: Number of items to list per page.
+            -g, --group=: List iterations for a group.
+            -p, --page=: Page number.
+    - name: job <command> [flags]
+      description: Work with GitLab CI/CD jobs.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: artifact <refName> <jobName> [flags]
+          aliases:
+            - push
+          description: Download all artifacts from the last pipeline.
+          flags:
+            -l, --list-paths: Print the paths of downloaded artifacts.
+            -p, --path=: Path to download the artifact files.
+    - name: label <command> [flags]
+      description: Manage labels on remote.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: create [flags]
+          aliases:
+            - new
+          description: Create labels for a repository or project.
+          flags:
+            -c, --color=: Color of the label, in plain or HEX code.
+            -d, --description=: Label description.
+            -n, --name!=: Name of the label.
+        - name: delete [flags]
+          description: Delete labels for a repository or project.
+        - name: list [flags]
+          aliases:
+            - ls
+          description: List labels in the repository.
+          flags:
+            -F, --output=: 'Format output as: text, json.'
+            -P, --per-page=: Number of items to list per page.
+            -g, --group=: List labels for a group.
+            -p, --page=: Page number.
+    - name: mcp <command>
+      description: Work with a Model Context Protocol (MCP) server. (EXPERIMENTAL)
+      commands:
+        - name: serve
+          description: Start a MCP server with stdio transport. (EXPERIMENTAL)
+    - name: mr <command> [flags]
+      description: Create, view, and manage merge requests.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: approve {<id> | <branch>}
+          description: Approve merge requests.
+          flags:
+            -s, --sha=: SHA, which must match the SHA of the HEAD commit of the merge request.
+        - name: approvers [<id> | <branch>] [flags]
+          description: List eligible approvers for merge requests in any state.
+        - name: checkout [<id> | <branch> | <url>]
+          description: Check out an open merge request.
+          flags:
+            -b, --branch=: Check out merge request with name <branch>.
+            -t, --track&: Set checked out branch to track the remote branch.
+            -u, --set-upstream-to=: Set tracking of checked-out branch to [REMOTE/]BRANCH.
+        - name: close [<id> | <branch>]
+          description: Close a merge request.
+        - name: create
+          aliases:
+            - new
+          description: Create a new merge request.
+          flags:
+            --allow-collaboration: Allow commits from other members.
+            --copy-issue-labels: Copy labels from issue to the merge request. Used with --related-issue.
+            --create-source-branch: Create a source branch if it does not exist.
+            --draft: Mark merge request as a draft.
+            --fill-commit-body: Fill description with each commit body when multiple commits. Can only be used with --fill.
+            --no-editor: Don't open editor to enter a description. If true, uses prompt. Defaults to false.
+            --push: Push committed changes after creating merge request. Make sure you have committed changes.
+            --recover: Save the options to a file if the merge request creation fails. If the file exists, the options are loaded from the recovery file. (EXPERIMENTAL)
+            --remove-source-branch: Remove source branch on merge.
+            --reviewer*=: Request review from users by their `usernames`.
+            --signoff: Append a DCO signoff to the merge request description.
+            --squash-before-merge: Squash commits into a single commit when merging.
+            --target-project&=: Add target project by id, OWNER/REPO, or GROUP/NAMESPACE/REPO.
+            --wip: Mark merge request as a draft. Alternative to --draft.
+            -H, --head=: Select another head repository using the `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format, the project ID, or the full URL.
+            -a, --assignee*=: Assign merge request to people by their `usernames`.
+            -b, --target-branch=: The target or base branch into which you want your code merged into.
+            -d, --description=: Supply a description for the merge request.
+            -f, --fill: Do not prompt for title or description, and just use commit info. Sets `push` to `true`, and pushes the branch.
+            -i, --related-issue=: Create a merge request for an issue. If --title is not provided, uses the issue title.
+            -l, --label*=: Add label by name. Multiple labels should be comma-separated.
+            -m, --milestone=: The global ID or title of a milestone to assign.
+            -s, --source-branch=: Create a merge request from this branch. Default is the current branch.
+            -t, --title=: Supply a title for the merge request.
+            -w, --web: Continue merge request creation in a browser.
+            -y, --yes: Skip submission confirmation prompt. Use --fill to skip all optional prompts.
+        - name: delete [<id> | <branch>]
+          aliases:
+            - del
+          description: Delete a merge request.
+        - name: diff [<id> | <branch>]
+          description: View changes in a merge request.
+          flags:
+            --color=: 'Use color in diff output: always, never, auto.'
+            --raw: Use raw diff format that can be piped to commands
+        - name: issues [<id> | <branch>]
+          aliases:
+            - issue
+          description: Get issues related to a particular merge request.
+        - name: list [flags]
+          aliases:
+            - ls
+          description: List merge requests.
+          flags:
+            --author=: Filter merge request by author <username>.
+            --mine&: Get only merge requests assigned to me.
+            --not-draft: Filter by non-draft merge requests.
+            --not-label*=: Filter merge requests by not having label <name>.
+            --search=: Filter by <string> in title and description.
+            -A, --all: Get all merge requests.
+            -F, --output=: 'Format output as: text, json.'
+            -M, --merged: Get only merged merge requests.
+            -O, --opened&: Get only open merge requests.
+            -P, --per-page=: Number of items to list per page.
+            -S, --sort=: 'Sort merge requests by <field>. Sort options: asc, desc.'
+            -a, --assignee*=: Get only merge requests assigned to users.
+            -c, --closed: Get only closed merge requests.
+            -d, --draft: Filter by draft merge requests.
+            -l, --label*=: Filter merge request by label <name>.
+            -m, --milestone=: Filter merge request by milestone <id>.
+            -o, --order=: 'Order merge requests by <field>. Order options: created_at, title, merged_at or updated_at.'
+            -p, --page=: Page number.
+            -r, --reviewer*=: Get only merge requests with users as reviewer.
+            -s, --source-branch=: Filter by source branch <name>.
+            -t, --target-branch=: Filter by target branch <name>.
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+            -g, --group=: Select a group/subgroup. This option is ignored if a repo argument is set.
+        - name: merge {<id> | <branch>}
+          aliases:
+            - accept
+          description: Merge or accept a merge request.
+          flags:
+            --auto-merge: Set auto-merge.
+            --sha=: Merge commit SHA.
+            --squash-message=: Custom squash commit message.
+            --when-pipeline-succeeds&: Merge only when pipeline succeeds
+            -d, --remove-source-branch: Remove source branch on merge.
+            -m, --message=: Custom merge commit message.
+            -r, --rebase: Rebase the commits onto the base branch.
+            -s, --squash: Squash commits on merge.
+            -y, --yes: Skip submission confirmation prompt.
+        - name: note [<id> | <branch>]
+          aliases:
+            - comment
+          description: Add a comment or note to a merge request.
+          flags:
+            --unique: Don't create a comment or note if it already exists.
+            -m, --message=: Comment or note message.
+        - name: rebase [<id> | <branch>] [flags]
+          description: Rebase the source branch of a merge request against its target branch.
+          flags:
+            --skip-ci: Rebase merge request while skipping CI/CD pipeline.
+        - name: reopen [<id>... | <branch>...]
+          aliases:
+            - open
+          description: Reopen a merge request.
+        - name: revoke [<id> | <branch>]
+          aliases:
+            - unapprove
+          description: Revoke approval on a merge request.
+        - name: subscribe [<id> | <branch>]
+          aliases:
+            - sub
+          description: Subscribe to a merge request.
+        - name: todo [<id> | <branch>]
+          aliases:
+            - add-todo
+          description: Add a to-do item to merge request.
+        - name: unsubscribe [<id> | <branch>]
+          aliases:
+            - unsub
+          description: Unsubscribe from a merge request.
+        - name: update [<id> | <branch>]
+          description: Update a merge request.
+          flags:
+            --draft: Mark merge request as a draft.
+            --fill-commit-body: Fill body with each commit body when multiple commits. Can only be used with --fill.
+            --lock-discussion: Lock discussion on merge request.
+            --remove-source-branch: Toggles the removal of the source branch on merge.
+            --reviewer*=: Request review from users by their usernames. Prefix with '!' or '-' to remove from existing reviewers, '+' to add. Otherwise, replace existing reviewers with given users.
+            --squash-before-merge: Toggles the option to squash commits into a single commit when merging.
+            --target-branch=: Set target branch.
+            --unassign: Unassign all users.
+            --unlock-discussion: Unlock discussion on merge request.
+            --wip: Mark merge request as a work in progress. Alternative to --draft.
+            -a, --assignee*=: Assign users via username. Prefix with '!' or '-' to remove from existing assignees, '+' to add. Otherwise, replace existing assignees with given users.
+            -d, --description=: Merge request description. Set to "-" to open an editor.
+            -f, --fill: Do not prompt for title or body, and just use commit info.
+            -l, --label*=: Add labels.
+            -m, --milestone=: Title of the milestone to assign. Set to "" or 0 to unassign.
+            -r, --ready: Mark merge request as ready to be reviewed and merged.
+            -t, --title=: Title of merge request.
+            -u, --unlabel*=: Remove labels.
+            -y, --yes: Skip confirmation prompt.
+        - name: view {<id> | <branch>}
+          aliases:
+            - show
+          description: Display the title, body, and other information about a merge request.
+          flags:
+            -F, --output=: 'Format output as: text, json.'
+            -P, --per-page=: Number of items to list per page.
+            -c, --comments: Show merge request comments and activities.
+            -p, --page=: Page number.
+            -s, --system-logs: Show system activities and logs.
+            -w, --web: Open merge request in a browser. Uses default browser or browser specified in BROWSER variable.
+    - name: opentofu <command> [flags]
+      aliases:
+        - terraform
+        - tf
+      description: Work with the OpenTofu or Terraform integration.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: init <state> [flags]
+          description: Initialize OpenTofu or Terraform.
+          flags:
+            -b, --binary=: Name or path of the OpenTofu or Terraform binary to use for the initialization.
+            -d, --directory=: Directory of the OpenTofu or Terraform project to initialize.
+        - name: state <command> [flags]
+          description: Work with the OpenTofu or Terraform states.
+          commands:
+            - name: delete <state> [<serial>] [flags]
+              description: Delete the given state or if the serial is provided only that version of the given state.
+              flags:
+                -f, --force: Force delete the state without prompting.
+            - name: download <state> [<serial>]
+              description: Download the given state and output as JSON to stdout.
+            - name: list
+              description: List states.
+            - name: lock <state>
+              description: Lock the given state.
+            - name: unlock <state>
+              description: Unlock the given state.
+    - name: release <command> [flags]
+      description: Manage GitLab releases.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: create <tag> [<files>...]
+          description: Create a new GitLab release, or update an existing one.
+          flags:
+            --experimental-notes-text-or-file&=: (EXPERIMENTAL) Value to use as release notes. If a file exists with this value as path, its content will be used. Otherwise, the value itself will be used as text.
+            --no-close-milestone: Prevent closing milestones after creating the release.
+            --no-update: Prevent updating the existing release.
+            --package-name=: The package name, when uploading assets to the generic package release with --use-package-registry.
+            --publish-to-catalog: (EXPERIMENTAL) Publish the release to the GitLab CI/CD catalog.
+            --use-package-registry: Upload release assets to the generic package registry of the project. Overrides the GITLAB_RELEASE_ASSETS_USE_PACKAGE_REGISTRY environment variable.
+            -D, --released-at=: ISO 8601 datetime when the release was ready. Defaults to the current datetime.
+            -F, --notes-file=: Read release notes 'file'. To read from stdin, use '-'.
+            -N, --notes=: The release notes or description. Accepts Markdown.
+            -T, --tag-message=: Message to use if creating a new annotated tag.
+            -a, --assets-links=: JSON string representation of assets links. See documentation for example.
+            -m, --milestone*=: The title of each milestone the release is associated with.
+            -n, --name=: The release name or title.
+            -r, --ref=: If the specified tag doesn't exist, create a release from the ref and tag it with the specified tag name. Accepts a commit SHA, tag name, or branch name.
+        - name: delete <tag>
+          description: Delete a GitLab release.
+          flags:
+            -t, --with-tag: Delete the associated tag.
+            -y, --yes: Skip the confirmation prompt.
+        - name: download <tag>
+          description: Download asset files from a GitLab release.
+          flags:
+            -D, --dir=: Directory to download the release assets to.
+            -n, --asset-name*=: Download only assets that match the name or a glob pattern.
+        - name: list [flags]
+          aliases:
+            - ls
+          description: List releases in a repository.
+          flags:
+            -P, --per-page=: Number of items to list per page.
+            -p, --page=: Page number.
+            -t, --tag&=: Filter releases by tag <name>.
+        - name: upload <tag> [<files>...]
+          description: Upload release asset files or links to a GitLab release.
+          flags:
+            --package-name=: The package name to use when uploading the assets to the generic package release with --use-package-registry.
+            --use-package-registry: Upload release assets to the generic package registry of the project. Alternatively to this flag you may also set the GITLAB_RELEASE_ASSETS_USE_PACKAGE_REGISTRY environment variable to either the value true or 1. The flag takes precedence over this environment variable.
+            -a, --assets-links=: '`JSON` string representation of assets links, like: `--assets-links=''[{"name": "Asset1", "url":"https://<domain>/some/location/1", "link_type": "other", "direct_asset_path": "path/to/file"}]''.`'
+        - name: view <tag>
+          description: View information about a GitLab release.
+          flags:
+            -w, --web: Open the release in the browser.
+    - name: repo <command> [flags]
+      aliases:
+        - project
+      description: Work with GitLab repositories and projects.
+      commands:
+        - name: archive <command> [flags]
+          description: Get an archive of the repository.
+          flags:
+            -f, --format=: 'Optional. Specify format if you want a downloaded archive: tar.gz, tar.bz2, tbz, tbz2, tb2, bz2, tar, zip.'
+            -s, --sha=: The commit SHA to download. A tag, branch reference, or SHA can be used. Defaults to the tip of the default branch if not specified.
+        - name: |-
+            clone <repo> [flags] [<dir>] [-- <gitflags>...]
+            glab repo clone -g <group> [flags] [<dir>] [-- <gitflags>...]
+          description: Clone a GitLab repository or project.
+          flags:
+            --page=: Page number.
+            --paginate: Make additional HTTP requests to fetch all pages of projects before cloning. Respects --per-page.
+            --per-page=: Number of items to list per page.
+            -G, --include-subgroups: Include projects in subgroups of this group. Default is true. Used with the --group flag.
+            -I, --with-issues-enabled: Limit by projects with the issues feature enabled. Default is false. Used with the --group flag.
+            -M, --with-mr-enabled: Limit by projects with the merge request feature enabled. Default is false. Used with the --group flag.
+            -S, --with-shared: Include projects shared to this group. Default is true. Used with the --group flag.
+            -a, --archived: Limit by archived status. Use with '-a=false' to exclude archived repositories. Used with the --group flag.
+            -g, --group=: Specify the group to clone repositories from.
+            -m, --mine: Limit by projects in the group owned by the current authenticated user. Used with the --group flag.
+            -p, --preserve-namespace: Clone the repository in a subdirectory based on namespace.
+            -v, --visibility=: 'Limit by visibility: public, internal, private. Used with the --group flag.'
+        - name: contributors
+          aliases:
+            - users
+          description: Get repository contributors list.
+          flags:
+            -P, --per-page=: Number of items to list per page.
+            -o, --order=: Return contributors ordered by name, email, or commits (orders by commit date) fields.
+            -p, --page=: Page number.
+            -s, --sort=: 'Return contributors. Sort options: asc, desc.'
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+        - name: create [path] [flags]
+          description: Create a new GitLab project/repository.
+          flags:
+            --defaultBranch=: Default branch of the project. Defaults to `master` if not provided.
+            --internal: 'Make project internal: visible to any authenticated user. Default.'
+            --readme: Initialize project with `README.md`.
+            --remoteName=: Remote name for the Git repository you're in. Defaults to `origin` if not provided.
+            -P, --public: 'Make project public: visible without any authentication.'
+            -d, --description=: Description of the new project.
+            -g, --group=: Namespace or group for the new project. Defaults to the current user's namespace.
+            -n, --name=: Name of the new project.
+            -p, --private: 'Make project private: visible only to project members.'
+            -s, --skipGitInit: Skip run 'git init'.
+            -t, --tag*=: The list of tags for the project.
+        - name: delete [<NAMESPACE>/]<NAME>
+          description: Delete an existing repository on GitLab.
+          flags:
+            -y, --yes: Skip the confirmation prompt and immediately delete the repository.
+        - name: fork <repo>
+          description: Fork a GitLab repository.
+          flags:
+            --remote: 'Add a remote for the fork. Options: true, false.'
+            -c, --clone: 'Clone the fork. Options: true, false.'
+            -n, --name=: The name assigned to the new project after forking.
+            -p, --path=: The path assigned to the new project after forking.
+        - name: list
+          aliases:
+            - ls
+          description: Get list of repositories.
+          flags:
+            --archived: Limit by archived status. Use 'false' to exclude archived repositories. Used with the '--group' flag.
+            --member: List only projects of which you are a member.
+            --starred: List only starred projects.
+            -F, --output=: 'Format output as: text, json.'
+            -G, --include-subgroups: Include projects in subgroups of this group. Default is false. Used with the '--group' flag.
+            -P, --per-page=: Number of items to list per page.
+            -a, --all: List all projects on the instance.
+            -g, --group=: Return repositories in only the given group.
+            -m, --mine: List only projects you own. Default if no filters are provided.
+            -o, --order=: Return repositories ordered by id, created_at, or other fields.
+            -p, --page=: Page number.
+            -s, --sort=: Return repositories sorted in asc or desc order.
+            -u, --user=: List user projects.
+        - name: mirror [ID | URL | PATH] [flags]
+          description: Mirror a project or repository to the specified location, using pull or push methods.
+          flags:
+            --allow-divergence: Determines if divergent refs are skipped.
+            --direction!=: 'Mirror direction. Options: pull, push.'
+            --enabled: Determines if the mirror is enabled.
+            --protected-branches-only: Determines if only protected branches are mirrored.
+            --url!=: The target URL to which the repository is mirrored.
+        - name: publish <command> [flags]
+          description: Publishes resources in the project.
+          commands:
+            - name: catalog <tag-name>
+              description: '[EXPERIMENTAL] Publishes CI/CD components to the catalog.'
+        - name: search [flags]
+          aliases:
+            - find
+            - lookup
+          description: Search for GitLab repositories and projects by name.
+          flags:
+            -F, --output=: 'Format output as: text, json.'
+            -P, --per-page=: Number of items to list per page.
+            -p, --page=: Page number.
+            -s, --search!=: A string contained in the project name.
+        - name: transfer [repo] [flags]
+          description: Transfer a repository to a new namespace.
+          flags:
+            -t, --target-namespace!=: The namespace where your project should be transferred to.
+            -y, --yes: 'Warning: Skip confirmation prompt and force transfer operation. Transfer cannot be undone.'
+        - name: update [path] [flags]
+          description: Update an existing GitLab project or repository.
+          flags:
+            --archive: Whether the project should be archived.
+            --defaultBranch=: New default branch for the project.
+            -d, --description=: New description for the project.
+        - name: view [repository] [flags]
+          description: View a project or repository.
+          flags:
+            -F, --output=: 'Format output as: text, json.'
+            -b, --branch=: View a specific branch of the repository.
+            -w, --web: Open a project in the browser.
+    - name: schedule <command> [flags]
+      aliases:
+        - sched
+        - skd
+      description: Work with GitLab CI/CD schedules.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: create [flags]
+          description: Schedule a new pipeline.
+          flags:
+            --active: Whether or not the schedule is active.
+            --cron!=: Cron interval pattern.
+            --cronTimeZone=: Cron timezone.
+            --description!=: Description of the schedule.
+            --ref!=: Target branch or tag.
+            --variable*=: Pass variables to schedule in the format <key>:<value>.
+        - name: delete <id> [flags]
+          description: Delete the schedule with the specified ID.
+        - name: list [flags]
+          description: Get the list of schedules.
+          flags:
+            -P, --per-page=: Number of items to list per page.
+            -p, --page=: Page number.
+        - name: run <id>
+          description: Run the specified scheduled pipeline.
+        - name: update <id> [flags]
+          description: Update a pipeline schedule.
+          flags:
+            --active: Whether or not the schedule is active.
+            --create-variable*=: Pass new variables to schedule in format <key>:<value>.
+            --cron=: Cron interval pattern.
+            --cronTimeZone=: Cron timezone.
+            --delete-variable*=: Pass variables you want to delete from schedule in format <key>.
+            --description=: Description of the schedule.
+            --ref=: Target branch or tag.
+            --update-variable*=: Pass updated variables to schedule in format <key>:<value>.
+    - name: securefile <command> [flags]
+      description: Manage secure files for a project.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: create <fileName> <inputFilePath>
+          aliases:
+            - upload
+          description: Create a new project secure file.
+        - name: download <fileID> [flags]
+          description: Download a secure file for a project.
+          flags:
+            --all: Download all (limit 100) of a project's secure files. Files are downloaded with their original name and file extension.
+            --force-download: 'Force download file(s) even if checksum verification fails. Warning: when enabled, this setting allows the download of files that are corrupt or tampered with.'
+            --no-verify: 'Do not verify the checksum of the downloaded file(s). Warning: when enabled, this setting allows the download of files that are corrupt or tampered with.'
+            --output-dir=: Output directory for files downloaded with --all.
+            -p, --path=: Path to download the secure file to, including filename and extension.
+        - name: get <fileID>
+          aliases:
+            - show
+          description: Get details of a project secure file. (GitLab 18.0 and later)
+        - name: list [flags]
+          aliases:
+            - ls
+          description: List secure files for a project.
+          flags:
+            -P, --per-page=: Number of items to list per page.
+            -p, --page=: Page number.
+        - name: remove <fileID>
+          aliases:
+            - rm
+            - delete
+          description: Remove a secure file.
+          flags:
+            -y, --yes: Skip the confirmation prompt.
+    - name: snippet <command> [flags]
+      description: Create, view and manage snippets.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: |-
+            create [flags] -t <title> <file1> [<file2>...]
+            glab snippet create [flags] -t <title> -f <filename>  # reads from stdin
+          aliases:
+            - new
+          description: Create a new snippet.
+          flags:
+            -d, --description=: Description of the snippet.
+            -f, --filename=: Filename of the snippet in GitLab.
+            -p, --personal: Create a personal snippet.
+            -t, --title=: (required) Title of the snippet.
+            -v, --visibility=: 'Limit by visibility: ''public'', ''internal'', or ''private'''
+    - name: ssh-key <command>
+      description: Manage SSH keys registered with your GitLab account.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: add [key-file]
+          description: Add an SSH key to your GitLab account.
+          flags:
+            -e, --expires-at=: 'The expiration date of the SSH key. Uses ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.'
+            -t, --title!=: New SSH key's title.
+            -u, --usage-type=: 'Usage scope for the key. Possible values: ''auth'', ''signing'' or ''auth_and_signing''. Default value: ''auth_and_signing''.'
+        - name: delete <key-id>
+          description: Deletes a single SSH key specified by the ID.
+          flags:
+            -P, --per-page=: Number of items to list per page.
+            -p, --page=: Page number.
+        - name: get <key-id>
+          description: Returns a single SSH key specified by the ID.
+          flags:
+            -P, --per-page=: Number of items to list per page.
+            -p, --page=: Page number.
+        - name: list
+          description: Get a list of SSH keys for the currently authenticated user.
+          flags:
+            --show-id: Shows IDs of SSH keys.
+            -P, --per-page=: Number of items to list per page.
+            -p, --page=: Page number.
+    - name: stack <command> [flags]
+      aliases:
+        - stacks
+      description: Create, manage, and work with stacked diffs. (EXPERIMENTAL)
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: amend
+          description: Save more changes to a stacked diff. (EXPERIMENTAL)
+          flags:
+            -d, --description=: a description of the change
+            -m, --message=: alias for the description flag
+        - name: create
+          aliases:
+            - new
+          description: Create a new stacked diff. (EXPERIMENTAL)
+        - name: first
+          description: Moves to the first diff in the stack. (EXPERIMENTAL)
+        - name: last
+          description: Moves to the last diff in the stack. (EXPERIMENTAL)
+        - name: list
+          aliases:
+            - ls
+          description: Lists all entries in the stack. (EXPERIMENTAL)
+        - name: move
+          description: Moves to any selected entry in the stack. (EXPERIMENTAL)
+        - name: next
+          description: Moves to the next diff in the stack. (EXPERIMENTAL)
+        - name: prev
+          description: Moves to the previous diff in the stack. (EXPERIMENTAL)
+        - name: reorder
+          description: Reorder a stack of merge requests. (EXPERIMENTAL)
+        - name: save
+          description: Save your progress within a stacked diff. (EXPERIMENTAL)
+          flags:
+            -d, --description=: Description of the change.
+            -m, --message=: Alias for the description flag.
+        - name: switch <stack-name>
+          description: Switch between stacks. (EXPERIMENTAL)
+        - name: sync
+          description: Sync and submit progress on a stacked diff. (EXPERIMENTAL)
+    - name: token
+      aliases:
+        - token
+      description: Manage personal, project, or group tokens
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: create <name>
+          aliases:
+            - create
+            - new
+          description: Creates user, group, or project access tokens.
+          flags:
+            --description=: Sets the token's description.
+            -A, --access-level=: 'Access level of the token: one of ''guest'', ''reporter'', ''developer'', ''maintainer'', ''owner''.'
+            -D, --duration=: 'Sets the token duration, in hours. Maximum of 8760. Examples: 24h, 168h, 504h.'
+            -E, --expires-at=: Sets the token's expiration date and time, in YYYY-MM-DD format. If not specified, --duration is used.
+            -F, --output=: Format output as 'text' for the token value, 'json' for the actual API token structure.
+            -S, --scope*=: Scopes for the token. For a list, see https://docs.gitlab.com/user/profile/personal_access_tokens/#personal-access-token-scopes.
+            -U, --user=: Create a personal access token. For the current user, use @me.
+            -g, --group=: Create a group access token. Ignored if a user or repository argument is set.
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+        - name: list
+          aliases:
+            - ls
+          description: List user, group, or project access tokens.
+          flags:
+            -F, --output=: 'Format output as: text, json. text provides a readable table, json outputs the tokens with metadata.'
+            -U, --user=: List personal access tokens. Use @me for the current user.
+            -a, --active: List only the active tokens.
+            -g, --group=: List group access tokens. Ignored if a user or repository argument is set.
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+        - name: revoke <token-name|token-id>
+          aliases:
+            - revoke
+            - rm
+          description: Revoke user, group or project access tokens
+          flags:
+            -F, --output=: 'Format output as: text, json. ''text'' provides the name and ID of the revoked token; ''json'' outputs the token with metadata.'
+            -U, --user=: Revoke personal access token. Use @me for the current user.
+            -g, --group=: Revoke group access token. Ignored if a user or repository argument is set.
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+        - name: rotate <token-name|token-id>
+          aliases:
+            - rotate
+            - rot
+          description: Rotate user, group, or project access tokens
+          flags:
+            -D, --duration=: 'Sets the token duration, in hours. Maximum of 8760. Examples: 24h, 168h, 504h.'
+            -E, --expires-at=: Sets the token's expiration date and time, in YYYY-MM-DD format. If not specified, --duration is used.
+            -F, --output=: 'Format output as: text, json. ''text'' provides the new token value; ''json'' outputs the token with metadata.'
+            -U, --user=: Rotate personal access token. Use @me for the current user.
+            -g, --group=: Rotate group access token. Ignored if a user or repository argument is set.
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+    - name: user <command> [flags]
+      description: Interact with a GitLab user account.
+      commands:
+        - name: events
+          description: View user events.
+          flags:
+            -F, --output=: 'Format output as: ''text'', ''json''.'
+            -P, --per-page=: Number of items to list per page.
+            -a, --all: Get events from all projects.
+            -p, --page=: Page number.
+    - name: variable
+      aliases:
+        - var
+      description: Manage variables for a GitLab project or group.
+      persistentflags:
+        -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+      commands:
+        - name: delete <key>
+          aliases:
+            - remove
+          description: Delete a variable for a project or group.
+          flags:
+            -g, --group=: Delete variable from a group.
+            -s, --scope=: 'The ''environment_scope'' of the variable. Options: all (*), or specific environments.'
+        - name: export
+          aliases:
+            - ex
+          description: Export variables from a project or group.
+          flags:
+            -F, --format=: 'Format of output: json, export, env.'
+            -P, --per-page=: Number of items to list per page.
+            -p, --page=: Page number.
+            -s, --scope=: 'The environment_scope of the variables. Values: ''*'' (default), or specific environments.'
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+            -g, --group=: Select a group or subgroup. Ignored if a repository argument is set.
+        - name: get <key>
+          description: Get a variable for a project or group.
+          flags:
+            -F, --output=: 'Format output as: text, json.'
+            -g, --group=: Get variable for a group.
+            -s, --scope=: 'The environment_scope of the variable. Values: all (*), or specific environments.'
+        - name: list
+          aliases:
+            - ls
+          description: List variables for a project or group.
+          flags:
+            -F, --output=: 'Format output as: text, json.'
+            -P, --per-page=: Number of items to list per page.
+            -i, --instance: Display instance variables.
+            -p, --page=: Page number.
+          persistentflags:
+            -R, --repo=: Select another repository. Can use either `OWNER/REPO` or `GROUP/NAMESPACE/REPO` format. Also accepts full URL or Git URL.
+            -g, --group=: Select a group or subgroup. Ignored if a repository argument is set.
+        - name: set <key> <value>
+          aliases:
+            - new
+            - create
+          description: Create a new variable for a project or group.
+          flags:
+            --hidden: Whether the variable is hidden.
+            -d, --description=: Set description of a variable.
+            -g, --group=: Set variable for a group.
+            -m, --masked: Whether the variable is masked.
+            -p, --protected: Whether the variable is protected.
+            -r, --raw: Whether the variable is treated as a raw string.
+            -s, --scope=: 'The environment_scope of the variable. Values: all (*), or specific environments.'
+            -t, --type=: 'The type of a variable: env_var, file.'
+            -v, --value=: The value of a variable.
+        - name: update <key> <value>
+          description: Update an existing variable for a project or group.
+          flags:
+            -d, --description=: Set description of a variable.
+            -g, --group=: Set variable for a group.
+            -m, --masked: Whether the variable is masked.
+            -p, --protected: Whether the variable is protected.
+            -r, --raw: Whether the variable is treated as a raw string.
+            -s, --scope=: 'The environment_scope of the variable. Values: all (*), or specific environments.'
+            -t, --type=: 'The type of a variable: env_var, file.'
+            -v, --value=: The value of a variable.
+    - name: version
+      aliases:
+        - v
+      description: Show version information for glab.
