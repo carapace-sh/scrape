@@ -1,9 +1,0 @@
-services:
-  atuin: { build: {context: atuin, args: {VERSION: v18.10.0}}}
-  cargo: { build: {context: cargo, args: {VERSION: 0.91.0}}}
-  gh: { build: {context: gh, args: {VERSION: v2.82.1}}}
-  goreleaser: { build: {context: goreleaser, args: {VERSION: v2.12.7}}}
-  jj: { build: {context: jj, args: {VERSION: v0.34.0 }}}
-  kubeadm: { build: {context: kubeadm, args: {VERSION: v1.34.1}}}
-  kubectl: { build: {context: kubectl, args: {VERSION: v1.34.1}}}
-  zoxide: { build: {context: zoxide, args: {VERSION: v0.9.8}}}
