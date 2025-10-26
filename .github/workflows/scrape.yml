@@ -14,4 +14,5 @@ jobs:
   kubeadm: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubeadm}}
   kubectl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubectl}}
   minikube: {uses: ./.github/workflows/scrape-template.yml, with: {command: minikube}}
+  mise: {uses: ./.github/workflows/scrape-template.yml, with: {command: mise}}
   zoxide: {uses: ./.github/workflows/scrape-template.yml, with: {command: zoxide}}

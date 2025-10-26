@@ -1,0 +1,27 @@
+diff --git a/src/cli/mod.rs b/src/cli/mod.rs
+index a6c9fe4..bf35a3e 100644
+--- a/src/cli/mod.rs
++++ b/src/cli/mod.rs
+@@ -8,6 +8,10 @@ use crate::{logger, migrate, shims};
+ use clap::{ArgAction, CommandFactory, Parser, Subcommand};
+ use std::path::PathBuf;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ mod activate;
+ mod alias;
+ pub mod args;
+@@ -445,6 +449,11 @@ fn preprocess_args_for_naked_run(cmd: &clap::Command, args: &[String]) -> Vec<St
+ 
+ impl Cli {
+     pub async fn run(args: &Vec<String>) -> Result<()> {
++        generate(Spec, &mut Cli::command(), "mise", &mut io::stdout());
++        if true {
++            return Ok(());
++        }
++
+         crate::env::ARGS.write().unwrap().clone_from(args);
+         if *crate::env::MISE_TOOL_STUB && args.len() >= 2 {
+             tool_stub::short_circuit_stub(&args[2..]).await?;
