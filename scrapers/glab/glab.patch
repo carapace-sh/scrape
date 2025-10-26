@@ -1,0 +1,20 @@
+diff --git a/cmd/glab/main.go b/cmd/glab/main.go
+index f966bf5f..2d194f39 100644
+--- a/cmd/glab/main.go
++++ b/cmd/glab/main.go
+@@ -14,6 +14,7 @@ import (
+ 	"gitlab.com/gitlab-org/cli/internal/iostreams"
+ 	"gitlab.com/gitlab-org/cli/internal/utils"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/mgutz/ansi"
+ 
+ 	surveyCore "github.com/AlecAivazis/survey/v2/core"
+@@ -172,6 +173,7 @@ func main() {
+ 		expandedArgs = os.Args[1:]
+ 	}
+ 	rootCmd := commands.NewCmdRoot(cmdFactory)
++	carapace.Gen(rootCmd)
+ 	cmd, _, err := rootCmd.Traverse(expandedArgs)
+ 
+ 	setupTelemetryHook(cfg, cmdFactory, cmd)
