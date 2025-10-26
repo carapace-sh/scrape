@@ -1,0 +1,81 @@
+name: zoxide
+description: A smarter cd command for your terminal
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+commands:
+- name: add
+  description: Add a new directory or increment its rank
+  flags:
+    -h, --help: Print help
+    -s, --score=: The rank to increment the entry if it exists or initialize it with if it doesn't
+    -V, --version: Print version
+  completion:
+    positionalany:
+    - $directories
+- name: edit
+  description: Edit the database
+  flags:
+    -h, --help: Print help
+    -V, --version: Print version
+- name: import
+  description: Import entries from another application
+  flags:
+    --from!=: Application to import from
+    -h, --help: Print help
+    --merge: Merge into existing database
+    -V, --version: Print version
+  completion:
+    flag:
+      from:
+      - autojump
+      - z
+    positional:
+    - - $files
+- name: init
+  description: Generate shell configuration
+  flags:
+    --cmd=: Changes the prefix of the `z` and `zi` commands
+    -h, --help: Print help
+    --hook=: Changes how often zoxide increments a directory's score
+    --no-cmd: Prevents zoxide from defining the `z` and `zi` commands
+    --no-aliases&: Prevents zoxide from defining the `z` and `zi` commands
+    -V, --version: Print version
+  completion:
+    flag:
+      hook:
+      - none
+      - prompt
+      - pwd
+    positional:
+    - - bash
+      - elvish
+      - fish
+      - nushell
+      - posix
+      - powershell
+      - tcsh
+      - xonsh
+      - zsh
+- name: query
+  description: Search for a directory in the database
+  flags:
+    -a, --all: Show unavailable directories
+    --exclude=: Exclude the current directory
+    -h, --help: Print help
+    -i, --interactive: Use interactive selection
+    -l, --list: List all matching directories
+    -s, --score: Print score with results
+    -V, --version: Print version
+  completion:
+    flag:
+      exclude:
+      - $directories
+- name: remove
+  description: Remove a directory from the database
+  flags:
+    -h, --help: Print help
+    -V, --version: Print version
+  completion:
+    positionalany:
+    - $directories
