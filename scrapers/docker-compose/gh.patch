@@ -1,0 +1,20 @@
+diff --git a/internal/ghcmd/cmd.go b/internal/ghcmd/cmd.go
+index 9fc5bcefe..939c12d0a 100644
+--- a/internal/ghcmd/cmd.go
++++ b/internal/ghcmd/cmd.go
+@@ -14,6 +14,7 @@ import (
+ 
+ 	surveyCore "github.com/AlecAivazis/survey/v2/core"
+ 	"github.com/AlecAivazis/survey/v2/terminal"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/cli/cli/v2/api"
+ 	"github.com/cli/cli/v2/internal/build"
+ 	"github.com/cli/cli/v2/internal/config"
+@@ -94,6 +95,7 @@ func Main() exitCode {
+ 		fmt.Fprintf(stderr, "failed to create root command: %s\n", err)
+ 		return exitError
+ 	}
++	carapace.Gen(rootCmd)
+ 
+ 	expandedArgs := []string{}
+ 	if len(os.Args) > 0 {
