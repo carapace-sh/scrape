@@ -1,0 +1,34 @@
+name: scrape template
+
+on:
+  workflow_call:
+    inputs:
+      command:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: checkout gh-pages
+        run: git clone https://github.com/carapace-sh/scrape --branch gh-pages --depth 1 gh-pages
+
+      - name: scrape
+        run: |
+            ./parse.sh > compose.yaml
+            ./scrape.sh "${{ inputs.command }}"
+
+      - name: "push gh-pages"
+        if: github.ref == 'refs/heads/master'
+        run: |
+            cd gh-pages
+            git config user.name rsteube
+            git config user.email rsteube@users.noreply.github.com
+            git add .
+            git commit -m "updated ${{ inputs.command }}"
+            git push https://rsteube:${GITHUB_TOKEN}@github.com/carapace-sh/scrape.git master:gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

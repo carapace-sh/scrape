@@ -1,0 +1,16 @@
+name: scrape
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  atuin: {uses: ./.github/workflows/scrape-template.yml, with: {command: atuin}}
+  cargo: {uses: ./.github/workflows/scrape-template.yml, with: {command: cargo}}
+  gh: {uses: ./.github/workflows/scrape-template.yml, with: {command: gh}}
+  glab: {uses: ./.github/workflows/scrape-template.yml, with: {command: glab}}
+  goreleaser: {uses: ./.github/workflows/scrape-template.yml, with: {command: goreleaser}}
+  jj: {uses: ./.github/workflows/scrape-template.yml, with: {command: jj}}
+  kubeadm: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubeadm}}
+  kubectl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubectl}}
+  zoxide: {uses: ./.github/workflows/scrape-template.yml, with: {command: zoxide}}
