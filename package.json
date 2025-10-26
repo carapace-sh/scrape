@@ -9,6 +9,7 @@
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.34.1",
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.34.1",
     "minikube": "https://github.com/kubernetes/minikube#v1.37.0",
+    "mise": "https://github.com/jdx/mise#v2025.10.18",
     "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.9.8"
   }
 }
