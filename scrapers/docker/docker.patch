@@ -1,0 +1,20 @@
+diff --git a/cmd/docker/docker.go b/cmd/docker/docker.go
+index ed1de44..91891c0 100644
+--- a/cmd/docker/docker.go
++++ b/cmd/docker/docker.go
+@@ -10,6 +10,7 @@
+ 	"strings"
+ 	"syscall"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/containerd/errdefs"
+ 	"github.com/docker/cli/cli"
+ 	pluginmanager "github.com/docker/cli/cli-plugins/manager"
+@@ -147,6 +148,7 @@ func newDockerCommand(dockerCli *command.DockerCli) *cli.TopLevelCommand {
+ 	cmd.SetIn(dockerCli.In())
+ 	cmd.SetOut(dockerCli.Out())
+ 	cmd.SetErr(dockerCli.Err())
++	carapace.Gen(cmd)
+ 
+ 	opts, helpCmd = cli.SetupRootCommand(cmd)
+ 
