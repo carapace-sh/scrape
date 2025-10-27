@@ -1,0 +1,1980 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: docker [OPTIONS] COMMAND [ARG...]
+description: A self-sufficient runtime for containers
+flags:
+    --config=: Location of client config files
+    --tls: Use TLS; implied by --tlsverify
+    --tlscacert=: Trust certs signed only by this CA
+    --tlscert=: Path to TLS certificate file
+    --tlskey=: Path to TLS key file
+    --tlsverify: Use TLS and verify the remote
+    -D, --debug: Enable debug mode
+    -H, --host=: Daemon socket to connect to
+    -c, --context=: Name of the context to use to connect to the daemon (overrides DOCKER_HOST env var and default context set with "docker context use")
+    -l, --log-level=: Set the logging level ("debug", "info", "warn", "error", "fatal")
+    -v, --version: Print version information and quit
+persistentflags:
+    -h, --help&: Print usage
+commands:
+    - name: attach [OPTIONS] CONTAINER
+      description: Attach local standard input, output, and error streams to a running container
+      flags:
+        --detach-keys=: Override the key sequence for detaching a container
+        --no-stdin: Do not attach STDIN
+        --sig-proxy: Proxy all received signals to the process
+    - name: bake [OPTIONS] [TARGET...]
+      description: Build from a file
+    - name: build [OPTIONS] PATH | URL | -
+      description: Build an image from a Dockerfile
+      flags:
+        --add-host=: Add a custom host-to-IP mapping ("host:ip")
+        --build-arg=: Set build-time variables
+        --cache-from*=: Images to consider as cache sources
+        --cgroup-parent=: Set the parent cgroup for the "RUN" instructions during build
+        --compress: Compress the build context using gzip
+        --cpu-period=: Limit the CPU CFS (Completely Fair Scheduler) period
+        --cpu-quota=: Limit the CPU CFS (Completely Fair Scheduler) quota
+        --cpuset-cpus=: CPUs in which to allow execution (0-3, 0,1)
+        --cpuset-mems=: MEMs in which to allow execution (0-3, 0,1)
+        --disable-content-trust: Skip image verification
+        --force-rm: Always remove intermediate containers
+        --iidfile=: Write the image ID to the file
+        --isolation=: Container isolation technology
+        --label=: Set metadata for an image
+        --memory-swap=: 'Swap limit equal to memory plus swap: -1 to enable unlimited swap'
+        --network=: Set the networking mode for the RUN instructions during build
+        --no-cache: Do not use cache when building the image
+        --platform=: Set platform if server is multi-platform capable
+        --pull: Always attempt to pull a newer version of the image
+        --rm: Remove intermediate containers after a successful build
+        --security-opt*=: Security options
+        --shm-size=: Size of "/dev/shm"
+        --squash: Squash newly built layers into a single new layer
+        --target=: Set the target build stage to build.
+        --ulimit=: Ulimit options
+        -c, --cpu-shares=: CPU shares (relative weight)
+        -f, --file=: Name of the Dockerfile (Default is "PATH/Dockerfile")
+        -m, --memory=: Memory limit
+        -q, --quiet: Suppress the build output and print image ID on success
+        -t, --tag=: Name and optionally a tag in the "name:tag" format
+    - name: builder
+      description: Manage builds
+      commands:
+        - name: build [OPTIONS] PATH | URL | -
+          description: Build an image from a Dockerfile
+          flags:
+            --add-host=: Add a custom host-to-IP mapping ("host:ip")
+            --build-arg=: Set build-time variables
+            --cache-from*=: Images to consider as cache sources
+            --cgroup-parent=: Set the parent cgroup for the "RUN" instructions during build
+            --compress: Compress the build context using gzip
+            --cpu-period=: Limit the CPU CFS (Completely Fair Scheduler) period
+            --cpu-quota=: Limit the CPU CFS (Completely Fair Scheduler) quota
+            --cpuset-cpus=: CPUs in which to allow execution (0-3, 0,1)
+            --cpuset-mems=: MEMs in which to allow execution (0-3, 0,1)
+            --disable-content-trust: Skip image verification
+            --force-rm: Always remove intermediate containers
+            --iidfile=: Write the image ID to the file
+            --isolation=: Container isolation technology
+            --label=: Set metadata for an image
+            --memory-swap=: 'Swap limit equal to memory plus swap: -1 to enable unlimited swap'
+            --network=: Set the networking mode for the RUN instructions during build
+            --no-cache: Do not use cache when building the image
+            --platform=: Set platform if server is multi-platform capable
+            --pull: Always attempt to pull a newer version of the image
+            --rm: Remove intermediate containers after a successful build
+            --security-opt*=: Security options
+            --shm-size=: Size of "/dev/shm"
+            --squash: Squash newly built layers into a single new layer
+            --target=: Set the target build stage to build.
+            --ulimit=: Ulimit options
+            -c, --cpu-shares=: CPU shares (relative weight)
+            -f, --file=: Name of the Dockerfile (Default is "PATH/Dockerfile")
+            -m, --memory=: Memory limit
+            -q, --quiet: Suppress the build output and print image ID on success
+            -t, --tag=: Name and optionally a tag in the "name:tag" format
+        - name: prune
+          description: Remove build cache
+          flags:
+            --filter=: Provide filter values (e.g. "until=24h")
+            --keep-storage=: Amount of disk space to keep for cache
+            -a, --all: Remove all unused build cache, not just dangling ones
+            -f, --force: Do not prompt for confirmation
+    - name: checkpoint
+      description: Manage checkpoints
+      commands:
+        - name: create [OPTIONS] CONTAINER CHECKPOINT
+          description: Create a checkpoint from a running container
+          flags:
+            --checkpoint-dir=: Use a custom checkpoint storage directory
+            --leave-running: Leave the container running after checkpoint
+        - name: ls [OPTIONS] CONTAINER
+          aliases:
+            - list
+          description: List checkpoints for a container
+          flags:
+            --checkpoint-dir=: Use a custom checkpoint storage directory
+        - name: rm [OPTIONS] CONTAINER CHECKPOINT
+          aliases:
+            - remove
+          description: Remove a checkpoint
+          flags:
+            --checkpoint-dir=: Use a custom checkpoint storage directory
+    - name: commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
+      description: Create a new image from a container's changes
+      flags:
+        -a, --author=: Author (e.g., "John Hannibal Smith <hannibal@a-team.com>")
+        -c, --change=: Apply Dockerfile instruction to the created image
+        -m, --message=: Commit message
+        -p, --pause: Pause container during commit
+    - name: completion
+      description: Generate the autocompletion script for the specified shell
+      hidden: true
+      commands:
+        - name: bash
+          description: Generate the autocompletion script for bash
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: fish
+          description: Generate the autocompletion script for fish
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: powershell
+          description: Generate the autocompletion script for powershell
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: zsh
+          description: Generate the autocompletion script for zsh
+          flags:
+            --no-descriptions: disable completion descriptions
+    - name: config
+      description: Manage Swarm configs
+      commands:
+        - name: create [OPTIONS] CONFIG file|-
+          description: Create a config from a file or STDIN
+          flags:
+            --template-driver=: Template driver
+            -l, --label=: Config labels
+        - name: inspect [OPTIONS] CONFIG [CONFIG...]
+          description: Display detailed information on one or more configs
+          flags:
+            --pretty: Print the information in a human friendly format
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: ls [OPTIONS]
+          aliases:
+            - list
+          description: List configs
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -f, --filter=: Filter output based on conditions provided
+            -q, --quiet: Only display IDs
+        - name: rm CONFIG [CONFIG...]
+          aliases:
+            - remove
+          description: Remove one or more configs
+    - name: container
+      description: Manage containers
+      commands:
+        - name: attach [OPTIONS] CONTAINER
+          description: Attach local standard input, output, and error streams to a running container
+          flags:
+            --detach-keys=: Override the key sequence for detaching a container
+            --no-stdin: Do not attach STDIN
+            --sig-proxy: Proxy all received signals to the process
+        - name: commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
+          description: Create a new image from a container's changes
+          flags:
+            -a, --author=: Author (e.g., "John Hannibal Smith <hannibal@a-team.com>")
+            -c, --change=: Apply Dockerfile instruction to the created image
+            -m, --message=: Commit message
+            -p, --pause: Pause container during commit
+        - name: |-
+            cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+            	docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+          description: Copy files/folders between a container and the local filesystem
+          flags:
+            -L, --follow-link: Always follow symbol link in SRC_PATH
+            -a, --archive: Archive mode (copy all uid/gid information)
+            -q, --quiet: Suppress progress output during copy. Progress output is automatically suppressed if no terminal is attached
+        - name: create [OPTIONS] IMAGE [COMMAND] [ARG...]
+          description: Create a new container
+          flags:
+            --add-host=: Add a custom host-to-IP mapping (host:ip)
+            --annotation=: Add an annotation to the container (passed through to the OCI runtime)
+            --blkio-weight-device=: Block IO weight (relative device weight)
+            --blkio-weight=: Block IO (relative weight), between 10 and 1000, or 0 to disable (default 0)
+            --cap-add=: Add Linux capabilities
+            --cap-drop=: Drop Linux capabilities
+            --cgroup-parent=: Optional parent cgroup for the container
+            --cgroupns=: |-
+                Cgroup namespace to use (host|private)
+                'host':    Run the container in the Docker host's cgroup namespace
+                'private': Run the container in its own private cgroup namespace
+                '':        Use the cgroup namespace as configured by the
+                           default-cgroupns-mode option on the daemon (default)
+            --cidfile=: Write the container ID to the file
+            --cpu-count=: CPU count (Windows only)
+            --cpu-percent=: CPU percent (Windows only)
+            --cpu-period=: Limit CPU CFS (Completely Fair Scheduler) period
+            --cpu-quota=: Limit CPU CFS (Completely Fair Scheduler) quota
+            --cpu-rt-period=: Limit CPU real-time period in microseconds
+            --cpu-rt-runtime=: Limit CPU real-time runtime in microseconds
+            --cpus=: Number of CPUs
+            --cpuset-cpus=: CPUs in which to allow execution (0-3, 0,1)
+            --cpuset-mems=: MEMs in which to allow execution (0-3, 0,1)
+            --device-cgroup-rule=: Add a rule to the cgroup allowed devices list
+            --device-read-bps=: Limit read rate (bytes per second) from a device
+            --device-read-iops=: Limit read rate (IO per second) from a device
+            --device-write-bps=: Limit write rate (bytes per second) to a device
+            --device-write-iops=: Limit write rate (IO per second) to a device
+            --device=: Add a host device to the container
+            --disable-content-trust: Skip image verification
+            --dns-opt&=: Set DNS options
+            --dns-option=: Set DNS options
+            --dns-search=: Set custom DNS search domains
+            --dns=: Set custom DNS servers
+            --domainname=: Container NIS domain name
+            --entrypoint=: Overwrite the default ENTRYPOINT of the image
+            --env-file=: Read in a file of environment variables
+            --expose=: Expose a port or a range of ports
+            --gpus=: GPU devices to add to the container ('all' to pass all GPUs)
+            --group-add=: Add additional groups to join
+            --health-cmd=: Command to run to check health
+            --health-interval=: Time between running the check (ms|s|m|h) (default 0s)
+            --health-retries=: Consecutive failures needed to report unhealthy
+            --health-start-interval=: Time between running the check during the start period (ms|s|m|h) (default 0s)
+            --health-start-period=: Start period for the container to initialize before starting health-retries countdown (ms|s|m|h) (default 0s)
+            --health-timeout=: Maximum time to allow one check to run (ms|s|m|h) (default 0s)
+            --help: Print usage
+            --init: Run an init inside the container that forwards signals and reaps processes
+            --io-maxbandwidth=: Maximum IO bandwidth limit for the system drive (Windows only)
+            --io-maxiops=: Maximum IOps limit for the system drive (Windows only)
+            --ip=: IPv4 address (e.g., 172.30.100.104)
+            --ip6=: IPv6 address (e.g., 2001:db8::33)
+            --ipc=: IPC mode to use
+            --isolation=: Container isolation technology
+            --kernel-memory=: Kernel memory limit
+            --label-file=: Read in a line delimited file of labels
+            --link-local-ip=: Container IPv4/IPv6 link-local addresses
+            --link=: Add link to another container
+            --log-driver=: Logging driver for the container
+            --log-opt=: Log driver options
+            --mac-address=: Container MAC address (e.g., 92:d0:c6:0a:29:33)
+            --memory-reservation=: Memory soft limit
+            --memory-swap=: 'Swap limit equal to memory plus swap: ''-1'' to enable unlimited swap'
+            --memory-swappiness=: Tune container memory swappiness (0 to 100)
+            --mount=: Attach a filesystem mount to the container
+            --name=: Assign a name to the container
+            --net&=: Connect a container to a network
+            --net-alias&=: Add network-scoped alias for the container
+            --network-alias=: Add network-scoped alias for the container
+            --network=: Connect a container to a network
+            --no-healthcheck: Disable any container-specified HEALTHCHECK
+            --oom-kill-disable: Disable OOM Killer
+            --oom-score-adj=: Tune host's OOM preferences (-1000 to 1000)
+            --pid=: PID namespace to use
+            --pids-limit=: Tune container pids limit (set -1 for unlimited)
+            --platform=: Set platform if server is multi-platform capable
+            --privileged: Give extended privileges to this container
+            --pull=: Pull image before creating ("always", "|missing", "never")
+            --read-only: Mount the container's root filesystem as read only
+            --restart=: Restart policy to apply when a container exits
+            --rm: Automatically remove the container and its associated anonymous volumes when it exits
+            --runtime=: Runtime to use for this container
+            --security-opt=: Security Options
+            --shm-size=: Size of /dev/shm
+            --stop-signal=: Signal to stop the container
+            --stop-timeout=: Timeout (in seconds) to stop a container
+            --storage-opt=: Storage driver options for the container
+            --sysctl=: Sysctl options
+            --tmpfs=: Mount a tmpfs directory
+            --ulimit=: Ulimit options
+            --use-api-socket: Bind mount Docker API socket and required auth
+            --userns=: User namespace to use
+            --uts=: UTS namespace to use
+            --volume-driver=: Optional volume driver for the container
+            --volumes-from=: Mount volumes from the specified container(s)
+            -P, --publish-all: Publish all exposed ports to random ports
+            -a, --attach=: Attach to STDIN, STDOUT or STDERR
+            -c, --cpu-shares=: CPU shares (relative weight)
+            -e, --env=: Set environment variables
+            -h, --hostname=: Container host name
+            -i, --interactive: Keep STDIN open even if not attached
+            -l, --label=: Set meta data on a container
+            -m, --memory=: Memory limit
+            -p, --publish=: Publish a container's port(s) to the host
+            -q, --quiet: Suppress the pull output
+            -t, --tty: Allocate a pseudo-TTY
+            -u, --user=: 'Username or UID (format: <name|uid>[:<group|gid>])'
+            -v, --volume=: Bind mount a volume
+            -w, --workdir=: Working directory inside the container
+        - name: diff CONTAINER
+          description: Inspect changes to files or directories on a container's filesystem
+        - name: exec [OPTIONS] CONTAINER COMMAND [ARG...]
+          description: Execute a command in a running container
+          flags:
+            --detach-keys=: Override the key sequence for detaching a container
+            --env-file=: Read in a file of environment variables
+            --privileged: Give extended privileges to the command
+            -d, --detach: 'Detached mode: run command in the background'
+            -e, --env=: Set environment variables
+            -i, --interactive: Keep STDIN open even if not attached
+            -t, --tty: Allocate a pseudo-TTY
+            -u, --user=: 'Username or UID (format: "<name|uid>[:<group|gid>]")'
+            -w, --workdir=: Working directory inside the container
+        - name: export [OPTIONS] CONTAINER
+          description: Export a container's filesystem as a tar archive
+          flags:
+            -o, --output=: Write to a file, instead of STDOUT
+        - name: inspect [OPTIONS] CONTAINER [CONTAINER...]
+          description: Display detailed information on one or more containers
+          flags:
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -s, --size: Display total file sizes
+        - name: kill [OPTIONS] CONTAINER [CONTAINER...]
+          description: Kill one or more running containers
+          flags:
+            -s, --signal=: Signal to send to the container
+        - name: logs [OPTIONS] CONTAINER
+          description: Fetch the logs of a container
+          flags:
+            --details: Show extra details provided to logs
+            --since=: Show logs since timestamp (e.g. "2013-01-02T13:23:37Z") or relative (e.g. "42m" for 42 minutes)
+            --until=: Show logs before a timestamp (e.g. "2013-01-02T13:23:37Z") or relative (e.g. "42m" for 42 minutes)
+            -f, --follow: Follow log output
+            -n, --tail=: Number of lines to show from the end of the logs
+            -t, --timestamps: Show timestamps
+        - name: ls [OPTIONS]
+          aliases:
+            - ps
+            - list
+          description: List containers
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            --no-trunc: Don't truncate output
+            -a, --all: Show all containers (default shows just running)
+            -f, --filter=: Filter output based on conditions provided
+            -l, --latest: Show the latest created container (includes all states)
+            -n, --last=: Show n last created containers (includes all states)
+            -q, --quiet: Only display container IDs
+            -s, --size: Display total file sizes
+        - name: pause CONTAINER [CONTAINER...]
+          description: Pause all processes within one or more containers
+        - name: port CONTAINER [PRIVATE_PORT[/PROTO]]
+          description: List port mappings or a specific mapping for the container
+        - name: prune [OPTIONS]
+          description: Remove all stopped containers
+          flags:
+            --filter=: Provide filter values (e.g. "until=<timestamp>")
+            -f, --force: Do not prompt for confirmation
+        - name: rename CONTAINER NEW_NAME
+          description: Rename a container
+        - name: restart [OPTIONS] CONTAINER [CONTAINER...]
+          description: Restart one or more containers
+          flags:
+            --time&=: 'Seconds to wait before killing the container (deprecated: use --timeout)'
+            -s, --signal=: Signal to send to the container
+            -t, --timeout=: Seconds to wait before killing the container
+        - name: rm [OPTIONS] CONTAINER [CONTAINER...]
+          aliases:
+            - rm
+            - remove
+          description: Remove one or more containers
+          flags:
+            -f, --force: Force the removal of a running container (uses SIGKILL)
+            -l, --link: Remove the specified link
+            -v, --volumes: Remove anonymous volumes associated with the container
+        - name: run [OPTIONS] IMAGE [COMMAND] [ARG...]
+          description: Create and run a new container from an image
+          flags:
+            --add-host=: Add a custom host-to-IP mapping (host:ip)
+            --annotation=: Add an annotation to the container (passed through to the OCI runtime)
+            --blkio-weight-device=: Block IO weight (relative device weight)
+            --blkio-weight=: Block IO (relative weight), between 10 and 1000, or 0 to disable (default 0)
+            --cap-add=: Add Linux capabilities
+            --cap-drop=: Drop Linux capabilities
+            --cgroup-parent=: Optional parent cgroup for the container
+            --cgroupns=: |-
+                Cgroup namespace to use (host|private)
+                'host':    Run the container in the Docker host's cgroup namespace
+                'private': Run the container in its own private cgroup namespace
+                '':        Use the cgroup namespace as configured by the
+                           default-cgroupns-mode option on the daemon (default)
+            --cidfile=: Write the container ID to the file
+            --cpu-count=: CPU count (Windows only)
+            --cpu-percent=: CPU percent (Windows only)
+            --cpu-period=: Limit CPU CFS (Completely Fair Scheduler) period
+            --cpu-quota=: Limit CPU CFS (Completely Fair Scheduler) quota
+            --cpu-rt-period=: Limit CPU real-time period in microseconds
+            --cpu-rt-runtime=: Limit CPU real-time runtime in microseconds
+            --cpus=: Number of CPUs
+            --cpuset-cpus=: CPUs in which to allow execution (0-3, 0,1)
+            --cpuset-mems=: MEMs in which to allow execution (0-3, 0,1)
+            --detach-keys=: Override the key sequence for detaching a container
+            --device-cgroup-rule=: Add a rule to the cgroup allowed devices list
+            --device-read-bps=: Limit read rate (bytes per second) from a device
+            --device-read-iops=: Limit read rate (IO per second) from a device
+            --device-write-bps=: Limit write rate (bytes per second) to a device
+            --device-write-iops=: Limit write rate (IO per second) to a device
+            --device=: Add a host device to the container
+            --disable-content-trust: Skip image verification
+            --dns-opt&=: Set DNS options
+            --dns-option=: Set DNS options
+            --dns-search=: Set custom DNS search domains
+            --dns=: Set custom DNS servers
+            --domainname=: Container NIS domain name
+            --entrypoint=: Overwrite the default ENTRYPOINT of the image
+            --env-file=: Read in a file of environment variables
+            --expose=: Expose a port or a range of ports
+            --gpus=: GPU devices to add to the container ('all' to pass all GPUs)
+            --group-add=: Add additional groups to join
+            --health-cmd=: Command to run to check health
+            --health-interval=: Time between running the check (ms|s|m|h) (default 0s)
+            --health-retries=: Consecutive failures needed to report unhealthy
+            --health-start-interval=: Time between running the check during the start period (ms|s|m|h) (default 0s)
+            --health-start-period=: Start period for the container to initialize before starting health-retries countdown (ms|s|m|h) (default 0s)
+            --health-timeout=: Maximum time to allow one check to run (ms|s|m|h) (default 0s)
+            --help: Print usage
+            --init: Run an init inside the container that forwards signals and reaps processes
+            --io-maxbandwidth=: Maximum IO bandwidth limit for the system drive (Windows only)
+            --io-maxiops=: Maximum IOps limit for the system drive (Windows only)
+            --ip=: IPv4 address (e.g., 172.30.100.104)
+            --ip6=: IPv6 address (e.g., 2001:db8::33)
+            --ipc=: IPC mode to use
+            --isolation=: Container isolation technology
+            --kernel-memory=: Kernel memory limit
+            --label-file=: Read in a line delimited file of labels
+            --link-local-ip=: Container IPv4/IPv6 link-local addresses
+            --link=: Add link to another container
+            --log-driver=: Logging driver for the container
+            --log-opt=: Log driver options
+            --mac-address=: Container MAC address (e.g., 92:d0:c6:0a:29:33)
+            --memory-reservation=: Memory soft limit
+            --memory-swap=: 'Swap limit equal to memory plus swap: ''-1'' to enable unlimited swap'
+            --memory-swappiness=: Tune container memory swappiness (0 to 100)
+            --mount=: Attach a filesystem mount to the container
+            --name=: Assign a name to the container
+            --net&=: Connect a container to a network
+            --net-alias&=: Add network-scoped alias for the container
+            --network-alias=: Add network-scoped alias for the container
+            --network=: Connect a container to a network
+            --no-healthcheck: Disable any container-specified HEALTHCHECK
+            --oom-kill-disable: Disable OOM Killer
+            --oom-score-adj=: Tune host's OOM preferences (-1000 to 1000)
+            --pid=: PID namespace to use
+            --pids-limit=: Tune container pids limit (set -1 for unlimited)
+            --platform=: Set platform if server is multi-platform capable
+            --privileged: Give extended privileges to this container
+            --pull=: Pull image before running ("always", "missing", "never")
+            --read-only: Mount the container's root filesystem as read only
+            --restart=: Restart policy to apply when a container exits
+            --rm: Automatically remove the container and its associated anonymous volumes when it exits
+            --runtime=: Runtime to use for this container
+            --security-opt=: Security Options
+            --shm-size=: Size of /dev/shm
+            --sig-proxy: Proxy received signals to the process
+            --stop-signal=: Signal to stop the container
+            --stop-timeout=: Timeout (in seconds) to stop a container
+            --storage-opt=: Storage driver options for the container
+            --sysctl=: Sysctl options
+            --tmpfs=: Mount a tmpfs directory
+            --ulimit=: Ulimit options
+            --use-api-socket: Bind mount Docker API socket and required auth
+            --userns=: User namespace to use
+            --uts=: UTS namespace to use
+            --volume-driver=: Optional volume driver for the container
+            --volumes-from=: Mount volumes from the specified container(s)
+            -P, --publish-all: Publish all exposed ports to random ports
+            -a, --attach=: Attach to STDIN, STDOUT or STDERR
+            -c, --cpu-shares=: CPU shares (relative weight)
+            -d, --detach: Run container in background and print container ID
+            -e, --env=: Set environment variables
+            -h, --hostname=: Container host name
+            -i, --interactive: Keep STDIN open even if not attached
+            -l, --label=: Set meta data on a container
+            -m, --memory=: Memory limit
+            -p, --publish=: Publish a container's port(s) to the host
+            -q, --quiet: Suppress the pull output
+            -t, --tty: Allocate a pseudo-TTY
+            -u, --user=: 'Username or UID (format: <name|uid>[:<group|gid>])'
+            -v, --volume=: Bind mount a volume
+            -w, --workdir=: Working directory inside the container
+        - name: start [OPTIONS] CONTAINER [CONTAINER...]
+          description: Start one or more stopped containers
+          flags:
+            --checkpoint-dir=: Use a custom checkpoint storage directory
+            --checkpoint=: Restore from this checkpoint
+            --detach-keys=: Override the key sequence for detaching a container
+            -a, --attach: Attach STDOUT/STDERR and forward signals
+            -i, --interactive: Attach container's STDIN
+        - name: stats [OPTIONS] [CONTAINER...]
+          description: Display a live stream of container(s) resource usage statistics
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            --no-stream: Disable streaming stats and only pull the first result
+            --no-trunc: Do not truncate output
+            -a, --all: Show all containers (default shows just running)
+        - name: stop [OPTIONS] CONTAINER [CONTAINER...]
+          description: Stop one or more running containers
+          flags:
+            --time&=: 'Seconds to wait before killing the container (deprecated: use --timeout)'
+            -s, --signal=: Signal to send to the container
+            -t, --timeout=: Seconds to wait before killing the container
+        - name: top CONTAINER [ps OPTIONS]
+          description: Display the running processes of a container
+        - name: unpause CONTAINER [CONTAINER...]
+          description: Unpause all processes within one or more containers
+        - name: update [OPTIONS] CONTAINER [CONTAINER...]
+          description: Update configuration of one or more containers
+          flags:
+            --blkio-weight=: Block IO (relative weight), between 10 and 1000, or 0 to disable (default 0)
+            --cpu-period=: Limit CPU CFS (Completely Fair Scheduler) period
+            --cpu-quota=: Limit CPU CFS (Completely Fair Scheduler) quota
+            --cpu-rt-period=: Limit the CPU real-time period in microseconds
+            --cpu-rt-runtime=: Limit the CPU real-time runtime in microseconds
+            --cpus=: Number of CPUs
+            --cpuset-cpus=: CPUs in which to allow execution (0-3, 0,1)
+            --cpuset-mems=: MEMs in which to allow execution (0-3, 0,1)
+            --kernel-memory&=: Kernel memory limit (deprecated)
+            --memory-reservation=: Memory soft limit
+            --memory-swap=: 'Swap limit equal to memory plus swap: -1 to enable unlimited swap'
+            --pids-limit=: Tune container pids limit (set -1 for unlimited)
+            --restart=: Restart policy to apply when a container exits
+            -c, --cpu-shares=: CPU shares (relative weight)
+            -m, --memory=: Memory limit
+        - name: wait CONTAINER [CONTAINER...]
+          description: Block until one or more containers stop, then print their exit codes
+    - name: context
+      description: Manage contexts
+      commands:
+        - name: create [OPTIONS] CONTEXT
+          description: Create a context
+          flags:
+            --description=: Description of the context
+            --docker=: set the docker endpoint
+            --from=: create context from a named context
+        - name: export [OPTIONS] CONTEXT [FILE|-]
+          description: Export a context to a tar archive FILE or a tar stream on STDOUT.
+        - name: import CONTEXT FILE|-
+          description: Import a context from a tar or zip file
+        - name: inspect [OPTIONS] [CONTEXT] [CONTEXT...]
+          description: Display detailed information on one or more contexts
+          flags:
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: ls [OPTIONS]
+          aliases:
+            - list
+          description: List contexts
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -q, --quiet: Only show context names
+        - name: rm CONTEXT [CONTEXT...]
+          aliases:
+            - remove
+          description: Remove one or more contexts
+          flags:
+            -f, --force: Force the removal of a context in use
+        - name: show
+          description: Print the name of the current context
+        - name: update [OPTIONS] CONTEXT
+          description: Update a context
+          flags:
+            --description=: Description of the context
+            --docker=: set the docker endpoint
+        - name: use CONTEXT
+          description: Set the current docker context
+    - name: |-
+        cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+        	docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+      description: Copy files/folders between a container and the local filesystem
+      flags:
+        -L, --follow-link: Always follow symbol link in SRC_PATH
+        -a, --archive: Archive mode (copy all uid/gid information)
+        -q, --quiet: Suppress progress output during copy. Progress output is automatically suppressed if no terminal is attached
+    - name: create [OPTIONS] IMAGE [COMMAND] [ARG...]
+      description: Create a new container
+      flags:
+        --add-host=: Add a custom host-to-IP mapping (host:ip)
+        --annotation=: Add an annotation to the container (passed through to the OCI runtime)
+        --blkio-weight-device=: Block IO weight (relative device weight)
+        --blkio-weight=: Block IO (relative weight), between 10 and 1000, or 0 to disable (default 0)
+        --cap-add=: Add Linux capabilities
+        --cap-drop=: Drop Linux capabilities
+        --cgroup-parent=: Optional parent cgroup for the container
+        --cgroupns=: |-
+            Cgroup namespace to use (host|private)
+            'host':    Run the container in the Docker host's cgroup namespace
+            'private': Run the container in its own private cgroup namespace
+            '':        Use the cgroup namespace as configured by the
+                       default-cgroupns-mode option on the daemon (default)
+        --cidfile=: Write the container ID to the file
+        --cpu-count=: CPU count (Windows only)
+        --cpu-percent=: CPU percent (Windows only)
+        --cpu-period=: Limit CPU CFS (Completely Fair Scheduler) period
+        --cpu-quota=: Limit CPU CFS (Completely Fair Scheduler) quota
+        --cpu-rt-period=: Limit CPU real-time period in microseconds
+        --cpu-rt-runtime=: Limit CPU real-time runtime in microseconds
+        --cpus=: Number of CPUs
+        --cpuset-cpus=: CPUs in which to allow execution (0-3, 0,1)
+        --cpuset-mems=: MEMs in which to allow execution (0-3, 0,1)
+        --device-cgroup-rule=: Add a rule to the cgroup allowed devices list
+        --device-read-bps=: Limit read rate (bytes per second) from a device
+        --device-read-iops=: Limit read rate (IO per second) from a device
+        --device-write-bps=: Limit write rate (bytes per second) to a device
+        --device-write-iops=: Limit write rate (IO per second) to a device
+        --device=: Add a host device to the container
+        --disable-content-trust: Skip image verification
+        --dns-opt&=: Set DNS options
+        --dns-option=: Set DNS options
+        --dns-search=: Set custom DNS search domains
+        --dns=: Set custom DNS servers
+        --domainname=: Container NIS domain name
+        --entrypoint=: Overwrite the default ENTRYPOINT of the image
+        --env-file=: Read in a file of environment variables
+        --expose=: Expose a port or a range of ports
+        --gpus=: GPU devices to add to the container ('all' to pass all GPUs)
+        --group-add=: Add additional groups to join
+        --health-cmd=: Command to run to check health
+        --health-interval=: Time between running the check (ms|s|m|h) (default 0s)
+        --health-retries=: Consecutive failures needed to report unhealthy
+        --health-start-interval=: Time between running the check during the start period (ms|s|m|h) (default 0s)
+        --health-start-period=: Start period for the container to initialize before starting health-retries countdown (ms|s|m|h) (default 0s)
+        --health-timeout=: Maximum time to allow one check to run (ms|s|m|h) (default 0s)
+        --help: Print usage
+        --init: Run an init inside the container that forwards signals and reaps processes
+        --io-maxbandwidth=: Maximum IO bandwidth limit for the system drive (Windows only)
+        --io-maxiops=: Maximum IOps limit for the system drive (Windows only)
+        --ip=: IPv4 address (e.g., 172.30.100.104)
+        --ip6=: IPv6 address (e.g., 2001:db8::33)
+        --ipc=: IPC mode to use
+        --isolation=: Container isolation technology
+        --kernel-memory=: Kernel memory limit
+        --label-file=: Read in a line delimited file of labels
+        --link-local-ip=: Container IPv4/IPv6 link-local addresses
+        --link=: Add link to another container
+        --log-driver=: Logging driver for the container
+        --log-opt=: Log driver options
+        --mac-address=: Container MAC address (e.g., 92:d0:c6:0a:29:33)
+        --memory-reservation=: Memory soft limit
+        --memory-swap=: 'Swap limit equal to memory plus swap: ''-1'' to enable unlimited swap'
+        --memory-swappiness=: Tune container memory swappiness (0 to 100)
+        --mount=: Attach a filesystem mount to the container
+        --name=: Assign a name to the container
+        --net&=: Connect a container to a network
+        --net-alias&=: Add network-scoped alias for the container
+        --network-alias=: Add network-scoped alias for the container
+        --network=: Connect a container to a network
+        --no-healthcheck: Disable any container-specified HEALTHCHECK
+        --oom-kill-disable: Disable OOM Killer
+        --oom-score-adj=: Tune host's OOM preferences (-1000 to 1000)
+        --pid=: PID namespace to use
+        --pids-limit=: Tune container pids limit (set -1 for unlimited)
+        --platform=: Set platform if server is multi-platform capable
+        --privileged: Give extended privileges to this container
+        --pull=: Pull image before creating ("always", "|missing", "never")
+        --read-only: Mount the container's root filesystem as read only
+        --restart=: Restart policy to apply when a container exits
+        --rm: Automatically remove the container and its associated anonymous volumes when it exits
+        --runtime=: Runtime to use for this container
+        --security-opt=: Security Options
+        --shm-size=: Size of /dev/shm
+        --stop-signal=: Signal to stop the container
+        --stop-timeout=: Timeout (in seconds) to stop a container
+        --storage-opt=: Storage driver options for the container
+        --sysctl=: Sysctl options
+        --tmpfs=: Mount a tmpfs directory
+        --ulimit=: Ulimit options
+        --use-api-socket: Bind mount Docker API socket and required auth
+        --userns=: User namespace to use
+        --uts=: UTS namespace to use
+        --volume-driver=: Optional volume driver for the container
+        --volumes-from=: Mount volumes from the specified container(s)
+        -P, --publish-all: Publish all exposed ports to random ports
+        -a, --attach=: Attach to STDIN, STDOUT or STDERR
+        -c, --cpu-shares=: CPU shares (relative weight)
+        -e, --env=: Set environment variables
+        -h, --hostname=: Container host name
+        -i, --interactive: Keep STDIN open even if not attached
+        -l, --label=: Set meta data on a container
+        -m, --memory=: Memory limit
+        -p, --publish=: Publish a container's port(s) to the host
+        -q, --quiet: Suppress the pull output
+        -t, --tty: Allocate a pseudo-TTY
+        -u, --user=: 'Username or UID (format: <name|uid>[:<group|gid>])'
+        -v, --volume=: Bind mount a volume
+        -w, --workdir=: Working directory inside the container
+    - name: diff CONTAINER
+      description: Inspect changes to files or directories on a container's filesystem
+    - name: events [OPTIONS]
+      description: Get real time events from the server
+      flags:
+        --format=: |-
+            Format output using a custom template:
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        --since=: Show all events created since timestamp
+        --until=: Stream events until this timestamp
+        -f, --filter=: Filter output based on conditions provided
+    - name: exec [OPTIONS] CONTAINER COMMAND [ARG...]
+      description: Execute a command in a running container
+      flags:
+        --detach-keys=: Override the key sequence for detaching a container
+        --env-file=: Read in a file of environment variables
+        --privileged: Give extended privileges to the command
+        -d, --detach: 'Detached mode: run command in the background'
+        -e, --env=: Set environment variables
+        -i, --interactive: Keep STDIN open even if not attached
+        -t, --tty: Allocate a pseudo-TTY
+        -u, --user=: 'Username or UID (format: "<name|uid>[:<group|gid>]")'
+        -w, --workdir=: Working directory inside the container
+    - name: export [OPTIONS] CONTAINER
+      description: Export a container's filesystem as a tar archive
+      flags:
+        -o, --output=: Write to a file, instead of STDOUT
+    - name: help [command]
+      description: Help about the command
+    - name: history [OPTIONS] IMAGE
+      description: Show the history of an image
+      flags:
+        --format=: |-
+            Format output using a custom template:
+            'table':            Print output in table format with column headers (default)
+            'table TEMPLATE':   Print output in table format using the given Go template
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        --no-trunc: Don't truncate output
+        --platform=: Show history for the given platform. Formatted as "os[/arch[/variant]]" (e.g., "linux/amd64")
+        -H, --human: Print sizes and dates in human readable format
+        -q, --quiet: Only show image IDs
+    - name: image
+      description: Manage images
+      commands:
+        - name: build [OPTIONS] PATH | URL | -
+          description: Build an image from a Dockerfile
+          flags:
+            --add-host=: Add a custom host-to-IP mapping ("host:ip")
+            --build-arg=: Set build-time variables
+            --cache-from*=: Images to consider as cache sources
+            --cgroup-parent=: Set the parent cgroup for the "RUN" instructions during build
+            --compress: Compress the build context using gzip
+            --cpu-period=: Limit the CPU CFS (Completely Fair Scheduler) period
+            --cpu-quota=: Limit the CPU CFS (Completely Fair Scheduler) quota
+            --cpuset-cpus=: CPUs in which to allow execution (0-3, 0,1)
+            --cpuset-mems=: MEMs in which to allow execution (0-3, 0,1)
+            --disable-content-trust: Skip image verification
+            --force-rm: Always remove intermediate containers
+            --iidfile=: Write the image ID to the file
+            --isolation=: Container isolation technology
+            --label=: Set metadata for an image
+            --memory-swap=: 'Swap limit equal to memory plus swap: -1 to enable unlimited swap'
+            --network=: Set the networking mode for the RUN instructions during build
+            --no-cache: Do not use cache when building the image
+            --platform=: Set platform if server is multi-platform capable
+            --pull: Always attempt to pull a newer version of the image
+            --rm: Remove intermediate containers after a successful build
+            --security-opt*=: Security options
+            --shm-size=: Size of "/dev/shm"
+            --squash: Squash newly built layers into a single new layer
+            --target=: Set the target build stage to build.
+            --ulimit=: Ulimit options
+            -c, --cpu-shares=: CPU shares (relative weight)
+            -f, --file=: Name of the Dockerfile (Default is "PATH/Dockerfile")
+            -m, --memory=: Memory limit
+            -q, --quiet: Suppress the build output and print image ID on success
+            -t, --tag=: Name and optionally a tag in the "name:tag" format
+        - name: history [OPTIONS] IMAGE
+          description: Show the history of an image
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            --no-trunc: Don't truncate output
+            --platform=: Show history for the given platform. Formatted as "os[/arch[/variant]]" (e.g., "linux/amd64")
+            -H, --human: Print sizes and dates in human readable format
+            -q, --quiet: Only show image IDs
+        - name: import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]
+          description: Import the contents from a tarball to create a filesystem image
+          flags:
+            --platform=: Set platform if server is multi-platform capable
+            -c, --change=: Apply Dockerfile instruction to the created image
+            -m, --message=: Set commit message for imported image
+        - name: inspect [OPTIONS] IMAGE [IMAGE...]
+          description: Display detailed information on one or more images
+          flags:
+            --platform=: |-
+                Inspect a specific platform of the multi-platform image.
+                If the image or the server is not multi-platform capable, the command will error out if the platform does not match.
+                'os[/arch[/variant]]': Explicit platform (eg. linux/amd64)
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: load [OPTIONS]
+          description: Load an image from a tar archive or STDIN
+          flags:
+            --platform=: Load only the given platform variant. Formatted as "os[/arch[/variant]]" (e.g., "linux/amd64")
+            -i, --input=: Read from tar archive file, instead of STDIN
+            -q, --quiet: Suppress the load output
+        - name: ls [OPTIONS] [REPOSITORY[:TAG]]
+          aliases:
+            - list
+          description: List images
+          flags:
+            --digests: Show digests
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            --no-trunc: Don't truncate output
+            --tree: List multi-platform images as a tree (EXPERIMENTAL)
+            -a, --all: Show all images (default hides intermediate images)
+            -f, --filter=: Filter output based on conditions provided
+            -q, --quiet: Only show image IDs
+        - name: prune [OPTIONS]
+          description: Remove unused images
+          flags:
+            --filter=: Provide filter values (e.g. "until=<timestamp>")
+            -a, --all: Remove all unused images, not just dangling ones
+            -f, --force: Do not prompt for confirmation
+        - name: pull [OPTIONS] NAME[:TAG|@DIGEST]
+          description: Download an image from a registry
+          flags:
+            --disable-content-trust: Skip image verification
+            --platform=: Set platform if server is multi-platform capable
+            -a, --all-tags: Download all tagged images in the repository
+            -q, --quiet: Suppress verbose output
+        - name: push [OPTIONS] NAME[:TAG]
+          description: Upload an image to a registry
+          flags:
+            --disable-content-trust: Skip image signing
+            --platform=: |-
+                Push a platform-specific manifest as a single-platform image to the registry.
+                Image index won't be pushed, meaning that other manifests, including attestations won't be preserved.
+                'os[/arch[/variant]]': Explicit platform (eg. linux/amd64)
+            -a, --all-tags: Push all tags of an image to the repository
+            -q, --quiet: Suppress verbose output
+        - name: rm [OPTIONS] IMAGE [IMAGE...]
+          aliases:
+            - rmi
+            - remove
+          description: Remove one or more images
+          flags:
+            --no-prune: Do not delete untagged parents
+            --platform*=: Remove only the given platform variant. Formatted as "os[/arch[/variant]]" (e.g., "linux/amd64")
+            -f, --force: Force removal of the image
+        - name: save [OPTIONS] IMAGE [IMAGE...]
+          description: Save one or more images to a tar archive (streamed to STDOUT by default)
+          flags:
+            --platform=: Save only the given platform variant. Formatted as "os[/arch[/variant]]" (e.g., "linux/amd64")
+            -o, --output=: Write to a file, instead of STDOUT
+        - name: tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+          description: Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+    - name: images [OPTIONS] [REPOSITORY[:TAG]]
+      description: List images
+      flags:
+        --digests: Show digests
+        --format=: |-
+            Format output using a custom template:
+            'table':            Print output in table format with column headers (default)
+            'table TEMPLATE':   Print output in table format using the given Go template
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        --no-trunc: Don't truncate output
+        --tree: List multi-platform images as a tree (EXPERIMENTAL)
+        -a, --all: Show all images (default hides intermediate images)
+        -f, --filter=: Filter output based on conditions provided
+        -q, --quiet: Only show image IDs
+    - name: import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]
+      description: Import the contents from a tarball to create a filesystem image
+      flags:
+        --platform=: Set platform if server is multi-platform capable
+        -c, --change=: Apply Dockerfile instruction to the created image
+        -m, --message=: Set commit message for imported image
+    - name: info [OPTIONS]
+      description: Display system-wide information
+      flags:
+        -f, --format=: |-
+            Format output using a custom template:
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+    - name: inspect [OPTIONS] NAME|ID [NAME|ID...]
+      description: Return low-level information on Docker objects
+      flags:
+        --type=: Only inspect objects of the given type
+        -f, --format=: |-
+            Format output using a custom template:
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        -s, --size: Display total file sizes if the type is container
+    - name: kill [OPTIONS] CONTAINER [CONTAINER...]
+      description: Kill one or more running containers
+      flags:
+        -s, --signal=: Signal to send to the container
+    - name: load [OPTIONS]
+      description: Load an image from a tar archive or STDIN
+      flags:
+        --platform=: Load only the given platform variant. Formatted as "os[/arch[/variant]]" (e.g., "linux/amd64")
+        -i, --input=: Read from tar archive file, instead of STDIN
+        -q, --quiet: Suppress the load output
+    - name: login [OPTIONS] [SERVER]
+      description: Authenticate to a registry
+      flags:
+        --password-stdin: Take the Password or Personal Access Token (PAT) from stdin
+        -p, --password=: Password or Personal Access Token (PAT)
+        -u, --username=: Username
+    - name: logout [SERVER]
+      description: Log out from a registry
+    - name: logs [OPTIONS] CONTAINER
+      description: Fetch the logs of a container
+      flags:
+        --details: Show extra details provided to logs
+        --since=: Show logs since timestamp (e.g. "2013-01-02T13:23:37Z") or relative (e.g. "42m" for 42 minutes)
+        --until=: Show logs before a timestamp (e.g. "2013-01-02T13:23:37Z") or relative (e.g. "42m" for 42 minutes)
+        -f, --follow: Follow log output
+        -n, --tail=: Number of lines to show from the end of the logs
+        -t, --timestamps: Show timestamps
+    - name: manifest COMMAND
+      description: Manage Docker image manifests and manifest lists
+      commands:
+        - name: annotate [OPTIONS] MANIFEST_LIST MANIFEST
+          description: Add additional information to a local image manifest
+          flags:
+            --arch=: Set architecture
+            --os-features*=: Set operating system feature
+            --os-version=: Set operating system version
+            --os=: Set operating system
+            --variant=: Set architecture variant
+        - name: create MANIFEST_LIST MANIFEST [MANIFEST...]
+          description: Create a local manifest list for annotating and pushing to a registry
+          flags:
+            --insecure: Allow communication with an insecure registry
+            -a, --amend: Amend an existing manifest list
+        - name: inspect [OPTIONS] [MANIFEST_LIST] MANIFEST
+          description: Display an image manifest, or manifest list
+          flags:
+            --insecure: Allow communication with an insecure registry
+            -v, --verbose: Output additional info including layers and platform
+        - name: push [OPTIONS] MANIFEST_LIST
+          description: Push a manifest list to a repository
+          flags:
+            --insecure: Allow push to an insecure registry
+            -p, --purge: Remove the local manifest list after push
+        - name: rm MANIFEST_LIST [MANIFEST_LIST...]
+          description: Delete one or more manifest lists from local storage
+    - name: network
+      description: Manage networks
+      commands:
+        - name: connect [OPTIONS] NETWORK CONTAINER
+          description: Connect a container to a network
+          flags:
+            --alias*=: Add network-scoped alias for the container
+            --driver-opt*=: driver options for the network
+            --gw-priority=: Highest gw-priority provides the default gateway. Accepts positive and negative values.
+            --ip=: IPv4 address (e.g., "172.30.100.104")
+            --ip6=: IPv6 address (e.g., "2001:db8::33")
+            --link-local-ip*=: Add a link-local address for the container
+            --link=: Add link to another container
+        - name: create [OPTIONS] NETWORK
+          description: Create a network
+          flags:
+            --attachable: Enable manual container attachment
+            --aux-address=: Auxiliary IPv4 or IPv6 addresses used by Network driver
+            --config-from=: The network from which to copy the configuration
+            --config-only: Create a configuration only network
+            --gateway*=: IPv4 or IPv6 Gateway for the master subnet
+            --ingress: Create swarm routing-mesh network
+            --internal: Restrict external access to the network
+            --ip-range*=: Allocate container ip from a sub-range
+            --ipam-driver=: IP Address Management Driver
+            --ipam-opt=: Set IPAM driver specific options
+            --ipv4: Enable or disable IPv4 address assignment
+            --ipv6: Enable or disable IPv6 address assignment
+            --label=: Set metadata on a network
+            --scope=: Control the network's scope
+            --subnet*=: Subnet in CIDR format that represents a network segment
+            -d, --driver=: Driver to manage the Network
+            -o, --opt=: Set driver specific options
+        - name: disconnect [OPTIONS] NETWORK CONTAINER
+          description: Disconnect a container from a network
+          flags:
+            -f, --force: Force the container to disconnect from a network
+        - name: inspect [OPTIONS] NETWORK [NETWORK...]
+          description: Display detailed information on one or more networks
+          flags:
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -v, --verbose: Verbose output for diagnostics
+        - name: ls [OPTIONS]
+          aliases:
+            - list
+          description: List networks
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            --no-trunc: Do not truncate the output
+            -f, --filter=: Provide filter values (e.g. "driver=bridge")
+            -q, --quiet: Only display network IDs
+        - name: prune [OPTIONS]
+          description: Remove all unused networks
+          flags:
+            --filter=: Provide filter values (e.g. "until=<timestamp>")
+            -f, --force: Do not prompt for confirmation
+        - name: rm NETWORK [NETWORK...]
+          aliases:
+            - remove
+          description: Remove one or more networks
+          flags:
+            -f, --force: Do not error if the network does not exist
+    - name: node
+      description: Manage Swarm nodes
+      commands:
+        - name: demote NODE [NODE...]
+          description: Demote one or more nodes from manager in the swarm
+        - name: inspect [OPTIONS] self|NODE [NODE...]
+          description: Display detailed information on one or more nodes
+          flags:
+            --pretty: Print the information in a human friendly format
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: ls [OPTIONS]
+          aliases:
+            - list
+          description: List nodes in the swarm
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -f, --filter=: Filter output based on conditions provided
+            -q, --quiet: Only display IDs
+        - name: promote NODE [NODE...]
+          description: Promote one or more nodes to manager in the swarm
+        - name: ps [OPTIONS] [NODE...]
+          description: List tasks running on one or more nodes, defaults to current node
+          flags:
+            --format=: Pretty-print tasks using a Go template
+            --no-resolve: Do not map IDs to Names
+            --no-trunc: Do not truncate output
+            -f, --filter=: Filter output based on conditions provided
+            -q, --quiet: Only display task IDs
+        - name: rm [OPTIONS] NODE [NODE...]
+          aliases:
+            - remove
+          description: Remove one or more nodes from the swarm
+          flags:
+            -f, --force: Force remove a node from the swarm
+        - name: update [OPTIONS] NODE
+          description: Update a node
+          flags:
+            --availability=: Availability of the node ("active", "pause", "drain")
+            --label-add=: Add or update a node label ("key=value")
+            --label-rm=: Remove a node label if exists
+            --role=: Role of the node ("worker", "manager")
+    - name: pause CONTAINER [CONTAINER...]
+      description: Pause all processes within one or more containers
+    - name: plugin
+      description: Manage plugins
+      commands:
+        - name: create [OPTIONS] PLUGIN PLUGIN-DATA-DIR
+          description: Create a plugin from a rootfs and configuration. Plugin data directory must contain config.json and rootfs directory.
+          flags:
+            --compress: Compress the context using gzip
+        - name: disable [OPTIONS] PLUGIN
+          description: Disable a plugin
+          flags:
+            -f, --force: Force the disable of an active plugin
+        - name: enable [OPTIONS] PLUGIN
+          description: Enable a plugin
+          flags:
+            --timeout=: HTTP client timeout (in seconds)
+        - name: inspect [OPTIONS] PLUGIN [PLUGIN...]
+          description: Display detailed information on one or more plugins
+          flags:
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: install [OPTIONS] PLUGIN [KEY=VALUE...]
+          description: Install a plugin
+          flags:
+            --alias=: Local name for plugin
+            --disable: Do not enable the plugin on install
+            --disable-content-trust: Skip image verification
+            --grant-all-permissions: Grant all permissions necessary to run the plugin
+        - name: ls [OPTIONS]
+          aliases:
+            - list
+          description: List plugins
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            --no-trunc: Don't truncate output
+            -f, --filter=: Provide filter values (e.g. "enabled=true")
+            -q, --quiet: Only display plugin IDs
+        - name: push [OPTIONS] PLUGIN[:TAG]
+          description: Push a plugin to a registry
+          flags:
+            --disable-content-trust: Skip image signing
+        - name: rm [OPTIONS] PLUGIN [PLUGIN...]
+          aliases:
+            - remove
+          description: Remove one or more plugins
+          flags:
+            -f, --force: Force the removal of an active plugin
+        - name: set PLUGIN KEY=VALUE [KEY=VALUE...]
+          description: Change settings for a plugin
+        - name: upgrade [OPTIONS] PLUGIN [REMOTE]
+          description: Upgrade an existing plugin
+          flags:
+            --disable-content-trust: Skip image verification
+            --grant-all-permissions: Grant all permissions necessary to run the plugin
+            --skip-remote-check: Do not check if specified remote plugin matches existing plugin image
+    - name: port CONTAINER [PRIVATE_PORT[/PROTO]]
+      description: List port mappings or a specific mapping for the container
+    - name: ps [OPTIONS]
+      description: List containers
+      flags:
+        --format=: |-
+            Format output using a custom template:
+            'table':            Print output in table format with column headers (default)
+            'table TEMPLATE':   Print output in table format using the given Go template
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        --no-trunc: Don't truncate output
+        -a, --all: Show all containers (default shows just running)
+        -f, --filter=: Filter output based on conditions provided
+        -l, --latest: Show the latest created container (includes all states)
+        -n, --last=: Show n last created containers (includes all states)
+        -q, --quiet: Only display container IDs
+        -s, --size: Display total file sizes
+    - name: pull [OPTIONS] NAME[:TAG|@DIGEST]
+      description: Download an image from a registry
+      flags:
+        --disable-content-trust: Skip image verification
+        --platform=: Set platform if server is multi-platform capable
+        -a, --all-tags: Download all tagged images in the repository
+        -q, --quiet: Suppress verbose output
+    - name: push [OPTIONS] NAME[:TAG]
+      description: Upload an image to a registry
+      flags:
+        --disable-content-trust: Skip image signing
+        --platform=: |-
+            Push a platform-specific manifest as a single-platform image to the registry.
+            Image index won't be pushed, meaning that other manifests, including attestations won't be preserved.
+            'os[/arch[/variant]]': Explicit platform (eg. linux/amd64)
+        -a, --all-tags: Push all tags of an image to the repository
+        -q, --quiet: Suppress verbose output
+    - name: rename CONTAINER NEW_NAME
+      description: Rename a container
+    - name: restart [OPTIONS] CONTAINER [CONTAINER...]
+      description: Restart one or more containers
+      flags:
+        --time&=: 'Seconds to wait before killing the container (deprecated: use --timeout)'
+        -s, --signal=: Signal to send to the container
+        -t, --timeout=: Seconds to wait before killing the container
+    - name: rm [OPTIONS] CONTAINER [CONTAINER...]
+      description: Remove one or more containers
+      flags:
+        -f, --force: Force the removal of a running container (uses SIGKILL)
+        -l, --link: Remove the specified link
+        -v, --volumes: Remove anonymous volumes associated with the container
+    - name: rmi [OPTIONS] IMAGE [IMAGE...]
+      description: Remove one or more images
+      flags:
+        --no-prune: Do not delete untagged parents
+        --platform*=: Remove only the given platform variant. Formatted as "os[/arch[/variant]]" (e.g., "linux/amd64")
+        -f, --force: Force removal of the image
+    - name: run [OPTIONS] IMAGE [COMMAND] [ARG...]
+      description: Create and run a new container from an image
+      flags:
+        --add-host=: Add a custom host-to-IP mapping (host:ip)
+        --annotation=: Add an annotation to the container (passed through to the OCI runtime)
+        --blkio-weight-device=: Block IO weight (relative device weight)
+        --blkio-weight=: Block IO (relative weight), between 10 and 1000, or 0 to disable (default 0)
+        --cap-add=: Add Linux capabilities
+        --cap-drop=: Drop Linux capabilities
+        --cgroup-parent=: Optional parent cgroup for the container
+        --cgroupns=: |-
+            Cgroup namespace to use (host|private)
+            'host':    Run the container in the Docker host's cgroup namespace
+            'private': Run the container in its own private cgroup namespace
+            '':        Use the cgroup namespace as configured by the
+                       default-cgroupns-mode option on the daemon (default)
+        --cidfile=: Write the container ID to the file
+        --cpu-count=: CPU count (Windows only)
+        --cpu-percent=: CPU percent (Windows only)
+        --cpu-period=: Limit CPU CFS (Completely Fair Scheduler) period
+        --cpu-quota=: Limit CPU CFS (Completely Fair Scheduler) quota
+        --cpu-rt-period=: Limit CPU real-time period in microseconds
+        --cpu-rt-runtime=: Limit CPU real-time runtime in microseconds
+        --cpus=: Number of CPUs
+        --cpuset-cpus=: CPUs in which to allow execution (0-3, 0,1)
+        --cpuset-mems=: MEMs in which to allow execution (0-3, 0,1)
+        --detach-keys=: Override the key sequence for detaching a container
+        --device-cgroup-rule=: Add a rule to the cgroup allowed devices list
+        --device-read-bps=: Limit read rate (bytes per second) from a device
+        --device-read-iops=: Limit read rate (IO per second) from a device
+        --device-write-bps=: Limit write rate (bytes per second) to a device
+        --device-write-iops=: Limit write rate (IO per second) to a device
+        --device=: Add a host device to the container
+        --disable-content-trust: Skip image verification
+        --dns-opt&=: Set DNS options
+        --dns-option=: Set DNS options
+        --dns-search=: Set custom DNS search domains
+        --dns=: Set custom DNS servers
+        --domainname=: Container NIS domain name
+        --entrypoint=: Overwrite the default ENTRYPOINT of the image
+        --env-file=: Read in a file of environment variables
+        --expose=: Expose a port or a range of ports
+        --gpus=: GPU devices to add to the container ('all' to pass all GPUs)
+        --group-add=: Add additional groups to join
+        --health-cmd=: Command to run to check health
+        --health-interval=: Time between running the check (ms|s|m|h) (default 0s)
+        --health-retries=: Consecutive failures needed to report unhealthy
+        --health-start-interval=: Time between running the check during the start period (ms|s|m|h) (default 0s)
+        --health-start-period=: Start period for the container to initialize before starting health-retries countdown (ms|s|m|h) (default 0s)
+        --health-timeout=: Maximum time to allow one check to run (ms|s|m|h) (default 0s)
+        --help: Print usage
+        --init: Run an init inside the container that forwards signals and reaps processes
+        --io-maxbandwidth=: Maximum IO bandwidth limit for the system drive (Windows only)
+        --io-maxiops=: Maximum IOps limit for the system drive (Windows only)
+        --ip=: IPv4 address (e.g., 172.30.100.104)
+        --ip6=: IPv6 address (e.g., 2001:db8::33)
+        --ipc=: IPC mode to use
+        --isolation=: Container isolation technology
+        --kernel-memory=: Kernel memory limit
+        --label-file=: Read in a line delimited file of labels
+        --link-local-ip=: Container IPv4/IPv6 link-local addresses
+        --link=: Add link to another container
+        --log-driver=: Logging driver for the container
+        --log-opt=: Log driver options
+        --mac-address=: Container MAC address (e.g., 92:d0:c6:0a:29:33)
+        --memory-reservation=: Memory soft limit
+        --memory-swap=: 'Swap limit equal to memory plus swap: ''-1'' to enable unlimited swap'
+        --memory-swappiness=: Tune container memory swappiness (0 to 100)
+        --mount=: Attach a filesystem mount to the container
+        --name=: Assign a name to the container
+        --net&=: Connect a container to a network
+        --net-alias&=: Add network-scoped alias for the container
+        --network-alias=: Add network-scoped alias for the container
+        --network=: Connect a container to a network
+        --no-healthcheck: Disable any container-specified HEALTHCHECK
+        --oom-kill-disable: Disable OOM Killer
+        --oom-score-adj=: Tune host's OOM preferences (-1000 to 1000)
+        --pid=: PID namespace to use
+        --pids-limit=: Tune container pids limit (set -1 for unlimited)
+        --platform=: Set platform if server is multi-platform capable
+        --privileged: Give extended privileges to this container
+        --pull=: Pull image before running ("always", "missing", "never")
+        --read-only: Mount the container's root filesystem as read only
+        --restart=: Restart policy to apply when a container exits
+        --rm: Automatically remove the container and its associated anonymous volumes when it exits
+        --runtime=: Runtime to use for this container
+        --security-opt=: Security Options
+        --shm-size=: Size of /dev/shm
+        --sig-proxy: Proxy received signals to the process
+        --stop-signal=: Signal to stop the container
+        --stop-timeout=: Timeout (in seconds) to stop a container
+        --storage-opt=: Storage driver options for the container
+        --sysctl=: Sysctl options
+        --tmpfs=: Mount a tmpfs directory
+        --ulimit=: Ulimit options
+        --use-api-socket: Bind mount Docker API socket and required auth
+        --userns=: User namespace to use
+        --uts=: UTS namespace to use
+        --volume-driver=: Optional volume driver for the container
+        --volumes-from=: Mount volumes from the specified container(s)
+        -P, --publish-all: Publish all exposed ports to random ports
+        -a, --attach=: Attach to STDIN, STDOUT or STDERR
+        -c, --cpu-shares=: CPU shares (relative weight)
+        -d, --detach: Run container in background and print container ID
+        -e, --env=: Set environment variables
+        -h, --hostname=: Container host name
+        -i, --interactive: Keep STDIN open even if not attached
+        -l, --label=: Set meta data on a container
+        -m, --memory=: Memory limit
+        -p, --publish=: Publish a container's port(s) to the host
+        -q, --quiet: Suppress the pull output
+        -t, --tty: Allocate a pseudo-TTY
+        -u, --user=: 'Username or UID (format: <name|uid>[:<group|gid>])'
+        -v, --volume=: Bind mount a volume
+        -w, --workdir=: Working directory inside the container
+    - name: save [OPTIONS] IMAGE [IMAGE...]
+      description: Save one or more images to a tar archive (streamed to STDOUT by default)
+      flags:
+        --platform=: Save only the given platform variant. Formatted as "os[/arch[/variant]]" (e.g., "linux/amd64")
+        -o, --output=: Write to a file, instead of STDOUT
+    - name: search [OPTIONS] TERM
+      description: Search Docker Hub for images
+      flags:
+        --format=: Pretty-print search using a Go template
+        --limit=: Max number of search results
+        --no-trunc: Don't truncate output
+        -f, --filter=: Filter output based on conditions provided
+    - name: secret
+      description: Manage Swarm secrets
+      commands:
+        - name: create [OPTIONS] SECRET [file|-]
+          description: Create a secret from a file or STDIN as content
+          flags:
+            --template-driver=: Template driver
+            -d, --driver=: Secret driver
+            -l, --label=: Secret labels
+        - name: inspect [OPTIONS] SECRET [SECRET...]
+          description: Display detailed information on one or more secrets
+          flags:
+            --pretty: Print the information in a human friendly format
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: ls [OPTIONS]
+          aliases:
+            - list
+          description: List secrets
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -f, --filter=: Filter output based on conditions provided
+            -q, --quiet: Only display IDs
+        - name: rm SECRET [SECRET...]
+          aliases:
+            - remove
+          description: Remove one or more secrets
+    - name: service
+      description: Manage Swarm services
+      commands:
+        - name: create [OPTIONS] IMAGE [COMMAND] [ARG...]
+          description: Create a new service
+          flags:
+            --cap-add=: Add Linux capabilities
+            --cap-drop=: Drop Linux capabilities
+            --config=: Specify configurations to expose to the service
+            --constraint=: Placement constraints
+            --container-label=: Container labels
+            --credential-spec=: Credential spec for managed service account (Windows only)
+            --dns-option=: Set DNS options
+            --dns-search=: Set custom DNS search domains
+            --dns=: Set custom DNS servers
+            --endpoint-mode=: Endpoint mode (vip or dnsrr)
+            --entrypoint=: Overwrite the default ENTRYPOINT of the image
+            --env-file=: Read in a file of environment variables
+            --generic-resource=: User defined resources
+            --group=: Set one or more supplementary user groups for the container
+            --health-cmd=: Command to run to check health
+            --health-interval=: Time between running the check (ms|s|m|h)
+            --health-retries=: Consecutive failures needed to report unhealthy
+            --health-start-interval=: Time between running the check during the start period (ms|s|m|h)
+            --health-start-period=: Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)
+            --health-timeout=: Maximum time to allow one check to run (ms|s|m|h)
+            --host=: Set one or more custom host-to-IP mappings (host:ip)
+            --hostname=: Container hostname
+            --init: Use an init inside each service container to forward signals and reap processes
+            --isolation=: Service container isolation mode
+            --limit-cpu=: Limit CPUs
+            --limit-memory=: Limit Memory
+            --limit-pids=: Limit maximum number of processes (default 0 = unlimited)
+            --log-driver=: Logging driver for service
+            --log-opt=: Logging driver options
+            --max-concurrent=: Number of job tasks to run concurrently (default equal to --replicas)
+            --mode=: Service mode ("replicated", "global", "replicated-job", "global-job")
+            --mount=: Attach a filesystem mount to the service
+            --name=: Service name
+            --network=: Network attachments
+            --no-healthcheck: Disable any container-specified HEALTHCHECK
+            --no-resolve-image: Do not query the registry to resolve image digest and supported platforms
+            --oom-score-adj=: 'Tune host''s OOM preferences (-1000 to 1000) '
+            --placement-pref=: Add a placement preference
+            --read-only: Mount the container's root filesystem as read only
+            --replicas-max-per-node=: Maximum number of tasks per node (default 0 = unlimited)
+            --replicas=: Number of tasks
+            --reserve-cpu=: Reserve CPUs
+            --reserve-memory=: Reserve Memory
+            --restart-condition=: Restart when condition is met ("none", "on-failure", "any") (default "any")
+            --restart-delay=: Delay between restart attempts (ns|us|ms|s|m|h) (default 5s)
+            --restart-max-attempts=: Maximum number of restarts before giving up
+            --restart-window=: Window used to evaluate the restart policy (ns|us|ms|s|m|h)
+            --rollback-delay=: Delay between task rollbacks (ns|us|ms|s|m|h) (default 0s)
+            --rollback-failure-action=: Action on rollback failure ("pause", "continue") (default "pause")
+            --rollback-max-failure-ratio=: Failure rate to tolerate during a rollback (default 0)
+            --rollback-monitor=: Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h) (default 5s)
+            --rollback-order=: Rollback order ("start-first", "stop-first") (default "stop-first")
+            --rollback-parallelism=: Maximum number of tasks rolled back simultaneously (0 to roll back all at once)
+            --secret=: Specify secrets to expose to the service
+            --stop-grace-period=: Time to wait before force killing a container (ns|us|ms|s|m|h) (default 10s)
+            --stop-signal=: Signal to stop the container
+            --sysctl=: Sysctl options
+            --ulimit=: Ulimit options
+            --update-delay=: Delay between updates (ns|us|ms|s|m|h) (default 0s)
+            --update-failure-action=: Action on update failure ("pause", "continue", "rollback") (default "pause")
+            --update-max-failure-ratio=: Failure rate to tolerate during an update (default 0)
+            --update-monitor=: Duration after each task update to monitor for failure (ns|us|ms|s|m|h) (default 5s)
+            --update-order=: Update order ("start-first", "stop-first") (default "stop-first")
+            --update-parallelism=: Maximum number of tasks updated simultaneously (0 to update all at once)
+            --with-registry-auth: Send registry authentication details to swarm agents
+            -d, --detach: Exit immediately instead of waiting for the service to converge
+            -e, --env=: Set environment variables
+            -l, --label=: Service labels
+            -p, --publish=: Publish a port as a node port
+            -q, --quiet: Suppress progress output
+            -t, --tty: Allocate a pseudo-TTY
+            -u, --user=: 'Username or UID (format: <name|uid>[:<group|gid>])'
+            -w, --workdir=: Working directory inside the container
+        - name: inspect [OPTIONS] SERVICE [SERVICE...]
+          description: Display detailed information on one or more services
+          flags:
+            --pretty: Print the information in a human friendly format
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: logs [OPTIONS] SERVICE|TASK
+          description: Fetch the logs of a service or task
+          flags:
+            --details: Show extra details provided to logs
+            --no-resolve: Do not map IDs to Names in output
+            --no-task-ids: Do not include task IDs in output
+            --no-trunc: Do not truncate output
+            --raw: Do not neatly format logs
+            --since=: Show logs since timestamp (e.g. "2013-01-02T13:23:37Z") or relative (e.g. "42m" for 42 minutes)
+            -f, --follow: Follow log output
+            -n, --tail=: Number of lines to show from the end of the logs
+            -t, --timestamps: Show timestamps
+        - name: ls [OPTIONS]
+          aliases:
+            - list
+          description: List services
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -f, --filter=: Filter output based on conditions provided
+            -q, --quiet: Only display IDs
+        - name: ps [OPTIONS] SERVICE [SERVICE...]
+          description: List the tasks of one or more services
+          flags:
+            --format=: Pretty-print tasks using a Go template
+            --no-resolve: Do not map IDs to Names
+            --no-trunc: Do not truncate output
+            -f, --filter=: Filter output based on conditions provided
+            -q, --quiet: Only display task IDs
+        - name: rm SERVICE [SERVICE...]
+          aliases:
+            - remove
+          description: Remove one or more services
+        - name: rollback [OPTIONS] SERVICE
+          description: Revert changes to a service's configuration
+          flags:
+            -d, --detach: Exit immediately instead of waiting for the service to converge
+            -q, --quiet: Suppress progress output
+        - name: scale SERVICE=REPLICAS [SERVICE=REPLICAS...]
+          description: Scale one or multiple replicated services
+          flags:
+            -d, --detach: Exit immediately instead of waiting for the service to converge
+        - name: update [OPTIONS] SERVICE
+          description: Update a service
+          flags:
+            --args=: Service command args
+            --cap-add=: Add Linux capabilities
+            --cap-drop=: Drop Linux capabilities
+            --config-add=: Add or update a config file on a service
+            --config-rm=: Remove a configuration file
+            --constraint-add=: Add or update a placement constraint
+            --constraint-rm=: Remove a constraint
+            --container-label-add=: Add or update a container label
+            --container-label-rm=: Remove a container label by its key
+            --credential-spec=: Credential spec for managed service account (Windows only)
+            --dns-add=: Add or update a custom DNS server
+            --dns-option-add=: Add or update a DNS option
+            --dns-option-rm=: Remove a DNS option
+            --dns-rm=: Remove a custom DNS server
+            --dns-search-add=: Add or update a custom DNS search domain
+            --dns-search-rm=: Remove a DNS search domain
+            --endpoint-mode=: Endpoint mode (vip or dnsrr)
+            --entrypoint=: Overwrite the default ENTRYPOINT of the image
+            --env-add=: Add or update an environment variable
+            --env-rm=: Remove an environment variable
+            --force: Force update even if no changes require it
+            --generic-resource-add=: Add a Generic resource
+            --generic-resource-rm=: Remove a Generic resource
+            --group-add=: Add an additional supplementary user group to the container
+            --group-rm=: Remove a previously added supplementary user group from the container
+            --health-cmd=: Command to run to check health
+            --health-interval=: Time between running the check (ms|s|m|h)
+            --health-retries=: Consecutive failures needed to report unhealthy
+            --health-start-interval=: Time between running the check during the start period (ms|s|m|h)
+            --health-start-period=: Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)
+            --health-timeout=: Maximum time to allow one check to run (ms|s|m|h)
+            --host-add=: Add a custom host-to-IP mapping ("host:ip")
+            --host-rm=: Remove a custom host-to-IP mapping ("host:ip")
+            --hostname=: Container hostname
+            --image=: Service image tag
+            --init: Use an init inside each service container to forward signals and reap processes
+            --isolation=: Service container isolation mode
+            --label-add=: Add or update a service label
+            --label-rm=: Remove a label by its key
+            --limit-cpu=: Limit CPUs
+            --limit-memory=: Limit Memory
+            --limit-pids=: Limit maximum number of processes (default 0 = unlimited)
+            --log-driver=: Logging driver for service
+            --log-opt=: Logging driver options
+            --max-concurrent=: Number of job tasks to run concurrently (default equal to --replicas)
+            --mount-add=: Add or update a mount on a service
+            --mount-rm=: Remove a mount by its target path
+            --network-add=: Add a network
+            --network-rm=: Remove a network
+            --no-healthcheck: Disable any container-specified HEALTHCHECK
+            --no-resolve-image: Do not query the registry to resolve image digest and supported platforms
+            --oom-score-adj=: 'Tune host''s OOM preferences (-1000 to 1000) '
+            --placement-pref-add=: Add a placement preference
+            --placement-pref-rm=: Remove a placement preference
+            --publish-add=: Add or update a published port
+            --publish-rm=: Remove a published port by its target port
+            --read-only: Mount the container's root filesystem as read only
+            --replicas-max-per-node=: Maximum number of tasks per node (default 0 = unlimited)
+            --replicas=: Number of tasks
+            --reserve-cpu=: Reserve CPUs
+            --reserve-memory=: Reserve Memory
+            --restart-condition=: Restart when condition is met ("none", "on-failure", "any")
+            --restart-delay=: Delay between restart attempts (ns|us|ms|s|m|h)
+            --restart-max-attempts=: Maximum number of restarts before giving up
+            --restart-window=: Window used to evaluate the restart policy (ns|us|ms|s|m|h)
+            --rollback: Rollback to previous specification
+            --rollback-delay=: Delay between task rollbacks (ns|us|ms|s|m|h)
+            --rollback-failure-action=: Action on rollback failure ("pause", "continue")
+            --rollback-max-failure-ratio=: Failure rate to tolerate during a rollback
+            --rollback-monitor=: Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)
+            --rollback-order=: Rollback order ("start-first", "stop-first")
+            --rollback-parallelism=: Maximum number of tasks rolled back simultaneously (0 to roll back all at once)
+            --secret-add=: Add or update a secret on a service
+            --secret-rm=: Remove a secret
+            --stop-grace-period=: Time to wait before force killing a container (ns|us|ms|s|m|h)
+            --stop-signal=: Signal to stop the container
+            --sysctl-add=: Add or update a Sysctl option
+            --sysctl-rm=: Remove a Sysctl option
+            --ulimit-add=: Add or update a ulimit option
+            --ulimit-rm=: Remove a ulimit option
+            --update-delay=: Delay between updates (ns|us|ms|s|m|h)
+            --update-failure-action=: Action on update failure ("pause", "continue", "rollback")
+            --update-max-failure-ratio=: Failure rate to tolerate during an update
+            --update-monitor=: Duration after each task update to monitor for failure (ns|us|ms|s|m|h)
+            --update-order=: Update order ("start-first", "stop-first")
+            --update-parallelism=: Maximum number of tasks updated simultaneously (0 to update all at once)
+            --with-registry-auth: Send registry authentication details to swarm agents
+            -d, --detach: Exit immediately instead of waiting for the service to converge
+            -q, --quiet: Suppress progress output
+            -t, --tty: Allocate a pseudo-TTY
+            -u, --user=: 'Username or UID (format: <name|uid>[:<group|gid>])'
+            -w, --workdir=: Working directory inside the container
+    - name: stack [OPTIONS]
+      description: Manage Swarm stacks
+      persistentflags:
+        --orchestrator&=: Orchestrator to use (swarm|all)
+      commands:
+        - name: config [OPTIONS]
+          description: Outputs the final config file, after doing merges and interpolations
+          flags:
+            --skip-interpolation: Skip interpolation and output only merged config
+            -c, --compose-file*=: Path to a Compose file, or "-" to read from stdin
+        - name: deploy [OPTIONS] STACK
+          aliases:
+            - up
+          description: Deploy a new stack or update an existing stack
+          flags:
+            --prune: Prune services that are no longer referenced
+            --resolve-image=: Query the registry to resolve image digest and supported platforms ("always", "changed", "never")
+            --with-registry-auth: Send registry authentication details to Swarm agents
+            -c, --compose-file*=: Path to a Compose file, or "-" to read from stdin
+            -d, --detach: Exit immediately instead of waiting for the stack services to converge
+            -q, --quiet: Suppress progress output
+        - name: ls [OPTIONS]
+          aliases:
+            - list
+          description: List stacks
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: ps [OPTIONS] STACK
+          description: List the tasks in the stack
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            --no-resolve: Do not map IDs to Names
+            --no-trunc: Do not truncate output
+            -f, --filter=: Filter output based on conditions provided
+            -q, --quiet: Only display task IDs
+        - name: rm [OPTIONS] STACK [STACK...]
+          aliases:
+            - remove
+            - down
+          description: Remove one or more stacks
+          flags:
+            -d, --detach: Do not wait for stack removal
+        - name: services [OPTIONS] STACK
+          description: List the services in the stack
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -f, --filter=: Filter output based on conditions provided
+            -q, --quiet: Only display IDs
+    - name: start [OPTIONS] CONTAINER [CONTAINER...]
+      description: Start one or more stopped containers
+      flags:
+        --checkpoint-dir=: Use a custom checkpoint storage directory
+        --checkpoint=: Restore from this checkpoint
+        --detach-keys=: Override the key sequence for detaching a container
+        -a, --attach: Attach STDOUT/STDERR and forward signals
+        -i, --interactive: Attach container's STDIN
+    - name: stats [OPTIONS] [CONTAINER...]
+      description: Display a live stream of container(s) resource usage statistics
+      flags:
+        --format=: |-
+            Format output using a custom template:
+            'table':            Print output in table format with column headers (default)
+            'table TEMPLATE':   Print output in table format using the given Go template
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        --no-stream: Disable streaming stats and only pull the first result
+        --no-trunc: Do not truncate output
+        -a, --all: Show all containers (default shows just running)
+    - name: stop [OPTIONS] CONTAINER [CONTAINER...]
+      description: Stop one or more running containers
+      flags:
+        --time&=: 'Seconds to wait before killing the container (deprecated: use --timeout)'
+        -s, --signal=: Signal to send to the container
+        -t, --timeout=: Seconds to wait before killing the container
+    - name: swarm
+      description: Manage Swarm
+      commands:
+        - name: ca [OPTIONS]
+          description: Display and rotate the root CA
+          flags:
+            --ca-cert=: Path to the PEM-formatted root CA certificate to use for the new cluster
+            --ca-key=: Path to the PEM-formatted root CA key to use for the new cluster
+            --cert-expiry=: Validity period for node certificates (ns|us|ms|s|m|h)
+            --external-ca=: Specifications of one or more certificate signing endpoints
+            --rotate: Rotate the swarm CA - if no certificate or key are provided, new ones will be generated
+            -d, --detach: Exit immediately instead of waiting for the root rotation to converge
+            -q, --quiet: Suppress progress output
+        - name: init [OPTIONS]
+          description: Initialize a swarm
+          flags:
+            --advertise-addr=: 'Advertised address (format: "<ip|interface>[:port]")'
+            --autolock: Enable manager autolocking (requiring an unlock key to start a stopped manager)
+            --availability=: Availability of the node ("active", "pause", "drain")
+            --cert-expiry=: Validity period for node certificates (ns|us|ms|s|m|h)
+            --data-path-addr=: 'Address or interface to use for data path traffic (format: "<ip|interface>")'
+            --data-path-port=: Port number to use for data path traffic (1024 - 49151). If no value is set or is set to 0, the default port (4789) is used.
+            --default-addr-pool*=: default address pool in CIDR format
+            --default-addr-pool-mask-length=: default address pool subnet mask length
+            --dispatcher-heartbeat=: Dispatcher heartbeat period (ns|us|ms|s|m|h)
+            --external-ca=: Specifications of one or more certificate signing endpoints
+            --force-new-cluster: Force create a new cluster from current state
+            --listen-addr=: 'Listen address (format: "<ip|interface>[:port]")'
+            --max-snapshots=: Number of additional Raft snapshots to retain
+            --snapshot-interval=: Number of log entries between Raft snapshots
+            --task-history-limit=: Task history retention limit
+        - name: join [OPTIONS] HOST:PORT
+          description: Join a swarm as a node and/or manager
+          flags:
+            --advertise-addr=: 'Advertised address (format: "<ip|interface>[:port]")'
+            --availability=: Availability of the node ("active", "pause", "drain")
+            --data-path-addr=: 'Address or interface to use for data path traffic (format: "<ip|interface>")'
+            --listen-addr=: 'Listen address (format: "<ip|interface>[:port]")'
+            --token=: Token for entry into the swarm
+        - name: join-token [OPTIONS] (worker|manager)
+          description: Manage join tokens
+          flags:
+            --rotate: Rotate join token
+            -q, --quiet: Only display token
+        - name: leave [OPTIONS]
+          description: Leave the swarm
+          flags:
+            -f, --force: Force this node to leave the swarm, ignoring warnings
+        - name: unlock
+          description: Unlock swarm
+        - name: unlock-key [OPTIONS]
+          description: Manage the unlock key
+          flags:
+            --rotate: Rotate unlock key
+            -q, --quiet: Only display token
+        - name: update [OPTIONS]
+          description: Update the swarm
+          flags:
+            --autolock: Change manager autolocking setting (true|false)
+            --cert-expiry=: Validity period for node certificates (ns|us|ms|s|m|h)
+            --dispatcher-heartbeat=: Dispatcher heartbeat period (ns|us|ms|s|m|h)
+            --external-ca=: Specifications of one or more certificate signing endpoints
+            --max-snapshots=: Number of additional Raft snapshots to retain
+            --snapshot-interval=: Number of log entries between Raft snapshots
+            --task-history-limit=: Task history retention limit
+    - name: system
+      description: Manage Docker
+      commands:
+        - name: df [OPTIONS]
+          description: Show docker disk usage
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -v, --verbose: Show detailed information on space usage
+        - name: dial-stdio
+          description: Proxy the stdio stream to the daemon connection. Should not be invoked manually.
+          hidden: true
+        - name: events [OPTIONS]
+          description: Get real time events from the server
+          flags:
+            --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            --since=: Show all events created since timestamp
+            --until=: Stream events until this timestamp
+            -f, --filter=: Filter output based on conditions provided
+        - name: info [OPTIONS]
+          description: Display system-wide information
+          flags:
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: prune [OPTIONS]
+          description: Remove unused data
+          flags:
+            --filter=: Provide filter values (e.g. "label=<key>=<value>")
+            --volumes: Prune anonymous volumes
+            -a, --all: Remove all unused images not just dangling ones
+            -f, --force: Do not prompt for confirmation
+    - name: tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+      description: Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+    - name: top CONTAINER [ps OPTIONS]
+      description: Display the running processes of a container
+    - name: trust
+      description: Manage trust on Docker images
+      commands:
+        - name: inspect IMAGE[:TAG] [IMAGE[:TAG]...]
+          description: Return low-level information about keys and signatures
+          flags:
+            --pretty: Print the information in a human friendly format
+        - name: key
+          description: Manage keys for signing Docker images
+          commands:
+            - name: generate NAME
+              description: Generate and load a signing key-pair
+              flags:
+                --dir=: Directory to generate key in, defaults to current directory
+            - name: load [OPTIONS] KEYFILE
+              description: Load a private key file for signing
+              flags:
+                --name=: Name for the loaded key
+        - name: revoke [OPTIONS] IMAGE[:TAG]
+          description: Remove trust for an image
+          flags:
+            -y, --yes: Do not prompt for confirmation
+        - name: sign IMAGE:TAG
+          description: Sign an image
+          flags:
+            --local: Sign a locally tagged image
+        - name: signer
+          description: Manage entities who can sign Docker images
+          commands:
+            - name: 'add OPTIONS NAME REPOSITORY [REPOSITORY...] '
+              description: Add a signer
+              flags:
+                --key=: Path to the signer's public key file
+            - name: remove [OPTIONS] NAME REPOSITORY [REPOSITORY...]
+              description: Remove a signer
+              flags:
+                -f, --force: Do not prompt for confirmation before removing the most recent signer
+    - name: unpause CONTAINER [CONTAINER...]
+      description: Unpause all processes within one or more containers
+    - name: update [OPTIONS] CONTAINER [CONTAINER...]
+      description: Update configuration of one or more containers
+      flags:
+        --blkio-weight=: Block IO (relative weight), between 10 and 1000, or 0 to disable (default 0)
+        --cpu-period=: Limit CPU CFS (Completely Fair Scheduler) period
+        --cpu-quota=: Limit CPU CFS (Completely Fair Scheduler) quota
+        --cpu-rt-period=: Limit the CPU real-time period in microseconds
+        --cpu-rt-runtime=: Limit the CPU real-time runtime in microseconds
+        --cpus=: Number of CPUs
+        --cpuset-cpus=: CPUs in which to allow execution (0-3, 0,1)
+        --cpuset-mems=: MEMs in which to allow execution (0-3, 0,1)
+        --kernel-memory&=: Kernel memory limit (deprecated)
+        --memory-reservation=: Memory soft limit
+        --memory-swap=: 'Swap limit equal to memory plus swap: -1 to enable unlimited swap'
+        --pids-limit=: Tune container pids limit (set -1 for unlimited)
+        --restart=: Restart policy to apply when a container exits
+        -c, --cpu-shares=: CPU shares (relative weight)
+        -m, --memory=: Memory limit
+    - name: version [OPTIONS]
+      description: Show the Docker version information
+      flags:
+        -f, --format=: |-
+            Format output using a custom template:
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+    - name: volume COMMAND
+      description: Manage volumes
+      commands:
+        - name: create [OPTIONS] [VOLUME]
+          description: Create a volume
+          flags:
+            --availability=: Cluster Volume availability ("active", "pause", "drain")
+            --group=: Cluster Volume group (cluster volumes)
+            --label=: Set metadata for a volume
+            --limit-bytes=: Minimum size of the Cluster Volume in bytes
+            --name&=: Specify volume name
+            --required-bytes=: Maximum size of the Cluster Volume in bytes
+            --scope=: Cluster Volume access scope ("single", "multi")
+            --secret=: Cluster Volume secrets
+            --sharing=: Cluster Volume access sharing ("none", "readonly", "onewriter", "all")
+            --topology-preferred=: A topology that the Cluster Volume would be preferred in
+            --topology-required=: A topology that the Cluster Volume must be accessible from
+            --type=: Cluster Volume access type ("mount", "block")
+            -d, --driver=: Specify volume driver name
+            -o, --opt=: Set driver specific options
+        - name: inspect [OPTIONS] VOLUME [VOLUME...]
+          description: Display detailed information on one or more volumes
+          flags:
+            -f, --format=: |-
+                Format output using a custom template:
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        - name: ls [OPTIONS]
+          aliases:
+            - list
+          description: List volumes
+          flags:
+            --cluster: Display only cluster volumes, and use cluster volume list formatting
+            --format=: |-
+                Format output using a custom template:
+                'table':            Print output in table format with column headers (default)
+                'table TEMPLATE':   Print output in table format using the given Go template
+                'json':             Print in JSON format
+                'TEMPLATE':         Print output using the given Go template.
+                Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+            -f, --filter=: Provide filter values (e.g. "dangling=true")
+            -q, --quiet: Only display volume names
+        - name: prune [OPTIONS]
+          description: Remove unused local volumes
+          flags:
+            --filter=: Provide filter values (e.g. "label=<label>")
+            -a, --all: Remove all unused volumes, not just anonymous ones
+            -f, --force: Do not prompt for confirmation
+        - name: rm [OPTIONS] VOLUME [VOLUME...]
+          aliases:
+            - remove
+          description: Remove one or more volumes
+          flags:
+            -f, --force: Force the removal of one or more volumes
+        - name: update [OPTIONS] [VOLUME]
+          description: Update a volume (cluster volumes only)
+          flags:
+            --availability=: Cluster Volume availability ("active", "pause", "drain")
+    - name: wait CONTAINER [CONTAINER...]
+      description: Block until one or more containers stop, then print their exit codes
