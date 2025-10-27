@@ -1,0 +1,1880 @@
+name: gum
+description: A tool for glamorous shell scripts.
+flags:
+    -h, --help: Show context-sensitive help.
+    -v, --version: Print the version number
+commands:
+    - name: choose
+      description: Choose an option from a list of choices
+      flags:
+        --cursor-prefix=: Prefix to show on the cursor item (hidden if limit is 1)
+        --cursor.align=: Text Alignment
+        --cursor.background=: Background Color
+        --cursor.bold: Bold text
+        --cursor.border-background=: Border Background Color
+        --cursor.border-foreground=: Border Foreground Color
+        --cursor.border=: Border Style
+        --cursor.faint: Faint text
+        --cursor.foreground=: Foreground Color
+        --cursor.height=: Text height
+        --cursor.italic: Italicize text
+        --cursor.margin=: Text margin
+        --cursor.padding=: Text padding
+        --cursor.strikethrough: Strikethrough text
+        --cursor.underline: Underline text
+        --cursor.width=: Text width
+        --cursor=: Prefix to show on item that corresponds to the cursor position
+        --header.align=: Text Alignment
+        --header.background=: Background Color
+        --header.bold: Bold text
+        --header.border-background=: Border Background Color
+        --header.border-foreground=: Border Foreground Color
+        --header.border=: Border Style
+        --header.faint: Faint text
+        --header.foreground=: Foreground Color
+        --header.height=: Text height
+        --header.italic: Italicize text
+        --header.margin=: Text margin
+        --header.padding=: Text padding
+        --header.strikethrough: Strikethrough text
+        --header.underline: Underline text
+        --header.width=: Text width
+        --header=: Header value
+        --height=: Height of the list
+        --input-delimiter=: Option delimiter when reading from STDIN
+        --item.align=: Text Alignment
+        --item.background=: Background Color
+        --item.bold: Bold text
+        --item.border-background=: Border Background Color
+        --item.border-foreground=: Border Foreground Color
+        --item.border=: Border Style
+        --item.faint: Faint text
+        --item.foreground=: Foreground Color
+        --item.height=: Text height
+        --item.italic: Italicize text
+        --item.margin=: Text margin
+        --item.padding=: Text padding
+        --item.strikethrough: Strikethrough text
+        --item.underline: Underline text
+        --item.width=: Text width
+        --label-delimiter=: Allows to set a delimiter, so options can be set as label:value
+        --limit=: Maximum number of options to pick
+        --no-limit: Pick unlimited number of options (ignores limit)
+        --ordered: Maintain the order of the selected options
+        --output-delimiter=: Option delimiter when writing to STDOUT
+        --padding=: Padding
+        --select-if-one: Select the given option if there is only one
+        --selected-prefix=: Prefix to show on selected items (hidden if limit is 1)
+        --selected.align=: Text Alignment
+        --selected.background=: Background Color
+        --selected.bold: Bold text
+        --selected.border-background=: Border Background Color
+        --selected.border-foreground=: Border Foreground Color
+        --selected.border=: Border Style
+        --selected.faint: Faint text
+        --selected.foreground=: Foreground Color
+        --selected.height=: Text height
+        --selected.italic: Italicize text
+        --selected.margin=: Text margin
+        --selected.padding=: Text padding
+        --selected.strikethrough: Strikethrough text
+        --selected.underline: Underline text
+        --selected.width=: Text width
+        --selected=*: Options that should start as selected (selects all if given *)
+        --show-help: Show help keybinds
+        --strip-ansi: Strip ANSI sequences when reading from STDIN
+        --timeout=: Timeout until choose returns selected element
+        --unselected-prefix=: Prefix to show on unselected items (hidden if limit is 1)
+      completion:
+        flag:
+            cursor.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            item.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            item.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: confirm
+      description: Ask a user to confirm an action
+      flags:
+        --affirmative=: The title of the affirmative action
+        --default: Default confirmation action
+        --negative=: The title of the negative action
+        --padding=: Padding
+        --prompt.align=: Text Alignment
+        --prompt.background=: Background Color
+        --prompt.bold: Bold text
+        --prompt.border-background=: Border Background Color
+        --prompt.border-foreground=: Border Foreground Color
+        --prompt.border=: Border Style
+        --prompt.faint: Faint text
+        --prompt.foreground=: Foreground Color
+        --prompt.height=: Text height
+        --prompt.italic: Italicize text
+        --prompt.margin=: Text margin
+        --prompt.padding=: Text padding
+        --prompt.strikethrough: Strikethrough text
+        --prompt.underline: Underline text
+        --prompt.width=: Text width
+        --selected.align=: Text Alignment
+        --selected.background=: Background Color
+        --selected.bold: Bold text
+        --selected.border-background=: Border Background Color
+        --selected.border-foreground=: Border Foreground Color
+        --selected.border=: Border Style
+        --selected.faint: Faint text
+        --selected.foreground=: Foreground Color
+        --selected.height=: Text height
+        --selected.italic: Italicize text
+        --selected.margin=: Text margin
+        --selected.padding=: Text padding
+        --selected.strikethrough: Strikethrough text
+        --selected.underline: Underline text
+        --selected.width=: Text width
+        --show-help: Show help key binds
+        --show-output: Print prompt and chosen action to output
+        --timeout=: Timeout until confirm returns selected value or default if provided
+        --unselected.align=: Text Alignment
+        --unselected.background=: Background Color
+        --unselected.bold: Bold text
+        --unselected.border-background=: Border Background Color
+        --unselected.border-foreground=: Border Foreground Color
+        --unselected.border=: Border Style
+        --unselected.faint: Faint text
+        --unselected.foreground=: Foreground Color
+        --unselected.height=: Text height
+        --unselected.italic: Italicize text
+        --unselected.margin=: Text margin
+        --unselected.padding=: Text padding
+        --unselected.strikethrough: Strikethrough text
+        --unselected.underline: Underline text
+        --unselected.width=: Text width
+      completion:
+        flag:
+            prompt.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prompt.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            unselected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            unselected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: file
+      description: Pick a file from a folder
+      flags:
+        --cursor.align=: Text Alignment
+        --cursor.background=: Background Color
+        --cursor.bold: Bold text
+        --cursor.border-background=: Border Background Color
+        --cursor.border-foreground=: Border Foreground Color
+        --cursor.border=: Border Style
+        --cursor.faint: Faint text
+        --cursor.foreground=: Foreground Color
+        --cursor.height=: Text height
+        --cursor.italic: Italicize text
+        --cursor.margin=: Text margin
+        --cursor.padding=: Text padding
+        --cursor.strikethrough: Strikethrough text
+        --cursor.underline: Underline text
+        --cursor.width=: Text width
+        --directory: Allow directories selection
+        --directory.align=: Text Alignment
+        --directory.background=: Background Color
+        --directory.bold: Bold text
+        --directory.border-background=: Border Background Color
+        --directory.border-foreground=: Border Foreground Color
+        --directory.border=: Border Style
+        --directory.faint: Faint text
+        --directory.foreground=: Foreground Color
+        --directory.height=: Text height
+        --directory.italic: Italicize text
+        --directory.margin=: Text margin
+        --directory.padding=: Text padding
+        --directory.strikethrough: Strikethrough text
+        --directory.underline: Underline text
+        --directory.width=: Text width
+        --file: Allow files selection
+        --file-size.align=: Text Alignment
+        --file-size.background=: Background Color
+        --file-size.bold: Bold text
+        --file-size.border-background=: Border Background Color
+        --file-size.border-foreground=: Border Foreground Color
+        --file-size.border=: Border Style
+        --file-size.faint: Faint text
+        --file-size.foreground=: Foreground Color
+        --file-size.height=: Text height
+        --file-size.italic: Italicize text
+        --file-size.margin=: Text margin
+        --file-size.padding=: Text padding
+        --file-size.strikethrough: Strikethrough text
+        --file-size.underline: Underline text
+        --file-size.width=: Text width
+        --file.align=: Text Alignment
+        --file.background=: Background Color
+        --file.bold: Bold text
+        --file.border-background=: Border Background Color
+        --file.border-foreground=: Border Foreground Color
+        --file.border=: Border Style
+        --file.faint: Faint text
+        --file.foreground=: Foreground Color
+        --file.height=: Text height
+        --file.italic: Italicize text
+        --file.margin=: Text margin
+        --file.padding=: Text padding
+        --file.strikethrough: Strikethrough text
+        --file.underline: Underline text
+        --file.width=: Text width
+        --header.align=: Text Alignment
+        --header.background=: Background Color
+        --header.bold: Bold text
+        --header.border-background=: Border Background Color
+        --header.border-foreground=: Border Foreground Color
+        --header.border=: Border Style
+        --header.faint: Faint text
+        --header.foreground=: Foreground Color
+        --header.height=: Text height
+        --header.italic: Italicize text
+        --header.margin=: Text margin
+        --header.padding=: Text padding
+        --header.strikethrough: Strikethrough text
+        --header.underline: Underline text
+        --header.width=: Text width
+        --header=: Header value
+        --height=: Maximum number of files to display
+        --padding=: Padding
+        --permissions.align=: Text Alignment
+        --permissions.background=: Background Color
+        --permissions.bold: Bold text
+        --permissions.border-background=: Border Background Color
+        --permissions.border-foreground=: Border Foreground Color
+        --permissions.border=: Border Style
+        --permissions.faint: Faint text
+        --permissions.foreground=: Foreground Color
+        --permissions.height=: Text height
+        --permissions.italic: Italicize text
+        --permissions.margin=: Text margin
+        --permissions.padding=: Text padding
+        --permissions.strikethrough: Strikethrough text
+        --permissions.underline: Underline text
+        --permissions.width=: Text width
+        --selected.align=: Text Alignment
+        --selected.background=: Background Color
+        --selected.bold: Bold text
+        --selected.border-background=: Border Background Color
+        --selected.border-foreground=: Border Foreground Color
+        --selected.border=: Border Style
+        --selected.faint: Faint text
+        --selected.foreground=: Foreground Color
+        --selected.height=: Text height
+        --selected.italic: Italicize text
+        --selected.margin=: Text margin
+        --selected.padding=: Text padding
+        --selected.strikethrough: Strikethrough text
+        --selected.underline: Underline text
+        --selected.width=: Text width
+        --show-help: Show help key binds
+        --symlink.align=: Text Alignment
+        --symlink.background=: Background Color
+        --symlink.bold: Bold text
+        --symlink.border-background=: Border Background Color
+        --symlink.border-foreground=: Border Foreground Color
+        --symlink.border=: Border Style
+        --symlink.faint: Faint text
+        --symlink.foreground=: Foreground Color
+        --symlink.height=: Text height
+        --symlink.italic: Italicize text
+        --symlink.margin=: Text margin
+        --symlink.padding=: Text padding
+        --symlink.strikethrough: Strikethrough text
+        --symlink.underline: Underline text
+        --symlink.width=: Text width
+        --timeout=: Timeout until command aborts without a selection
+        -a, --all: Show hidden and 'dot' files
+        -c, --cursor=: The cursor character
+        -p, --permissions: Show file permissions
+        -s, --size: Show file size
+      completion:
+        flag:
+            cursor.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            directory.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            directory.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            file-size.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            file-size.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            file.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            file.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            permissions.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            permissions.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            symlink.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            symlink.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: filter
+      description: Filter items from a list
+      flags:
+        --cursor-text.align=: Text Alignment
+        --cursor-text.background=: Background Color
+        --cursor-text.bold: Bold text
+        --cursor-text.border-background=: Border Background Color
+        --cursor-text.border-foreground=: Border Foreground Color
+        --cursor-text.border=: Border Style
+        --cursor-text.faint: Faint text
+        --cursor-text.foreground=: Foreground Color
+        --cursor-text.height=: Text height
+        --cursor-text.italic: Italicize text
+        --cursor-text.margin=: Text margin
+        --cursor-text.padding=: Text padding
+        --cursor-text.strikethrough: Strikethrough text
+        --cursor-text.underline: Underline text
+        --cursor-text.width=: Text width
+        --fuzzy: Enable fuzzy matching; otherwise match from start of word
+        --fuzzy-sort: Sort fuzzy results by their scores
+        --header.align=: Text Alignment
+        --header.background=: Background Color
+        --header.bold: Bold text
+        --header.border-background=: Border Background Color
+        --header.border-foreground=: Border Foreground Color
+        --header.border=: Border Style
+        --header.faint: Faint text
+        --header.foreground=: Foreground Color
+        --header.height=: Text height
+        --header.italic: Italicize text
+        --header.margin=: Text margin
+        --header.padding=: Text padding
+        --header.strikethrough: Strikethrough text
+        --header.underline: Underline text
+        --header.width=: Text width
+        --header=: Header value
+        --height=: Input height
+        --indicator.align=: Text Alignment
+        --indicator.background=: Background Color
+        --indicator.bold: Bold text
+        --indicator.border-background=: Border Background Color
+        --indicator.border-foreground=: Border Foreground Color
+        --indicator.border=: Border Style
+        --indicator.faint: Faint text
+        --indicator.foreground=: Foreground Color
+        --indicator.height=: Text height
+        --indicator.italic: Italicize text
+        --indicator.margin=: Text margin
+        --indicator.padding=: Text padding
+        --indicator.strikethrough: Strikethrough text
+        --indicator.underline: Underline text
+        --indicator.width=: Text width
+        --indicator=: Character for selection
+        --input-delimiter=: Option delimiter when reading from STDIN
+        --limit=: Maximum number of options to pick
+        --match.align=: Text Alignment
+        --match.background=: Background Color
+        --match.bold: Bold text
+        --match.border-background=: Border Background Color
+        --match.border-foreground=: Border Foreground Color
+        --match.border=: Border Style
+        --match.faint: Faint text
+        --match.foreground=: Foreground Color
+        --match.height=: Text height
+        --match.italic: Italicize text
+        --match.margin=: Text margin
+        --match.padding=: Text padding
+        --match.strikethrough: Strikethrough text
+        --match.underline: Underline text
+        --match.width=: Text width
+        --no-limit: Pick unlimited number of options (ignores limit)
+        --output-delimiter=: Option delimiter when writing to STDOUT
+        --padding=: Padding
+        --placeholder.align=: Text Alignment
+        --placeholder.background=: Background Color
+        --placeholder.bold: Bold text
+        --placeholder.border-background=: Border Background Color
+        --placeholder.border-foreground=: Border Foreground Color
+        --placeholder.border=: Border Style
+        --placeholder.faint: Faint text
+        --placeholder.foreground=: Foreground Color
+        --placeholder.height=: Text height
+        --placeholder.italic: Italicize text
+        --placeholder.margin=: Text margin
+        --placeholder.padding=: Text padding
+        --placeholder.strikethrough: Strikethrough text
+        --placeholder.underline: Underline text
+        --placeholder.width=: Text width
+        --placeholder=: Placeholder value
+        --prompt.align=: Text Alignment
+        --prompt.background=: Background Color
+        --prompt.bold: Bold text
+        --prompt.border-background=: Border Background Color
+        --prompt.border-foreground=: Border Foreground Color
+        --prompt.border=: Border Style
+        --prompt.faint: Faint text
+        --prompt.foreground=: Foreground Color
+        --prompt.height=: Text height
+        --prompt.italic: Italicize text
+        --prompt.margin=: Text margin
+        --prompt.padding=: Text padding
+        --prompt.strikethrough: Strikethrough text
+        --prompt.underline: Underline text
+        --prompt.width=: Text width
+        --prompt=: Prompt to display
+        --reverse: Display from the bottom of the screen
+        --select-if-one: Select the given option if there is only one
+        --selected-indicator.align=: Text Alignment
+        --selected-indicator.background=: Background Color
+        --selected-indicator.bold: Bold text
+        --selected-indicator.border-background=: Border Background Color
+        --selected-indicator.border-foreground=: Border Foreground Color
+        --selected-indicator.border=: Border Style
+        --selected-indicator.faint: Faint text
+        --selected-indicator.foreground=: Foreground Color
+        --selected-indicator.height=: Text height
+        --selected-indicator.italic: Italicize text
+        --selected-indicator.margin=: Text margin
+        --selected-indicator.padding=: Text padding
+        --selected-indicator.strikethrough: Strikethrough text
+        --selected-indicator.underline: Underline text
+        --selected-indicator.width=: Text width
+        --selected-prefix=: Character to indicate selected items (hidden if limit is 1)
+        --selected=*: Options that should start as selected (selects all if given *)
+        --show-help: Show help keybinds
+        --sort: Sort fuzzy results by their scores
+        --strict: Only returns if anything matched. Otherwise return Filter
+        --strip-ansi: Strip ANSI sequences when reading from STDIN
+        --text.align=: Text Alignment
+        --text.background=: Background Color
+        --text.bold: Bold text
+        --text.border-background=: Border Background Color
+        --text.border-foreground=: Border Foreground Color
+        --text.border=: Border Style
+        --text.faint: Faint text
+        --text.foreground=: Foreground Color
+        --text.height=: Text height
+        --text.italic: Italicize text
+        --text.margin=: Text margin
+        --text.padding=: Text padding
+        --text.strikethrough: Strikethrough text
+        --text.underline: Underline text
+        --text.width=: Text width
+        --timeout=: Timeout until filter command aborts
+        --unselected-prefix.align=: Text Alignment
+        --unselected-prefix.background=: Background Color
+        --unselected-prefix.bold: Bold text
+        --unselected-prefix.border-background=: Border Background Color
+        --unselected-prefix.border-foreground=: Border Foreground Color
+        --unselected-prefix.border=: Border Style
+        --unselected-prefix.faint: Faint text
+        --unselected-prefix.foreground=: Foreground Color
+        --unselected-prefix.height=: Text height
+        --unselected-prefix.italic: Italicize text
+        --unselected-prefix.margin=: Text margin
+        --unselected-prefix.padding=: Text padding
+        --unselected-prefix.strikethrough: Strikethrough text
+        --unselected-prefix.underline: Underline text
+        --unselected-prefix.width=: Text width
+        --unselected-prefix=: Character to indicate unselected items (hidden if limit is 1)
+        --value=: Initial filter value
+        --width=: Input width
+      completion:
+        flag:
+            cursor-text.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor-text.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            indicator.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            indicator.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            match.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            match.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            placeholder.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            placeholder.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            prompt.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prompt.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected-indicator.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected-indicator.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            text.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            text.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            unselected-prefix.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            unselected-prefix.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: format
+      description: Format a string using a template
+      flags:
+        --strip-ansi: Strip ANSI sequences when reading from STDIN
+        --theme=: Glamour theme to use for markdown formatting
+        -l, --language=: Programming language to parse code
+        -t, --type=: Format to use (markdown,template,code,emoji)
+      completion:
+        flag:
+            type:
+                - markdown
+                - template
+                - code
+                - emoji
+    - name: input
+      description: Prompt for some input
+      flags:
+        --char-limit=: Maximum value length (0 for no limit)
+        --cursor.align=: Text Alignment
+        --cursor.background=: Background Color
+        --cursor.bold: Bold text
+        --cursor.border-background=: Border Background Color
+        --cursor.border-foreground=: Border Foreground Color
+        --cursor.border=: Border Style
+        --cursor.faint: Faint text
+        --cursor.foreground=: Foreground Color
+        --cursor.height=: Text height
+        --cursor.italic: Italicize text
+        --cursor.margin=: Text margin
+        --cursor.mode=: Cursor mode
+        --cursor.padding=: Text padding
+        --cursor.strikethrough: Strikethrough text
+        --cursor.underline: Underline text
+        --cursor.width=: Text width
+        --header.align=: Text Alignment
+        --header.background=: Background Color
+        --header.bold: Bold text
+        --header.border-background=: Border Background Color
+        --header.border-foreground=: Border Foreground Color
+        --header.border=: Border Style
+        --header.faint: Faint text
+        --header.foreground=: Foreground Color
+        --header.height=: Text height
+        --header.italic: Italicize text
+        --header.margin=: Text margin
+        --header.padding=: Text padding
+        --header.strikethrough: Strikethrough text
+        --header.underline: Underline text
+        --header.width=: Text width
+        --header=: Header value
+        --padding=: Padding
+        --password: Mask input characters
+        --placeholder.align=: Text Alignment
+        --placeholder.background=: Background Color
+        --placeholder.bold: Bold text
+        --placeholder.border-background=: Border Background Color
+        --placeholder.border-foreground=: Border Foreground Color
+        --placeholder.border=: Border Style
+        --placeholder.faint: Faint text
+        --placeholder.foreground=: Foreground Color
+        --placeholder.height=: Text height
+        --placeholder.italic: Italicize text
+        --placeholder.margin=: Text margin
+        --placeholder.padding=: Text padding
+        --placeholder.strikethrough: Strikethrough text
+        --placeholder.underline: Underline text
+        --placeholder.width=: Text width
+        --placeholder=: Placeholder value
+        --prompt.align=: Text Alignment
+        --prompt.background=: Background Color
+        --prompt.bold: Bold text
+        --prompt.border-background=: Border Background Color
+        --prompt.border-foreground=: Border Foreground Color
+        --prompt.border=: Border Style
+        --prompt.faint: Faint text
+        --prompt.foreground=: Foreground Color
+        --prompt.height=: Text height
+        --prompt.italic: Italicize text
+        --prompt.margin=: Text margin
+        --prompt.padding=: Text padding
+        --prompt.strikethrough: Strikethrough text
+        --prompt.underline: Underline text
+        --prompt.width=: Text width
+        --prompt=: Prompt to display
+        --show-help: Show help keybinds
+        --strip-ansi: Strip ANSI sequences when reading from STDIN
+        --timeout=: Timeout until input aborts
+        --value=: Initial value (can also be passed via stdin)
+        --width=: Input width (0 for terminal width)
+      completion:
+        flag:
+            cursor.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor.mode:
+                - blink
+                - hide
+                - static
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            placeholder.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            placeholder.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            prompt.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prompt.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: join
+      description: Join text vertically or horizontally
+      flags:
+        --align=: Text alignment
+        --horizontal: Join (potentially multi-line) strings horizontally
+        --vertical: Join (potentially multi-line) strings vertically
+      completion:
+        flag:
+            align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+    - name: pager
+      description: Scroll through a file
+      flags:
+        --align=: Text Alignment
+        --background=: Background Color
+        --bold: Bold text
+        --border-background=: Border Background Color
+        --border-foreground=: Border Foreground Color
+        --border=: Border Style
+        --faint: Faint text
+        --foreground=: Foreground Color
+        --height=: Text height
+        --help.align=: Text Alignment
+        --help.background=: Background Color
+        --help.bold: Bold text
+        --help.border-background=: Border Background Color
+        --help.border-foreground=: Border Foreground Color
+        --help.border=: Border Style
+        --help.faint: Faint text
+        --help.foreground=: Foreground Color
+        --help.height=: Text height
+        --help.italic: Italicize text
+        --help.margin=: Text margin
+        --help.padding=: Text padding
+        --help.strikethrough: Strikethrough text
+        --help.underline: Underline text
+        --help.width=: Text width
+        --italic: Italicize text
+        --line-number.align=: Text Alignment
+        --line-number.background=: Background Color
+        --line-number.bold: Bold text
+        --line-number.border-background=: Border Background Color
+        --line-number.border-foreground=: Border Foreground Color
+        --line-number.border=: Border Style
+        --line-number.faint: Faint text
+        --line-number.foreground=: Foreground Color
+        --line-number.height=: Text height
+        --line-number.italic: Italicize text
+        --line-number.margin=: Text margin
+        --line-number.padding=: Text padding
+        --line-number.strikethrough: Strikethrough text
+        --line-number.underline: Underline text
+        --line-number.width=: Text width
+        --margin=: Text margin
+        --match-highlight.align=: Text Alignment
+        --match-highlight.background=: Background Color
+        --match-highlight.bold: Bold text
+        --match-highlight.border-background=: Border Background Color
+        --match-highlight.border-foreground=: Border Foreground Color
+        --match-highlight.border=: Border Style
+        --match-highlight.faint: Faint text
+        --match-highlight.foreground=: Foreground Color
+        --match-highlight.height=: Text height
+        --match-highlight.italic: Italicize text
+        --match-highlight.margin=: Text margin
+        --match-highlight.padding=: Text padding
+        --match-highlight.strikethrough: Strikethrough text
+        --match-highlight.underline: Underline text
+        --match-highlight.width=: Text width
+        --match.align=: Text Alignment
+        --match.background=: Background Color
+        --match.bold: Bold text
+        --match.border-background=: Border Background Color
+        --match.border-foreground=: Border Foreground Color
+        --match.border=: Border Style
+        --match.faint: Faint text
+        --match.foreground=: Foreground Color
+        --match.height=: Text height
+        --match.italic: Italicize text
+        --match.margin=: Text margin
+        --match.padding=: Text padding
+        --match.strikethrough: Strikethrough text
+        --match.underline: Underline text
+        --match.width=: Text width
+        --padding=: Text padding
+        --show-line-numbers: Show line numbers
+        --soft-wrap: Soft wrap lines
+        --strikethrough: Strikethrough text
+        --timeout=: Timeout until command exits
+        --underline: Underline text
+        --width=: Text width
+      completion:
+        flag:
+            align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            help.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            help.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            line-number.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            line-number.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            match-highlight.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            match-highlight.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            match.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            match.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: spin
+      description: Display spinner while running a command
+      flags:
+        --padding=: Padding
+        --show-error: Show output of command only if the command fails
+        --show-output: Show or pipe output of command during execution (shows both STDOUT and STDERR)
+        --show-stderr: Show STDERR errput
+        --show-stdout: Show STDOUT output
+        --spinner.align=: Text Alignment
+        --spinner.background=: Background Color
+        --spinner.bold: Bold text
+        --spinner.border-background=: Border Background Color
+        --spinner.border-foreground=: Border Foreground Color
+        --spinner.border=: Border Style
+        --spinner.faint: Faint text
+        --spinner.foreground=: Foreground Color
+        --spinner.height=: Text height
+        --spinner.italic: Italicize text
+        --spinner.margin=: Text margin
+        --spinner.padding=: Text padding
+        --spinner.strikethrough: Strikethrough text
+        --spinner.underline: Underline text
+        --spinner.width=: Text width
+        --timeout=: Timeout until spin command aborts
+        --title.align=: Text Alignment
+        --title.background=: Background Color
+        --title.bold: Bold text
+        --title.border-background=: Border Background Color
+        --title.border-foreground=: Border Foreground Color
+        --title.border=: Border Style
+        --title.faint: Faint text
+        --title.foreground=: Foreground Color
+        --title.height=: Text height
+        --title.italic: Italicize text
+        --title.margin=: Text margin
+        --title.padding=: Text padding
+        --title.strikethrough: Strikethrough text
+        --title.underline: Underline text
+        --title.width=: Text width
+        --title=: Text to display to user while spinning
+        -a, --align=: Alignment of spinner with regard to the title
+        -s, --spinner=: Spinner type
+      completion:
+        flag:
+            align:
+                - left
+                - right
+            spinner:
+                - line
+                - dot
+                - minidot
+                - jump
+                - pulse
+                - points
+                - globe
+                - moon
+                - monkey
+                - meter
+                - hamburger
+            spinner.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            spinner.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            title.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            title.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: style
+      description: Apply coloring, borders, spacing to text
+      flags:
+        --align=: Text Alignment
+        --background=: Background Color
+        --bold: Bold text
+        --border-background=: Border Background Color
+        --border-foreground=: Border Foreground Color
+        --border=: Border Style
+        --faint: Faint text
+        --foreground=: Foreground Color
+        --height=: Text height
+        --italic: Italicize text
+        --margin=: Text margin
+        --padding=: Text padding
+        --strikethrough: Strikethrough text
+        --strip-ansi: Strip ANSI sequences when reading from STDIN
+        --trim: Trim whitespaces on every input line
+        --underline: Underline text
+        --width=: Text width
+      completion:
+        flag:
+            align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: table
+      description: Render a table of data
+      flags:
+        --border.align=: Text Alignment
+        --border.background=: Background Color
+        --border.bold: Bold text
+        --border.border-background=: Border Background Color
+        --border.border-foreground=: Border Foreground Color
+        --border.border=: Border Style
+        --border.faint: Faint text
+        --border.foreground=: Foreground Color
+        --border.height=: Text height
+        --border.italic: Italicize text
+        --border.margin=: Text margin
+        --border.padding=: Text padding
+        --border.strikethrough: Strikethrough text
+        --border.underline: Underline text
+        --border.width=: Text width
+        --cell.align=: Text Alignment
+        --cell.background=: Background Color
+        --cell.bold: Bold text
+        --cell.border-background=: Border Background Color
+        --cell.border-foreground=: Border Foreground Color
+        --cell.border=: Border Style
+        --cell.faint: Faint text
+        --cell.foreground=: Foreground Color
+        --cell.height=: Text height
+        --cell.italic: Italicize text
+        --cell.margin=: Text margin
+        --cell.padding=: Text padding
+        --cell.strikethrough: Strikethrough text
+        --cell.underline: Underline text
+        --cell.width=: Text width
+        --fields-per-record=: Sets the number of expected fields per record
+        --header.align=: Text Alignment
+        --header.background=: Background Color
+        --header.bold: Bold text
+        --header.border-background=: Border Background Color
+        --header.border-foreground=: Border Foreground Color
+        --header.border=: Border Style
+        --header.faint: Faint text
+        --header.foreground=: Foreground Color
+        --header.height=: Text height
+        --header.italic: Italicize text
+        --header.margin=: Text margin
+        --header.padding=: Text padding
+        --header.strikethrough: Strikethrough text
+        --header.underline: Underline text
+        --header.width=: Text width
+        --height=: Table height
+        --hide-count: Hide item count on help keybinds
+        --lazy-quotes: If LazyQuotes is true, a quote may appear in an unquoted field and a non-doubled quote may appear in a quoted field
+        --padding=: Padding
+        --selected.align=: Text Alignment
+        --selected.background=: Background Color
+        --selected.bold: Bold text
+        --selected.border-background=: Border Background Color
+        --selected.border-foreground=: Border Foreground Color
+        --selected.border=: Border Style
+        --selected.faint: Faint text
+        --selected.foreground=: Foreground Color
+        --selected.height=: Text height
+        --selected.italic: Italicize text
+        --selected.margin=: Text margin
+        --selected.padding=: Text padding
+        --selected.strikethrough: Strikethrough text
+        --selected.underline: Underline text
+        --selected.width=: Text width
+        --show-help: Show help keybinds
+        --timeout=: Timeout until choose returns selected element
+        -b, --border=: border style
+        -c, --columns=*: Column names
+        -f, --file=: file path
+        -p, --print: static print
+        -r, --return-column=: Which column number should be returned instead of whole row as string. Default=0 returns whole Row
+        -s, --separator=: Row separator
+        -w, --widths=*: Column widths
+      completion:
+        flag:
+            border:
+                - rounded
+                - thick
+                - normal
+                - hidden
+                - double
+                - none
+            border.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            border.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cell.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cell.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: write
+      description: Prompt for long-form text
+      flags:
+        --base.align=: Text Alignment
+        --base.background=: Background Color
+        --base.bold: Bold text
+        --base.border-background=: Border Background Color
+        --base.border-foreground=: Border Foreground Color
+        --base.border=: Border Style
+        --base.faint: Faint text
+        --base.foreground=: Foreground Color
+        --base.height=: Text height
+        --base.italic: Italicize text
+        --base.margin=: Text margin
+        --base.padding=: Text padding
+        --base.strikethrough: Strikethrough text
+        --base.underline: Underline text
+        --base.width=: Text width
+        --char-limit=: Maximum value length (0 for no limit)
+        --cursor-line-number.align=: Text Alignment
+        --cursor-line-number.background=: Background Color
+        --cursor-line-number.bold: Bold text
+        --cursor-line-number.border-background=: Border Background Color
+        --cursor-line-number.border-foreground=: Border Foreground Color
+        --cursor-line-number.border=: Border Style
+        --cursor-line-number.faint: Faint text
+        --cursor-line-number.foreground=: Foreground Color
+        --cursor-line-number.height=: Text height
+        --cursor-line-number.italic: Italicize text
+        --cursor-line-number.margin=: Text margin
+        --cursor-line-number.padding=: Text padding
+        --cursor-line-number.strikethrough: Strikethrough text
+        --cursor-line-number.underline: Underline text
+        --cursor-line-number.width=: Text width
+        --cursor-line.align=: Text Alignment
+        --cursor-line.background=: Background Color
+        --cursor-line.bold: Bold text
+        --cursor-line.border-background=: Border Background Color
+        --cursor-line.border-foreground=: Border Foreground Color
+        --cursor-line.border=: Border Style
+        --cursor-line.faint: Faint text
+        --cursor-line.foreground=: Foreground Color
+        --cursor-line.height=: Text height
+        --cursor-line.italic: Italicize text
+        --cursor-line.margin=: Text margin
+        --cursor-line.padding=: Text padding
+        --cursor-line.strikethrough: Strikethrough text
+        --cursor-line.underline: Underline text
+        --cursor-line.width=: Text width
+        --cursor.align=: Text Alignment
+        --cursor.background=: Background Color
+        --cursor.bold: Bold text
+        --cursor.border-background=: Border Background Color
+        --cursor.border-foreground=: Border Foreground Color
+        --cursor.border=: Border Style
+        --cursor.faint: Faint text
+        --cursor.foreground=: Foreground Color
+        --cursor.height=: Text height
+        --cursor.italic: Italicize text
+        --cursor.margin=: Text margin
+        --cursor.mode=: Cursor mode
+        --cursor.padding=: Text padding
+        --cursor.strikethrough: Strikethrough text
+        --cursor.underline: Underline text
+        --cursor.width=: Text width
+        --end-of-buffer.align=: Text Alignment
+        --end-of-buffer.background=: Background Color
+        --end-of-buffer.bold: Bold text
+        --end-of-buffer.border-background=: Border Background Color
+        --end-of-buffer.border-foreground=: Border Foreground Color
+        --end-of-buffer.border=: Border Style
+        --end-of-buffer.faint: Faint text
+        --end-of-buffer.foreground=: Foreground Color
+        --end-of-buffer.height=: Text height
+        --end-of-buffer.italic: Italicize text
+        --end-of-buffer.margin=: Text margin
+        --end-of-buffer.padding=: Text padding
+        --end-of-buffer.strikethrough: Strikethrough text
+        --end-of-buffer.underline: Underline text
+        --end-of-buffer.width=: Text width
+        --header.align=: Text Alignment
+        --header.background=: Background Color
+        --header.bold: Bold text
+        --header.border-background=: Border Background Color
+        --header.border-foreground=: Border Foreground Color
+        --header.border=: Border Style
+        --header.faint: Faint text
+        --header.foreground=: Foreground Color
+        --header.height=: Text height
+        --header.italic: Italicize text
+        --header.margin=: Text margin
+        --header.padding=: Text padding
+        --header.strikethrough: Strikethrough text
+        --header.underline: Underline text
+        --header.width=: Text width
+        --header=: Header value
+        --height=: Text area height
+        --line-number.align=: Text Alignment
+        --line-number.background=: Background Color
+        --line-number.bold: Bold text
+        --line-number.border-background=: Border Background Color
+        --line-number.border-foreground=: Border Foreground Color
+        --line-number.border=: Border Style
+        --line-number.faint: Faint text
+        --line-number.foreground=: Foreground Color
+        --line-number.height=: Text height
+        --line-number.italic: Italicize text
+        --line-number.margin=: Text margin
+        --line-number.padding=: Text padding
+        --line-number.strikethrough: Strikethrough text
+        --line-number.underline: Underline text
+        --line-number.width=: Text width
+        --max-lines=: Maximum number of lines (0 for no limit)
+        --padding=: Padding
+        --placeholder.align=: Text Alignment
+        --placeholder.background=: Background Color
+        --placeholder.bold: Bold text
+        --placeholder.border-background=: Border Background Color
+        --placeholder.border-foreground=: Border Foreground Color
+        --placeholder.border=: Border Style
+        --placeholder.faint: Faint text
+        --placeholder.foreground=: Foreground Color
+        --placeholder.height=: Text height
+        --placeholder.italic: Italicize text
+        --placeholder.margin=: Text margin
+        --placeholder.padding=: Text padding
+        --placeholder.strikethrough: Strikethrough text
+        --placeholder.underline: Underline text
+        --placeholder.width=: Text width
+        --placeholder=: Placeholder value
+        --prompt.align=: Text Alignment
+        --prompt.background=: Background Color
+        --prompt.bold: Bold text
+        --prompt.border-background=: Border Background Color
+        --prompt.border-foreground=: Border Foreground Color
+        --prompt.border=: Border Style
+        --prompt.faint: Faint text
+        --prompt.foreground=: Foreground Color
+        --prompt.height=: Text height
+        --prompt.italic: Italicize text
+        --prompt.margin=: Text margin
+        --prompt.padding=: Text padding
+        --prompt.strikethrough: Strikethrough text
+        --prompt.underline: Underline text
+        --prompt.width=: Text width
+        --prompt=: Prompt to display
+        --show-cursor-line: Show cursor line
+        --show-help: Show help key binds
+        --show-line-numbers: Show line numbers
+        --strip-ansi: Strip ANSI sequences when reading from STDIN
+        --timeout=: Timeout until choose returns selected element
+        --value=: Initial value (can be passed via stdin)
+        --width=: Text area width (0 for terminal width)
+      completion:
+        flag:
+            base.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            base.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor-line-number.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor-line-number.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor-line.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor-line.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor.mode:
+                - blink
+                - hide
+                - static
+            end-of-buffer.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            end-of-buffer.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            line-number.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            line-number.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            placeholder.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            placeholder.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            prompt.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prompt.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: log
+      description: Log messages to output
+      flags:
+        --formatter=: The log formatter to use
+        --key.align=: Text Alignment
+        --key.background=: Background Color
+        --key.bold: Bold text
+        --key.border-background=: Border Background Color
+        --key.border-foreground=: Border Foreground Color
+        --key.border=: Border Style
+        --key.faint: Faint text
+        --key.foreground=: Foreground Color
+        --key.height=: Text height
+        --key.italic: Italicize text
+        --key.margin=: Text margin
+        --key.padding=: Text padding
+        --key.strikethrough: Strikethrough text
+        --key.underline: Underline text
+        --key.width=: Text width
+        --level.align=: Text Alignment
+        --level.background=: Background Color
+        --level.bold: Bold text
+        --level.border-background=: Border Background Color
+        --level.border-foreground=: Border Foreground Color
+        --level.border=: Border Style
+        --level.faint: Faint text
+        --level.foreground=: Foreground Color
+        --level.height=: Text height
+        --level.italic: Italicize text
+        --level.margin=: Text margin
+        --level.padding=: Text padding
+        --level.strikethrough: Strikethrough text
+        --level.underline: Underline text
+        --level.width=: Text width
+        --message.align=: Text Alignment
+        --message.background=: Background Color
+        --message.bold: Bold text
+        --message.border-background=: Border Background Color
+        --message.border-foreground=: Border Foreground Color
+        --message.border=: Border Style
+        --message.faint: Faint text
+        --message.foreground=: Foreground Color
+        --message.height=: Text height
+        --message.italic: Italicize text
+        --message.margin=: Text margin
+        --message.padding=: Text padding
+        --message.strikethrough: Strikethrough text
+        --message.underline: Underline text
+        --message.width=: Text width
+        --min-level=: Minimal level to show
+        --prefix.align=: Text Alignment
+        --prefix.background=: Background Color
+        --prefix.bold: Bold text
+        --prefix.border-background=: Border Background Color
+        --prefix.border-foreground=: Border Foreground Color
+        --prefix.border=: Border Style
+        --prefix.faint: Faint text
+        --prefix.foreground=: Foreground Color
+        --prefix.height=: Text height
+        --prefix.italic: Italicize text
+        --prefix.margin=: Text margin
+        --prefix.padding=: Text padding
+        --prefix.strikethrough: Strikethrough text
+        --prefix.underline: Underline text
+        --prefix.width=: Text width
+        --prefix=: Prefix to print before the message
+        --separator.align=: Text Alignment
+        --separator.background=: Background Color
+        --separator.bold: Bold text
+        --separator.border-background=: Border Background Color
+        --separator.border-foreground=: Border Foreground Color
+        --separator.border=: Border Style
+        --separator.faint: Faint text
+        --separator.foreground=: Foreground Color
+        --separator.height=: Text height
+        --separator.italic: Italicize text
+        --separator.margin=: Text margin
+        --separator.padding=: Text padding
+        --separator.strikethrough: Strikethrough text
+        --separator.underline: Underline text
+        --separator.width=: Text width
+        --time.align=: Text Alignment
+        --time.background=: Background Color
+        --time.bold: Bold text
+        --time.border-background=: Border Background Color
+        --time.border-foreground=: Border Foreground Color
+        --time.border=: Border Style
+        --time.faint: Faint text
+        --time.foreground=: Foreground Color
+        --time.height=: Text height
+        --time.italic: Italicize text
+        --time.margin=: Text margin
+        --time.padding=: Text padding
+        --time.strikethrough: Strikethrough text
+        --time.underline: Underline text
+        --time.width=: Text width
+        --value.align=: Text Alignment
+        --value.background=: Background Color
+        --value.bold: Bold text
+        --value.border-background=: Border Background Color
+        --value.border-foreground=: Border Foreground Color
+        --value.border=: Border Style
+        --value.faint: Faint text
+        --value.foreground=: Foreground Color
+        --value.height=: Text height
+        --value.italic: Italicize text
+        --value.margin=: Text margin
+        --value.padding=: Text padding
+        --value.strikethrough: Strikethrough text
+        --value.underline: Underline text
+        --value.width=: Text width
+        -f, --format: Format message using printf
+        -l, --level=: The log level to use
+        -o, --file=: Log to file
+        -s, --structured: Use structured logging
+        -t, --time=: The time format to use (kitchen, layout, ansic, rfc822, etc...)
+      completion:
+        flag:
+            formatter:
+                - json
+                - logfmt
+                - text
+            key.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            key.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            level:
+                - none
+                - debug
+                - info
+                - warn
+                - error
+                - fatal
+            level.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            level.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            message.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            message.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            prefix.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prefix.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            separator.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            separator.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            time.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            time.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            value.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            value.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: version-check
+      description: Semver check current gum version
