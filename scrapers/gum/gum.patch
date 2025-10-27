@@ -1,0 +1,31 @@
+diff --git a/gum.go b/gum.go
+index 4191314..7988f18 100644
+--- a/gum.go
++++ b/gum.go
+@@ -225,4 +225,6 @@ type Gum struct {
+ 	// $ gum version-check '~> 0.15'
+ 	//
+ 	VersionCheck version.Options `cmd:"" help:"Semver check current gum version"`
++
++	kong.Plugins
+ }
+diff --git a/main.go b/main.go
+index a61916e..b520012 100644
+--- a/main.go
++++ b/main.go
+@@ -8,6 +8,7 @@ import (
+ 	"runtime/debug"
+ 
+ 	"github.com/alecthomas/kong"
++	"github.com/carapace-sh/carapace-spec-kong"
+ 	tea "github.com/charmbracelet/bubbletea"
+ 	"github.com/charmbracelet/gum/internal/exit"
+ 	"github.com/charmbracelet/lipgloss"
+@@ -44,6 +45,7 @@ func main() {
+ 	}
+ 
+ 	gum := &Gum{}
++	gum.Plugins = kong.Plugins{&spec.Plugin{}}
+ 	ctx := kong.Parse(
+ 		gum,
+ 		kong.Description(fmt.Sprintf("A tool for %s shell scripts.", bubbleGumPink.Render("glamorous"))),
