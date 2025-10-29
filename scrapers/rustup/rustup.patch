@@ -1,0 +1,27 @@
+diff --git a/src/cli/rustup_mode.rs b/src/cli/rustup_mode.rs
+index 198dee79..0d64843a 100644
+--- a/src/cli/rustup_mode.rs
++++ b/src/cli/rustup_mode.rs
+@@ -42,6 +42,10 @@ use crate::{
+     utils::{self, ExitCode},
+ };
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ const TOOLCHAIN_OVERRIDE_ERROR: &str = "To override the toolchain using the 'rustup +toolchain' syntax, \
+                         make sure to prefix the toolchain override with a '+'";
+ 
+@@ -557,6 +561,11 @@ pub async fn main(
+ ) -> Result<utils::ExitCode> {
+     self_update::cleanup_self_updater(process)?;
+ 
++    generate(Spec, &mut Rustup::command(), "rustup", &mut io::stdout());
++    if true {
++        return Ok(utils::ExitCode(0));
++    }
++
+     use clap::error::ErrorKind::*;
+     let matches = match Rustup::try_parse_from(process.args_os()) {
+         Ok(matches) => matches,
