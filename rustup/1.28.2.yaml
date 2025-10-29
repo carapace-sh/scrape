@@ -1,0 +1,439 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: rustup
+description: The Rust toolchain installer
+flags:
+  -h, --help: Print help
+  -q, --quiet: Disable progress output, set log level to 'WARN' if 'RUSTUP_LOG' is unset
+  -v, --verbose: Set log level to 'DEBUG' if 'RUSTUP_LOG' is unset
+  -V, --version: Print version
+commands:
+- name: toolchain
+  description: Install, uninstall, or list toolchains
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: list
+    description: List installed toolchains
+    flags:
+      -h, --help: Print help
+      -q, --quiet: Force the output to be a single column
+      -v, --verbose: Enable verbose output with toolchain information
+  - name: install
+    aliases:
+    - update
+    - add
+    description: Install or update the given toolchains, or by default the active toolchain
+    flags:
+      --allow-downgrade: Allow rustup to downgrade the toolchain to satisfy your component choice
+      -c, --component=*: Comma-separated list of components to be added on installation
+      --force: Force an update, even if some components are missing
+      --force-non-host: Install toolchains that require an emulator. See https://github.com/rust-lang/rustup/wiki/Non-host-toolchains
+      -h, --help: Print help
+      --no-self-update: Don't perform self update when running the `rustup toolchain install` command
+      --profile=: ''
+      -t, --target=*: Comma-separated list of targets to be added on installation
+    completion:
+      flag:
+        profile:
+        - minimal
+        - default
+        - complete
+  - name: uninstall
+    aliases:
+    - remove
+    - rm
+    - delete
+    - del
+    description: Uninstall the given toolchains
+    flags:
+      -h, --help: Print help
+  - name: link
+    description: Create a custom toolchain by symlinking to a directory
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: List installed toolchains
+    - name: install
+      description: Install or update the given toolchains, or by default the active toolchain
+    - name: uninstall
+      description: Uninstall the given toolchains
+    - name: link
+      description: Create a custom toolchain by symlinking to a directory
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: default
+  description: Set the default toolchain
+  flags:
+    --force-non-host: Install toolchains that require an emulator. See https://github.com/rust-lang/rustup/wiki/Non-host-toolchains
+    -h, --help: Print help
+- name: show
+  description: Show the active and installed toolchains or profiles
+  flags:
+    -h, --help: Print help
+    -v, --verbose: Enable verbose output with rustc information for all installed toolchains
+  commands:
+  - name: active-toolchain
+    description: Show the active toolchain
+    flags:
+      -h, --help: Print help
+      -v, --verbose: Enable verbose output with rustc information
+  - name: home
+    description: Display the computed value of RUSTUP_HOME
+    flags:
+      -h, --help: Print help
+  - name: profile
+    description: Show the default profile used for the `rustup install` command
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: active-toolchain
+      description: Show the active toolchain
+    - name: home
+      description: Display the computed value of RUSTUP_HOME
+    - name: profile
+      description: Show the default profile used for the `rustup install` command
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: update
+  aliases:
+  - upgrade
+  - up
+  description: Update Rust toolchains and rustup
+  flags:
+    --force: Force an update, even if some components are missing
+    --force-non-host: Install toolchains that require an emulator. See https://github.com/rust-lang/rustup/wiki/Non-host-toolchains
+    -h, --help: Print help
+    --no-self-update: Don't perform self update when running the `rustup update` command
+- name: check
+  description: Check for updates to Rust toolchains and rustup
+  flags:
+    -h, --help: Print help
+- name: target
+  description: Modify a toolchain's supported targets
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: list
+    description: List installed and available targets
+    flags:
+      -h, --help: Print help
+      --installed: List only installed targets
+      -q, --quiet: Force the output to be a single column
+      --toolchain=: Toolchain name, such as 'stable', 'nightly', or '1.8.0'. For more information see `rustup help toolchain`
+  - name: add
+    aliases:
+    - install
+    description: Add a target to a Rust toolchain
+    flags:
+      -h, --help: Print help
+      --toolchain=: Toolchain name, such as 'stable', 'nightly', or '1.8.0'. For more information see `rustup help toolchain`
+  - name: remove
+    aliases:
+    - uninstall
+    - rm
+    - delete
+    - del
+    description: Remove a target from a Rust toolchain
+    flags:
+      -h, --help: Print help
+      --toolchain=: Toolchain name, such as 'stable', 'nightly', or '1.8.0'. For more information see `rustup help toolchain`
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: List installed and available targets
+    - name: add
+      description: Add a target to a Rust toolchain
+    - name: remove
+      description: Remove a target from a Rust toolchain
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: component
+  description: Modify a toolchain's installed components
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: list
+    description: List installed and available components
+    flags:
+      -h, --help: Print help
+      --installed: List only installed components
+      -q, --quiet: Force the output to be a single column
+      --toolchain=: Toolchain name, such as 'stable', 'nightly', or '1.8.0'. For more information see `rustup help toolchain`
+  - name: add
+    description: Add a component to a Rust toolchain
+    flags:
+      -h, --help: Print help
+      --target=: ''
+      --toolchain=: Toolchain name, such as 'stable', 'nightly', or '1.8.0'. For more information see `rustup help toolchain`
+  - name: remove
+    aliases:
+    - uninstall
+    - rm
+    - delete
+    - del
+    description: Remove a component from a Rust toolchain
+    flags:
+      -h, --help: Print help
+      --target=: ''
+      --toolchain=: Toolchain name, such as 'stable', 'nightly', or '1.8.0'. For more information see `rustup help toolchain`
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: List installed and available components
+    - name: add
+      description: Add a component to a Rust toolchain
+    - name: remove
+      description: Remove a component from a Rust toolchain
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: override
+  description: Modify toolchain overrides for directories
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: list
+    description: List directory toolchain overrides
+    flags:
+      -h, --help: Print help
+  - name: set
+    aliases:
+    - add
+    description: Set the override toolchain for a directory
+    flags:
+      -h, --help: Print help
+      --path=: Path to the directory
+    completion:
+      flag:
+        path:
+        - $files
+      positional:
+      - []
+  - name: unset
+    aliases:
+    - remove
+    - rm
+    - delete
+    - del
+    description: Remove the override toolchain for a directory
+    flags:
+      -h, --help: Print help
+      --nonexistent: Remove override toolchain for all nonexistent directories
+      --path=: Path to the directory
+    completion:
+      flag:
+        path:
+        - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: List directory toolchain overrides
+    - name: set
+      description: Set the override toolchain for a directory
+    - name: unset
+      description: Remove the override toolchain for a directory
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: run
+  description: Run a command with an environment configured for a given toolchain
+  flags:
+    -h, --help: Print help
+    --install: Install the requested toolchain if needed
+- name: which
+  description: Display which binary will be run for a given command
+  flags:
+    -h, --help: Print help
+    --toolchain=: Toolchain name, such as 'stable', 'nightly', '1.8.0', or a custom toolchain name. For more information see `rustup help toolchain`
+- name: doc
+  aliases:
+  - docs
+  description: Open the documentation for the current toolchain
+  flags:
+    --alloc: The Rust core allocation and collections library
+    --book: The Rust Programming Language book
+    --cargo: The Cargo Book
+    --clippy: The Clippy Documentation
+    --core: The Rust Core Library
+    --edition-guide: The Rust Edition Guide
+    --embedded-book: The Embedded Rust Book
+    --error-codes: The Rust Error Codes Index
+    -h, --help: Print help
+    --nomicon: The Dark Arts of Advanced and Unsafe Rust Programming
+    --path: Only print the path to the documentation
+    --proc_macro: A support library for macro authors when defining new macros
+    --reference: The Rust Reference
+    --rust-by-example: A collection of runnable examples that illustrate various Rust concepts and standard libraries
+    --rustc: The compiler for the Rust programming language
+    --rustdoc: Documentation generator for Rust projects
+    --std: Standard library API documentation
+    --style-guide: The Rust Style Guide
+    --test: Support code for rustc's built in unit-test and micro-benchmarking framework
+    --toolchain=: Toolchain name, such as 'stable', 'nightly', or '1.8.0'. For more information see `rustup help toolchain`
+    --unstable-book: The Unstable Book
+- name: man
+  description: View the man page for a given command
+  flags:
+    -h, --help: Print help
+    --toolchain=: Toolchain name, such as 'stable', 'nightly', or '1.8.0'. For more information see `rustup help toolchain`
+- name: self
+  description: Modify the rustup installation
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: update
+    description: Download and install updates to rustup
+    flags:
+      -h, --help: Print help
+  - name: uninstall
+    description: Uninstall rustup
+    flags:
+      -h, --help: Print help
+      -y: ''
+  - name: upgrade-data
+    description: Upgrade the internal data format
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: update
+      description: Download and install updates to rustup
+    - name: uninstall
+      description: Uninstall rustup
+    - name: upgrade-data
+      description: Upgrade the internal data format
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: set
+  description: Alter rustup settings
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: default-host
+    description: The triple used to identify toolchains when not specified
+    flags:
+      -h, --help: Print help
+  - name: profile
+    description: The default components installed with a toolchain
+    flags:
+      -h, --help: Print help
+  - name: auto-self-update
+    description: The rustup auto self update mode
+    flags:
+      -h, --help: Print help
+  - name: auto-install
+    description: The auto toolchain install mode
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: default-host
+      description: The triple used to identify toolchains when not specified
+    - name: profile
+      description: The default components installed with a toolchain
+    - name: auto-self-update
+      description: The rustup auto self update mode
+    - name: auto-install
+      description: The auto toolchain install mode
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: completions
+  description: Generate tab-completion scripts for your shell
+  flags:
+    -h, --help: Print help
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: toolchain
+    description: Install, uninstall, or list toolchains
+    commands:
+    - name: list
+      description: List installed toolchains
+    - name: install
+      description: Install or update the given toolchains, or by default the active toolchain
+    - name: uninstall
+      description: Uninstall the given toolchains
+    - name: link
+      description: Create a custom toolchain by symlinking to a directory
+  - name: default
+    description: Set the default toolchain
+  - name: show
+    description: Show the active and installed toolchains or profiles
+    commands:
+    - name: active-toolchain
+      description: Show the active toolchain
+    - name: home
+      description: Display the computed value of RUSTUP_HOME
+    - name: profile
+      description: Show the default profile used for the `rustup install` command
+  - name: update
+    description: Update Rust toolchains and rustup
+  - name: check
+    description: Check for updates to Rust toolchains and rustup
+  - name: target
+    description: Modify a toolchain's supported targets
+    commands:
+    - name: list
+      description: List installed and available targets
+    - name: add
+      description: Add a target to a Rust toolchain
+    - name: remove
+      description: Remove a target from a Rust toolchain
+  - name: component
+    description: Modify a toolchain's installed components
+    commands:
+    - name: list
+      description: List installed and available components
+    - name: add
+      description: Add a component to a Rust toolchain
+    - name: remove
+      description: Remove a component from a Rust toolchain
+  - name: override
+    description: Modify toolchain overrides for directories
+    commands:
+    - name: list
+      description: List directory toolchain overrides
+    - name: set
+      description: Set the override toolchain for a directory
+    - name: unset
+      description: Remove the override toolchain for a directory
+  - name: run
+    description: Run a command with an environment configured for a given toolchain
+  - name: which
+    description: Display which binary will be run for a given command
+  - name: doc
+    description: Open the documentation for the current toolchain
+  - name: man
+    description: View the man page for a given command
+  - name: self
+    description: Modify the rustup installation
+    commands:
+    - name: update
+      description: Download and install updates to rustup
+    - name: uninstall
+      description: Uninstall rustup
+    - name: upgrade-data
+      description: Upgrade the internal data format
+  - name: set
+    description: Alter rustup settings
+    commands:
+    - name: default-host
+      description: The triple used to identify toolchains when not specified
+    - name: profile
+      description: The default components installed with a toolchain
+    - name: auto-self-update
+      description: The rustup auto self update mode
+    - name: auto-install
+      description: The auto toolchain install mode
+  - name: completions
+    description: Generate tab-completion scripts for your shell
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
