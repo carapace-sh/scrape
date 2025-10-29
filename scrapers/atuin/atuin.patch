@@ -25,6 +25,6 @@ index eaa58664..b9ce9c07 100644
  
  fn main() -> Result<()> {
 -    Atuin::parse().run()
-+    generate(Spec, &mut Atuin::command(), "cargo", &mut io::stdout());
++    generate(Spec, &mut Atuin::command(), "atuin", &mut io::stdout());
 +    return Ok(());
  }
