@@ -19,7 +19,7 @@ index 3e576c5b..12cef662 100644
  
 -    let command = create_clap_command();
 +    let mut command = create_clap_command();
-+    generate(Spec, &mut command, "cargo", &mut io::stdout());
++    generate(Spec, &mut command, "mdbook", &mut io::stdout());
 +    if true {
 +        return;
 +    }
