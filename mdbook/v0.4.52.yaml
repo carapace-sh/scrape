@@ -1,0 +1,136 @@
+name: mdbook
+description: Creates a book from markdown files
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+commands:
+- name: init
+  description: Creates the boilerplate structure and files for a new book
+  flags:
+    --force: Skips confirmation prompts
+    -h, --help: Print help
+    --ignore=: Creates a VCS ignore file (i.e. .gitignore)
+    --theme: Copies the default theme into your source folder
+    --title=: Sets the book title
+    -V, --version: Print version
+  completion:
+    flag:
+      ignore:
+      - none
+      - git
+    positional:
+    - - $files
+- name: build
+  description: Builds a book from its markdown files
+  flags:
+    -d, --dest-dir=: |-
+      Output directory for the book
+      Relative paths are interpreted relative to the book's root directory.
+      If omitted, mdBook uses build.build-dir from book.toml or defaults to `./book`.
+    -h, --help: Print help
+    -o, --open: Opens the compiled book in a web browser
+    -V, --version: Print version
+  completion:
+    flag:
+      dest-dir:
+      - $files
+    positional:
+    - - $files
+- name: test
+  description: Tests that a book's Rust code samples compile
+  flags:
+    -c, --chapter=: ''
+    -d, --dest-dir=: |-
+      Output directory for the book
+      Relative paths are interpreted relative to the book's root directory.
+      If omitted, mdBook uses build.build-dir from book.toml or defaults to `./book`.
+    -h, --help: Print help
+    -L, --library-path=*: A comma-separated list of directories to add to the crate search path when building tests
+    -V, --version: Print version
+  completion:
+    flag:
+      dest-dir:
+      - $files
+    positional:
+    - - $files
+- name: clean
+  description: Deletes a built book
+  flags:
+    -d, --dest-dir=: |-
+      Output directory for the book
+      Relative paths are interpreted relative to the book's root directory.
+      If omitted, mdBook uses build.build-dir from book.toml or defaults to `./book`.
+    -h, --help: Print help
+    -V, --version: Print version
+  completion:
+    flag:
+      dest-dir:
+      - $files
+    positional:
+    - - $files
+- name: completions
+  description: Generate shell completions for your shell to stdout
+  flags:
+    -h, --help: Print help
+    -V, --version: Print version
+- name: watch
+  description: Watches a book's files and rebuilds it on changes
+  flags:
+    -d, --dest-dir=: |-
+      Output directory for the book
+      Relative paths are interpreted relative to the book's root directory.
+      If omitted, mdBook uses build.build-dir from book.toml or defaults to `./book`.
+    -h, --help: Print help
+    -o, --open: Opens the compiled book in a web browser
+    -V, --version: Print version
+    --watcher=: The filesystem watching technique
+  completion:
+    flag:
+      dest-dir:
+      - $files
+      watcher:
+      - poll
+      - native
+    positional:
+    - - $files
+- name: serve
+  description: Serves a book at http://localhost:3000, and rebuilds it on changes
+  flags:
+    -d, --dest-dir=: |-
+      Output directory for the book
+      Relative paths are interpreted relative to the book's root directory.
+      If omitted, mdBook uses build.build-dir from book.toml or defaults to `./book`.
+    -h, --help: Print help
+    -n, --hostname=: Hostname to listen on for HTTP connections
+    -o, --open: Opens the compiled book in a web browser
+    -p, --port=: Port to use for HTTP connections
+    -V, --version: Print version
+    --watcher=: The filesystem watching technique
+  completion:
+    flag:
+      dest-dir:
+      - $files
+      watcher:
+      - poll
+      - native
+    positional:
+    - - $files
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: init
+    description: Creates the boilerplate structure and files for a new book
+  - name: build
+    description: Builds a book from its markdown files
+  - name: test
+    description: Tests that a book's Rust code samples compile
+  - name: clean
+    description: Deletes a built book
+  - name: completions
+    description: Generate shell completions for your shell to stdout
+  - name: watch
+    description: Watches a book's files and rebuilds it on changes
+  - name: serve
+    description: Serves a book at http://localhost:3000, and rebuilds it on changes
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
