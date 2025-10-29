@@ -1,0 +1,28 @@
+diff --git a/src/main.rs b/src/main.rs
+index 3e576c5b..12cef662 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -15,6 +15,10 @@ use std::ffi::OsStr;
+ use std::io::Write;
+ use std::path::PathBuf;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ mod cmd;
+ 
+ const VERSION: &str = concat!("v", crate_version!());
+@@ -22,7 +26,11 @@ const VERSION: &str = concat!("v", crate_version!());
+ fn main() {
+     init_logger();
+ 
+-    let command = create_clap_command();
++    let mut command = create_clap_command();
++    generate(Spec, &mut command, "cargo", &mut io::stdout());
++    if true {
++        return;
++    }
+ 
+     // Check which subcommand the user ran...
+     let res = match command.get_matches().subcommand() {
