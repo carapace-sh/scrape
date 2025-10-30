@@ -15,7 +15,7 @@ for line in "${lines[@]}"; do
   if [ ! -f "gh-pages/${command}/${version}.yaml" ]; then
     docker compose build "${command}"
     out="$(docker compose run --quiet --remove-orphans "${command}")"
-    mkdir -p "gh-pages/${command}/"
+    mkdir -p "$(dirname "gh-pages/${command}/${version}.yaml")"
     echo "${out}" > "gh-pages/${command}/${version}.yaml"
   else
     echo "gh-pages/${command}/${version}.yaml already exists" >/dev/stderr

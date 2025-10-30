@@ -5,6 +5,7 @@
     "docker": "https://github.com/docker/cli#v28.5.1",
     "docker-compose": "https://github.com/docker/compose#v2.40.2",
     "gh": "https://github.com/cli/cli#v2.82.1",
+    "gitbutler-cli": "https://github.com/gitbutlerapp/gitbutler#release/0.17.0",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.74.0",
     "golangci-lint": "https://github.com/golangci/golangci-lint#v2.6.0",
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.12.7",

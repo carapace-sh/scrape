@@ -1,0 +1,24 @@
+diff --git a/crates/gitbutler-cli/src/main.rs b/crates/gitbutler-cli/src/main.rs
+index 02251e078..8b9e10c80 100644
+--- a/crates/gitbutler-cli/src/main.rs
++++ b/crates/gitbutler-cli/src/main.rs
+@@ -7,9 +7,19 @@ use args::Args;
+ 
+ use crate::args::{project, vbranch};
+ 
++use carapace_spec_clap::Spec;
++use clap::CommandFactory;
++use clap_complete::generate;
++use std::io;
++
+ mod command;
+ 
+ fn main() -> Result<()> {
++    generate(Spec, &mut Args::command(), "but", &mut io::stdout());
++    if true {
++        return Ok(());
++    }
++
+     let args: Args = clap::Parser::parse();
+     gitbutler_project::configure_git2();
+ 

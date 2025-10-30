@@ -10,6 +10,7 @@ jobs:
   docker: {uses: ./.github/workflows/scrape-template.yml, with: {command: docker}}
   docker-compose: {uses: ./.github/workflows/scrape-template.yml, with: {command: docker-compose}}
   gh: {uses: ./.github/workflows/scrape-template.yml, with: {command: gh}}
+  gitbutler-cli: {uses: ./.github/workflows/scrape-template.yml, with: {command: gitbutler-cli}}
   glab: {uses: ./.github/workflows/scrape-template.yml, with: {command: glab}}
   golangci-lint: {uses: ./.github/workflows/scrape-template.yml, with: {command: golangci-lint}}
   goreleaser: {uses: ./.github/workflows/scrape-template.yml, with: {command: goreleaser}}
