@@ -6,7 +6,7 @@
     "docker-compose": "https://github.com/docker/compose#v2.40.2",
     "gh": "https://github.com/cli/cli#v2.82.1",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.74.0",
-    "golangci-lint": "https://github.com/golangci/golangci-lint#v2.5.0",
+    "golangci-lint": "https://github.com/golangci/golangci-lint#v2.6.0",
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.12.7",
     "gum": "https://github.com/charmbracelet/gum#v0.17.0",
     "jj": "https://github.com/jj-vcs/jj#v0.34.0",
