@@ -1,0 +1,28 @@
+diff --git a/crates/but/src/lib.rs b/crates/but/src/lib.rs
+index 15b891d1d..394bec3e1 100644
+--- a/crates/but/src/lib.rs
++++ b/crates/but/src/lib.rs
+@@ -9,6 +9,11 @@ use but_settings::AppSettings;
+ use colored::Colorize;
+ use metrics::{Event, Metrics, Props, metrics_if_configured};
+ 
++use carapace_spec_clap::Spec;
++use clap::CommandFactory;
++use clap_complete::generate;
++use std::io;
++
+ mod base;
+ mod branch;
+ mod command;
+@@ -31,6 +36,11 @@ mod worktree;
+ 
+ /// Handle `args` which must be what's passed by `std::env::args_os()`.
+ pub async fn handle_args(args: impl Iterator<Item = OsString>) -> Result<()> {
++    generate(Spec, &mut Args::command(), "but", &mut io::stdout());
++    if true {
++        return Ok(());
++    }
++
+     let args: Vec<_> = args.collect();
+ 
+     // Check if help is requested with no subcommand
