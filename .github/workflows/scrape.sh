@@ -12,6 +12,8 @@ mapfile -t lines <<< "${lines}"
 
 for line in "${lines[@]}"; do
   read command version <<< "$line"
+  version="${version//\//_}"
+
   if [ ! -f "gh-pages/${command}/${version}.yaml" ]; then
     docker compose build "${command}"
     out="$(docker compose run --quiet --remove-orphans "${command}")"
