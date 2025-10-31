@@ -23,4 +23,5 @@ jobs:
   mise: {uses: ./.github/workflows/scrape-template.yml, with: {command: mise}}
   rustup: {uses: ./.github/workflows/scrape-template.yml, with: {command: rustup}}
   taplo: {uses: ./.github/workflows/scrape-template.yml, with: {command: taplo}}
+  task: {uses: ./.github/workflows/scrape-template.yml, with: {command: task}}
   zoxide: {uses: ./.github/workflows/scrape-template.yml, with: {command: zoxide}}
