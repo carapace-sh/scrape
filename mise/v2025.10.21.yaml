@@ -1,0 +1,1825 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: mise
+description: The front-end to your dev env
+flags:
+  -h, --help: Print help (see more with '--help')
+  --no-config: Do not load any config files
+  --output=: ''
+persistentflags:
+  -C, --cd=: Change directory before running command
+  -E, --env=*: Set the environment for loading `mise.<ENV>.toml`
+  -j, --jobs=: 'How many jobs to run in parallel [default: 8]'
+  -q, --quiet: Suppress non-error messages
+  --raw: Read/write directly to stdin/stdout/stderr instead of by line
+  --silent: Suppress all task output and mise non-error messages
+  -v, --verbose*: Show extra output (use -vv for even more)
+  -y, --yes: Answer yes to all confirmation prompts
+completion:
+  flag:
+    cd:
+    - $directories
+  positional:
+  - []
+commands:
+- name: activate
+  description: Initializes mise in the current shell session
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --no-hook-env: Do not automatically call hook-env
+    -q, --quiet: Suppress non-error messages
+    --shims: |-
+      Use shims instead of modifying PATH
+      Effectively the same as:
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - - bash
+      - elvish
+      - fish
+      - nu
+      - xonsh
+      - zsh
+      - pwsh
+- name: alias
+  aliases:
+  - a
+  - aliases
+  description: Manage version aliases.
+  flags:
+    -h, --help: Print help
+    --no-header: Don't show table header
+    -p, --plugin=: filter aliases by plugin
+  completion:
+    flag:
+      cd:
+      - $directories
+  commands:
+  - name: get
+    description: Show an alias for a plugin
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+      - []
+  - name: ls
+    aliases:
+    - list
+    description: |-
+      List aliases
+      Shows the aliases that can be specified.
+      These can come from user config or from plugins in `bin/list-aliases`.
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --no-header: Don't show table header
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+  - name: set
+    aliases:
+    - add
+    - create
+    description: Add/update an alias for a backend/plugin
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+      - []
+      - []
+  - name: unset
+    aliases:
+    - rm
+    - remove
+    - delete
+    - del
+    description: Clears an alias for a backend/plugin
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+      - []
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: get
+      description: Show an alias for a plugin
+    - name: ls
+      description: |-
+        List aliases
+        Shows the aliases that can be specified.
+        These can come from user config or from plugins in `bin/list-aliases`.
+    - name: set
+      description: Add/update an alias for a backend/plugin
+    - name: unset
+      description: Clears an alias for a backend/plugin
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: backends
+  aliases:
+  - b
+  - backend
+  - backend-list
+  description: Manage backends
+  flags:
+    -h, --help: Print help
+  completion:
+    flag:
+      cd:
+      - $directories
+  commands:
+  - name: ls
+    aliases:
+    - list
+    description: List built-in backends
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: ls
+      description: List built-in backends
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: bin-paths
+  description: List all the active runtime bin paths
+  flags:
+    -h, --help: Print help
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: cache
+  description: Manage the mise cache
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+  commands:
+  - name: clear
+    aliases:
+    - c
+    - clean
+    description: Deletes all cache files in mise
+    flags:
+      -h, --help: Print help
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: path
+    aliases:
+    - dir
+    description: Show the cache directory path
+    flags:
+      -h, --help: Print help
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: prune
+    aliases:
+    - p
+    description: Removes stale mise cache files
+    flags:
+      --dry-run: Just show what would be pruned
+      -h, --help: Print help (see more with '--help')
+      -v, --verbose*: Show pruned files
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: clear
+      description: Deletes all cache files in mise
+    - name: path
+      description: Show the cache directory path
+    - name: prune
+      description: Removes stale mise cache files
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: completion
+  aliases:
+  - complete
+  - completions
+  description: Generate shell completions
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --include-bash-completion-lib: Include the bash completion library in the bash completion script
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - - bash
+      - fish
+      - zsh
+- name: config
+  aliases:
+  - cfg
+  - toml
+  description: Manage config files
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -J, --json: Output in JSON format
+    --no-header: Do not print table header
+    --no-headers&: Do not print table header
+    --tracked-configs: List all tracked config files
+  completion:
+    flag:
+      cd:
+      - $directories
+  commands:
+  - name: generate
+    aliases:
+    - g
+    description: Generate a mise.toml file
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -o, --output=: Output to file instead of stdout
+      -t, --tool-versions=: Path to a .tool-versions file to import tools from
+    completion:
+      flag:
+        cd:
+        - $directories
+        output:
+        - $files
+        tool-versions:
+        - $files
+  - name: get
+    description: Display the value of a setting in a mise.toml file
+    flags:
+      -f, --file=: The path to the mise.toml file to edit
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        cd:
+        - $directories
+        file:
+        - $files
+      positional:
+      - []
+  - name: ls
+    aliases:
+    - list
+    description: List config files currently in use
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -J, --json: Output in JSON format
+      --no-header: Do not print table header
+      --no-headers&: Do not print table header
+      --tracked-configs: List all tracked config files
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: set
+    description: Set the value of a setting in a mise.toml file
+    flags:
+      -f, --file=: The path to the mise.toml file to edit
+      -h, --help: Print help (see more with '--help')
+      -t, --type=: ''
+    completion:
+      flag:
+        cd:
+        - $directories
+        file:
+        - $files
+        type:
+        - infer
+        - string
+        - integer
+        - float
+        - bool
+        - list
+        - set
+      positional:
+      - []
+      - []
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: generate
+      description: Generate a mise.toml file
+    - name: get
+      description: Display the value of a setting in a mise.toml file
+    - name: ls
+      description: List config files currently in use
+    - name: set
+      description: Set the value of a setting in a mise.toml file
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: deactivate
+  description: Disable mise for current shell session
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: doctor
+  aliases:
+  - dr
+  description: Check mise installation for possible problems
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -J, --json: ''
+  completion:
+    flag:
+      cd:
+      - $directories
+  commands:
+  - name: path
+    aliases:
+    - paths
+    description: Print the current PATH entries mise is providing
+    flags:
+      -f, --full: Print all entries including those not provided by mise
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: path
+      description: Print the current PATH entries mise is providing
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: en
+  description: Starts a new shell with the mise environment built from the current configuration
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -s, --shell=: Shell to start
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - - $directories
+- name: env
+  aliases:
+  - e
+  description: Exports env vars to activate mise a single time
+  flags:
+    -D, --dotenv: Output in dotenv format
+    -h, --help: Print help (see more with '--help')
+    -J, --json: Output in JSON format
+    --json-extended: Output in JSON format with additional information (source, tool)
+    --redacted: Only show redacted environment variables
+    -s, --shell=: Shell type to generate environment variables for
+    --values: Only show values of environment variables
+  completion:
+    flag:
+      cd:
+      - $directories
+      shell:
+      - bash
+      - elvish
+      - fish
+      - nu
+      - xonsh
+      - zsh
+      - pwsh
+- name: exec
+  aliases:
+  - x
+  description: Execute a command with tool(s) set
+  flags:
+    -c, --command=: Command string to execute
+    -h, --help: Print help (see more with '--help')
+    -j, --jobs=: |-
+      Number of jobs to run in parallel
+      [default: 4]
+    --raw: Directly pipe stdin/stdout/stderr from plugin to user Sets --jobs=1
+  completion:
+    flag:
+      cd:
+      - $directories
+      command:
+      - $executables
+      - $files
+- name: fmt
+  description: Formats mise.toml
+  flags:
+    -a, --all: Format all files from the current directory
+    -c, --check: Check if the configs are formatted, no formatting is done
+    -h, --help: Print help (see more with '--help')
+    -s, --stdin: Read config from stdin and write its formatted version into stdout
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: generate
+  aliases:
+  - gen
+  - g
+  description: Generate files for various tools/services
+  flags:
+    -h, --help: Print help
+  completion:
+    flag:
+      cd:
+      - $directories
+  commands:
+  - name: bootstrap
+    description: Generate a script to download+execute mise
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -l, --localize: Sandboxes mise internal directories like MISE_DATA_DIR and MISE_CACHE_DIR into a `.mise` directory in the project
+      --localized-dir=: Directory to put localized data into
+      -V, --version=: Specify mise version to fetch
+      -w, --write=: instead of outputting the script to stdout, write to a file and make it executable
+    completion:
+      flag:
+        cd:
+        - $directories
+        localized-dir:
+        - $directories
+        write:
+        - $files
+  - name: config
+    aliases:
+    - g
+    description: '[experimental] Generate a mise.toml file'
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -o, --output=: Output to file instead of stdout
+      -t, --tool-versions=: Path to a .tool-versions file to import tools from
+    completion:
+      flag:
+        cd:
+        - $directories
+        output:
+        - $files
+        tool-versions:
+        - $files
+  - name: devcontainer
+    description: Generate a devcontainer to execute mise
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -i, --image=: The image to use for the devcontainer
+      -m, --mount-mise-data: Bind the mise-data-volume to the devcontainer
+      -n, --name=: The name of the devcontainer
+      -w, --write: write to .devcontainer/devcontainer.json
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: git-pre-commit
+    aliases:
+    - pre-commit
+    description: Generate a git pre-commit hook
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --hook=: Which hook to generate (saves to .git/hooks/$hook)
+      -t, --task=: The task to run when the pre-commit hook is triggered
+      -w, --write: write to .git/hooks/pre-commit and make it executable
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: github-action
+    description: Generate a GitHub Action workflow file
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --name=: the name of the workflow to generate
+      -t, --task=: The task to run when the workflow is triggered
+      -w, --write: write to .github/workflows/$name.yml
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: task-docs
+    description: Generate documentation for tasks in a project
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -I, --index: write only an index of tasks, intended for use with `--multi`
+      -i, --inject: inserts the documentation into an existing file
+      -m, --multi: render each task as a separate document, requires `--output` to be a directory
+      -o, --output=: writes the generated docs to a file/directory
+      -r, --root=: root directory to search for tasks
+      -s, --style=: ''
+    completion:
+      flag:
+        cd:
+        - $directories
+        output:
+        - $files
+        root:
+        - $directories
+        style:
+        - simple
+        - detailed
+  - name: task-stubs
+    description: Generates shims to run mise tasks
+    flags:
+      -d, --dir=: Directory to create task stubs inside of
+      -h, --help: Print help (see more with '--help')
+      -m, --mise-bin=: Path to a mise bin to use when running the task stub.
+    completion:
+      flag:
+        cd:
+        - $directories
+        dir:
+        - $directories
+        mise-bin:
+        - $files
+  - name: tool-stub
+    description: Generate a tool stub for HTTP-based tools
+    flags:
+      -b, --bin=: Binary path within the extracted archive
+      --fetch: Fetch checksums and sizes for an existing tool stub file
+      -h, --help: Print help (see more with '--help')
+      --http=: HTTP backend type to use
+      --platform-bin=*: Platform-specific binary paths in the format platform:path
+      --platform-url=*: Platform-specific URLs in the format platform:url or just url (auto-detect platform)
+      --skip-download: Skip downloading for checksum and binary path detection (faster but less informative)
+      -u, --url=: URL for downloading the tool
+      --version=: Version of the tool
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: bootstrap
+      description: Generate a script to download+execute mise
+    - name: config
+      description: '[experimental] Generate a mise.toml file'
+    - name: devcontainer
+      description: Generate a devcontainer to execute mise
+    - name: git-pre-commit
+      description: Generate a git pre-commit hook
+    - name: github-action
+      description: Generate a GitHub Action workflow file
+    - name: task-docs
+      description: Generate documentation for tasks in a project
+    - name: task-stubs
+      description: Generates shims to run mise tasks
+    - name: tool-stub
+      description: Generate a tool stub for HTTP-based tools
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: implode
+  description: Removes mise CLI and all related data
+  flags:
+    --config: Also remove config directory
+    -n, --dry-run: List directories that would be removed without actually removing them
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: install
+  aliases:
+  - i
+  description: Install a tool version
+  flags:
+    -n, --dry-run: Show what would be installed without actually installing
+    -f, --force: Force reinstall even if already installed
+    -h, --help: Print help (see more with '--help')
+    -j, --jobs=: |-
+      Number of jobs to run in parallel
+      [default: 4]
+    --raw: Directly pipe stdin/stdout/stderr from plugin to user Sets --jobs=1
+    -v, --verbose*: Show installation output
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: install-into
+  description: Install a tool version to a specific path
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+    - - $directories
+- name: latest
+  description: Gets the latest available version for a plugin
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -i, --installed: Show latest installed instead of available version
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+    - []
+- name: link
+  aliases:
+  - ln
+  description: Symlinks a tool version into mise
+  flags:
+    -f, --force: Overwrite an existing tool version if it exists
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+    - - $directories
+- name: lock
+  description: Update lockfile checksums and URLs for all specified platforms
+  flags:
+    -n, --dry-run: Show what would be updated without making changes
+    -f, --force: Update all tools even if lockfile data already exists
+    -h, --help: Print help (see more with '--help')
+    -j, --jobs=: |-
+      Number of jobs to run in parallel
+      [default: 4]
+    -p, --platform=*: |-
+      Comma-separated list of platforms to target
+      e.g.: linux-x64,macos-arm64,windows-x64
+      If not specified, all platforms already in lockfile will be updated
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: ls
+  aliases:
+  - list
+  description: List installed and active tool versions
+  flags:
+    -c, --current: Only show tool versions currently specified in a mise.toml
+    -g, --global: Only show tool versions currently specified in the global mise.toml
+    -h, --help: Print help (see more with '--help')
+    -i, --installed: Only show tool versions that are installed (Hides tools defined in mise.toml but not installed)
+    -J, --json: Output in JSON format
+    -l, --local: Only show tool versions currently specified in the local mise.toml
+    -m, --missing: Display missing tool versions
+    --no-header: Don't display headers
+    --no-headers&: Don't display headers
+    --outdated: Display whether a version is outdated
+    --prefix=: Display versions matching this prefix
+    --prunable: List only tools that can be pruned with `mise prune`
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: ls-remote
+  aliases:
+  - list-all
+  - list-remote
+  description: List runtime versions available for install.
+  flags:
+    --all: Show all installed plugins and versions
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+    - []
+- name: mcp
+  description: '[experimental] Run Model Context Protocol (MCP) server'
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: outdated
+  description: Shows outdated tool versions
+  flags:
+    -l, --bump: Compares against the latest versions available, not what matches the current config
+    -h, --help: Print help (see more with '--help')
+    -J, --json: Output in JSON format
+    --no-header: Don't show table header
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: plugins
+  aliases:
+  - p
+  - plugin
+  - plugin-list
+  description: Manage plugins
+  flags:
+    -c, --core: |-
+      The built-in plugins only
+      Normally these are not shown
+    -h, --help: Print help (see more with '--help')
+    -u, --urls: |-
+      Show the git url for each plugin
+      e.g.: https://github.com/asdf-vm/asdf-nodejs.git
+    --url&: |-
+      Show the git url for each plugin
+      e.g.: https://github.com/asdf-vm/asdf-nodejs.git
+    --user: List installed plugins
+  completion:
+    flag:
+      cd:
+      - $directories
+  commands:
+  - name: install
+    aliases:
+    - i
+    - a
+    - add
+    description: Install a plugin
+    flags:
+      -a, --all: |-
+        Install all missing plugins
+        This will only install plugins that have matching shorthands.
+        i.e.: they don't need the full git repo url
+      -f, --force: Reinstall even if plugin exists
+      -h, --help: Print help (see more with '--help')
+      -j, --jobs=: Number of jobs to run in parallel
+      -v, --verbose*: Show installation output
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+      - []
+  - name: link
+    aliases:
+    - ln
+    description: Symlinks a plugin into mise
+    flags:
+      -f, --force: Overwrite existing plugin
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+      - - $directories
+  - name: ls
+    aliases:
+    - list
+    description: List installed plugins
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -u, --urls: |-
+        Show the git url for each plugin
+        e.g.: https://github.com/asdf-vm/asdf-nodejs.git
+      --url&: |-
+        Show the git url for each plugin
+        e.g.: https://github.com/asdf-vm/asdf-nodejs.git
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: ls-remote
+    aliases:
+    - list-remote
+    - list-all
+    description: List all available remote plugins
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --only-names: Only show the name of each plugin by default it will show a "*" next to installed plugins
+      -u, --urls: 'Show the git url for each plugin e.g.: https://github.com/mise-plugins/mise-poetry.git'
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: uninstall
+    aliases:
+    - remove
+    - rm
+    description: Removes a plugin
+    flags:
+      -a, --all: Remove all plugins
+      -h, --help: Print help (see more with '--help')
+      -p, --purge: Also remove the plugin's installs, downloads, and cache
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: update
+    aliases:
+    - up
+    - upgrade
+    description: Updates a plugin to the latest version
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -j, --jobs=: |-
+        Number of jobs to run in parallel
+        Default: 4
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: install
+      description: Install a plugin
+    - name: link
+      description: Symlinks a plugin into mise
+    - name: ls
+      description: List installed plugins
+    - name: ls-remote
+      description: List all available remote plugins
+    - name: uninstall
+      description: Removes a plugin
+    - name: update
+      description: Updates a plugin to the latest version
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: prune
+  description: Delete unused versions of tools
+  flags:
+    --configs: Prune only tracked and trusted configuration links that point to non-existent configurations
+    -n, --dry-run: Do not actually delete anything
+    -h, --help: Print help (see more with '--help')
+    --tools: Prune only unused versions of tools
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: registry
+  description: List available tools to install
+  flags:
+    -b, --backend=: Show only tools for this backend
+    -h, --help: Print help (see more with '--help')
+    --hide-aliased: Hide aliased tools
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+- name: reshim
+  description: Creates new shims based on bin paths from currently installed tools.
+  flags:
+    -f, --force: Removes all shims before reshimming
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+    - []
+- name: run
+  aliases:
+  - r
+  description: Run task(s)
+  flags:
+    -C, --cd=: Change to this directory before executing the command
+    -c, --continue-on-error: Continue running tasks even if one fails
+    -n, --dry-run: Don't actually run the tasks(s), just print them in order of execution
+    -f, --force: Force the tasks to run even if outputs are up to date
+    -j, --jobs=: |-
+      Number of tasks to run in parallel
+      [default: 4]
+      Configure with `jobs` config or `MISE_JOBS` env var
+    --no-cache: Do not use cache on remote tasks
+    --no-timings: Hides elapsed time after each task completes
+    --no-timing&: Hides elapsed time after each task completes
+    -o, --output=: Change how tasks information is output when running tasks
+    -q, --quiet: Don't show extra output
+    -r, --raw: |-
+      Read/write directly to stdin/stdout/stderr instead of by line
+      Redactions are not applied with this option
+      Configure with `raw` config or `MISE_RAW` env var
+    -s, --shell=: Shell to use to run toml tasks
+    -S, --silent: Don't show any output except for errors
+    --timeout=: |-
+      Timeout for the task to complete
+      e.g.: 30s, 5m
+    -t, --tool=*: 'Tool(s) to run in addition to what is in mise.toml files e.g.: node@20 python@3.10'
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+- name: search
+  description: Search for tools in the registry
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -i, --interactive: Show interactive search
+    -m, --match-type=: 'Match type: equal, contains, or fuzzy'
+    --no-header: Don't display headers
+    --no-headers&: Don't display headers
+  completion:
+    flag:
+      cd:
+      - $directories
+      match-type:
+      - equal
+      - contains
+      - fuzzy
+    positional:
+    - []
+- name: self-update
+  description: Updates mise itself.
+  flags:
+    -f, --force: Update even if already up to date
+    -h, --help: Print help (see more with '--help')
+    --no-plugins: Disable auto-updating plugins
+    -y, --yes: Skip confirmation prompt
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+- name: set
+  aliases:
+  - ev
+  - env-vars
+  description: Set environment variables in mise.toml
+  flags:
+    --age-encrypt: '[experimental] Encrypt the value with age before storing'
+    --age-key-file=: '[experimental] Age identity file for encryption'
+    --age-recipient=*: '[experimental] Age recipient (x25519 public key) for encryption'
+    --age-ssh-recipient=*: '[experimental] SSH recipient (public key or path) for age encryption'
+    -E, --env=: Create/modify an environment-specific config file like .mise.<env>.toml
+    --file=: The TOML file to update
+    -g, --global: Set the environment variable in the global config file
+    -h, --help: Print help (see more with '--help')
+    --prompt: Prompt for environment variable values
+  completion:
+    flag:
+      age-key-file:
+      - $files
+      cd:
+      - $directories
+      file:
+      - $files
+- name: settings
+  description: Manage settings
+  flags:
+    -a, --all: List all settings
+    -h, --help: Print help (see more with '--help')
+    -J, --json: Output in JSON format
+    --json-extended: Output in JSON format with sources
+    -T, --toml: Output in TOML format
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+    - []
+  commands:
+  - name: add
+    description: Adds a setting to the configuration file
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -l, --local: Use the local config file instead of the global one
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+      - []
+  - name: get
+    description: Show a current setting
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -l, --local: Use the local config file instead of the global one
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+  - name: ls
+    aliases:
+    - list
+    description: Show current settings
+    flags:
+      -a, --all: List all settings
+      -h, --help: Print help (see more with '--help')
+      -J, --json: Output in JSON format
+      --json-extended: Output in JSON format with sources
+      -T, --toml: Output in TOML format
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+  - name: set
+    aliases:
+    - create
+    description: Add/update a setting
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -l, --local: Use the local config file instead of the global one
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+      - []
+  - name: unset
+    aliases:
+    - rm
+    - remove
+    - delete
+    - del
+    description: Clears a setting
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -l, --local: Use the local config file instead of the global one
+    completion:
+      flag:
+        cd:
+        - $directories
+      positional:
+      - []
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: add
+      description: Adds a setting to the configuration file
+    - name: get
+      description: Show a current setting
+    - name: ls
+      description: Show current settings
+    - name: set
+      description: Add/update a setting
+    - name: unset
+      description: Clears a setting
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: shell
+  aliases:
+  - sh
+  description: Sets a tool version for the current session.
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -j, --jobs=: |-
+      Number of jobs to run in parallel
+      [default: 4]
+    --raw: Directly pipe stdin/stdout/stderr from plugin to user Sets --jobs=1
+    -u, --unset: Removes a previously set version
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: sync
+  description: Synchronize tools from other version managers with mise
+  flags:
+    -h, --help: Print help
+  completion:
+    flag:
+      cd:
+      - $directories
+  commands:
+  - name: node
+    description: Symlinks all tool versions from an external tool into mise
+    flags:
+      --brew: Get tool versions from Homebrew
+      -h, --help: Print help (see more with '--help')
+      --nodenv: Get tool versions from nodenv
+      --nvm: Get tool versions from nvm
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: python
+    description: Symlinks all tool versions from an external tool into mise
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --pyenv: Get tool versions from pyenv
+      --uv: Sync tool versions with uv (2-way sync)
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: ruby
+    description: Symlinks all ruby tool versions from an external tool into mise
+    flags:
+      --brew: Get tool versions from Homebrew
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        cd:
+        - $directories
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: node
+      description: Symlinks all tool versions from an external tool into mise
+    - name: python
+      description: Symlinks all tool versions from an external tool into mise
+    - name: ruby
+      description: Symlinks all ruby tool versions from an external tool into mise
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: tasks
+  aliases:
+  - t
+  - task
+  description: Manage tasks
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+      sort:
+      - name
+      - alias
+      - description
+      - source
+      sort-order:
+      - asc
+      - desc
+    positional:
+    - []
+  commands:
+  - name: add
+    description: Create a new task
+    flags:
+      -a, --alias=*: Other names for the task
+      -d, --depends=*: Add dependencies to the task
+      --depends-post=*: Dependencies to run after the task runs
+      --description=: Description of the task
+      -D, --dir=: Run the task in a specific directory
+      -f, --file: Create a file task instead of a toml task
+      -h, --help: Print help (see more with '--help')
+      -H, --hide: Hide the task from `mise task` and completions
+      --outputs=*: Glob patterns of files this task creates, to skip if they are not modified
+      -q, --quiet: Do not print the command before running
+      -r, --raw: Directly connect stdin/stdout/stderr
+      --run-windows=: Command to run on windows
+      --shell=: Run the task in a specific shell
+      --silent: Do not print the command or its output
+      -s, --sources=*: Glob patterns of files this task uses as input
+      -w, --wait-for=*: Wait for these tasks to complete if they are to run
+    completion:
+      flag:
+        cd:
+        - $directories
+        sort:
+        - name
+        - alias
+        - description
+        - source
+        sort-order:
+        - asc
+        - desc
+      positional:
+      - []
+  - name: deps
+    description: Display a tree visualization of a dependency graph
+    flags:
+      --dot: Display dependencies in DOT format
+      --dot&: Display dependencies in DOT format
+      -h, --help: Print help (see more with '--help')
+      --hidden: Show hidden tasks
+    completion:
+      flag:
+        cd:
+        - $directories
+        sort:
+        - name
+        - alias
+        - description
+        - source
+        sort-order:
+        - asc
+        - desc
+  - name: edit
+    description: Edit a tasks with $EDITOR
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -p, --path: Display the path to the tasks instead of editing it
+    completion:
+      flag:
+        cd:
+        - $directories
+        sort:
+        - name
+        - alias
+        - description
+        - source
+        sort-order:
+        - asc
+        - desc
+      positional:
+      - []
+  - name: info
+    description: Get information about a task
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -J, --json: Output in JSON format
+    completion:
+      flag:
+        cd:
+        - $directories
+        sort:
+        - name
+        - alias
+        - description
+        - source
+        sort-order:
+        - asc
+        - desc
+      positional:
+      - []
+  - name: ls
+    description: |-
+      List available tasks to execute
+      These may be included from the config file or from the project's .mise/tasks directory
+      mise will merge all tasks from all parent directories into this list.
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        cd:
+        - $directories
+        sort:
+        - name
+        - alias
+        - description
+        - source
+        sort-order:
+        - asc
+        - desc
+  - name: run
+    aliases:
+    - r
+    description: Run task(s)
+    flags:
+      -C, --cd=: Change to this directory before executing the command
+      -c, --continue-on-error: Continue running tasks even if one fails
+      -n, --dry-run: Don't actually run the tasks(s), just print them in order of execution
+      -f, --force: Force the tasks to run even if outputs are up to date
+      -j, --jobs=: |-
+        Number of tasks to run in parallel
+        [default: 4]
+        Configure with `jobs` config or `MISE_JOBS` env var
+      --no-cache: Do not use cache on remote tasks
+      --no-timings: Hides elapsed time after each task completes
+      --no-timing&: Hides elapsed time after each task completes
+      -o, --output=: Change how tasks information is output when running tasks
+      -q, --quiet: Don't show extra output
+      -r, --raw: |-
+        Read/write directly to stdin/stdout/stderr instead of by line
+        Redactions are not applied with this option
+        Configure with `raw` config or `MISE_RAW` env var
+      -s, --shell=: Shell to use to run toml tasks
+      -S, --silent: Don't show any output except for errors
+      --timeout=: |-
+        Timeout for the task to complete
+        e.g.: 30s, 5m
+      -t, --tool=*: 'Tool(s) to run in addition to what is in mise.toml files e.g.: node@20 python@3.10'
+    completion:
+      flag:
+        cd:
+        - $directories
+        sort:
+        - name
+        - alias
+        - description
+        - source
+        sort-order:
+        - asc
+        - desc
+      positional:
+      - []
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: add
+      description: Create a new task
+    - name: deps
+      description: Display a tree visualization of a dependency graph
+    - name: edit
+      description: Edit a tasks with $EDITOR
+    - name: info
+      description: Get information about a task
+    - name: ls
+      description: |-
+        List available tasks to execute
+        These may be included from the config file or from the project's .mise/tasks directory
+        mise will merge all tasks from all parent directories into this list.
+    - name: run
+      description: Run task(s)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: test-tool
+  description: Test a tool installs and executes
+  flags:
+    -a, --all: Test every tool specified in registry.toml
+    --all-config: Test all tools specified in config files
+    -h, --help: Print help (see more with '--help')
+    --include-non-defined: Also test tools not defined in registry.toml, guessing how to test it
+    -j, --jobs=: |-
+      Number of jobs to run in parallel
+      [default: 4]
+    --raw: Directly pipe stdin/stdout/stderr from plugin to user Sets --jobs=1
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: tool
+  description: Gets information about a tool
+  flags:
+    --active: Only show active versions
+    --backend: Only show backend field
+    --config-source: Only show config source
+    --description: Only show description field
+    -h, --help: Print help (see more with '--help')
+    --installed: Only show installed versions
+    -J, --json: Output in JSON format
+    --requested: Only show requested versions
+    --tool-options: Only show tool options
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+- name: tool-stub
+  description: Execute a tool stub
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - - $files
+- name: trust
+  description: Marks a config file as trusted
+  flags:
+    -a, --all: Trust all config files in the current directory and its parents
+    -h, --help: Print help (see more with '--help')
+    --ignore: Do not trust this config and ignore it in the future
+    --show: |-
+      Show the trusted status of config files from the current directory and its parents.
+      Does not trust or untrust any files.
+    --untrust: No longer trust this config, will prompt in the future
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - - $files
+- name: uninstall
+  description: Removes installed tool versions
+  flags:
+    -a, --all: Delete all installed versions
+    -n, --dry-run: Do not actually delete anything
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: unset
+  description: Remove environment variable(s) from the config file.
+  flags:
+    -f, --file=: Specify a file to use instead of `mise.toml`
+    -g, --global: Use the global config file
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+      file:
+      - $files
+- name: unuse
+  aliases:
+  - rm
+  - remove
+  description: Removes installed tool versions from mise.toml
+  flags:
+    -e, --env=: Create/modify an environment-specific config file like .mise.<env>.toml
+    -g, --global: Use the global config file (`~/.config/mise/config.toml`) instead of the local one
+    -h, --help: Print help (see more with '--help')
+    --no-prune: Do not also prune the installed version
+    -p, --path=: Specify a path to a config file or directory
+  completion:
+    flag:
+      cd:
+      - $directories
+      path:
+      - $files
+- name: upgrade
+  aliases:
+  - up
+  description: Upgrades outdated tools
+  flags:
+    -l, --bump: Upgrades to the latest version available, bumping the version in mise.toml
+    -n, --dry-run: Just print what would be done, don't actually do it
+    -h, --help: Print help (see more with '--help')
+    -i, --interactive: Display multiselect menu to choose which tools to upgrade
+    -j, --jobs=: |-
+      Number of jobs to run in parallel
+      [default: 4]
+    --raw: Directly pipe stdin/stdout/stderr from plugin to user Sets --jobs=1
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: use
+  aliases:
+  - u
+  description: Installs a tool and adds the version to mise.toml.
+  flags:
+    -n, --dry-run: Perform a dry run, showing what would be installed and modified without making changes
+    -e, --env=: Create/modify an environment-specific config file like .mise.<env>.toml
+    -f, --force: Force reinstall even if already installed
+    --fuzzy: Save fuzzy version to config file
+    -g, --global: Use the global config file (`~/.config/mise/config.toml`) instead of the local one
+    -h, --help: Print help (see more with '--help')
+    -j, --jobs=: |-
+      Number of jobs to run in parallel
+      [default: 4]
+    -p, --path=: Specify a path to a config file or directory
+    --pin: |-
+      Save exact version to config file
+      e.g.: `mise use --pin node@20` will save 20.0.0 as the version
+      Set `MISE_PIN=1` to make this the default behavior
+    --raw: Directly pipe stdin/stdout/stderr from plugin to user Sets `--jobs=1`
+    --remove=*: Remove the plugin(s) from config file
+    --rm=*&: Remove the plugin(s) from config file
+    --unset=*&: Remove the plugin(s) from config file
+  completion:
+    flag:
+      cd:
+      - $directories
+      path:
+      - $files
+- name: version
+  aliases:
+  - v
+  description: Display the version of mise
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -J, --json: Print the version information in JSON format
+  completion:
+    flag:
+      cd:
+      - $directories
+- name: watch
+  aliases:
+  - w
+  description: Run task(s) and watch for changes to rerun it
+  flags:
+    --bell: Ring the terminal bell on command completion
+    -c, --clear=: Clear screen before running command
+    --color=: When to use terminal colours
+    --colour=&: When to use terminal colours
+    -d, --debounce=: Time to wait for new events before taking action
+    --delay-run=: Sleep before running the command
+    --emit-events-to=: Configure event emission
+    -E, --env=*: Add env vars to the command
+    -e, --exts=*: Filename extensions to filter to
+    -f, --filter=*: Filename patterns to filter to
+    --filter-file=*: Files to load filters from
+    -J, --filter-prog=*: '[experimental] Filter programs'
+    --fs-events=*: Filesystem events to filter to
+    -h, --help: Print help (see more with '--help')
+    -i, --ignore=*: Filename patterns to filter out
+    --ignore-file=*: Files to load ignores from
+    --ignore-nothing: Don't ignore anything at all
+    --manual: Show the manual page
+    --map-signal=*: Translate signals from the OS to signals to send to the command
+    -n: Shorthand for '--shell=none'
+    --no-default-ignore: Don't use internal default ignores
+    --no-discover-ignore: Don't discover ignore files at all
+    --no-global-ignore: Don't load global ignores
+    --no-meta: Don't emit fs events for metadata changes
+    --no-project-ignore: Don't load project-local ignores
+    --no-vcs-ignore: Don't load gitignores
+    -N, --notify: Alert when commands start and end
+    -o, --on-busy-update=: What to do when receiving events while the command is running
+    --only-emit-events: Only emit events to stdout, run no commands
+    --poll=: Poll for filesystem changes
+    --force-poll=&: Poll for filesystem changes
+    -p, --postpone: Wait until first change before running command
+    --print-events: Print events that trigger actions
+    --project-origin=: Set the project origin
+    -q, --quiet: Don't print starting and stopping messages
+    -r, --restart: Restart the process if it's still running
+    --shell=: Use a different shell
+    -s, --signal=: Send a signal to the process when it's still running
+    --stdin-quit: Exit when stdin closes
+    --stop-signal=: Signal to send to stop the command
+    --stop-timeout=: Time to wait for the command to exit gracefully
+    --timings: Print how long the command took to run
+    -w, --watch=*: Watch a specific file or directory
+    -F, --watch-file=: Watch files and directories from a file
+    -W, --watch-non-recursive=*: Watch a specific directory, non-recursively
+    --workdir=: Set the working directory
+    --wrap-process=: Configure how the process is wrapped
+  completion:
+    flag:
+      cd:
+      - $directories
+      clear:
+      - clear
+      - reset
+      color:
+      - auto
+      - always
+      - never
+      colour:
+      - auto
+      - always
+      - never
+      emit-events-to:
+      - environment
+      - stdio
+      - file
+      - json-stdio
+      - json-file
+      - none
+      filter-file:
+      - $files
+      fs-events:
+      - access
+      - create
+      - remove
+      - rename
+      - modify
+      - metadata
+      ignore-file:
+      - $files
+      on-busy-update:
+      - queue
+      - do-nothing
+      - restart
+      - signal
+      project-origin:
+      - $directories
+      watch:
+      - $files
+      watch-file:
+      - $files
+      watch-non-recursive:
+      - $files
+      workdir:
+      - $directories
+      wrap-process:
+      - group
+      - session
+      - none
+    positional:
+    - []
+- name: where
+  description: Display the installation path for a tool
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+    - []
+- name: which
+  description: Shows the path that a tool's bin points to.
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --plugin: Show the plugin name instead of the path
+    -t, --tool=: |-
+      Use a specific tool@version
+      e.g.: `mise which npm --tool=node@20`
+    --version: Show the version instead of the path
+  completion:
+    flag:
+      cd:
+      - $directories
+    positional:
+    - []
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: activate
+    description: Initializes mise in the current shell session
+  - name: alias
+    description: Manage version aliases.
+    commands:
+    - name: get
+      description: Show an alias for a plugin
+    - name: ls
+      description: |-
+        List aliases
+        Shows the aliases that can be specified.
+        These can come from user config or from plugins in `bin/list-aliases`.
+    - name: set
+      description: Add/update an alias for a backend/plugin
+    - name: unset
+      description: Clears an alias for a backend/plugin
+  - name: backends
+    description: Manage backends
+    commands:
+    - name: ls
+      description: List built-in backends
+  - name: bin-paths
+    description: List all the active runtime bin paths
+  - name: cache
+    description: Manage the mise cache
+    commands:
+    - name: clear
+      description: Deletes all cache files in mise
+    - name: path
+      description: Show the cache directory path
+    - name: prune
+      description: Removes stale mise cache files
+  - name: completion
+    description: Generate shell completions
+  - name: config
+    description: Manage config files
+    commands:
+    - name: generate
+      description: Generate a mise.toml file
+    - name: get
+      description: Display the value of a setting in a mise.toml file
+    - name: ls
+      description: List config files currently in use
+    - name: set
+      description: Set the value of a setting in a mise.toml file
+  - name: deactivate
+    description: Disable mise for current shell session
+  - name: doctor
+    description: Check mise installation for possible problems
+    commands:
+    - name: path
+      description: Print the current PATH entries mise is providing
+  - name: en
+    description: Starts a new shell with the mise environment built from the current configuration
+  - name: env
+    description: Exports env vars to activate mise a single time
+  - name: exec
+    description: Execute a command with tool(s) set
+  - name: fmt
+    description: Formats mise.toml
+  - name: generate
+    description: Generate files for various tools/services
+    commands:
+    - name: bootstrap
+      description: Generate a script to download+execute mise
+    - name: config
+      description: '[experimental] Generate a mise.toml file'
+    - name: devcontainer
+      description: Generate a devcontainer to execute mise
+    - name: git-pre-commit
+      description: Generate a git pre-commit hook
+    - name: github-action
+      description: Generate a GitHub Action workflow file
+    - name: task-docs
+      description: Generate documentation for tasks in a project
+    - name: task-stubs
+      description: Generates shims to run mise tasks
+    - name: tool-stub
+      description: Generate a tool stub for HTTP-based tools
+  - name: implode
+    description: Removes mise CLI and all related data
+  - name: install
+    description: Install a tool version
+  - name: install-into
+    description: Install a tool version to a specific path
+  - name: latest
+    description: Gets the latest available version for a plugin
+  - name: link
+    description: Symlinks a tool version into mise
+  - name: lock
+    description: Update lockfile checksums and URLs for all specified platforms
+  - name: ls
+    description: List installed and active tool versions
+  - name: ls-remote
+    description: List runtime versions available for install.
+  - name: mcp
+    description: '[experimental] Run Model Context Protocol (MCP) server'
+  - name: outdated
+    description: Shows outdated tool versions
+  - name: plugins
+    description: Manage plugins
+    commands:
+    - name: install
+      description: Install a plugin
+    - name: link
+      description: Symlinks a plugin into mise
+    - name: ls
+      description: List installed plugins
+    - name: ls-remote
+      description: List all available remote plugins
+    - name: uninstall
+      description: Removes a plugin
+    - name: update
+      description: Updates a plugin to the latest version
+  - name: prune
+    description: Delete unused versions of tools
+  - name: registry
+    description: List available tools to install
+  - name: reshim
+    description: Creates new shims based on bin paths from currently installed tools.
+  - name: run
+    description: Run task(s)
+  - name: search
+    description: Search for tools in the registry
+  - name: self-update
+    description: Updates mise itself.
+  - name: set
+    description: Set environment variables in mise.toml
+  - name: settings
+    description: Manage settings
+    commands:
+    - name: add
+      description: Adds a setting to the configuration file
+    - name: get
+      description: Show a current setting
+    - name: ls
+      description: Show current settings
+    - name: set
+      description: Add/update a setting
+    - name: unset
+      description: Clears a setting
+  - name: shell
+    description: Sets a tool version for the current session.
+  - name: sync
+    description: Synchronize tools from other version managers with mise
+    commands:
+    - name: node
+      description: Symlinks all tool versions from an external tool into mise
+    - name: python
+      description: Symlinks all tool versions from an external tool into mise
+    - name: ruby
+      description: Symlinks all ruby tool versions from an external tool into mise
+  - name: tasks
+    description: Manage tasks
+    commands:
+    - name: add
+      description: Create a new task
+    - name: deps
+      description: Display a tree visualization of a dependency graph
+    - name: edit
+      description: Edit a tasks with $EDITOR
+    - name: info
+      description: Get information about a task
+    - name: ls
+      description: |-
+        List available tasks to execute
+        These may be included from the config file or from the project's .mise/tasks directory
+        mise will merge all tasks from all parent directories into this list.
+    - name: run
+      description: Run task(s)
+  - name: test-tool
+    description: Test a tool installs and executes
+  - name: tool
+    description: Gets information about a tool
+  - name: tool-stub
+    description: Execute a tool stub
+  - name: trust
+    description: Marks a config file as trusted
+  - name: uninstall
+    description: Removes installed tool versions
+  - name: unset
+    description: Remove environment variable(s) from the config file.
+  - name: unuse
+    description: Removes installed tool versions from mise.toml
+  - name: upgrade
+    description: Upgrades outdated tools
+  - name: use
+    description: Installs a tool and adds the version to mise.toml.
+  - name: version
+    description: Display the version of mise
+  - name: watch
+    description: Run task(s) and watch for changes to rerun it
+  - name: where
+    description: Display the installation path for a tool
+  - name: which
+    description: Shows the path that a tool's bin points to.
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
