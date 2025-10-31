@@ -1,9 +1,9 @@
 diff --git a/src/cli/mod.rs b/src/cli/mod.rs
-index a6c9fe4..bf35a3e 100644
+index b1f553eb3..4a54f727f 100644
 --- a/src/cli/mod.rs
 +++ b/src/cli/mod.rs
-@@ -8,6 +8,10 @@ use crate::{logger, migrate, shims};
- use clap::{ArgAction, CommandFactory, Parser, Subcommand};
+@@ -9,6 +9,10 @@ use clap::{ArgAction, CommandFactory, Parser, Subcommand};
+ use eyre::bail;
  use std::path::PathBuf;
  
 +use carapace_spec_clap::Spec;
@@ -13,7 +13,7 @@ index a6c9fe4..bf35a3e 100644
  mod activate;
  mod alias;
  pub mod args;
-@@ -445,6 +449,11 @@ fn preprocess_args_for_naked_run(cmd: &clap::Command, args: &[String]) -> Vec<St
+@@ -446,6 +450,11 @@ fn preprocess_args_for_naked_run(cmd: &clap::Command, args: &[String]) -> Vec<St
  
  impl Cli {
      pub async fn run(args: &Vec<String>) -> Result<()> {
