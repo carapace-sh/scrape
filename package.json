@@ -15,7 +15,7 @@
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.34.1",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.4.52",
     "minikube": "https://github.com/kubernetes/minikube#v1.37.0",
-    "mise": "https://github.com/jdx/mise#v2025.10.19",
+    "mise": "https://github.com/jdx/mise#v2025.10.21",
     "rustup": "https://github.com/rust-lang/rustup#1.28.2",
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
     "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.9.8"
