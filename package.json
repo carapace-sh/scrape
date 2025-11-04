@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "atuin": "https://github.com/atuinsh/atuin#v18.10.0",
-    "but": "https://github.com/gitbutlerapp/gitbutler#release/0.17.3",
+    "but": "https://github.com/gitbutlerapp/gitbutler#release/0.17.4",
     "cargo": "https://github.com/rust-lang/cargo#0.92.0",
     "docker": "https://github.com/docker/cli#v28.5.1",
     "docker-compose": "https://github.com/docker/compose#v2.40.3",
