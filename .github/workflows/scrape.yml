@@ -5,6 +5,7 @@ on:
   push:
 
 jobs:
+  aws: {uses: ./.github/workflows/scrape-template.yml, with: {command: aws}}
   atuin: {uses: ./.github/workflows/scrape-template.yml, with: {command: atuin}}
   but: {uses: ./.github/workflows/scrape-template.yml, with: {command: but}}
   cargo: {uses: ./.github/workflows/scrape-template.yml, with: {command: cargo}}
