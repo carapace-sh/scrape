@@ -122,7 +122,7 @@ func parseService(name, path string) command.Command {
 	cmd := command.Command{Name: name}
 	cmd.Documentation.Command, _ = htmltomarkdown.ConvertString(service.Documentation)
 	if tokens := tokenizer.Tokenize(cmd.Documentation.Command); len(tokens) > 0 {
-		cmd.Description = tokens[0].Text
+		cmd.Description = strings.Split(tokens[0].Text, "\n")[0]
 	}
 
 	for _, operation := range service.Operations {
@@ -145,7 +145,7 @@ func parseService(name, path string) command.Command {
 					memberdoc, _ := htmltomarkdown.ConvertString(member.Documentation)
 					subCmd.Documentation.Flag[CamelCaseToDash(name)] = memberdoc
 					if tokens := tokenizer.Tokenize(memberdoc); len(tokens) > 0 {
-						memberdoc = tokens[0].Text
+						memberdoc = strings.Split(tokens[0].Text, "\n")[0]
 					}
 					subCmd.AddFlag(command.Flag{
 						Longhand: "--" + CamelCaseToDash(name),
