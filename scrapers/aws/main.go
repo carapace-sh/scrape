@@ -77,7 +77,8 @@ func main() {
 	}
 
 	cmd := command.Command{
-		Name: "aws",
+		Name:        "aws",
+		Description: "The AWS Command Line Interface is a unified tool to manage your AWS services.",
 	}
 
 	for _, serviceDir := range services {
@@ -159,6 +160,14 @@ func parseService(name, path string) command.Command {
 							Hidden:   true,
 							Required: required,
 						})
+					}
+
+					if memberShape, ok := service.Shapes[member.Shape]; ok &&
+						memberShape.Type == "string" && len(memberShape.Enum) != 0 {
+						if subCmd.Completion.Flag == nil {
+							subCmd.Completion.Flag = map[string][]string{}
+						}
+						subCmd.Completion.Flag[CamelCaseToDash(name)] = memberShape.Enum
 					}
 				}
 			default:
