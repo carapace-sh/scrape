@@ -125,10 +125,10 @@ func parseService(name, path string) command.Command {
 		cmd.Description = strings.Split(tokens[0].Text, "\n")[0]
 	}
 
-	for _, operation := range service.Operations {
+	for name, operation := range service.Operations {
 		opdoc, _ := htmltomarkdown.ConvertString(operation.Documentation)
 		subCmd := command.Command{
-			Name: CamelCaseToDash(operation.Name),
+			Name: CamelCaseToDash(name),
 		}
 		if tokens := tokenizer.Tokenize(opdoc); len(tokens) > 0 {
 			subCmd.Description = tokens[0].Text
