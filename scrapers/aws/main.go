@@ -18,6 +18,10 @@ import (
 func CamelCaseToDash(s string) string {
 	re := regexp.MustCompile("([a-z0-9])([A-Z])")
 	s = re.ReplaceAllString(s, "${1}-${2}")
+
+	re = regexp.MustCompile("([A-Z])([A-Z])([a-z0-9])")
+	s = re.ReplaceAllString(s, "${1}-${2}${3}")
+
 	return strings.ToLower(s)
 }
 
@@ -120,10 +124,8 @@ func parseService(name, path string) command.Command {
 	}
 
 	cmd := command.Command{Name: name}
+	cmd.Description = service.Metadata.ServiceFullName
 	cmd.Documentation.Command, _ = htmltomarkdown.ConvertString(service.Documentation)
-	if tokens := tokenizer.Tokenize(cmd.Documentation.Command); len(tokens) > 0 {
-		cmd.Description = strings.Split(tokens[0].Text, "\n")[0]
-	}
 
 	for name, operation := range service.Operations {
 		opdoc, _ := htmltomarkdown.ConvertString(operation.Documentation)
@@ -131,7 +133,7 @@ func parseService(name, path string) command.Command {
 			Name: CamelCaseToDash(name),
 		}
 		if tokens := tokenizer.Tokenize(opdoc); len(tokens) > 0 {
-			subCmd.Description = tokens[0].Text
+			subCmd.Description = strings.Split(tokens[0].Text, "\n")[0]
 		}
 		subCmd.Documentation.Command = opdoc
 		subCmd.Documentation.Flag = make(map[string]string)
@@ -147,23 +149,24 @@ func parseService(name, path string) command.Command {
 					if tokens := tokenizer.Tokenize(memberdoc); len(tokens) > 0 {
 						memberdoc = strings.Split(tokens[0].Text, "\n")[0]
 					}
+
+					boolFlag := strings.ToLower(member.Shape) == "boolean" || strings.HasSuffix(member.Shape, "AttributeBooleanValue")
 					subCmd.AddFlag(command.Flag{
 						Longhand: "--" + CamelCaseToDash(name),
 						Usage:    memberdoc,
-						Value:    member.Shape != "Boolean",
+						Value:    !boolFlag,
 						Required: required,
 					})
-					if member.Shape == "Boolean" {
+					if boolFlag {
 						subCmd.AddFlag(command.Flag{
 							Longhand: "--no-" + CamelCaseToDash(name),
 							Usage:    memberdoc,
-							Hidden:   true,
 							Required: required,
 						})
 					}
 
 					if memberShape, ok := service.Shapes[member.Shape]; ok &&
-						memberShape.Type == "string" && len(memberShape.Enum) != 0 {
+						strings.ToLower(memberShape.Type) == "string" && len(memberShape.Enum) != 0 {
 						if subCmd.Completion.Flag == nil {
 							subCmd.Completion.Flag = map[string][]string{}
 						}
