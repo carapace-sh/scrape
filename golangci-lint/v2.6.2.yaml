@@ -1,0 +1,167 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: golangci-lint
+description: golangci-lint is a smart linters runner.
+flags:
+    --version: Print version
+persistentflags:
+    --color=: Use color when printing; can be 'always', 'auto', or 'never'
+    -h, --help: Help for a command
+    -v, --verbose: Verbose output
+commands:
+    - name: cache
+      description: Cache control and information.
+      commands:
+        - name: clean
+          description: Clean cache
+        - name: status
+          description: Show cache status
+    - name: completion
+      description: Generate the autocompletion script for the specified shell
+      commands:
+        - name: bash
+          description: Generate the autocompletion script for bash
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: fish
+          description: Generate the autocompletion script for fish
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: powershell
+          description: Generate the autocompletion script for powershell
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: zsh
+          description: Generate the autocompletion script for zsh
+          flags:
+            --no-descriptions: disable completion descriptions
+    - name: config
+      description: Configuration file information and verification.
+      persistentflags:
+        --no-config: Don't read config file
+        -c, --config=: Read config from file path `PATH`
+      commands:
+        - name: path
+          description: Print used configuration path.
+          flags:
+            --json: Display as JSON
+        - name: verify
+          description: Verify configuration against JSON schema.
+          flags:
+            --schema&=: JSON schema URL
+    - name: custom
+      description: Build a version of golangci-lint with custom linters.
+    - name: fmt
+      description: Format Go source files.
+      flags:
+        --diff-colored: Display diffs instead of rewriting files (with colors)
+        --no-config: Don't read config file
+        --stdin: Use standard input for piping source files
+        -E, --enable*=: Enable specific formatter
+        -c, --config=: Read config from file path `PATH`
+        -d, --diff: Display diffs instead of rewriting files
+    - name: formatters
+      description: List current formatters configuration.
+      flags:
+        --json: Display as JSON
+        --no-config: Don't read config file
+        -E, --enable*=: Enable specific formatter
+        -c, --config=: Read config from file path `PATH`
+    - name: help
+      description: Display extra help
+      commands:
+        - name: formatters
+          description: Display help for formatters.
+          flags:
+            --json: Display as JSON
+        - name: linters
+          description: Display help for linters.
+          flags:
+            --json: Display as JSON
+    - name: linters
+      description: List current linters configuration.
+      flags:
+        --default=: Default set of linters to enable
+        --enable-only*=: Override linters configuration section to only run the specific linter(s)
+        --fast-only: Filter enabled linters to run only fast linters
+        --json: Display as JSON
+        --no-config: Don't read config file
+        -D, --disable*=: Disable specific linter
+        -E, --enable*=: Enable specific linter
+        -c, --config=: Read config from file path `PATH`
+    - name: migrate
+      description: Migrate configuration file from v1 to v2.
+      flags:
+        --format=: |-
+            Output file format.
+            By default, the format of the input configuration file is used.
+            It can be 'yml', 'yaml', 'toml', or 'json'.
+        --no-config: Don't read config file
+        --skip-validation: Skip validation of the configuration file against the JSON Schema for v1.
+        -c, --config=: Read config from file path `PATH`
+    - name: run
+      description: Lint the code.
+      flags:
+        --allow-parallel-runners: |-
+            Allow multiple parallel golangci-lint instances running.
+            If false (default) - golangci-lint acquires file lock on start.
+        --allow-serial-runners: |-
+            Allow multiple golangci-lint instances running, but serialize them around a lock.
+            If false (default) - golangci-lint exits with an error if it fails to acquire file lock on start.
+        --build-tags*=: Build tags
+        --default=: Default set of linters to enable
+        --enable-only*=: Override linters configuration section to only run the specific linter(s)
+        --fast-only: Filter enabled linters to run only fast linters
+        --fix: Apply the fixes detected by the linters and formatters (if it's supported by the linter)
+        --internal-cmd-test&: Option is used only for testing golangci-lint command, don't use it
+        --issues-exit-code=: Exit code when issues were found
+        --max-issues-per-linter=: Maximum issues count per one linter. Set to 0 to disable
+        --max-same-issues=: Maximum count of issues with the same text. Set to 0 to disable
+        --modules-download-mode=: Modules download mode. If not empty, passed as -mod=<mode> to go tools
+        --new-from-merge-base=: Show only new issues created after the best common ancestor (merge-base against HEAD)
+        --new-from-patch=: Show only new issues created in git patch with file path `PATH`
+        --new-from-rev=: Show only new issues created after git revision `REV`
+        --no-config: Don't read config file
+        --output.checkstyle.path=: Output path can be either `stdout`, `stderr` or path to the file to write to.
+        --output.code-climate.path=: Output path can be either `stdout`, `stderr` or path to the file to write to.
+        --output.html.path=: Output path can be either `stdout`, `stderr` or path to the file to write to.
+        --output.json.path=: Output path can be either `stdout`, `stderr` or path to the file to write to.
+        --output.junit-xml.extended: Support extra JUnit XML fields.
+        --output.junit-xml.path=: Output path can be either `stdout`, `stderr` or path to the file to write to.
+        --output.sarif.path=: Output path can be either `stdout`, `stderr` or path to the file to write to.
+        --output.tab.colors: Use colors.
+        --output.tab.path=: Output path can be either `stdout`, `stderr` or path to the file to write to.
+        --output.tab.print-linter-name: Print linter name in the end of issue text.
+        --output.teamcity.path=: Output path can be either `stdout`, `stderr` or path to the file to write to.
+        --output.text.colors: Use colors.
+        --output.text.path=: Output path can be either `stdout`, `stderr` or path to the file to write to.
+        --output.text.print-issued-lines: Print lines of code with issue.
+        --output.text.print-linter-name: Print linter name in the end of issue text.
+        --path-mode=: Path mode to use (empty, or 'abs')
+        --path-prefix=: Path prefix to add to output
+        --show-stats: Show statistics per linter
+        --skip-dirs&*=: Regexps of directories to skip
+        --skip-files&*=: Regexps of files to skip
+        --tests: Analyze tests (*_test.go)
+        --timeout=: Timeout for total work. Disabled by default
+        --uniq-by-line: Make issues output unique by line
+        --whole-files: Show issues in any part of update files (requires new-from-rev or new-from-patch)
+        -D, --disable*=: Disable specific linter
+        -E, --enable*=: Enable specific linter
+        -c, --config=: Read config from file path `PATH`
+        -j, --concurrency=: 'Number of CPUs to use (Default: Automatically set to match Linux container CPU quota and fall back to the number of logical CPUs in the machine)'
+        -n, --new: |-
+            Show only new issues: if there are unstaged changes or untracked files, only those changes are analyzed, else only changes in HEAD~ are analyzed.
+            It's a super-useful option for integration of golangci-lint into existing large codebase.
+            It's not practical to fix all existing issues at the moment of integration: much better to not allow issues in new code.
+            For CI setups, prefer --new-from-rev=HEAD~, as --new can skip linting the current patch if any scripts generate unstaged files before golangci-lint runs.
+      persistentflags:
+        --cpu-profile-path=: Path to CPU profile output file
+        --mem-profile-path=: Path to memory profile output file
+        --print-resources-usage&: Print avg and max memory usage of golangci-lint and total time
+        --trace-path=: Path to trace output file
+    - name: version
+      description: Display the golangci-lint version.
+      flags:
+        --debug: Add build information
+        --json: Display as JSON
+        --short: Display only the version number
