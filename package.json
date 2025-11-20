@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "aws": "https://github.com/aws/aws-cli#2.31.39",
+    "aws": "https://github.com/aws/aws-cli#2.32.0",
     "atuin": "https://github.com/atuinsh/atuin#v18.10.0",
     "but": "https://github.com/gitbutlerapp/gitbutler#release/0.17.7",
     "cargo": "https://github.com/rust-lang/cargo#0.92.0",
