@@ -4,7 +4,7 @@
     "atuin": "https://github.com/atuinsh/atuin#v18.10.0",
     "but": "https://github.com/gitbutlerapp/gitbutler#release/0.18.0",
     "cargo": "https://github.com/rust-lang/cargo#0.92.0",
-    "docker": "https://github.com/docker/cli#v29.0.2",
+    "docker": "https://github.com/docker/cli#v29.0.4",
     "docker-compose": "https://github.com/docker/compose#v2.40.3",
     "gh": "https://github.com/cli/cli#v2.83.1",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.74.0",
