@@ -1,0 +1,18 @@
+--- a/internal/boxcli/root.go
++++ b/internal/boxcli/root.go
+@@ -11,6 +11,7 @@
+ 	"strings"
+ 	"time"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 
+ 	"go.jetify.com/devbox/internal/boxcli/featureflag"
+@@ -100,6 +101,7 @@ func RootCmd() *cobra.Command {
+ 	debugMiddleware.AttachToFlag(command.PersistentFlags(), "debug")
+ 	traceMiddleware.AttachToFlag(command.PersistentFlags(), "trace")
+ 
++	carapace.Gen(command)
+ 	return command
+ }
+ 
