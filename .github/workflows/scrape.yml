@@ -8,6 +8,7 @@ jobs:
   atuin: {uses: ./.github/workflows/scrape-template.yml, with: {command: atuin}}
   but: {uses: ./.github/workflows/scrape-template.yml, with: {command: but}}
   cargo: {uses: ./.github/workflows/scrape-template.yml, with: {command: cargo}}
+  devbox: {uses: ./.github/workflows/scrape-template.yml, with: {command: devbox}}
   docker: {uses: ./.github/workflows/scrape-template.yml, with: {command: docker}}
   docker-compose: {uses: ./.github/workflows/scrape-template.yml, with: {command: docker-compose}}
   gh: {uses: ./.github/workflows/scrape-template.yml, with: {command: gh}}
