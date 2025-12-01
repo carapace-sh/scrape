@@ -1,28 +1,22 @@
 diff --git a/crates/but/src/lib.rs b/crates/but/src/lib.rs
-index c369ed6ce..a86a46a9c 100644
+index a4805b16c..6473da069 100644
 --- a/crates/but/src/lib.rs
 +++ b/crates/but/src/lib.rs
-@@ -11,6 +11,11 @@ use colored::Colorize;
- use gix::date::time::CustomFormat;
- use metrics::{Event, Metrics, Props, metrics_if_configured};
+@@ -42,8 +42,17 @@ mod tui;
+ 
+ const CLI_DATE: CustomFormat = gix::date::time::format::ISO8601;
  
 +use carapace_spec_clap::Spec;
 +use clap::CommandFactory;
 +use clap_complete::generate;
 +use std::io;
 +
- mod absorb;
- mod base;
- mod branch;
-@@ -39,6 +44,11 @@ const CLI_DATE: CustomFormat = gix::date::time::format::ISO8601;
- 
  /// Handle `args` which must be what's passed by `std::env::args_os()`.
  pub async fn handle_args(args: impl Iterator<Item = OsString>) -> Result<()> {
 +    generate(Spec, &mut Args::command(), "but", &mut io::stdout());
 +    if true {
 +        return Ok(());
 +    }
-+
      let args: Vec<_> = args.collect();
  
-     // Check if help is requested with no subcommand
+     // Check if version is requested
