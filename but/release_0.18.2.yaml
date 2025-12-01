@@ -1,0 +1,313 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: but
+description: A GitButler CLI tool
+flags:
+  -C, --current-dir=: Run as if gitbutler-cli was started in PATH instead of the current working directory
+  -f, --format=: Explicitly control how output should be formatted
+  -h, --help: Print help (see more with '--help')
+  -V, --version: Print version
+persistentflags:
+  -j, --json: Whether to use JSON output format
+completion:
+  flag:
+    current-dir:
+    - $files
+    format:
+    - "human\tThe output to write is supposed to be for human consumption, and can be more verbose"
+    - "shell\tThe output should be suitable for shells, and assigning the major result to variables so that it can be re-used in subsequent CLI invocations"
+    - "json\tOutput detailed information as JSON for tool consumption"
+    - "none\tDo not output anything, like redirecting to /dev/null"
+  positional:
+  - []
+  - []
+commands:
+- name: status
+  aliases:
+  - st
+  description: Overview of the project workspace state
+  flags:
+    -f: Determines whether the committed files should be shown as well
+    --files&: Determines whether the committed files should be shown as well
+    -h, --help: Print help (see more with '--help')
+    -r, --review: Show the forge review information
+    -v, --verbose: Show verbose output with commit author and timestamp
+- name: rub
+  description: Combines two entities together to perform an operation like amend, squash, assign, or move
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: init
+  description: Initializes a GitButler project from a git repository in the current directory
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -r, --repo: Also initializes a git repository in the current directory if one does not exist
+- name: base
+  description: Commands for managing the base target branch
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: check
+    description: Fetches from the remote and checks the mergeability of the branches in the workspace
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: update
+    description: Updates all applied branches to be up to date with the target branch
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: check
+      description: Fetches from the remote and checks the mergeability of the branches in the workspace
+    - name: update
+      description: Updates all applied branches to be up to date with the target branch
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: branch
+  description: Commands for managing branches
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: new
+    description: Creates a new branch in the workspace
+    flags:
+      -a, --anchor=: Anchor point - either a commit ID or branch name to create the new branch from
+      -h, --help: Print help (see more with '--help')
+  - name: delete
+    description: Deletes a branch from the workspace
+    flags:
+      -f, --force: Force deletion without confirmation
+      -h, --help: Print help (see more with '--help')
+  - name: list
+    description: List the branches in the repository
+    flags:
+      -a, --all: Show all branches (not just active + 20 most recent)
+      -h, --help: Print help (see more with '--help')
+      -l, --local: Show only local branches
+      --no-ahead: Don't calculate and show number of commits ahead of base (faster)
+      --no-check: Don't check if each branch merges cleanly into upstream
+      -r, --remote: Show only remote branches
+      --review: Fetch and display review information (PRs, MRs, etc.)
+  - name: show
+    description: Show commits ahead of base for a specific branch
+    flags:
+      --ai: Generate AI summary of the branch changes
+      --check: Check if the branch merges cleanly into upstream and identify conflicting commits
+      -f, --files: Show files modified in each commit with line counts
+      -h, --help: Print help (see more with '--help')
+      -r, --review: Fetch and display review information
+  - name: apply
+    description: Apply a branch to the workspace
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: unapply
+    description: Unapply a branch from the workspace
+    flags:
+      -f, --force: Force unapply without confirmation
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: new
+      description: Creates a new branch in the workspace
+    - name: delete
+      description: Deletes a branch from the workspace
+    - name: list
+      description: List the branches in the repository
+    - name: show
+      description: Show commits ahead of base for a specific branch
+    - name: apply
+      description: Apply a branch to the workspace
+    - name: unapply
+      description: Unapply a branch from the workspace
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: mark
+  description: Mark a commit or branch for auto-assign or auto-commit
+  flags:
+    -d, --delete: Deletes a mark
+    -h, --help: Print help (see more with '--help')
+- name: unmark
+  description: Removes any marks from the workspace
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: gui
+  aliases:
+  - .
+  description: Open the GitButler GUI for the current project
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: commit
+  description: Commit changes to a stack
+  flags:
+    -c, --create: Whether to create a new branch for this commit. If the branch name given matches an existing branch, that branch will be used instead. If no branch name is given, a new branch with a generated name will be created
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: Commit message
+    -o, --only: Only commit assigned files, not unassigned files
+- name: push
+  description: Push changes in a branch to remote
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -r, --run-hooks: Run pre-push hooks
+    -s, --skip-force-push-protection: Skip force push protection checks
+    -f, --with-force: Force push even if it's not fast-forward
+- name: new
+  description: Insert a blank commit before the specified commit, or at the top of a stack
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: describe
+  aliases:
+  - desc
+  description: Edit the commit message of the specified commit
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: oplog
+  description: Show operation history
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --since=: Start from this oplog SHA instead of the head
+- name: restore
+  description: Restore to a specific oplog snapshot
+  flags:
+    -f, --force: Skip confirmation prompt
+    -h, --help: Print help (see more with '--help')
+- name: undo
+  description: Undo the last operation by reverting to the previous snapshot
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: snapshot
+  description: Create an on-demand snapshot with optional message
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: Message to include with the snapshot
+- name: absorb
+  description: Amends changes into the appropriate commits where they belong
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: forge
+  description: Commands for interacting with forges like GitHub, GitLab (coming soon), etc
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: auth
+    description: Authenticate with your forge provider (at the moment, only GitHub is supported)
+    flags:
+      -h, --help: Print help
+  - name: list-users
+    description: List authenticated forge accounts known to GitButler
+    flags:
+      -h, --help: Print help
+  - name: forget
+    description: Forget a previously authenticated forge account
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: auth
+      description: Authenticate with your forge provider (at the moment, only GitHub is supported)
+    - name: list-users
+      description: List authenticated forge accounts known to GitButler
+    - name: forget
+      description: Forget a previously authenticated forge account
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: review
+  description: Commands for creating and publishing code reviews to a forge
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: publish
+    description: Publish review requests for active branches in your workspace. By default, publishes reviews for all active branches
+    flags:
+      -b, --branch=: Publish reviews only for the specified branch
+      -t, --default: Use the default content for the review title and description, skipping any prompts. If the review contains only a single commit, the commit message will be used for the review title and description
+      -h, --help: Print help
+      -r, --run-hooks: Run pre-push hooks (defaults to true)
+      -s, --skip-force-push-protection: Skip force push protection checks
+      -f, --with-force: Force push even if it's not fast-forward (defaults to true)
+  - name: template
+    description: Configure the template to use for review descriptions. This will list all available templates found in the repository and allow you to select one
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: publish
+      description: Publish review requests for active branches in your workspace. By default, publishes reviews for all active branches
+    - name: template
+      description: Configure the template to use for review descriptions. This will list all available templates found in the repository and allow you to select one
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: status
+    description: Overview of the project workspace state
+  - name: rub
+    description: Combines two entities together to perform an operation like amend, squash, assign, or move
+  - name: init
+    description: Initializes a GitButler project from a git repository in the current directory
+  - name: base
+    description: Commands for managing the base target branch
+    commands:
+    - name: check
+      description: Fetches from the remote and checks the mergeability of the branches in the workspace
+    - name: update
+      description: Updates all applied branches to be up to date with the target branch
+  - name: branch
+    description: Commands for managing branches
+    commands:
+    - name: new
+      description: Creates a new branch in the workspace
+    - name: delete
+      description: Deletes a branch from the workspace
+    - name: list
+      description: List the branches in the repository
+    - name: show
+      description: Show commits ahead of base for a specific branch
+    - name: apply
+      description: Apply a branch to the workspace
+    - name: unapply
+      description: Unapply a branch from the workspace
+  - name: mark
+    description: Mark a commit or branch for auto-assign or auto-commit
+  - name: unmark
+    description: Removes any marks from the workspace
+  - name: gui
+    description: Open the GitButler GUI for the current project
+  - name: commit
+    description: Commit changes to a stack
+  - name: push
+    description: Push changes in a branch to remote
+  - name: new
+    description: Insert a blank commit before the specified commit, or at the top of a stack
+  - name: describe
+    description: Edit the commit message of the specified commit
+  - name: oplog
+    description: Show operation history
+  - name: restore
+    description: Restore to a specific oplog snapshot
+  - name: undo
+    description: Undo the last operation by reverting to the previous snapshot
+  - name: snapshot
+    description: Create an on-demand snapshot with optional message
+  - name: absorb
+    description: Amends changes into the appropriate commits where they belong
+  - name: forge
+    description: Commands for interacting with forges like GitHub, GitLab (coming soon), etc
+    commands:
+    - name: auth
+      description: Authenticate with your forge provider (at the moment, only GitHub is supported)
+    - name: list-users
+      description: List authenticated forge accounts known to GitButler
+    - name: forget
+      description: Forget a previously authenticated forge account
+  - name: review
+    description: Commands for creating and publishing code reviews to a forge
+    commands:
+    - name: publish
+      description: Publish review requests for active branches in your workspace. By default, publishes reviews for all active branches
+    - name: template
+      description: Configure the template to use for review descriptions. This will list all available templates found in the repository and allow you to select one
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
