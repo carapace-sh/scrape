@@ -1,10 +1,10 @@
 diff --git a/src/main.rs b/src/main.rs
-index 3e576c5b..12cef662 100644
+index 68fea9c4..c433b989 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -15,6 +15,10 @@ use std::ffi::OsStr;
- use std::io::Write;
+@@ -11,6 +11,10 @@ use std::ffi::OsStr;
  use std::path::PathBuf;
+ use tracing::{error, info};
  
 +use carapace_spec_clap::Spec;
 +use clap_complete::generate;
@@ -12,8 +12,8 @@ index 3e576c5b..12cef662 100644
 +
  mod cmd;
  
- const VERSION: &str = concat!("v", crate_version!());
-@@ -22,7 +26,11 @@ const VERSION: &str = concat!("v", crate_version!());
+ const VERSION: &str = concat!("v", clap::crate_version!());
+@@ -18,7 +22,11 @@ const VERSION: &str = concat!("v", clap::crate_version!());
  fn main() {
      init_logger();
  
