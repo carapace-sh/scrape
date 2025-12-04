@@ -1,5 +1,5 @@
 diff --git a/cmd/root.go b/cmd/root.go
-index 8e9448f7..f0314e68 100644
+index 8cc0cc1d..cd339d60 100644
 --- a/cmd/root.go
 +++ b/cmd/root.go
 @@ -12,6 +12,7 @@ import (
@@ -10,8 +10,8 @@ index 8e9448f7..f0314e68 100644
  	"github.com/charmbracelet/fang"
  	"github.com/charmbracelet/lipgloss/v2"
  	"github.com/goreleaser/goreleaser/v2/internal/gerrors"
-@@ -127,6 +128,7 @@ goreleaser release
- 		newMcpCmd(version).cmd,
+@@ -126,6 +127,7 @@ goreleaser release
+ 		newSchemaCmd().cmd,
  	)
  	root.cmd = cmd
 +	carapace.Gen(cmd)
