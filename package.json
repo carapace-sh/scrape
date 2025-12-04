@@ -9,7 +9,7 @@
     "gh": "https://github.com/cli/cli#v2.83.1",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.74.0",
     "golangci-lint": "https://github.com/golangci/golangci-lint#v2.7.0",
-    "goreleaser": "https://github.com/goreleaser/goreleaser#v2.12.7",
+    "goreleaser": "https://github.com/goreleaser/goreleaser#v2.13.0",
     "gum": "https://github.com/charmbracelet/gum#v0.17.0",
     "jj": "https://github.com/jj-vcs/jj#v0.35.0",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.34.2",
