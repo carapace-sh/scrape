@@ -1,0 +1,1797 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: gh <command> <subcommand> [flags]
+description: GitHub CLI
+flags:
+    --version: Show gh version
+persistentflags:
+    --help: Show help for command
+commands:
+    - name: accessibility
+      aliases:
+        - a11y
+      description: Learn about GitHub CLI's accessibility experiences
+      hidden: true
+      flags:
+        -w, --web: Open the GitHub Accessibility site in your browser
+    - name: actions
+      description: Learn about working with GitHub Actions
+      hidden: true
+    - name: agent-task <command>
+      aliases:
+        - agent-tasks
+        - agent
+        - agents
+      description: Work with agent tasks (preview)
+      commands:
+        - name: create [<task description>] [flags]
+          description: Create an agent task (preview)
+          flags:
+            --follow: Follow agent session logs
+            -F, --from-file=: Read task description from `file` (use "-" to read from standard input)
+            -a, --custom-agent=: Use a custom agent for the task. e.g., use 'my-agent' for the 'my-agent.md' agent
+            -b, --base=: Base branch for the pull request (use default branch if not provided)
+          persistentflags:
+            -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+        - name: list
+          description: List agent tasks (preview)
+          flags:
+            -L, --limit=: Maximum number of agent tasks to fetch
+            -w, --web: Open agent tasks in the browser
+        - name: view [<session-id> | <pr-number> | <pr-url> | <pr-branch>]
+          description: View an agent task session (preview)
+          flags:
+            --follow: Follow agent session logs
+            --log: Show agent session logs
+            -w, --web: Open agent task in the browser
+          persistentflags:
+            -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+    - name: alias <command>
+      description: Create command shortcuts
+      commands:
+        - name: delete {<alias> | --all}
+          description: Delete set aliases
+          flags:
+            --all: Delete all aliases
+        - name: import [<filename> | -]
+          description: Import aliases from a YAML file
+          flags:
+            --clobber: Overwrite existing aliases of the same name
+        - name: list
+          aliases:
+            - ls
+          description: List your aliases
+        - name: set <alias> <expansion>
+          description: Create a shortcut for a gh command
+          flags:
+            --clobber: Overwrite existing aliases of the same name
+            -s, --shell: Declare an alias to be passed through a shell interpreter
+    - name: api <endpoint>
+      description: Make an authenticated GitHub API request
+      flags:
+        --cache=: Cache the response, e.g. "3600s", "60m", "1h"
+        --hostname=: The GitHub hostname for the request (default "github.com")
+        --input=: The `file` to use as body for the HTTP request (use "-" to read from standard input)
+        --paginate: Make additional HTTP requests to fetch all pages of results
+        --silent: Do not print the response body
+        --slurp: Use with "--paginate" to return an array of all pages of either JSON arrays or objects
+        --verbose: Include full HTTP request and response in the output
+        -F, --field*=: Add a typed parameter in `key=value` format (use "@<path>" or "@-" to read value from file or stdin)
+        -H, --header*=: Add a HTTP request header in `key:value` format
+        -X, --method=: The HTTP method for the request
+        -f, --raw-field*=: Add a string parameter in `key=value` format
+        -i, --include: Include HTTP response status line and headers in the output
+        -p, --preview*=: Opt into GitHub API previews (names should omit '-preview')
+        -q, --jq=: Query to select values from the response using jq syntax
+        -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+    - name: attestation [subcommand]
+      aliases:
+        - at
+      description: Work with artifact attestations
+      commands:
+        - name: download [<file-path> | oci://<image-uri>] [--owner | --repo]
+          description: Download an artifact's attestations for offline use
+          flags:
+            --hostname=: Configure host to use
+            --predicate-type=: Filter attestations by provided predicate type
+            -L, --limit=: Maximum number of attestations to fetch
+            -R, --repo=: Repository name in the format <owner>/<repo>
+            -d, --digest-alg=: 'The algorithm used to compute a digest of the artifact: {sha256|sha512}'
+            -o, --owner=: GitHub organization to scope attestation lookup by
+        - name: inspect <path-to-sigstore-bundle>
+          description: Inspect a Sigstore bundle
+          hidden: true
+          flags:
+            --format=: 'Output format: {json}'
+            --hostname=: Configure host to use
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: trusted-root [--tuf-url <url> --tuf-root <file-path>] [--verify-only]
+          description: Output trusted_root.jsonl contents, likely for offline verification
+          flags:
+            --hostname=: Configure host to use
+            --tuf-root=: Path to the TUF root.json file on disk
+            --tuf-url=: URL to the TUF repository mirror
+            --verify-only: Don't output trusted_root.jsonl contents
+        - name: verify [<file-path> | oci://<image-uri>] [--owner | --repo]
+          description: Verify an artifact's integrity using attestations
+          flags:
+            --bundle-from-oci: When verifying an OCI image, fetch the attestation bundle from the OCI registry instead of from GitHub
+            --cert-identity=: Enforce that the certificate's SubjectAlternativeName matches the provided value exactly
+            --cert-oidc-issuer=: Enforce that the issuer of the OIDC token matches the provided value
+            --custom-trusted-root=: Path to a trusted_root.jsonl file; likely for offline verification
+            --deny-self-hosted-runners: Fail verification for attestations generated on self-hosted runners
+            --format=: 'Output format: {json}'
+            --hostname=: Configure host to use
+            --no-public-good: Do not verify attestations signed with Sigstore public good instance
+            --predicate-type=: Enforce that verified attestations' predicate type matches the provided value
+            --signer-digest=: Enforce that the digest associated with the signer workflow matches the provided value
+            --signer-repo=: Enforce that the workflow that signed the attestation's repository matches the provided value (<owner>/<repo>)
+            --signer-workflow=: Enforce that the workflow that signed the attestation matches the provided value ([host/]<owner>/<repo>/<path>/<to>/<workflow>)
+            --source-digest=: Enforce that the digest associated with the source repository matches the provided value
+            --source-ref=: Enforce that the git ref associated with the source repository matches the provided value
+            -L, --limit=: Maximum number of attestations to fetch
+            -R, --repo=: Repository name in the format <owner>/<repo>
+            -b, --bundle=: Path to bundle on disk, either a single bundle in a JSON file or a JSON lines file with multiple bundles
+            -d, --digest-alg=: 'The algorithm used to compute a digest of the artifact: {sha256|sha512}'
+            -i, --cert-identity-regex=: Enforce that the certificate's SubjectAlternativeName matches the provided regex
+            -o, --owner=: GitHub organization to scope attestation lookup by
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+    - name: auth <command>
+      description: Authenticate gh and git with GitHub
+      group: core
+      commands:
+        - name: git-credential
+          description: Implements git credential helper protocol
+          hidden: true
+        - name: login
+          description: Log in to a GitHub account
+          flags:
+            --insecure-storage: Save authentication credentials in plain text instead of credential store
+            --secure-storage&: Save authentication credentials in secure credential store
+            --skip-ssh-key: Skip generate/upload SSH key prompt
+            --with-token: Read token from standard input
+            -c, --clipboard: Copy one-time OAuth device code to clipboard
+            -h, --hostname=: The hostname of the GitHub instance to authenticate with
+            -p, --git-protocol=: 'The protocol to use for git operations on this host: {ssh|https}'
+            -s, --scopes*=: Additional authentication scopes to request
+            -w, --web: Open a browser to authenticate
+        - name: logout
+          description: Log out of a GitHub account
+          flags:
+            -h, --hostname=: The hostname of the GitHub instance to log out of
+            -u, --user=: The account to log out of
+        - name: refresh
+          description: Refresh stored authentication credentials
+          flags:
+            --insecure-storage: Save authentication credentials in plain text instead of credential store
+            --reset-scopes: Reset authentication scopes to the default minimum set of scopes
+            --secure-storage&: Save authentication credentials in secure credential store
+            -c, --clipboard: Copy one-time OAuth device code to clipboard
+            -h, --hostname=: The GitHub host to use for authentication
+            -r, --remove-scopes*=: Authentication scopes to remove from gh
+            -s, --scopes*=: Additional authentication scopes for gh to have
+        - name: setup-git
+          description: Setup git with GitHub CLI
+          flags:
+            -f, --force: Force setup even if the host is not known. Must be used in conjunction with `--hostname`
+            -h, --hostname=: The hostname to configure git for
+        - name: status
+          description: Display active account and authentication state on each known GitHub host
+          flags:
+            --jq=: Filter JSON output using a jq `expression`
+            --json*=: Output JSON with the specified `fields`
+            --template=: Format JSON output using a Go template; see "gh help formatting"
+            -a, --active: Display the active account only
+            -h, --hostname=: Check only a specific hostname's auth status
+            -t, --show-token: Display the auth token
+        - name: switch
+          description: Switch active GitHub account
+          flags:
+            -h, --hostname=: The hostname of the GitHub instance to switch account for
+            -u, --user=: The account to switch to
+        - name: token
+          description: Print the authentication token gh uses for a hostname and account
+          flags:
+            --secure-storage&: Search only secure credential store for authentication token
+            -h, --hostname=: The hostname of the GitHub instance authenticated with
+            -u, --user=: The account to output the token for
+    - name: browse [<number> | <path> | <commit-sha>]
+      description: Open repositories, issues, pull requests, and more in the browser
+      group: core
+      flags:
+        -b, --branch=: Select another branch by passing in the branch name
+        -c, --commit?: Select another commit by passing in the commit SHA, default is the last commit
+        -n, --no-browser: Print destination URL instead of opening the browser
+        -p, --projects: Open repository projects
+        -r, --releases: Open repository releases
+        -s, --settings: Open repository settings
+        -w, --wiki: Open repository wiki
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+    - name: cache <command>
+      description: Manage GitHub Actions caches
+      group: actions
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: delete [<cache-id> | <cache-key> | --all]
+          description: Delete GitHub Actions caches
+          flags:
+            --succeed-on-no-caches: Return exit code 0 if no caches found. Must be used in conjunction with `--all`
+            -a, --all: Delete all caches
+            -r, --ref=: Delete by cache key and ref, formatted as refs/heads/<branch name> or refs/pull/<number>/merge
+        - name: list
+          aliases:
+            - ls
+          description: List GitHub Actions caches
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -L, --limit=: Maximum number of caches to fetch
+            -O, --order=: 'Order of caches returned: {asc|desc}'
+            -S, --sort=: 'Sort fetched caches: {created_at|last_accessed_at|size_in_bytes}'
+            -k, --key=: Filter by cache key prefix
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -r, --ref=: Filter by ref, formatted as refs/heads/<branch name> or refs/pull/<number>/merge
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+    - name: co
+      description: Alias for "pr checkout"
+      group: alias
+    - name: codespace
+      aliases:
+        - cs
+      description: Connect to and manage codespaces
+      group: core
+      commands:
+        - name: code
+          description: Open a codespace in Visual Studio Code
+          flags:
+            --insiders: Use the insiders version of Visual Studio Code
+            -w, --web: Use the web version of Visual Studio Code
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: cp [-e] [-r] [-- [<scp flags>...]] <sources>... <dest>
+          description: Copy files between local and remote file systems
+          flags:
+            -e, --expand: Expand remote file names on remote shell
+            -p, --profile=: Name of the SSH profile to use
+            -r, --recursive: Recursively copy directories
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: create
+          description: Create a codespace
+          flags:
+            --default-permissions: Do not prompt to accept additional permissions requested by the codespace
+            --devcontainer-path=: Path to the devcontainer.json file to use when creating codespace
+            --idle-timeout=: Allowed inactivity before codespace is stopped, e.g. "10m", "1h"
+            --retention-period=: Allowed time after shutting down before the codespace is automatically deleted (maximum 30 days), e.g. "1h", "72h"
+            -R, --repo=: 'Repository name with owner: user/repo'
+            -b, --branch=: Repository branch
+            -d, --display-name=: Display name for the codespace (48 characters or less)
+            -l, --location=: 'Location: {EastUs|SouthEastAsia|WestEurope|WestUs2} (determined automatically if not provided)'
+            -m, --machine=: Hardware specifications for the VM
+            -r, --repo-deprecated&=: (Deprecated) Shorthand for --repo
+            -s, --status: Show status of post-create command and dotfiles
+            -w, --web: Create codespace from browser, cannot be used with --display-name, --idle-timeout, or --retention-period
+        - name: delete
+          description: Delete codespaces
+          flags:
+            --all: Delete all codespaces
+            --days=: Delete codespaces older than `N` days
+            -f, --force: Skip confirmation for codespaces that contain unsaved changes
+            -o, --org=: The `login` handle of the organization (admin-only)
+            -r, --repo-deprecated&=: (Deprecated) Shorthand for --repo
+            -u, --user=: The `username` to delete codespaces for (used with --org)
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: edit
+          description: Edit a codespace
+          flags:
+            --displayName&=: Display name
+            -d, --display-name=: Set the display name
+            -m, --machine=: Set hardware specifications for the VM
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: jupyter
+          description: Open a codespace in JupyterLab
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: list
+          aliases:
+            - ls
+          description: List codespaces
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -L, --limit=: Maximum number of codespaces to list
+            -R, --repo=: 'Repository name with owner: user/repo'
+            -o, --org=: The `login` handle of the organization to list codespaces for (admin-only)
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -r, --repo-deprecated&=: (Deprecated) Shorthand for --repo
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -u, --user=: The `username` to list codespaces for (used with --org)
+            -w, --web: List codespaces in the web browser, cannot be used with --user or --org
+        - name: logs
+          description: Access codespace logs
+          flags:
+            -f, --follow: Tail and follow the logs
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: ports
+          description: List ports in a codespace
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+          commands:
+            - name: forward <remote-port>:<local-port>...
+              description: Forward ports
+            - name: visibility <port>:{public|private|org}...
+              description: Change the visibility of the forwarded port
+        - name: rebuild
+          description: Rebuild a codespace
+          flags:
+            --full: Perform a full rebuild
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: select
+          description: Select a Codespace
+          hidden: true
+          flags:
+            -f, --file=: Output file path
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: ssh [<flags>...] [-- <ssh-flags>...] [<command>]
+          description: SSH into a codespace
+          flags:
+            --config: Write OpenSSH configuration to stdout
+            --debug-file=: Path of the file log to
+            --profile=: Name of the SSH profile to use
+            --server-port=: SSH server port number (0 => pick unused)
+            --stdio&: Proxy sshd connection to stdio
+            -d, --debug: Log debug data to a file
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: stop
+          description: Stop a running codespace
+          flags:
+            -o, --org=: The `login` handle of the organization (admin-only)
+            -u, --user=: The `username` to stop codespace for (used with --org)
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+        - name: view
+          description: View details about a codespace
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+          persistentflags:
+            --repo-owner=: Filter codespace selection by repository owner (username or org)
+            -R, --repo=: Filter codespace selection by repository name (user/repo)
+            -c, --codespace=: Name of the codespace
+    - name: completion -s <shell>
+      description: Generate shell completion scripts
+      flags:
+        -s, --shell=: 'Shell type: {bash|zsh|fish|powershell}'
+    - name: config <command>
+      description: Manage configuration for gh
+      commands:
+        - name: clear-cache
+          description: Clear the cli cache
+        - name: get <key>
+          description: Print the value of a given configuration key
+          flags:
+            -h, --host=: Get per-host setting
+        - name: list
+          aliases:
+            - ls
+          description: Print a list of configuration keys and values
+          flags:
+            -h, --host=: Get per-host configuration
+        - name: set <key> <value>
+          description: Update configuration with a value for the given key
+          flags:
+            -h, --host=: Set per-host setting
+    - name: credits
+      description: View credits for this tool
+      hidden: true
+      flags:
+        -s, --static: Print a static version of the credits
+    - name: environment
+      description: Environment variables that can be used with gh
+      hidden: true
+    - name: exit-codes
+      description: Exit codes used by gh
+      hidden: true
+    - name: extension
+      aliases:
+        - extensions
+        - ext
+      description: Manage gh extensions
+      commands:
+        - name: browse
+          description: Enter a UI for browsing, adding, and removing extensions
+          flags:
+            --debug: Log to /tmp/extBrowse-*
+            -s, --single-column: Render TUI with only one column of text
+        - name: create [<name>]
+          description: Create a new extension
+          flags:
+            --precompiled=: 'Create a precompiled extension. Possible values: go, other'
+        - name: exec <name> [args]
+          description: Execute an installed extension
+        - name: install <repository>
+          description: Install a gh extension from a repository
+          flags:
+            --force: Force upgrade extension, or ignore if latest already installed
+            --pin=: Pin extension to a release tag or commit ref
+        - name: list
+          aliases:
+            - ls
+          description: List installed extension commands
+        - name: remove <name>
+          description: Remove an installed extension
+        - name: search [<query>]
+          description: Search extensions to the GitHub CLI
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            --license*=: Filter based on license type
+            --order=: 'Order of repositories returned, ignored unless ''--sort'' flag is specified: {asc|desc}'
+            --owner*=: Filter on owner
+            --sort=: 'Sort fetched repositories: {forks|help-wanted-issues|stars|updated}'
+            -L, --limit=: Maximum number of extensions to fetch
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open the search query in the web browser
+        - name: upgrade {<name> | --all}
+          description: Upgrade installed extensions
+          flags:
+            --all: Upgrade all extensions
+            --dry-run: Only display upgrades
+            --force: Force upgrade extension
+    - name: formatting
+      description: Formatting options for JSON data exported from gh
+      hidden: true
+    - name: gist <command>
+      description: Manage gists
+      group: core
+      commands:
+        - name: clone <gist> [<directory>] [-- <gitflags>...]
+          description: Clone a gist locally
+        - name: create [<filename>... | <pattern>... | -]
+          aliases:
+            - new
+          description: Create a new gist
+          flags:
+            -d, --desc=: A description for this gist
+            -f, --filename=: Provide a filename to be used when reading from standard input
+            -p, --public: List the gist publicly (default "secret")
+            -w, --web: Open the web browser with created gist
+        - name: delete {<id> | <url>}
+          description: Delete a gist
+          flags:
+            --yes: Confirm deletion without prompting
+        - name: edit {<id> | <url>} [<filename>]
+          description: Edit one of your gists
+          flags:
+            -a, --add=: Add a new file to the gist
+            -d, --desc=: New description for the gist
+            -f, --filename=: Select a file to edit
+            -r, --remove=: Remove a file from the gist
+        - name: list
+          aliases:
+            - ls
+          description: List your gists
+          flags:
+            --filter=: Filter gists using a regular `expression`
+            --include-content: Include gists' file content when filtering
+            --public: Show only public gists
+            --secret: Show only secret gists
+            -L, --limit=: Maximum number of gists to fetch
+        - name: rename {<id> | <url>} <old-filename> <new-filename>
+          description: Rename a file in a gist
+        - name: view [<id> | <url>]
+          description: View a gist
+          flags:
+            --files: List file names from the gist
+            -f, --filename=: Display a single file from the gist
+            -r, --raw: Print raw instead of rendered gist contents
+            -w, --web: Open gist in the browser
+    - name: gpg-key <command>
+      description: Manage GPG keys
+      commands:
+        - name: add [<key-file>]
+          description: Add a GPG key to your GitHub account
+          flags:
+            -t, --title=: Title for the new key
+        - name: delete <key-id>
+          description: Delete a GPG key from your GitHub account
+          flags:
+            --confirm&: Skip the confirmation prompt
+            -y, --yes: Skip the confirmation prompt
+        - name: list
+          aliases:
+            - ls
+          description: Lists GPG keys in your GitHub account
+    - name: help [command]
+      description: Help about any command
+    - name: issue <command>
+      description: Manage issues
+      group: core
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: close {<number> | <url>}
+          description: Close issue
+          group: Targeted commands
+          flags:
+            -c, --comment=: Leave a closing comment
+            -r, --reason=: 'Reason for closing: {completed|not planned}'
+        - name: comment {<number> | <url>}
+          description: Add a comment to an issue
+          group: Targeted commands
+          flags:
+            --create-if-none: Create a new comment if no comments are found. Can be used only with --edit-last
+            --delete-last: Delete the last comment of the current user
+            --edit-last: Edit the last comment of the current user
+            --yes: Skip the delete confirmation prompt when --delete-last is provided
+            -F, --body-file=: Read body text from `file` (use "-" to read from standard input)
+            -b, --body=: The comment body `text`
+            -e, --editor: Skip prompts and open the text editor to write the body in
+            -w, --web: Open the web browser to write the comment
+        - name: create
+          aliases:
+            - new
+          description: Create a new issue
+          group: General commands
+          flags:
+            --recover=: Recover input from a failed run of create
+            -F, --body-file=: Read body text from `file` (use "-" to read from standard input)
+            -T, --template=: Template `name` to use as starting body text
+            -a, --assignee*=: Assign people by their `login`. Use "@me" to self-assign.
+            -b, --body=: Supply a body. Will prompt for one otherwise.
+            -e, --editor: Skip prompts and open the text editor to write the title and body in. The first line is the title and the remaining text is the body.
+            -l, --label*=: Add labels by `name`
+            -m, --milestone=: Add the issue to a milestone by `name`
+            -p, --project*=: Add the issue to projects by `title`
+            -t, --title=: Supply a title. Will prompt for one otherwise.
+            -w, --web: Open the browser to create an issue
+        - name: delete {<number> | <url>}
+          description: Delete issue
+          group: Targeted commands
+          flags:
+            --confirm&: Confirm deletion without prompting
+            --yes: Confirm deletion without prompting
+        - name: develop {<number> | <url>}
+          description: Manage linked branches for an issue
+          group: Targeted commands
+          flags:
+            --branch-repo=: Name or URL of the repository where you want to create your new branch
+            -b, --base=: Name of the remote branch you want to make your new branch from
+            -c, --checkout: Checkout the branch after creating it
+            -i, --issue-repo&=: Name or URL of the issue's repository
+            -l, --list: List linked branches for the issue
+            -n, --name=: Name of the branch to create
+        - name: edit {<numbers> | <urls>}
+          description: Edit issues
+          group: Targeted commands
+          flags:
+            --add-assignee*=: Add assigned users by their `login`. Use "@me" to assign yourself, or "@copilot" to assign Copilot.
+            --add-label*=: Add labels by `name`
+            --add-project*=: Add the issue to projects by `title`
+            --remove-assignee*=: Remove assigned users by their `login`. Use "@me" to unassign yourself, or "@copilot" to unassign Copilot.
+            --remove-label*=: Remove labels by `name`
+            --remove-milestone: Remove the milestone association from the issue
+            --remove-project*=: Remove the issue from projects by `title`
+            -F, --body-file=: Read body text from `file` (use "-" to read from standard input)
+            -b, --body=: Set the new body.
+            -m, --milestone=: Edit the milestone the issue belongs to by `name`
+            -t, --title=: Set the new title.
+        - name: list
+          aliases:
+            - ls
+          description: List issues in a repository
+          group: General commands
+          flags:
+            --app=: Filter by GitHub App author
+            --json*=: Output JSON with the specified `fields`
+            --mention=: Filter by mention
+            -A, --author=: Filter by author
+            -L, --limit=: Maximum number of issues to fetch
+            -S, --search=: Search issues with `query`
+            -a, --assignee=: Filter by assignee
+            -l, --label*=: Filter by label
+            -m, --milestone=: Filter by milestone number or title
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -s, --state=: 'Filter by state: {open|closed|all}'
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: List issues in the web browser
+        - name: lock {<number> | <url>}
+          description: Lock issue conversation
+          group: Targeted commands
+          flags:
+            -r, --reason=: Optional reason for locking conversation (off_topic, resolved, spam, too_heated).
+        - name: pin {<number> | <url>}
+          description: Pin a issue
+          group: Targeted commands
+        - name: reopen {<number> | <url>}
+          description: Reopen issue
+          group: Targeted commands
+          flags:
+            -c, --comment=: Add a reopening comment
+        - name: status
+          description: Show status of relevant issues
+          group: General commands
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: transfer {<number> | <url>} <destination-repo>
+          description: Transfer issue to another repository
+          group: Targeted commands
+        - name: unlock {<number> | <url>}
+          description: Unlock issue conversation
+          group: Targeted commands
+        - name: unpin {<number> | <url>}
+          description: Unpin a issue
+          group: Targeted commands
+        - name: view {<number> | <url>}
+          description: View an issue
+          group: Targeted commands
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -c, --comments: View issue comments
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open an issue in the browser
+    - name: label <command>
+      description: Manage labels
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: clone <source-repository>
+          description: Clones labels from one repository to another
+          flags:
+            -f, --force: Overwrite labels in the destination repository
+        - name: create <name>
+          description: Create a new label
+          flags:
+            -c, --color=: Color of the label
+            -d, --description=: Description of the label
+            -f, --force: Update the label color and description if label already exists
+        - name: delete <name>
+          description: Delete a label from a repository
+          flags:
+            --confirm&: Confirm deletion without prompting
+            --yes: Confirm deletion without prompting
+        - name: edit <name>
+          description: Edit a label
+          flags:
+            -c, --color=: Color of the label
+            -d, --description=: Description of the label
+            -n, --name=: New name of the label
+        - name: list
+          aliases:
+            - ls
+          description: List labels in a repository
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            --order=: 'Order of labels returned: {asc|desc}'
+            --sort=: 'Sort fetched labels: {created|name}'
+            -L, --limit=: Maximum number of labels to fetch
+            -S, --search=: Search label names and descriptions
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: List labels in the web browser
+    - name: mintty
+      description: Information about using gh with MinTTY
+      hidden: true
+    - name: org <command>
+      description: Manage organizations
+      group: core
+      commands:
+        - name: list
+          aliases:
+            - ls
+          description: List organizations for the authenticated user.
+          group: General commands
+          flags:
+            -L, --limit=: Maximum number of organizations to list
+    - name: pr <command>
+      description: Manage pull requests
+      group: core
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: checkout [<number> | <url> | <branch>]
+          aliases:
+            - co
+          description: Check out a pull request in git
+          group: Targeted commands
+          flags:
+            --detach: Checkout PR with a detached HEAD
+            --recurse-submodules: Update all submodules after checkout
+            -b, --branch=: Local branch name to use (default [the name of the head branch])
+            -f, --force: Reset the existing local branch to the latest state of the pull request
+        - name: checks [<number> | <url> | <branch>]
+          description: Show CI status for a single pull request
+          group: Targeted commands
+          flags:
+            --fail-fast: Exit watch mode on first check failure
+            --json*=: Output JSON with the specified `fields`
+            --required: Only show checks that are required
+            --watch: Watch checks until they finish
+            -i, --interval=: Refresh interval in seconds in watch mode
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open the web browser to show details about checks
+        - name: close {<number> | <url> | <branch>}
+          description: Close a pull request
+          group: Targeted commands
+          flags:
+            -c, --comment=: Leave a closing comment
+            -d, --delete-branch: Delete the local and remote branch after close
+        - name: comment [<number> | <url> | <branch>]
+          description: Add a comment to a pull request
+          group: Targeted commands
+          flags:
+            --create-if-none: Create a new comment if no comments are found. Can be used only with --edit-last
+            --delete-last: Delete the last comment of the current user
+            --edit-last: Edit the last comment of the current user
+            --yes: Skip the delete confirmation prompt when --delete-last is provided
+            -F, --body-file=: Read body text from `file` (use "-" to read from standard input)
+            -b, --body=: The comment body `text`
+            -e, --editor: Skip prompts and open the text editor to write the body in
+            -w, --web: Open the web browser to write the comment
+        - name: create
+          aliases:
+            - new
+          description: Create a pull request
+          group: General commands
+          flags:
+            --dry-run: Print details instead of creating the PR. May still push git changes.
+            --fill-first: Use first commit info for title and body
+            --fill-verbose: Use commits msg+body for description
+            --no-maintainer-edit: Disable maintainer's ability to modify pull request
+            --recover=: Recover input from a failed run of create
+            -B, --base=: The `branch` into which you want your code merged
+            -F, --body-file=: Read body text from `file` (use "-" to read from standard input)
+            -H, --head=: The `branch` that contains commits for your pull request (default [current branch])
+            -T, --template=: Template `file` to use as starting body text
+            -a, --assignee*=: Assign people by their `login`. Use "@me" to self-assign.
+            -b, --body=: Body for the pull request
+            -d, --draft: Mark pull request as a draft
+            -e, --editor: Skip prompts and open the text editor to write the title and body in. The first line is the title and the remaining text is the body.
+            -f, --fill: Use commit info for title and body
+            -l, --label*=: Add labels by `name`
+            -m, --milestone=: Add the pull request to a milestone by `name`
+            -p, --project*=: Add the pull request to projects by `title`
+            -r, --reviewer*=: Request reviews from people or teams by their `handle`
+            -t, --title=: Title for the pull request
+            -w, --web: Open the web browser to create a pull request
+        - name: diff [<number> | <url> | <branch>]
+          description: View changes in a pull request
+          group: Targeted commands
+          flags:
+            --color=: 'Use color in diff output: {always|never|auto}'
+            --name-only: Display only names of changed files
+            --patch: Display diff in patch format
+            -w, --web: Open the pull request diff in the browser
+        - name: edit [<number> | <url> | <branch>]
+          description: Edit a pull request
+          group: Targeted commands
+          flags:
+            --add-assignee*=: Add assigned users by their `login`. Use "@me" to assign yourself, or "@copilot" to assign Copilot.
+            --add-label*=: Add labels by `name`
+            --add-project*=: Add the pull request to projects by `title`
+            --add-reviewer*=: Add reviewers by their `login`.
+            --remove-assignee*=: Remove assigned users by their `login`. Use "@me" to unassign yourself, or "@copilot" to unassign Copilot.
+            --remove-label*=: Remove labels by `name`
+            --remove-milestone: Remove the milestone association from the pull request
+            --remove-project*=: Remove the pull request from projects by `title`
+            --remove-reviewer*=: Remove reviewers by their `login`.
+            -B, --base=: Change the base `branch` for this pull request
+            -F, --body-file=: Read body text from `file` (use "-" to read from standard input)
+            -b, --body=: Set the new body.
+            -m, --milestone=: Edit the milestone the pull request belongs to by `name`
+            -t, --title=: Set the new title.
+        - name: list
+          aliases:
+            - ls
+          description: List pull requests in a repository
+          group: General commands
+          flags:
+            --app=: Filter by GitHub App author
+            --json*=: Output JSON with the specified `fields`
+            -A, --author=: Filter by author
+            -B, --base=: Filter by base branch
+            -H, --head=: Filter by head branch ("<owner>:<branch>" syntax not supported)
+            -L, --limit=: Maximum number of items to fetch
+            -S, --search=: Search pull requests with `query`
+            -a, --assignee=: Filter by assignee
+            -d, --draft: Filter by draft state
+            -l, --label*=: Filter by label
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -s, --state=: 'Filter by state: {open|closed|merged|all}'
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: List pull requests in the web browser
+        - name: lock {<number> | <url>}
+          description: Lock pull request conversation
+          group: Targeted commands
+          flags:
+            -r, --reason=: Optional reason for locking conversation (off_topic, resolved, spam, too_heated).
+        - name: merge [<number> | <url> | <branch>]
+          description: Merge a pull request
+          group: Targeted commands
+          flags:
+            --admin: Use administrator privileges to merge a pull request that does not meet requirements
+            --auto: Automatically merge only after necessary requirements are met
+            --disable-auto: Disable auto-merge for this pull request
+            --match-head-commit=: Commit `SHA` that the pull request head must match to allow merge
+            -A, --author-email=: Email `text` for merge commit author
+            -F, --body-file=: Read body text from `file` (use "-" to read from standard input)
+            -b, --body=: Body `text` for the merge commit
+            -d, --delete-branch: Delete the local and remote branch after merge
+            -m, --merge: Merge the commits with the base branch
+            -r, --rebase: Rebase the commits onto the base branch
+            -s, --squash: Squash the commits into one commit and merge it into the base branch
+            -t, --subject=: Subject `text` for the merge commit
+        - name: ready [<number> | <url> | <branch>]
+          description: Mark a pull request as ready for review
+          group: Targeted commands
+          flags:
+            --undo: Convert a pull request to "draft"
+        - name: reopen {<number> | <url> | <branch>}
+          description: Reopen a pull request
+          group: Targeted commands
+          flags:
+            -c, --comment=: Add a reopening comment
+        - name: revert {<number> | <url> | <branch>}
+          description: Revert a pull request
+          group: Targeted commands
+          flags:
+            -F, --body-file=: Read body text from `file` (use "-" to read from standard input)
+            -b, --body=: Body for the revert pull request
+            -d, --draft: Mark revert pull request as a draft
+            -t, --title=: Title for the revert pull request
+        - name: review [<number> | <url> | <branch>]
+          description: Add a review to a pull request
+          group: Targeted commands
+          flags:
+            -F, --body-file=: Read body text from `file` (use "-" to read from standard input)
+            -a, --approve: Approve pull request
+            -b, --body=: Specify the body of a review
+            -c, --comment: Comment on a pull request
+            -r, --request-changes: Request changes on a pull request
+        - name: status
+          description: Show status of relevant pull requests
+          group: General commands
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -c, --conflict-status: Display the merge conflict status of each pull request
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: unlock {<number> | <url>}
+          description: Unlock pull request conversation
+          group: Targeted commands
+        - name: update-branch [<number> | <url> | <branch>]
+          description: Update a pull request branch
+          group: Targeted commands
+          flags:
+            --rebase: Update PR branch by rebasing on top of latest base branch
+        - name: view [<number> | <url> | <branch>]
+          description: View a pull request
+          group: Targeted commands
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -c, --comments: View pull request comments
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open a pull request in the browser
+    - name: preview <command>
+      description: Execute previews for gh features
+      commands:
+        - name: prompter [prompt type]
+          description: Execute a test program to preview the prompter
+    - name: project <command>
+      description: Work with GitHub Projects.
+      group: core
+      commands:
+        - name: close [<number>]
+          description: Close a project
+          flags:
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner. Use "@me" for the current user.
+            --undo: Reopen a closed project
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: copy [<number>]
+          description: Copy a project
+          flags:
+            --drafts: Include draft issues when copying
+            --format=: 'Output format: {json}'
+            --source-owner=: Login of the source owner. Use "@me" for the current user.
+            --target-owner=: Login of the target owner. Use "@me" for the current user.
+            --title!=: Title for the new project
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: create
+          description: Create a project
+          flags:
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner. Use "@me" for the current user.
+            --title!=: Title for the project
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: delete [<number>]
+          description: Delete a project
+          flags:
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner. Use "@me" for the current user.
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: edit [<number>]
+          description: Edit a project
+          flags:
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner. Use "@me" for the current user.
+            --readme=: New readme for the project
+            --title=: New title for the project
+            --visibility=: 'Change project visibility: {PUBLIC|PRIVATE}'
+            -d, --description=: New description of the project
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: field-create [<number>]
+          description: Create a field in a project
+          flags:
+            --data-type!=: 'DataType of the new field.: {TEXT|SINGLE_SELECT|DATE|NUMBER}'
+            --format=: 'Output format: {json}'
+            --name!=: Name of the new field
+            --owner=: Login of the owner. Use "@me" for the current user.
+            --single-select-options*=: Options for SINGLE_SELECT data type
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: field-delete
+          description: Delete a field in a project
+          flags:
+            --format=: 'Output format: {json}'
+            --id!=: ID of the field to delete
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: field-list [<number>]
+          description: List the fields in a project
+          flags:
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner. Use "@me" for the current user.
+            -L, --limit=: Maximum number of fields to fetch
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: item-add [<number>]
+          description: Add a pull request or an issue to a project
+          flags:
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner. Use "@me" for the current user.
+            --url!=: URL of the issue or pull request to add to the project
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: item-archive [<number>]
+          description: Archive an item in a project
+          flags:
+            --format=: 'Output format: {json}'
+            --id!=: ID of the item to archive
+            --owner=: Login of the owner. Use "@me" for the current user.
+            --undo: Unarchive an item
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: item-create [<number>]
+          description: Create a draft issue item in a project
+          flags:
+            --body=: Body for the draft issue
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner. Use "@me" for the current user.
+            --title!=: Title for the draft issue
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: item-delete [<number>]
+          description: Delete an item from a project by ID
+          flags:
+            --format=: 'Output format: {json}'
+            --id!=: ID of the item to delete
+            --owner=: Login of the owner. Use "@me" for the current user.
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: item-edit
+          description: Edit an item in a project
+          flags:
+            --body=: Body of the draft issue item
+            --clear: Remove field value
+            --date=: Date value for the field (YYYY-MM-DD)
+            --field-id=: ID of the field to update
+            --format=: 'Output format: {json}'
+            --id!=: ID of the item to edit
+            --iteration-id=: ID of the iteration value to set on the field
+            --number=: Number value for the field
+            --project-id=: ID of the project to which the field belongs to
+            --single-select-option-id=: ID of the single select option value to set on the field
+            --text=: Text value for the field
+            --title=: Title of the draft issue item
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: item-list [<number>]
+          description: List the items in a project
+          flags:
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner. Use "@me" for the current user.
+            -L, --limit=: Maximum number of items to fetch
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: link [<number>]
+          description: Link a project to a repository or a team
+          flags:
+            --owner=: Login of the owner. Use "@me" for the current user.
+            -T, --team=: The team to be linked to this project
+          persistentflags:
+            -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+        - name: list
+          aliases:
+            - ls
+          description: List the projects for an owner
+          flags:
+            --closed: Include closed projects
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner
+            -L, --limit=: Maximum number of projects to fetch
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open projects list in the browser
+        - name: mark-template [<number>]
+          description: Mark a project as a template
+          flags:
+            --format=: 'Output format: {json}'
+            --owner=: Login of the org owner.
+            --undo: Unmark the project as a template.
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: unlink [<number>]
+          description: Unlink a project from a repository or a team
+          flags:
+            --owner=: Login of the owner. Use "@me" for the current user.
+            -T, --team=: The team to be unlinked from this project
+          persistentflags:
+            -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+        - name: view [<number>]
+          description: View a project
+          flags:
+            --format=: 'Output format: {json}'
+            --owner=: Login of the owner. Use "@me" for the current user.
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open a project in the browser
+    - name: reference
+      description: A comprehensive reference of all gh commands
+      hidden: true
+    - name: release <command>
+      description: Manage releases
+      group: core
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: create [<tag>] [<filename>... | <pattern>...]
+          aliases:
+            - new
+          description: Create a new release
+          group: General commands
+          flags:
+            --discussion-category=: Start a discussion in the specified category
+            --fail-on-no-commits: Fail if there are no commits since the last release (no impact on the first release)
+            --generate-notes: Automatically generate title and notes for the release via GitHub Release Notes API
+            --latest: Mark this release as "Latest" (default [automatic based on date and version]). --latest=false to explicitly NOT set as latest
+            --notes-from-tag: Fetch notes from the tag annotation or message of commit associated with tag
+            --notes-start-tag=: Tag to use as the starting point for generating release notes
+            --target=: Target `branch` or full commit SHA (default [main branch])
+            --verify-tag: Abort in case the git tag doesn't already exist in the remote repository
+            -F, --notes-file=: Read release notes from `file` (use "-" to read from standard input)
+            -d, --draft: Save the release as a draft instead of publishing it
+            -n, --notes=: Release notes
+            -p, --prerelease: Mark the release as a prerelease
+            -t, --title=: Release title
+        - name: delete <tag>
+          description: Delete a release
+          group: Targeted commands
+          flags:
+            --cleanup-tag: Delete the specified tag in addition to its release
+            -y, --yes: Skip the confirmation prompt
+        - name: delete-asset <tag> <asset-name>
+          description: Delete an asset from a release
+          group: Targeted commands
+          flags:
+            -y, --yes: Skip the confirmation prompt
+        - name: download [<tag>]
+          description: Download release assets
+          group: Targeted commands
+          flags:
+            --clobber: Overwrite existing files of the same name
+            --skip-existing: Skip downloading when files of the same name exist
+            -A, --archive=: Download the source code archive in the specified `format` (zip or tar.gz)
+            -D, --dir=: The `directory` to download files into
+            -O, --output=: The `file` to write a single asset to (use "-" to write to standard output)
+            -p, --pattern*=: Download only assets that match a glob pattern
+        - name: edit <tag>
+          description: Edit a release
+          group: Targeted commands
+          flags:
+            --discussion-category=: Start a discussion in the specified category when publishing a draft
+            --draft: Save the release as a draft instead of publishing it
+            --latest: Explicitly mark the release as "Latest"
+            --prerelease: Mark the release as a prerelease
+            --tag=: The name of the tag
+            --target=: Target `branch` or full commit SHA (default [main branch])
+            --verify-tag: Abort in case the git tag doesn't already exist in the remote repository
+            -F, --notes-file=: Read release notes from `file` (use "-" to read from standard input)
+            -n, --notes=: Release notes
+            -t, --title=: Release title
+        - name: list
+          aliases:
+            - ls
+          description: List releases in a repository
+          group: General commands
+          flags:
+            --exclude-drafts: Exclude draft releases
+            --exclude-pre-releases: Exclude pre-releases
+            --json*=: Output JSON with the specified `fields`
+            -L, --limit=: Maximum number of items to fetch
+            -O, --order=: 'Order of releases returned: {asc|desc}'
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: upload <tag> <files>...
+          description: Upload assets to a release
+          group: Targeted commands
+          flags:
+            --clobber: Overwrite existing assets of the same name
+        - name: verify [<tag>]
+          description: Verify the attestation for a release
+          group: Targeted commands
+          flags:
+            --custom-trusted-root&=: Path to a trusted_root.jsonl file; likely for offline verification.
+            --format=: 'Output format: {json}'
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: verify-asset [<tag>] <file-path>
+          description: Verify that a given asset originated from a release
+          group: Targeted commands
+          flags:
+            --custom-trusted-root&=: Path to a trusted_root.jsonl file; likely for offline verification.
+            --format=: 'Output format: {json}'
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: view [<tag>]
+          description: View information about a release
+          group: Targeted commands
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open the release in the browser
+    - name: repo <command>
+      description: Manage repositories
+      group: core
+      commands:
+        - name: archive [<repository>]
+          description: Archive a repository
+          group: Targeted commands
+          flags:
+            --confirm&: Skip the confirmation prompt
+            -y, --yes: Skip the confirmation prompt
+        - name: autolink <command>
+          description: Manage autolink references
+          group: Targeted commands
+          persistentflags:
+            -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+          commands:
+            - name: create <keyPrefix> <urlTemplate>
+              aliases:
+                - new
+              description: Create a new autolink reference
+              flags:
+                -n, --numeric: Mark autolink as numeric
+            - name: delete <id>
+              description: Delete an autolink reference
+              flags:
+                --yes: Confirm deletion without prompting
+            - name: list
+              aliases:
+                - ls
+              description: List autolink references for a GitHub repository
+              flags:
+                --json*=: Output JSON with the specified `fields`
+                -q, --jq=: Filter JSON output using a jq `expression`
+                -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+                -w, --web: List autolink references in the web browser
+            - name: view <id>
+              description: View an autolink reference
+              flags:
+                --json*=: Output JSON with the specified `fields`
+                -q, --jq=: Filter JSON output using a jq `expression`
+                -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: clone <repository> [<directory>] [-- <gitflags>...]
+          description: Clone a repository locally
+          group: Targeted commands
+          flags:
+            -u, --upstream-remote-name=: Upstream remote name when cloning a fork
+        - name: create [<name>]
+          aliases:
+            - new
+          description: Create a new repository
+          group: General commands
+          flags:
+            --add-readme: Add a README file to the new repository
+            --disable-issues: Disable issues in the new repository
+            --disable-wiki: Disable wiki in the new repository
+            --enable-issues&: Enable issues in the new repository
+            --enable-wiki&: Enable wiki in the new repository
+            --include-all-branches: Include all branches from template repository
+            --internal: Make the new repository internal
+            --private: Make the new repository private
+            --public: Make the new repository public
+            --push: Push local commits to the new repository
+            -c, --clone: Clone the new repository to the current directory
+            -d, --description=: Description of the repository
+            -g, --gitignore=: Specify a gitignore template for the repository
+            -h, --homepage=: Repository home page `URL`
+            -l, --license=: Specify an Open Source License for the repository
+            -p, --template=: Make the new repository based on a template `repository`
+            -r, --remote=: Specify remote name for the new repository
+            -s, --source=: Specify path to local repository to use as source
+            -t, --team=: The `name` of the organization team to be granted access
+            -y, --confirm&: Skip the confirmation prompt
+        - name: credits [<repository>]
+          description: View credits for a repository
+          group: Targeted commands
+          hidden: true
+          flags:
+            -s, --static: Print a static version of the credits
+        - name: delete [<repository>]
+          description: Delete a repository
+          group: Targeted commands
+          flags:
+            --confirm&: Confirm deletion without prompting
+            --yes: Confirm deletion without prompting
+        - name: deploy-key <command>
+          description: Manage deploy keys in a repository
+          group: Targeted commands
+          persistentflags:
+            -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+          commands:
+            - name: add <key-file>
+              description: Add a deploy key to a GitHub repository
+              flags:
+                -t, --title=: Title of the new key
+                -w, --allow-write: Allow write access for the key
+            - name: delete <key-id>
+              description: Delete a deploy key from a GitHub repository
+            - name: list
+              aliases:
+                - ls
+              description: List deploy keys in a GitHub repository
+              flags:
+                --json*=: Output JSON with the specified `fields`
+                -q, --jq=: Filter JSON output using a jq `expression`
+                -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: edit [<repository>]
+          description: Edit repository settings
+          group: Targeted commands
+          flags:
+            --accept-visibility-change-consequences: Accept the consequences of changing the repository visibility
+            --add-topic*=: Add repository topic
+            --allow-forking: Allow forking of an organization repository
+            --allow-update-branch: Allow a pull request head branch that is behind its base branch to be updated
+            --default-branch=: Set the default branch `name` for the repository
+            --delete-branch-on-merge: Delete head branch when pull requests are merged
+            --enable-advanced-security: Enable advanced security in the repository
+            --enable-auto-merge: Enable auto-merge functionality
+            --enable-discussions: Enable discussions in the repository
+            --enable-issues: Enable issues in the repository
+            --enable-merge-commit: Enable merging pull requests via merge commit
+            --enable-projects: Enable projects in the repository
+            --enable-rebase-merge: Enable merging pull requests via rebase
+            --enable-secret-scanning: Enable secret scanning in the repository
+            --enable-secret-scanning-push-protection: Enable secret scanning push protection in the repository. Secret scanning must be enabled first
+            --enable-squash-merge: Enable merging pull requests via squashed commit
+            --enable-wiki: Enable wiki in the repository
+            --remove-topic*=: Remove repository topic
+            --template: Make the repository available as a template repository
+            --visibility=: Change the visibility of the repository to {public,private,internal}
+            -d, --description=: Description of the repository
+            -h, --homepage=: Repository home page `URL`
+        - name: fork [<repository>] [-- <gitflags>...]
+          description: Create a fork of a repository
+          group: Targeted commands
+          flags:
+            --clone: Clone the fork
+            --default-branch-only: Only include the default branch in the fork
+            --fork-name=: Rename the forked repository
+            --org=: Create the fork in an organization
+            --remote: Add a git remote for the fork
+            --remote-name=: Specify the name for the new remote
+        - name: garden [<repository>]
+          description: Explore a git repository as a garden
+          group: Targeted commands
+          hidden: true
+        - name: gitignore <command>
+          description: List and view available repository gitignore templates
+          group: Targeted commands
+          commands:
+            - name: list
+              aliases:
+                - ls
+              description: List available repository gitignore templates
+            - name: view <template>
+              description: View an available repository gitignore template
+        - name: license <command>
+          description: Explore repository licenses
+          group: Targeted commands
+          commands:
+            - name: list
+              aliases:
+                - ls
+              description: List common repository licenses
+            - name: view {<license-key> | <spdx-id>}
+              description: View a specific repository license
+              flags:
+                -w, --web: Open https://choosealicense.com/ in the browser
+        - name: list [<owner>]
+          aliases:
+            - ls
+          description: List repositories owned by user or organization
+          group: General commands
+          flags:
+            --archived: Show only archived repositories
+            --fork: Show only forks
+            --json*=: Output JSON with the specified `fields`
+            --no-archived: Omit archived repositories
+            --private&: Show only private repositories
+            --public&: Show only public repositories
+            --source: Show only non-forks
+            --topic*=: Filter by topic
+            --visibility=: 'Filter by repository visibility: {public|private|internal}'
+            -L, --limit=: Maximum number of repositories to list
+            -l, --language=: Filter by primary coding language
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: rename [<new-name>]
+          description: Rename a repository
+          group: Targeted commands
+          flags:
+            --confirm&: Skip confirmation prompt
+            -y, --yes: Skip the confirmation prompt
+          persistentflags:
+            -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+        - name: set-default [<repository>]
+          description: Configure default repository for this directory
+          group: Targeted commands
+          flags:
+            -u, --unset: Unset the current default repository
+            -v, --view: View the current default repository
+        - name: sync [<destination-repository>]
+          description: Sync a repository
+          group: Targeted commands
+          flags:
+            --force: Hard reset the branch of the destination repository to match the source repository
+            -b, --branch=: Branch to sync (default [default branch])
+            -s, --source=: Source repository
+        - name: unarchive [<repository>]
+          description: Unarchive a repository
+          group: Targeted commands
+          flags:
+            --confirm&: Skip the confirmation prompt
+            -y, --yes: Skip the confirmation prompt
+        - name: view [<repository>]
+          description: View a repository
+          group: Targeted commands
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -b, --branch=: View a specific branch of the repository
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open a repository in the browser
+    - name: ruleset <command>
+      aliases:
+        - rs
+      description: View info about repo rulesets
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: check [<branch>]
+          description: View rules that would apply to a given branch
+          flags:
+            --default: Check rules on default branch
+            -w, --web: Open the branch rules page in a web browser
+        - name: list
+          aliases:
+            - ls
+          description: List rulesets for a repository or organization
+          flags:
+            -L, --limit=: Maximum number of rulesets to list
+            -o, --org=: List organization-wide rulesets for the provided organization
+            -p, --parents: Whether to include rulesets configured at higher levels that also apply
+            -w, --web: Open the list of rulesets in the web browser
+        - name: view [<ruleset-id>]
+          description: View information about a ruleset
+          flags:
+            -o, --org=: Organization name if the provided ID is an organization-level ruleset
+            -p, --parents: Whether to include rulesets configured at higher levels that also apply
+            -w, --web: Open the ruleset in the browser
+    - name: run <command>
+      description: View details about workflow runs
+      group: actions
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: cancel [<run-id>]
+          description: Cancel a workflow run
+          flags:
+            --force: Force cancel a workflow run
+        - name: delete [<run-id>]
+          description: Delete a workflow run
+        - name: download [<run-id>]
+          description: Download artifacts generated by a workflow run
+          flags:
+            -D, --dir=: The directory to download artifacts into
+            -n, --name*=: Download artifacts that match any of the given names
+            -p, --pattern*=: Download artifacts that match a glob pattern
+        - name: list
+          aliases:
+            - ls
+          description: List recent workflow runs
+          flags:
+            --created=: Filter runs by the `date` it was created
+            --json*=: Output JSON with the specified `fields`
+            -L, --limit=: Maximum number of runs to fetch
+            -a, --all: Include disabled workflows
+            -b, --branch=: Filter runs by branch
+            -c, --commit=: Filter runs by the `SHA` of the commit
+            -e, --event=: Filter runs by which `event` triggered the run
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -s, --status=: 'Filter runs by status: {queued|completed|in_progress|requested|waiting|pending|action_required|cancelled|failure|neutral|skipped|stale|startup_failure|success|timed_out}'
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -u, --user=: Filter runs by user who triggered the run
+            -w, --workflow=: Filter runs by workflow
+        - name: rerun [<run-id>]
+          description: Rerun a run
+          flags:
+            --failed: Rerun only failed jobs, including dependencies
+            -d, --debug: Rerun with debug logging
+            -j, --job=: Rerun a specific job ID from a run, including dependencies
+        - name: view [<run-id>]
+          description: View a summary of a workflow run
+          flags:
+            --exit-status: Exit with non-zero status if run failed
+            --json*=: Output JSON with the specified `fields`
+            --log: View full log for either a run or specific job
+            --log-failed: View the log for any failed steps in a run or specific job
+            -a, --attempt=: The attempt number of the workflow run
+            -j, --job=: View a specific job ID from a run
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -v, --verbose: Show job steps
+            -w, --web: Open run in the browser
+        - name: watch <run-id>
+          description: Watch a run until it completes, showing its progress
+          flags:
+            --compact: Show only relevant/failed steps
+            --exit-status: Exit with non-zero status if run fails
+            -i, --interval=: Refresh interval in seconds
+    - name: search <command>
+      description: Search for repositories, issues, and pull requests
+      commands:
+        - name: code <query>
+          description: Search within code
+          flags:
+            --extension=: Filter on file extension
+            --filename=: Filter on filename
+            --json*=: Output JSON with the specified `fields`
+            --language=: Filter results by language
+            --match*=: 'Restrict search to file contents or file path: {file|path}'
+            --owner*=: Filter on owner
+            --size=: Filter on size range, in kilobytes
+            -L, --limit=: Maximum number of code results to fetch
+            -R, --repo*=: Filter on repository
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open the search query in the web browser
+        - name: commits [<query>]
+          description: Search for commits
+          flags:
+            --author-date=: Filter based on authored `date`
+            --author-email=: Filter on author email
+            --author-name=: Filter on author name
+            --author=: Filter by author
+            --committer-date=: Filter based on committed `date`
+            --committer-email=: Filter on committer email
+            --committer-name=: Filter on committer name
+            --committer=: Filter by committer
+            --hash=: Filter by commit hash
+            --json*=: Output JSON with the specified `fields`
+            --merge: Filter on merge commits
+            --order=: 'Order of commits returned, ignored unless ''--sort'' flag is specified: {asc|desc}'
+            --owner*=: Filter on repository owner
+            --parent=: Filter by parent hash
+            --sort=: 'Sort fetched commits: {author-date|committer-date}'
+            --tree=: Filter by tree hash
+            --visibility*=: 'Filter based on repository visibility: {public|private|internal}'
+            -L, --limit=: Maximum number of commits to fetch
+            -R, --repo*=: Filter on repository
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open the search query in the web browser
+        - name: issues [<query>]
+          description: Search for issues
+          flags:
+            --app=: Filter by GitHub App author
+            --archived: Filter based on the repository archived state {true|false}
+            --assignee=: Filter by assignee
+            --author=: Filter by author
+            --closed=: Filter on closed at `date`
+            --commenter=: Filter based on comments by `user`
+            --comments=: Filter on `number` of comments
+            --created=: Filter based on created at `date`
+            --include-prs: Include pull requests in results
+            --interactions=: Filter on `number` of reactions and comments
+            --involves=: Filter based on involvement of `user`
+            --json*=: Output JSON with the specified `fields`
+            --label*=: Filter on label
+            --language=: Filter based on the coding language
+            --locked: Filter on locked conversation status
+            --match*=: 'Restrict search to specific field of issue: {title|body|comments}'
+            --mentions=: Filter based on `user` mentions
+            --milestone=: Filter by milestone `title`
+            --no-assignee: Filter on missing assignee
+            --no-label: Filter on missing label
+            --no-milestone: Filter on missing milestone
+            --no-project: Filter on missing project
+            --order=: 'Order of results returned, ignored unless ''--sort'' flag is specified: {asc|desc}'
+            --owner*=: Filter on repository owner
+            --project=: Filter on project board `owner/number`
+            --reactions=: Filter on `number` of reactions
+            --sort=: 'Sort fetched results: {comments|created|interactions|reactions|reactions-+1|reactions--1|reactions-heart|reactions-smile|reactions-tada|reactions-thinking_face|updated}'
+            --state=: 'Filter based on state: {open|closed}'
+            --team-mentions=: Filter based on team mentions
+            --updated=: Filter on last updated at `date`
+            --visibility*=: 'Filter based on repository visibility: {public|private|internal}'
+            -L, --limit=: Maximum number of results to fetch
+            -R, --repo*=: Filter on repository
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open the search query in the web browser
+        - name: prs [<query>]
+          description: Search for pull requests
+          flags:
+            --app=: Filter by GitHub App author
+            --archived: Filter based on the repository archived state {true|false}
+            --assignee=: Filter by assignee
+            --author=: Filter by author
+            --checks=: 'Filter based on status of the checks: {pending|success|failure}'
+            --closed=: Filter on closed at `date`
+            --commenter=: Filter based on comments by `user`
+            --comments=: Filter on `number` of comments
+            --created=: Filter based on created at `date`
+            --draft: Filter based on draft state
+            --interactions=: Filter on `number` of reactions and comments
+            --involves=: Filter based on involvement of `user`
+            --json*=: Output JSON with the specified `fields`
+            --label*=: Filter on label
+            --language=: Filter based on the coding language
+            --locked: Filter on locked conversation status
+            --match*=: 'Restrict search to specific field of issue: {title|body|comments}'
+            --mentions=: Filter based on `user` mentions
+            --merged: Filter based on merged state
+            --merged-at=: Filter on merged at `date`
+            --milestone=: Filter by milestone `title`
+            --no-assignee: Filter on missing assignee
+            --no-label: Filter on missing label
+            --no-milestone: Filter on missing milestone
+            --no-project: Filter on missing project
+            --order=: 'Order of results returned, ignored unless ''--sort'' flag is specified: {asc|desc}'
+            --owner*=: Filter on repository owner
+            --project=: Filter on project board `owner/number`
+            --reactions=: Filter on `number` of reactions
+            --review-requested=: Filter on `user` or team requested to review
+            --review=: 'Filter based on review status: {none|required|approved|changes_requested}'
+            --reviewed-by=: Filter on `user` who reviewed
+            --sort=: 'Sort fetched results: {comments|reactions|reactions-+1|reactions--1|reactions-smile|reactions-thinking_face|reactions-heart|reactions-tada|interactions|created|updated}'
+            --state=: 'Filter based on state: {open|closed}'
+            --team-mentions=: Filter based on team mentions
+            --updated=: Filter on last updated at `date`
+            --visibility*=: 'Filter based on repository visibility: {public|private|internal}'
+            -B, --base=: Filter on base branch name
+            -H, --head=: Filter on head branch name
+            -L, --limit=: Maximum number of results to fetch
+            -R, --repo*=: Filter on repository
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open the search query in the web browser
+        - name: repos [<query>]
+          description: Search for repositories
+          flags:
+            --archived: Filter based on the repository archived state {true|false}
+            --created=: Filter based on created at `date`
+            --followers=: Filter based on `number` of followers
+            --forks=: Filter on `number` of forks
+            --good-first-issues=: Filter on `number` of issues with the 'good first issue' label
+            --help-wanted-issues=: Filter on `number` of issues with the 'help wanted' label
+            --include-forks=: 'Include forks in fetched repositories: {false|true|only}'
+            --json*=: Output JSON with the specified `fields`
+            --language=: Filter based on the coding language
+            --license*=: Filter based on license type
+            --match*=: 'Restrict search to specific field of repository: {name|description|readme}'
+            --number-topics=: Filter on `number` of topics
+            --order=: 'Order of repositories returned, ignored unless ''--sort'' flag is specified: {asc|desc}'
+            --owner*=: Filter on owner
+            --size=: Filter on a size range, in kilobytes
+            --sort=: 'Sort fetched repositories: {forks|help-wanted-issues|stars|updated}'
+            --stars=: Filter on `number` of stars
+            --topic*=: Filter on topic
+            --updated=: Filter on last updated at `date`
+            --visibility*=: 'Filter based on visibility: {public|private|internal}'
+            -L, --limit=: Maximum number of repositories to fetch
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -w, --web: Open the search query in the web browser
+    - name: secret <command>
+      description: Manage GitHub secrets
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: delete <secret-name>
+          aliases:
+            - remove
+          description: Delete secrets
+          flags:
+            -a, --app=: 'Delete a secret for a specific application: {actions|codespaces|dependabot}'
+            -e, --env=: Delete a secret for an environment
+            -o, --org=: Delete a secret for an organization
+            -u, --user: Delete a secret for your user
+        - name: list
+          aliases:
+            - ls
+          description: List secrets
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -a, --app=: 'List secrets for a specific application: {actions|codespaces|dependabot}'
+            -e, --env=: List secrets for an environment
+            -o, --org=: List secrets for an organization
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+            -u, --user: List a secret for your user
+        - name: set <secret-name>
+          description: Create or update secrets
+          flags:
+            --no-repos-selected: No repositories can access the organization secret
+            --no-store: Print the encrypted, base64-encoded value instead of storing it on GitHub
+            -a, --app=: 'Set the application for a secret: {actions|codespaces|dependabot}'
+            -b, --body=: The value for the secret (reads from standard input if not specified)
+            -e, --env=: Set deployment `environment` secret
+            -f, --env-file=: Load secret names and values from a dotenv-formatted `file`
+            -o, --org=: Set `organization` secret
+            -r, --repos*=: List of `repositories` that can access an organization or user secret
+            -u, --user: Set a secret for your user
+            -v, --visibility=: 'Set visibility for an organization secret: {all|private|selected}'
+    - name: ssh-key <command>
+      description: Manage SSH keys
+      commands:
+        - name: add [<key-file>]
+          description: Add an SSH key to your GitHub account
+          flags:
+            --type=: 'Type of the ssh key: {authentication|signing}'
+            -t, --title=: Title for the new key
+        - name: delete <id>
+          description: Delete an SSH key from your GitHub account
+          flags:
+            --confirm&: Skip the confirmation prompt
+            -y, --yes: Skip the confirmation prompt
+        - name: list
+          aliases:
+            - ls
+          description: Lists SSH keys in your GitHub account
+    - name: status
+      description: Print information about relevant issues, pull requests, and notifications across repositories
+      flags:
+        -e, --exclude*=: Comma separated list of repos to exclude in owner/name format
+        -o, --org=: Report status within an organization
+    - name: variable <command>
+      description: Manage GitHub Actions variables
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: delete <variable-name>
+          aliases:
+            - remove
+          description: Delete variables
+          flags:
+            -e, --env=: Delete a variable for an environment
+            -o, --org=: Delete a variable for an organization
+        - name: get <variable-name>
+          description: Get variables
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -e, --env=: Get a variable for an environment
+            -o, --org=: Get a variable for an organization
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: list
+          aliases:
+            - ls
+          description: List variables
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -e, --env=: List variables for an environment
+            -o, --org=: List variables for an organization
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: set <variable-name>
+          description: Create or update variables
+          flags:
+            -b, --body=: The value for the variable (reads from standard input if not specified)
+            -e, --env=: Set deployment `environment` variable
+            -f, --env-file=: Load variable names and values from a dotenv-formatted `file`
+            -o, --org=: Set `organization` variable
+            -r, --repos*=: List of `repositories` that can access an organization variable
+            -v, --visibility=: 'Set visibility for an organization variable: {all|private|selected}'
+    - name: version
+      hidden: true
+    - name: workflow <command>
+      description: View details about GitHub Actions workflows
+      group: actions
+      persistentflags:
+        -R, --repo=: Select another repository using the `[HOST/]OWNER/REPO` format
+      commands:
+        - name: disable [<workflow-id> | <workflow-name>]
+          description: Disable a workflow
+        - name: enable [<workflow-id> | <workflow-name>]
+          description: Enable a workflow
+        - name: list
+          aliases:
+            - ls
+          description: List workflows
+          flags:
+            --json*=: Output JSON with the specified `fields`
+            -L, --limit=: Maximum number of workflows to fetch
+            -a, --all: Include disabled workflows
+            -q, --jq=: Filter JSON output using a jq `expression`
+            -t, --template=: Format JSON output using a Go template; see "gh help formatting"
+        - name: run [<workflow-id> | <workflow-name>]
+          description: Run a workflow by creating a workflow_dispatch event
+          flags:
+            --json: Read workflow inputs as JSON via STDIN
+            -F, --field*=: Add a string parameter in `key=value` format, respecting @ syntax (see "gh help api").
+            -f, --raw-field*=: Add a string parameter in `key=value` format
+            -r, --ref=: Branch or tag name which contains the version of the workflow file you'd like to run
+        - name: view [<workflow-id> | <workflow-name> | <filename>]
+          description: View the summary of a workflow
+          flags:
+            -r, --ref=: The branch or tag name which contains the version of the workflow file you'd like to view
+            -w, --web: Open workflow in the browser
+            -y, --yaml: View the workflow yaml file
