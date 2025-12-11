@@ -13,7 +13,7 @@
     "gum": "https://github.com/charmbracelet/gum#v0.17.0",
     "jj": "https://github.com/jj-vcs/jj#v0.36.0",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.34.3",
-    "kubectl": "https://github.com/kubernetes/kubernetes#v1.34.2",
+    "kubectl": "https://github.com/kubernetes/kubernetes#v1.34.3",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.1",
     "minikube": "https://github.com/kubernetes/minikube#v1.37.0",
     "mise": "https://github.com/jdx/mise#v2025.10.21",
