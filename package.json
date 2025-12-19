@@ -19,7 +19,7 @@
     "mise": "https://github.com/jdx/mise#v2025.10.21",
     "rustup": "https://github.com/rust-lang/rustup#1.28.2",
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
-    "task": "https://github.com/go-task/task#v3.45.5",
+    "task": "https://github.com/go-task/task#v3.46.2",
     "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.9.8"
   }
 }
