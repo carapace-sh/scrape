@@ -11,7 +11,7 @@
     "golangci-lint": "https://github.com/golangci/golangci-lint#v2.7.2",
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.13.2",
     "gum": "https://github.com/charmbracelet/gum#v0.17.0",
-    "jj": "https://github.com/jj-vcs/jj#v0.36.0",
+    "jj": "https://github.com/jj-vcs/jj#v0.37.0",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.35.0",
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.35.0",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.2",
