@@ -4,7 +4,7 @@
     "but": "https://github.com/gitbutlerapp/gitbutler#release/0.18.3",
     "cargo": "https://github.com/rust-lang/cargo#0.93.0",
     "devbox": "https://github.com/jetify-com/devbox#0.16.0",
-    "docker": "https://github.com/docker/cli#v29.1.3",
+    "docker": "https://github.com/docker/cli#v29.1.4",
     "docker-compose": "https://github.com/docker/compose#v5.0.1",
     "gh": "https://github.com/cli/cli#v2.83.2",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.74.0",
