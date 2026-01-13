@@ -1,15 +1,15 @@
 diff --git a/cmd/root.go b/cmd/root.go
-index 8cc0cc1d..cd339d60 100644
+index 91e63c80..032d8533 100644
 --- a/cmd/root.go
 +++ b/cmd/root.go
-@@ -12,6 +12,7 @@ import (
- 
+@@ -13,6 +13,7 @@ import (
+ 	"charm.land/lipgloss/v2"
  	goversion "github.com/caarlos0/go-version"
  	"github.com/caarlos0/log"
 +	"github.com/carapace-sh/carapace"
  	"github.com/charmbracelet/fang"
- 	"github.com/charmbracelet/lipgloss/v2"
  	"github.com/goreleaser/goreleaser/v2/internal/gerrors"
+ 	"github.com/goreleaser/goreleaser/v2/pkg/context"
 @@ -126,6 +127,7 @@ goreleaser release
  		newSchemaCmd().cmd,
  	)
