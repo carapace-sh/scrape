@@ -1,19 +1,19 @@
 diff --git a/cmd/task/task.go b/cmd/task/task.go
-index 0a31dd7a..e8521dec 100644
+index b81e23dd..8d944359 100644
 --- a/cmd/task/task.go
 +++ b/cmd/task/task.go
-@@ -6,6 +6,8 @@ import (
- 	"os"
+@@ -7,6 +7,8 @@ import (
  	"path/filepath"
-
+ 	"strconv"
+ 
 +	"github.com/carapace-sh/carapace"
 +	"github.com/spf13/cobra"
  	"github.com/spf13/pflag"
-
+ 
  	"github.com/go-task/task/v3"
-@@ -20,6 +22,15 @@ import (
+@@ -21,6 +23,15 @@ import (
  )
-
+ 
  func main() {
 +	cmd := &cobra.Command{
 +		Use: "task",
