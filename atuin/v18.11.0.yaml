@@ -1,0 +1,854 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: atuin
+description: Magical shell history
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+commands:
+- name: history
+  description: Manipulate shell history
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: start
+    description: Begins a new command in the history
+    flags:
+      -h, --help: Print help
+  - name: end
+    description: Finishes a new command in the history (adds time, exit code)
+    flags:
+      -d, --duration=: ''
+      -e, --exit!=: ''
+      -h, --help: Print help
+  - name: list
+    description: List all items in history
+    flags:
+      --cmd-only: Show only the text of the command
+      -c, --cwd: ''
+      -f, --format=: 'Available variables: {command}, {directory}, {duration}, {user}, {host}, {exit}, {time}, {session}, and {uuid} Example: --format "{time} - [{duration}] - {directory}$\t{command}"'
+      -h, --help: Print help (see more with '--help')
+      --human: ''
+      --print0: Terminate the output with a null, for better multiline support
+      -r, --reverse=: ''
+      -s, --session: ''
+      --timezone=: Display the command time in another timezone other than the configured default
+      --tz=: Display the command time in another timezone other than the configured default
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+        timezone: |-
+          Display the command time in another timezone other than the configured default.
+
+          This option takes one of the following kinds of values: - the special value "local" (or "l") which refers to the system time zone - an offset from UTC (e.g. "+9", "-2:30")
+    completion:
+      flag:
+        reverse:
+        - 'true'
+        - 'false'
+  - name: last
+    description: Get the last command ran
+    flags:
+      --cmd-only: Show only the text of the command
+      -f, --format=: 'Available variables: {command}, {directory}, {duration}, {user}, {host}, {time}, {session}, {uuid} and {relativetime}. Example: --format "{time} - [{duration}] - {directory}$\t{command}"'
+      -h, --help: Print help (see more with '--help')
+      --human: ''
+      --timezone=: Display the command time in another timezone other than the configured default
+      --tz=: Display the command time in another timezone other than the configured default
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+        timezone: |-
+          Display the command time in another timezone other than the configured default.
+
+          This option takes one of the following kinds of values: - the special value "local" (or "l") which refers to the system time zone - an offset from UTC (e.g. "+9", "-2:30")
+  - name: init-store
+    description: ''
+    flags:
+      -h, --help: Print help
+  - name: prune
+    description: Delete history entries matching the configured exclusion filters
+    flags:
+      -n, --dry-run: List matching history lines without performing the actual deletion
+      -h, --help: Print help
+  - name: dedup
+    description: Delete duplicate history entries (that have the same command, cwd and hostname)
+    flags:
+      -b, --before!=: Only delete results added before this date
+      -n, --dry-run: List matching history lines without performing the actual deletion
+      --dupkeep!=: How many recent duplicates to keep
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: start
+      description: Begins a new command in the history
+    - name: end
+      description: Finishes a new command in the history (adds time, exit code)
+    - name: list
+      description: List all items in history
+    - name: last
+      description: Get the last command ran
+    - name: init-store
+      description: ''
+    - name: prune
+      description: Delete history entries matching the configured exclusion filters
+    - name: dedup
+      description: Delete duplicate history entries (that have the same command, cwd and hostname)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: import
+  description: Import shell history from file
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: auto
+    description: Import history for the current shell
+    flags:
+      -h, --help: Print help
+  - name: zsh
+    description: Import history from the zsh history file
+    flags:
+      -h, --help: Print help
+  - name: zsh-hist-db
+    description: Import history from the zsh history file
+    flags:
+      -h, --help: Print help
+  - name: bash
+    description: Import history from the bash history file
+    flags:
+      -h, --help: Print help
+  - name: replxx
+    description: Import history from the replxx history file
+    flags:
+      -h, --help: Print help
+  - name: resh
+    description: Import history from the resh history file
+    flags:
+      -h, --help: Print help
+  - name: fish
+    description: Import history from the fish history file
+    flags:
+      -h, --help: Print help
+  - name: nu
+    description: Import history from the nu history file
+    flags:
+      -h, --help: Print help
+  - name: nu-hist-db
+    description: Import history from the nu history file
+    flags:
+      -h, --help: Print help
+  - name: xonsh
+    description: Import history from xonsh json files
+    flags:
+      -h, --help: Print help
+  - name: xonsh-sqlite
+    description: Import history from xonsh sqlite db
+    flags:
+      -h, --help: Print help
+  - name: powershell
+    description: Import history from the powershell history file
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: auto
+      description: Import history for the current shell
+    - name: zsh
+      description: Import history from the zsh history file
+    - name: zsh-hist-db
+      description: Import history from the zsh history file
+    - name: bash
+      description: Import history from the bash history file
+    - name: replxx
+      description: Import history from the replxx history file
+    - name: resh
+      description: Import history from the resh history file
+    - name: fish
+      description: Import history from the fish history file
+    - name: nu
+      description: Import history from the nu history file
+    - name: nu-hist-db
+      description: Import history from the nu history file
+    - name: xonsh
+      description: Import history from xonsh json files
+    - name: xonsh-sqlite
+      description: Import history from xonsh sqlite db
+    - name: powershell
+      description: Import history from the powershell history file
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: stats
+  description: Calculate statistics for your history
+  flags:
+    -c, --count=: How many top commands to list
+    -h, --help: Print help
+    -n, --ngram-size=: The number of consecutive commands to consider
+- name: search
+  description: Interactive history search
+  flags:
+    --after=: Only include results after this date
+    -b, --before=: Only include results added before this date
+    --cmd-only: Show only the text of the command
+    -c, --cwd=: Filter search result by directory
+    --delete: Delete anything matching this query. Will not print out the match
+    --delete-it-all: Delete EVERYTHING!
+    --exclude-cwd=: Exclude directory from results
+    --exclude-exit=: Exclude results with this exit code
+    -e, --exit=: Filter search result by exit code
+    --filter-mode=: Allow overriding filter mode over config
+    -f, --format=: 'Available variables: {command}, {directory}, {duration}, {user}, {host}, {time}, {exit} and {relativetime}. Example: --format "{time} - [{duration}] - {directory}$\t{command}"'
+    -h, --help: Print help (see more with '--help')
+    --human: Use human-readable formatting for time
+    --include-duplicates: Include duplicate commands in the output (non-interactive only)
+    --inline-height=: Set the maximum number of lines Atuin's interface should take up
+    -i, --interactive: Open interactive search UI
+    --keymap-mode=: Notify the keymap at the shell's side
+    --limit=: How many entries to return at most
+    --offset=: Offset from the start of the results
+    --print0: Terminate the output with a null, for better multiline handling
+    -r, --reverse: Reverse the order of results, oldest first
+    --search-mode=: Allow overriding search mode over config
+    --timezone=: Display the command time in another timezone other than the configured default
+    --tz=: Display the command time in another timezone other than the configured default
+  documentation:
+    flag:
+      help: Print help (see a summary with '-h')
+      timezone: |-
+        Display the command time in another timezone other than the configured default.
+
+        This option takes one of the following kinds of values: - the special value "local" (or "l") which refers to the system time zone - an offset from UTC (e.g. "+9", "-2:30")
+  completion:
+    flag:
+      filter-mode:
+      - global
+      - host
+      - session
+      - directory
+      - workspace
+      - session-preload
+      keymap-mode:
+      - emacs
+      - vim-normal
+      - vim-insert
+      - auto
+      search-mode:
+      - prefix
+      - full-text
+      - fuzzy
+      - skim
+- name: sync
+  description: Sync with the configured server
+  flags:
+    -f, --force: Force re-download everything
+    -h, --help: Print help
+- name: login
+  description: Login to the configured server
+  flags:
+    -h, --help: Print help
+    -k, --key=: The encryption key for your account
+    -p, --password=: ''
+    -u, --username=: ''
+- name: logout
+  description: Log out
+  flags:
+    -h, --help: Print help
+- name: register
+  description: Register with the configured server
+  flags:
+    -e, --email=: ''
+    -h, --help: Print help
+    -p, --password=: ''
+    -u, --username=: ''
+- name: key
+  description: Print the encryption key for transfer to another machine
+  flags:
+    --base64: Switch to base64 output of the key
+    -h, --help: Print help
+- name: status
+  description: Display the sync status
+  flags:
+    -h, --help: Print help
+- name: account
+  description: Manage your sync account
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: login
+    description: Login to the configured server
+    flags:
+      -h, --help: Print help
+      -k, --key=: The encryption key for your account
+      -p, --password=: ''
+      -u, --username=: ''
+  - name: register
+    description: Register a new account
+    flags:
+      -e, --email=: ''
+      -h, --help: Print help
+      -p, --password=: ''
+      -u, --username=: ''
+  - name: logout
+    description: Log out
+    flags:
+      -h, --help: Print help
+  - name: delete
+    description: Delete your account, and all synced data
+    flags:
+      -h, --help: Print help
+  - name: change-password
+    description: Change your password
+    flags:
+      -c, --current-password=: ''
+      -h, --help: Print help
+      -n, --new-password=: ''
+  - name: verify
+    description: Verify your account
+    flags:
+      -h, --help: Print help
+      -t, --token=: ''
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: login
+      description: Login to the configured server
+    - name: register
+      description: Register a new account
+    - name: logout
+      description: Log out
+    - name: delete
+      description: Delete your account, and all synced data
+    - name: change-password
+      description: Change your password
+    - name: verify
+      description: Verify your account
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: kv
+  description: Get or set small key-value pairs
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: set
+    description: Set a key-value pair
+    flags:
+      -h, --help: Print help
+      -k, --key!=: Key to set
+      -n, --namespace=: Namespace for the key-value pair
+  - name: delete
+    aliases:
+    - rm
+    description: Delete one or more key-value pairs
+    flags:
+      -h, --help: Print help
+      -n, --namespace=: Namespace for the key-value pair
+  - name: get
+    description: Retrieve a saved value
+    flags:
+      -h, --help: Print help
+      -n, --namespace=: Namespace for the key-value pair
+  - name: list
+    aliases:
+    - ls
+    description: List all keys in a namespace, or in all namespaces
+    flags:
+      -a, --all-namespaces: List all keys in all namespaces
+      --all&: List all keys in all namespaces
+      -h, --help: Print help
+      -n, --namespace=: Namespace to list keys from
+  - name: rebuild
+    description: Rebuild the KV store
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: set
+      description: Set a key-value pair
+    - name: delete
+      description: Delete one or more key-value pairs
+    - name: get
+      description: Retrieve a saved value
+    - name: list
+      description: List all keys in a namespace, or in all namespaces
+    - name: rebuild
+      description: Rebuild the KV store
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: store
+  description: Manage the atuin data store
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: status
+    description: Print the current status of the record store
+    flags:
+      -h, --help: Print help
+  - name: rebuild
+    description: Rebuild a store (eg atuin store rebuild history)
+    flags:
+      -h, --help: Print help
+  - name: rekey
+    description: Re-encrypt the store with a new key (potential for data loss!)
+    flags:
+      -h, --help: Print help
+  - name: purge
+    description: Delete all records in the store that cannot be decrypted with the current key
+    flags:
+      -h, --help: Print help
+  - name: verify
+    description: Verify that all records in the store can be decrypted with the current key
+    flags:
+      -h, --help: Print help
+  - name: push
+    description: Push all records to the remote sync server (one way sync)
+    flags:
+      --force: Force push records This will override both host and tag, to be all hosts and all tags. First clear the remote store, then upload all of the local store
+      -h, --help: Print help
+      --host=: The host to push, in the form of a UUID host ID. Defaults to the current host
+      -t, --tag=: The tag to push (eg, 'history'). Defaults to all tags
+  - name: pull
+    description: Pull records from the remote sync server (one way sync)
+    flags:
+      --force: Force push records This will first wipe the local store, and then download all records from the remote
+      -h, --help: Print help
+      -t, --tag=: The tag to push (eg, 'history'). Defaults to all tags
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: status
+      description: Print the current status of the record store
+    - name: rebuild
+      description: Rebuild a store (eg atuin store rebuild history)
+    - name: rekey
+      description: Re-encrypt the store with a new key (potential for data loss!)
+    - name: purge
+      description: Delete all records in the store that cannot be decrypted with the current key
+    - name: verify
+      description: Verify that all records in the store can be decrypted with the current key
+    - name: push
+      description: Push all records to the remote sync server (one way sync)
+    - name: pull
+      description: Pull records from the remote sync server (one way sync)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: dotfiles
+  description: Manage your dotfiles with Atuin
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: alias
+    description: Manage shell aliases with Atuin
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: set
+      description: Set an alias
+      flags:
+        -h, --help: Print help
+    - name: delete
+      description: Delete an alias
+      flags:
+        -h, --help: Print help
+    - name: list
+      description: List all aliases
+      flags:
+        -h, --help: Print help
+    - name: clear
+      description: Delete all aliases
+      flags:
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: set
+        description: Set an alias
+      - name: delete
+        description: Delete an alias
+      - name: list
+        description: List all aliases
+      - name: clear
+        description: Delete all aliases
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: var
+    description: Manage shell and environment variables with Atuin
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: set
+      description: Set a variable
+      flags:
+        -h, --help: Print help
+        -n, --no-export: ''
+    - name: delete
+      description: Delete a variable
+      flags:
+        -h, --help: Print help
+    - name: list
+      description: List all variables
+      flags:
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: set
+        description: Set a variable
+      - name: delete
+        description: Delete a variable
+      - name: list
+        description: List all variables
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: alias
+      description: Manage shell aliases with Atuin
+      commands:
+      - name: set
+        description: Set an alias
+      - name: delete
+        description: Delete an alias
+      - name: list
+        description: List all aliases
+      - name: clear
+        description: Delete all aliases
+    - name: var
+      description: Manage shell and environment variables with Atuin
+      commands:
+      - name: set
+        description: Set a variable
+      - name: delete
+        description: Delete a variable
+      - name: list
+        description: List all variables
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: scripts
+  description: Manage your scripts with Atuin
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: new
+    description: ''
+    flags:
+      -d, --description=: ''
+      -h, --help: Print help
+      --last=: Use the last command as the script content Optionally specify a number to use the last N commands
+      --no-edit: Skip opening editor when using --last
+      --script=: ''
+      -s, --shebang=: ''
+      -t, --tags=*: ''
+    completion:
+      flag:
+        script:
+        - $files
+      positional:
+      - []
+  - name: run
+    description: ''
+    flags:
+      -h, --help: Print help
+      -v, --var=*: 'Specify template variables in the format KEY=VALUE Example: -v name=John -v greeting="Hello there"'
+  - name: list
+    aliases:
+    - ls
+    description: ''
+    flags:
+      -h, --help: Print help
+  - name: get
+    description: ''
+    flags:
+      -h, --help: Print help
+      -s, --script: Display only the executable script with shebang
+  - name: edit
+    description: ''
+    flags:
+      -d, --description=: ''
+      -h, --help: Print help
+      --no-edit: Skip opening editor
+      --no-tags: Remove all tags from the script
+      --rename=: Rename the script
+      --script=: ''
+      -s, --shebang=: ''
+      -t, --tags=*: Replace all existing tags with these new tags
+    completion:
+      flag:
+        script:
+        - $files
+      positional:
+      - []
+  - name: delete
+    aliases:
+    - rm
+    description: ''
+    flags:
+      -f, --force: ''
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: new
+      description: ''
+    - name: run
+      description: ''
+    - name: list
+      description: ''
+    - name: get
+      description: ''
+    - name: edit
+      description: ''
+    - name: delete
+      description: ''
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: init
+  description: Print Atuin's shell init script
+  flags:
+    --disable-ctrl-r: Disable the binding of CTRL-R to atuin
+    --disable-up-arrow: Disable the binding of the Up Arrow key to atuin
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    flag:
+      help: Print help (see a summary with '-h')
+- name: info
+  description: Information about dotfiles locations and ENV vars
+  flags:
+    -h, --help: Print help
+- name: doctor
+  description: Run the doctor to check for common issues
+  flags:
+    -h, --help: Print help
+- name: wrapped
+  description: ''
+  flags:
+    -h, --help: Print help
+- name: daemon
+  description: '*Experimental* Start the background daemon'
+  flags:
+    -h, --help: Print help
+- name: default-config
+  description: Print the default atuin configuration (config.toml)
+  flags:
+    -h, --help: Print help
+- name: server
+  description: Start an atuin server
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: start
+    description: Start the server
+    flags:
+      -h, --help: Print help
+      --host=: The host address to bind
+      -p, --port=: The port to bind
+  - name: default-config
+    description: Print server example configuration
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: start
+      description: Start the server
+    - name: default-config
+      description: Print server example configuration
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: uuid
+  description: Generate a UUID
+  flags:
+    -h, --help: Print help
+- name: contributors
+  description: ''
+  flags:
+    -h, --help: Print help
+- name: gen-completions
+  description: Generate shell completions
+  flags:
+    -h, --help: Print help
+    -o, --out-dir=: Set the output directory
+    -s, --shell!=: Set the shell for generating completions
+  completion:
+    flag:
+      shell:
+      - bash
+      - elvish
+      - fish
+      - nushell
+      - powershell
+      - zsh
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: history
+    description: Manipulate shell history
+    commands:
+    - name: start
+      description: Begins a new command in the history
+    - name: end
+      description: Finishes a new command in the history (adds time, exit code)
+    - name: list
+      description: List all items in history
+    - name: last
+      description: Get the last command ran
+    - name: init-store
+      description: ''
+    - name: prune
+      description: Delete history entries matching the configured exclusion filters
+    - name: dedup
+      description: Delete duplicate history entries (that have the same command, cwd and hostname)
+  - name: import
+    description: Import shell history from file
+    commands:
+    - name: auto
+      description: Import history for the current shell
+    - name: zsh
+      description: Import history from the zsh history file
+    - name: zsh-hist-db
+      description: Import history from the zsh history file
+    - name: bash
+      description: Import history from the bash history file
+    - name: replxx
+      description: Import history from the replxx history file
+    - name: resh
+      description: Import history from the resh history file
+    - name: fish
+      description: Import history from the fish history file
+    - name: nu
+      description: Import history from the nu history file
+    - name: nu-hist-db
+      description: Import history from the nu history file
+    - name: xonsh
+      description: Import history from xonsh json files
+    - name: xonsh-sqlite
+      description: Import history from xonsh sqlite db
+    - name: powershell
+      description: Import history from the powershell history file
+  - name: stats
+    description: Calculate statistics for your history
+  - name: search
+    description: Interactive history search
+  - name: sync
+    description: Sync with the configured server
+  - name: login
+    description: Login to the configured server
+  - name: logout
+    description: Log out
+  - name: register
+    description: Register with the configured server
+  - name: key
+    description: Print the encryption key for transfer to another machine
+  - name: status
+    description: Display the sync status
+  - name: account
+    description: Manage your sync account
+    commands:
+    - name: login
+      description: Login to the configured server
+    - name: register
+      description: Register a new account
+    - name: logout
+      description: Log out
+    - name: delete
+      description: Delete your account, and all synced data
+    - name: change-password
+      description: Change your password
+    - name: verify
+      description: Verify your account
+  - name: kv
+    description: Get or set small key-value pairs
+    commands:
+    - name: set
+      description: Set a key-value pair
+    - name: delete
+      description: Delete one or more key-value pairs
+    - name: get
+      description: Retrieve a saved value
+    - name: list
+      description: List all keys in a namespace, or in all namespaces
+    - name: rebuild
+      description: Rebuild the KV store
+  - name: store
+    description: Manage the atuin data store
+    commands:
+    - name: status
+      description: Print the current status of the record store
+    - name: rebuild
+      description: Rebuild a store (eg atuin store rebuild history)
+    - name: rekey
+      description: Re-encrypt the store with a new key (potential for data loss!)
+    - name: purge
+      description: Delete all records in the store that cannot be decrypted with the current key
+    - name: verify
+      description: Verify that all records in the store can be decrypted with the current key
+    - name: push
+      description: Push all records to the remote sync server (one way sync)
+    - name: pull
+      description: Pull records from the remote sync server (one way sync)
+  - name: dotfiles
+    description: Manage your dotfiles with Atuin
+    commands:
+    - name: alias
+      description: Manage shell aliases with Atuin
+      commands:
+      - name: set
+        description: Set an alias
+      - name: delete
+        description: Delete an alias
+      - name: list
+        description: List all aliases
+      - name: clear
+        description: Delete all aliases
+    - name: var
+      description: Manage shell and environment variables with Atuin
+      commands:
+      - name: set
+        description: Set a variable
+      - name: delete
+        description: Delete a variable
+      - name: list
+        description: List all variables
+  - name: scripts
+    description: Manage your scripts with Atuin
+    commands:
+    - name: new
+      description: ''
+    - name: run
+      description: ''
+    - name: list
+      description: ''
+    - name: get
+      description: ''
+    - name: edit
+      description: ''
+    - name: delete
+      description: ''
+  - name: init
+    description: Print Atuin's shell init script
+  - name: info
+    description: Information about dotfiles locations and ENV vars
+  - name: doctor
+    description: Run the doctor to check for common issues
+  - name: wrapped
+    description: ''
+  - name: daemon
+    description: '*Experimental* Start the background daemon'
+  - name: default-config
+    description: Print the default atuin configuration (config.toml)
+  - name: server
+    description: Start an atuin server
+    commands:
+    - name: start
+      description: Start the server
+    - name: default-config
+      description: Print server example configuration
+  - name: uuid
+    description: Generate a UUID
+  - name: contributors
+    description: ''
+  - name: gen-completions
+    description: Generate shell completions
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
