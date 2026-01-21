@@ -5,7 +5,7 @@
     "cargo": "https://github.com/rust-lang/cargo#0.93.0",
     "devbox": "https://github.com/jetify-com/devbox#0.16.0",
     "docker": "https://github.com/docker/cli#v29.1.5",
-    "docker-compose": "https://github.com/docker/compose#v5.0.1",
+    "docker-compose": "https://github.com/docker/compose#v5.0.2",
     "gh": "https://github.com/cli/cli#v2.85.0",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.74.0",
     "golangci-lint": "https://github.com/golangci/golangci-lint#v2.8.0",
