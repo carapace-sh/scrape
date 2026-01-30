@@ -1,6 +1,8 @@
 FROM golang
 ARG VERSION
 
+RUN apt-get update && apt-get install -y libvirt-dev
+
 WORKDIR /
 RUN git clone https://github.com/kubernetes/minikube --branch "${VERSION}" --depth 1
 
