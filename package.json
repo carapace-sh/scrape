@@ -12,7 +12,7 @@
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.13.3",
     "gum": "https://github.com/charmbracelet/gum#v0.17.0",
     "jj": "https://github.com/jj-vcs/jj#v0.38.0",
-    "kubeadm": "https://github.com/kubernetes/kubernetes#v1.35.0",
+    "kubeadm": "https://github.com/kubernetes/kubernetes#v1.35.1",
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.35.0",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.2",
     "minikube": "https://github.com/kubernetes/minikube#v1.38.0",
