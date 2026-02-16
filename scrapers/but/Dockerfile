@@ -10,6 +10,6 @@ ADD but.patch /
 WORKDIR /gitbutler
 RUN git apply ../but.patch
 RUN cargo add --package but carapace_spec_clap clap_complete
-RUN cargo install --path ./crates/but --root /usr
+RUN cargo install --path ./crates/but --root /usr --locked
 
 ENTRYPOINT ["/usr/bin/but"]
