@@ -1,0 +1,1783 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: but
+description: A GitButler CLI tool
+flags:
+  -C, --current-dir=: Run as if gitbutler-cli was started in PATH instead of the current working directory
+  -f, --format=: Explicitly control how output should be formatted
+  -h, --help: Print help (see more with '--help')
+  -V, --version: Print version
+persistentflags:
+  -j, --json: Whether to use JSON output format
+  --status-after: After a mutation command completes, also output workspace status
+documentation:
+  flag:
+    format: |-
+      Explicitly control how output should be formatted.
+
+      If unset and from a terminal, it defaults to human output, when redirected it's for shells.
+    help: Print help (see a summary with '-h')
+    status-after: |-
+      After a mutation command completes, also output workspace status.
+
+      In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+    trace: |-
+      Enable tracing for debug and performance information printed to stderr.
+
+      Repeat up to 4 times for increasingly verbose output.
+completion:
+  flag:
+    current-dir:
+    - $files
+    format:
+    - "human\tThe output to write is supposed to be for human consumption, and can be more verbose"
+    - "shell\tThe output should be suitable for shells, and assigning the major result to variables so that it can be reused in subsequent CLI invocations"
+    - "json\tOutput detailed information as JSON for tool consumption"
+    - "none\tDo not output anything, like redirecting to /dev/null"
+  positional:
+  - []
+  - []
+commands:
+- name: status
+  description: Overview of the project workspace state.
+  flags:
+    -f: Determines whether the committed files should be shown as well
+    --files&: Determines whether the committed files should be shown as well
+    -h, --help: Print help (see more with '--help')
+    --no-hint: Disable hints about available commands at the end of output
+    -r, --refresh-prs: Forces a sync of pull requests from the forge before showing status
+    -u, --upstream: Show detailed list of upstream commits that haven't been integrated yet
+    -v, --verbose: Show verbose output with commit author and timestamp
+  documentation:
+    command: |-
+      Overview of the project workspace state.
+
+      This shows unstaged files, files staged to stacks, all applied
+      branches (stacked or parallel), commits on each of those branches,
+      upstream commits that are unintegrated, commit status (pushed or local),
+      and base branch information.
+
+      ## Examples
+
+      Normal usage:
+
+      ```text
+      but status
+      ```
+
+      Shorthand with listing files modified
+
+      ```text
+      but status -f
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: rub
+  description: Combines two entities together to perform an operation like amend, squash, stage, or move.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Combines two entities together to perform an operation like amend, squash, stage, or move.
+
+      The `rub` command is a simple verb that helps you do a number of editing
+      operations by doing combinations of two things.
+
+      For example, you can "rub" a file onto a branch to stage that file to
+      the branch. You can also "rub" a commit onto another commit to squash
+      them together. You can rub a commit onto a branch to move that commit.
+      You can rub a file from one commit to another.
+
+      ## Operations Matrix
+
+      Each cell shows what happens when you rub SOURCE → TARGET:
+
+      ```text
+      SOURCE ↓ / TARGET →  │ zz (unassigned) │ Commit     │ Branch      │ Stack
+      ─────────────────────┼─────────────────┼────────────┼─────────────┼────────────
+      File/Hunk            │ Unstage         │ Amend      │ Stage       │ Stage
+      Commit               │ Undo            │ Squash     │ Move        │ -
+      Branch (all changes) │ Unstage all     │ Amend all  │ Reassign    │ Reassign
+      Stack (all changes)  │ Unstage all     │ -          │ Reassign    │ Reassign
+      Unassigned (zz)      │ -               │ Amend all  │ Stage all   │ Stage all
+      File-in-Commit       │ Uncommit        │ Move       │ Uncommit to │ -
+      ```
+
+      Legend:
+      - `zz` is a special target meaning "unassigned" (no branch)
+      - `-` means the operation is not supported
+      - "all changes" / "all" refers to all uncommitted changes from that source
+
+      ## Examples
+
+      Squashing two commits into one (combining the commit messages):
+
+      ```text
+      but rub 3868155 abe3f53f
+      ```
+
+      Amending a commit with the contents of a modified file:
+
+      ```text
+      but rub README.md abe3f53f
+      ```
+
+      Moving a commit from one branch to another:
+
+      ```text
+      but rub 3868155 feature-branch
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: diff
+  description: Displays the diff of changes in the repo.
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --no-tui: Disable the interactive TUI diff viewer (overrides but.ui.tui config)
+    --tui: Open an interactive TUI diff viewer
+  documentation:
+    command: |-
+      Displays the diff of changes in the repo.
+
+      Without any arguments, it shows the diff of all uncommitted changes.
+      Optionally, a CLI ID argument can be provided, which chan show the diff specific to
+      - an uncommitted file
+      - a branch
+      - an entire stack
+      - a commit
+      - a file change within a commit
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: show
+  description: Shows detailed information about a commit or branch.
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -v, --verbose: Show full commit messages and files changed for each commit
+  documentation:
+    command: |-
+      Shows detailed information about a commit or branch.
+
+      When given a commit ID, displays the full commit message, author information,
+      committer information (if different from author), and the list of files modified.
+
+      When given a branch name, displays the branch name and a list of all commits
+      on that branch. Use --verbose to show full commit messages and files changed.
+
+      ## Examples
+
+      Show commit details by short commit ID:
+
+      ```text
+      but show a1b2c3d
+      ```
+
+      Show commit details by CLI ID:
+
+      ```text
+      but show c5
+      ```
+
+      Show branch commits by branch name:
+
+      ```text
+      but show my-feature-branch
+      ```
+
+      Show branch with full commit details:
+
+      ```text
+      but show my-feature-branch --verbose
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: setup
+  description: Sets up a GitButler project from a git repository in the current directory.
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --init: Initialize a new git repository with an empty commit if one doesn't exist.
+  documentation:
+    command: |-
+      Sets up a GitButler project from a git repository in the current directory.
+
+      This command will:
+      - Add the repository to the global GitButler project registry
+      - Switch to the gitbutler/workspace branch (if not already on it)
+      - Set up a default target branch (the remote's HEAD)
+      - Add a gb-local remote if no push remote exists
+
+      If you have an existing Git repository and want to start using GitButler
+      with it, you can run this command to set up the necessary configuration
+      and data structures.
+
+      ## Examples
+
+      Initialize a new git repository and set up GitButler:
+
+      ```text
+      but setup --init
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      init: |-
+        Initialize a new git repository with an empty commit if one doesn't exist.
+
+        This is useful when running in non-interactive environments (like CI/CD)
+        where you want to ensure a git repository exists before setting up GitButler.
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: teardown
+  description: Exit GitButler mode and return to normal Git workflow.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Exit GitButler mode and return to normal Git workflow.
+
+      This command:
+      - Creates an oplog snapshot of the current state
+      - Finds the first active branch and checks it out
+      - Cherry-picks any dangling commits from gitbutler/workspace
+      - Provides instructions on how to return to GitButler mode
+
+      This is useful when you want to temporarily or permanently leave GitButler
+      management and work with standard Git commands.
+
+      ## Examples
+
+      Exit GitButler mode:
+
+      ```text
+      but teardown
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: pull
+  description: Updates all applied branches to be up to date with the target branch.
+  flags:
+    -c, --check: Only check the status without updating (equivalent to the old but base check)
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Updates all applied branches to be up to date with the target branch.
+
+      This fetches the latest changes from the remote and rebases all applied branches
+      on top of the updated target branch.
+
+      You should run this regularly to keep your branches up to date with the latest
+      changes from the main development line.
+
+      You can run `but pull --check` first to see if your branches can be cleanly
+      merged into the target branch before running the update.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: branch
+  description: Commands for managing branches.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Commands for managing branches.
+
+      This includes creating, deleting, listing, and showing details about branches.
+
+      By default without a subcommand, it will list the branches.
+
+      To apply or unapply branches, use `but apply` and `but unapply`.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  commands:
+  - name: new
+    description: Creates a new branch in the workspace
+    flags:
+      -a, --anchor=: Anchor point - either a commit ID or branch name to create the new branch from
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Creates a new branch in the workspace
+
+        If no branch name is provided, a new parallel branch with a generated
+        name will be created.
+
+        You can also specify an anchor point using the `--anchor` option,
+        which can be either a commit ID or an existing branch name to create
+        the new branch from. This allows you to create stacked branches.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: delete
+    description: Deletes a branch from the workspace
+    flags:
+      -f, --force: Force deletion without confirmation
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Deletes a branch from the workspace
+
+        This will remove the branch and all its commits from the workspace.
+        If the branch has unpushed commits, you will be prompted for confirmation
+        unless the `--force` flag is used.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: list
+    description: List the branches in the repository
+    flags:
+      -a, --all: Show all branches (not just active + 20 most recent)
+      -h, --help: Print help (see more with '--help')
+      -l, --local: Show only local branches
+      --no-ahead: Don't calculate and show number of commits ahead of base (faster)
+      --no-check: Don't check if each branch merges cleanly into upstream
+      -r, --remote: Show only remote branches
+      --review: Fetch and display review information (PRs, MRs, etc.)
+    documentation:
+      command: |-
+        List the branches in the repository
+
+        By default, shows the active branch and the 20 most recently updated branches.
+
+        You can use the `--all` flag to show all branches, `--local` to show only
+        local branches, or `--remote` to show only remote branches.
+
+        You can also filter branch names by specifying a substring, such as
+        `but branch list feature` to show only branches with "feature" in the name.
+
+        If you want to check for review status, you can add `--review` to fetch
+        and display pull request or merge request information for each branch.
+        This will make the command slower as it needs to query the forge.
+
+        By default, the command checks if each branch merges cleanly into
+        the *upstream base target branch* (not your workspace).
+        You can disable this check with `--no-check` to make the command faster.
+
+        By default it also calculates the number of commits each branch is ahead
+        of the base branch. You can disable this with `--no-ahead` to
+        make the command faster.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: show
+    description: Show commits ahead of base for a specific branch
+    flags:
+      --ai: Generate AI summary of the branch changes
+      --check: Check if the branch merges cleanly into upstream and identify conflicting commits
+      -f, --files: Show files modified in each commit with line counts
+      -h, --help: Print help (see more with '--help')
+      -r, --review: Fetch and display review information
+    documentation:
+      command: |-
+        Show commits ahead of base for a specific branch
+
+        This shows the list of commits that are on the specified branch but not yet integrated into the base target branch.
+
+        You can also choose to fetch and display review information, show files modified in each commit with line counts, generate an AI summary of the branch changes, and check if the branch merges cleanly into upstream.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: mark
+  description: Mark a commit or branch for auto-stage or auto-commit.
+  flags:
+    -d, --delete: Deletes a mark
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Mark a commit or branch for auto-stage or auto-commit.
+
+      Creates or removes a rule for auto-staging or auto-committing changes
+      to the specified target entity.
+
+      If you mark a branch, new unstaged changes that GitButler sees when
+      you run any command will be automatically staged to that branch.
+
+      If you mark a commit, new uncommitted changes will automatically be
+      amended into the marked commit.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: unmark
+  description: Removes any marks from the workspace
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Removes any marks from the workspace
+
+      This will unmark anything that has been marked by the `but mark` command.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: gui
+  aliases:
+  - .
+  description: Open the GitButler GUI for the current project.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Open the GitButler GUI for the current project.
+
+      Running `but gui` will launch the GitButler graphical user interface
+      in the current directory's GitButler project.
+
+      This provides a visual way to manage branches, commits, and uncommitted
+      changes, complementing the command-line interface.
+
+      You can also just run `but .` as a shorthand to open the GUI.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: commit
+  description: Commit changes to a stack.
+  flags:
+    -i, --ai?: Generate commit message using AI with optional user summary. Use --ai by itself or --ai="your instructions" (equals sign required for value)
+    -p, --changes=*: Uncommitted file or hunk CLI IDs to include in the commit. Can be specified multiple times or as comma-separated values. If not specified, all uncommitted changes (or changes staged to the target branch) are committed
+    -c, --create: Whether to create a new branch for this commit. If the branch name given matches an existing branch, that branch will be used instead. If no branch name is given, a new branch with a generated name will be created
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: Commit message
+    --message-file=: Read commit message from file
+    -n, --no-hooks: Bypass pre-commit hooks
+    --no-verify&: Bypass pre-commit hooks
+    -o, --only: Only commit staged files, not unstaged files
+  documentation:
+    command: |-
+      Commit changes to a stack.
+
+      The `but commit` command allows you to create a new commit
+      on a specified branch (stack) with the current uncommitted changes.
+
+      If there is only one branch applied, it will commit to that branch by default.
+
+      If there are multiple branches applied, you must specify which branch to
+      commit to, or if in interactive mode, you will be prompted to select one.
+
+      By default, all uncommitted changes and all changes already staged to that
+      branch will be included in the commit. If you only want to commit the changes
+      that are already staged to that branch, you can use the `--only` flag.
+
+      It will not commit changes staged to other branches.
+
+      Use `but commit empty --before <target>` or `but commit empty --after <target>`
+      to insert a blank commit. This is useful for creating a placeholder
+      commit that you can amend changes into later using `but mark`, `but rub` or `but absorb`.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  completion:
+    flag:
+      message-file:
+      - $files
+    positional:
+    - []
+  commands:
+  - name: empty
+    description: Insert a blank commit before or after the specified commit.
+    flags:
+      --after=: Insert the blank commit after this commit or branch
+      --before=: Insert the blank commit before this commit or branch
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Insert a blank commit before or after the specified commit.
+
+        This is useful for creating a placeholder commit that you can
+        then amend changes into later using `but mark`, `but rub` or `but absorb`.
+
+        You can modify the empty commit message at any time using `but reword`.
+
+        This allows for a more Jujutsu style workflow where you create commits
+        first and then fill them in as you work. Create an empty commit, mark it
+        for auto-commit, and then just work on your changes. Write the commit
+        message whenever you prefer.
+
+        ## Examples
+
+        Insert at the top of the first branch (no arguments):
+
+        ```text
+        but commit empty
+        ```
+
+        Insert before a commit:
+
+        ```text
+        but commit empty ab
+        ```
+
+        Explicitly insert before a commit:
+
+        ```text
+        but commit empty --before ab
+        ```
+
+        Insert after a commit (at the top of the stack if target is a branch):
+
+        ```text
+        but commit empty --after ab
+        ```
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: push
+  description: Push changes in a branch to remote.
+  flags:
+    -d, --dry-run: Show what would be pushed without actually pushing
+    -h, --help: Print help (see more with '--help')
+    -r, --run-hooks: Run pre-push hooks
+    -s, --skip-force-push-protection: Skip force push protection checks
+    -f, --with-force: Force push even if it's not fast-forward
+  documentation:
+    command: |-
+      Push changes in a branch to remote.
+
+      `but push` will update the remote with the latest commits from the
+      applied branch(es).
+
+      Without a branch ID:
+      - Interactive mode: Lists all branches with unpushed commits and prompts for selection
+      - Non-interactive mode: Automatically pushes all branches with unpushed commits
+
+      With a branch ID:
+      - `but push bu` - push the branch with CLI ID "bu"
+      - `but push feature-branch` - push the branch named "feature-branch"
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: reword
+  description: Edit the commit message of the specified commit.
+  flags:
+    -f, --format: Format the existing commit message to 72-char line wrapping without opening an editor
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: The new commit message or branch name. If not provided, opens an editor
+  documentation:
+    command: |-
+      Edit the commit message of the specified commit.
+
+      You can easily change the commit message of any of your commits by
+      running `but reword <commit-id>` and providing a new message in the
+      editor.
+
+      This will rewrite the commit with the new message and then rebase any
+      dependent commits on top of it.
+
+      You can also use `but reword <branch-id>` to rename the branch.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: oplog
+  description: Commands for viewing and managing operation history.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Commands for viewing and managing operation history.
+
+      Displays a list of past operations performed in the repository,
+      including their timestamps and descriptions.
+
+      This allows you to restore to any previous point in the history of the
+      project. All state is preserved in operations, including uncommitted changes.
+
+      You can use `but oplog restore <oplog-sha>` to restore to a specific state.
+
+      By default, shows the last 20 oplog entries (same as `but oplog list`).
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  commands:
+  - name: list
+    description: List operation history.
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --since=: Start from this oplog SHA instead of the head
+      -s, --snapshot: Show only on-demand snapshot entries
+    documentation:
+      command: |-
+        List operation history.
+
+        Displays a list of past operations performed in the repository,
+        including their timestamps and descriptions.
+
+        This allows you to restore to any previous point in the history of the
+        project. All state is preserved in operations, including uncommitted changes.
+
+        You can use `but oplog restore <oplog-sha>` to restore to a specific state.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: snapshot
+    description: Create an on-demand snapshot with optional message
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -m, --message=: Message to include with the snapshot
+    documentation:
+      command: |-
+        Create an on-demand snapshot with optional message.
+
+        This allows you to create a named snapshot of the current state, which can be helpful to always be able to return to a known good state.
+
+        You can provide an optional message to describe the snapshot.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: restore
+    description: Restore to a specific oplog snapshot.
+    flags:
+      -f, --force: Skip confirmation prompt
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Restore to a specific oplog snapshot.
+
+        This command allows you to revert the repository to a previous state
+        captured in an oplog snapshot.
+
+        You need to provide the SHA of the oplog entry you want to restore to,
+        which you can find by running `but oplog` or `but oplog list`.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: undo
+  description: Undo the last operation by reverting to the previous snapshot.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Undo the last operation by reverting to the previous snapshot.
+
+      This is a shorthand for restoring to the last oplog entry before the
+      current one. It allows you to quickly undo the most recent operation.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: absorb
+  description: Amends changes into the appropriate commits where they belong.
+  flags:
+    --dry-run: Show the absorption plan without making any changes
+    -h, --help: Print help (see more with '--help')
+    -n, --new: Create new commits, instead of amending existing ones. This is useful when you want to preserve existing commits and add new ones for the absorbed changes
+  documentation:
+    command: |-
+      Amends changes into the appropriate commits where they belong.
+
+      The semantic for finding "the appropriate commit" is as follows:
+
+      - If a change has a dependency to a particular commit, it will be amended into that particular commit
+      - If a change is staged to a particular lane (branch), it will be amended into a commit there
+      - If there are no commits in this branch, a new commit is created
+      - Changes are amended into the topmost commit of the leftmost (first) lane (branch)
+
+      Optionally an identifier to an Uncommitted File or a Branch (stack) may be provided.
+
+      - If an Uncommitted File id is provided, absorb will be performed for just that file
+      - If a Branch (stack) id is provided, absorb will be performed for all changes staged to that stack
+      - If no source is provided, absorb is performed for all uncommitted changes
+
+      If `--dry-run` is specified, no changes will be made; instead, the absorption plan
+      (what changes would be absorbed by which commits) will be shown.
+
+      If `--new` is specified, new commits will be created for absorbed changes
+      instead of amending existing commits.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: discard
+  description: Discard uncommitted changes from the worktree.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Discard uncommitted changes from the worktree.
+
+      This command permanently discards changes to files, restoring them to their
+      state in the HEAD commit. Use this to undo unwanted modifications.
+
+      The ID parameter should be a file ID as shown in `but status`. You can
+      discard a whole file or specific hunks within a file.
+
+      ## Examples
+
+      Discard all changes to a file:
+
+      ```text
+      but discard a1
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: pr
+  aliases:
+  - review
+  - mr
+  description: Commands for creating and managing pull requests on a forge
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Commands for creating and managing pull requests on a forge.
+
+      If you are authenticated with a forge using but config forge auth, you can use the but pr commands to create pull requests (or merge requests) on the remote repository for your branches.
+
+      Running but pr without a subcommand defaults to but pr new, which will prompt you to select a branch to create a PR for.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  commands:
+  - name: new
+    description: Create a new pull request for a branch. If no branch is specified, you will be prompted to select one. If there is only one branch without a PR, you will be asked to confirm
+    flags:
+      -t, --default: Use the default content for the PR title and description, skipping any prompts. If the branch contains only a single commit, the commit message will be used
+      -F, --file=: Read PR title and description from file. The first line is the title, the rest is the description
+      -h, --help: Print help (see more with '--help')
+      -m, --message=: PR title and description. The first line is the title, the rest is the description
+      -r, --run-hooks: Run pre-push hooks (defaults to true)
+      -s, --skip-force-push-protection: Skip force push protection checks
+      -f, --with-force: Force push even if it's not fast-forward (defaults to true)
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+    completion:
+      flag:
+        file:
+        - $files
+      positional:
+      - []
+  - name: template
+    description: Configure the template to use for PR descriptions. This will list all available templates found in the repository and allow you to select one
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: update
+  description: Manage GitButler CLI and app updates.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Manage GitButler CLI and app updates.
+
+      Check for new versions, install updates, or suppress update notifications.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  commands:
+  - name: check
+    description: Check if a new version of the GitButler CLI is available
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: suppress
+    description: Suppress update notifications temporarily
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Suppress update notifications temporarily
+
+        Hide update notifications for the specified number of days (1-30). Useful when you want to stay on a specific version temporarily.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: alias
+  description: Manage command aliases.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Manage command aliases.
+
+      Aliases allow you to create shortcuts for commonly used commands.
+      They are stored in git config under the `but.alias.*` namespace.
+
+      ## Examples
+
+      List all configured aliases:
+
+      ```text
+      but alias
+      ```
+
+      Create a new alias:
+
+      ```text
+      but alias add st status
+      but alias add stv "status --verbose"
+      ```
+
+      Remove an alias:
+
+      ```text
+      but alias remove st
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  commands:
+  - name: list
+    description: List all configured aliases (default)
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: add
+    description: Add a new alias
+    flags:
+      -g, --global: Store the alias globally (in ~/.gitconfig) instead of locally
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        Add a new alias
+
+        Creates a new alias that expands to the given command.
+
+        Examples
+
+          but alias add st status
+          but alias add stv "status --verbose"
+          but alias add co "commit --only"
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: remove
+    aliases:
+    - rm
+    description: Remove an existing alias
+    flags:
+      -g, --global: Remove from global config (in ~/.gitconfig) instead of local
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        Remove an existing alias
+
+        Examples
+
+          but alias remove st
+          but alias remove co --global
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: config
+  description: View and manage GitButler configuration.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      View and manage GitButler configuration.
+
+      Without a subcommand, displays an overview of important settings including
+      user information, target branch, forge configuration, and AI setup.
+
+      ## Examples
+
+      View configuration overview:
+
+      ```text
+      but config
+      ```
+
+      View/set user configuration:
+
+      ```text
+      but config user
+      but config user set name "John Doe"
+      but config user set email john@example.com
+      ```
+
+      View/set forge configuration:
+
+      ```text
+      but config forge
+      ```
+
+      View/set target branch:
+
+      ```text
+      but config target
+      ```
+
+      View/set metrics:
+
+      ```text
+      but config metrics
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  commands:
+  - name: user
+    description: View and configure user information (name, email, editor)
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        View and configure user information (name, email, editor).
+
+        Without arguments, displays current user.name, user.email, and core.editor. Use subcommands to set or unset configuration values.
+
+        Examples
+
+        View user configuration:
+
+          but config user
+
+        Set user name (locally):
+
+          but config user set name "John Doe"
+
+        Set user email globally:
+
+          but config user set --global email john@example.com
+
+        Unset a local value:
+
+          but config user unset name
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+    commands:
+    - name: set
+      description: Set a user configuration value
+      flags:
+        -g, --global: Set the configuration globally instead of locally
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |
+          Set a user configuration value.
+
+          Examples
+
+            but config user set name "John Doe"
+            but config user set --global email john@example.com
+        flag:
+          help: Print help (see a summary with '-h')
+          status-after: |-
+            After a mutation command completes, also output workspace status.
+
+            In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+    - name: unset
+      description: Unset (remove) a user configuration value
+      flags:
+        -g, --global: Unset the global configuration instead of local
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |
+          Unset (remove) a user configuration value.
+
+          Examples
+
+            but config user unset name
+            but config user unset --global email
+        flag:
+          help: Print help (see a summary with '-h')
+          status-after: |-
+            After a mutation command completes, also output workspace status.
+
+            In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: forge
+    description: View and manage forge configuration
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        View and manage forge configuration.
+
+        Shows configured forge accounts (GitHub, GitLab, etc.) and authentication status. Use subcommands to authenticate or forget accounts.
+
+        Examples
+
+        View configured forge accounts:
+
+          but config forge
+
+        Authenticate with a forge:
+
+          but config forge auth
+
+        List authenticated accounts:
+
+          but config forge list-users
+
+        Forget an account:
+
+          but config forge forget username
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+    commands:
+    - name: auth
+      description: Authenticate with your forge provider (currently only GitHub is supported)
+      flags:
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |-
+          Authenticate with your forge provider (currently only GitHub is supported).
+
+          This will guide you through the authentication process using either: GitHub
+
+          - Device flow (OAuth)
+          - Personal Access Token (PAT)
+          - GitHub Enterprise
+
+          GitLab
+
+          - Personal Access Token (PAT)
+          - Self-Hosted
+        flag:
+          help: Print help (see a summary with '-h')
+          status-after: |-
+            After a mutation command completes, also output workspace status.
+
+            In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+    - name: list-users
+      description: List authenticated forge accounts known to GitButler
+      flags:
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |-
+          List authenticated forge accounts known to GitButler.
+
+          Shows all configured accounts and their authentication status.
+        flag:
+          help: Print help (see a summary with '-h')
+          status-after: |-
+            After a mutation command completes, also output workspace status.
+
+            In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+    - name: forget
+      description: Forget a previously authenticated forge account
+      flags:
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |
+          Forget a previously authenticated forge account.
+
+          Examples
+
+          Forget a specific account:
+
+          If there are multiple accounts with the same username, you'll be interactively prompted to select which one(s) to forget.
+
+            but config forge forget username
+
+          Interactively select which account(s) to forget:
+
+            but config forge forget
+        flag:
+          help: Print help (see a summary with '-h')
+          status-after: |-
+            After a mutation command completes, also output workspace status.
+
+            In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: target
+    description: View or set the target branch
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        View or set the target branch.
+
+        Without arguments, displays the current target branch. With a branch name, sets the target branch.
+
+        Examples
+
+        View current target:
+
+          but config target
+
+        Set target branch:
+
+          but config target origin/main
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: metrics
+    description: View or set metrics collection
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        View or set metrics collection.
+
+        GitButler uses metrics to help us know what is useful and improve it. Privacy policy: https://gitbutler.com/privacy
+
+        Without arguments, displays the current setting.
+
+        Examples
+
+        View metrics configuration:
+
+          but config metrics
+
+        Enable metrics:
+
+          but config metrics enable
+
+        Disable metrics:
+
+          but config metrics disable
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: ui
+    description: View and configure UI preferences
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        View and configure UI preferences.
+
+        Without arguments, displays current UI settings. Use subcommands to set or unset configuration values.
+
+        Examples
+
+        View UI configuration:
+
+          but config ui
+
+        Enable TUI mode for diff by default:
+
+          but config ui set tui true
+
+        Disable TUI mode:
+
+          but config ui set tui false
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+    commands:
+    - name: set
+      description: Set a UI configuration value
+      flags:
+        -g, --global: Set the configuration globally instead of locally
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |
+          Set a UI configuration value.
+
+          Examples
+
+            but config ui set tui true
+            but config ui set --global tui true
+        flag:
+          help: Print help (see a summary with '-h')
+          status-after: |-
+            After a mutation command completes, also output workspace status.
+
+            In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+    - name: unset
+      description: Unset (remove) a UI configuration value
+      flags:
+        -g, --global: Unset the global configuration instead of local
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |
+          Unset (remove) a UI configuration value.
+
+          Examples
+
+            but config ui unset tui
+        flag:
+          help: Print help (see a summary with '-h')
+          status-after: |-
+            After a mutation command completes, also output workspace status.
+
+            In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: resolve
+  description: Resolve conflicts in a commit.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Resolve conflicts in a commit.
+
+      When a commit is in a conflicted state (marked with conflicts during rebase),
+      use this command to enter resolution mode, resolve the conflicts, and finalize.
+
+      ## Workflow
+
+      1. Enter resolution mode: `but resolve <commit-id>`
+      2. Resolve conflicts in your editor (remove conflict markers)
+      3. Check remaining conflicts: `but resolve status`
+      4. Finalize resolution: `but resolve finish`
+         Or cancel: `but resolve cancel`
+
+      When in resolution mode, `but status` will also show that you're resolving conflicts.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  commands:
+  - name: status
+    description: Show the status of conflict resolution, listing remaining conflicted files
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: finish
+    description: Finalize conflict resolution and return to workspace mode
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Finalize conflict resolution and return to workspace mode.
+
+        This commits the resolved changes, rebases any commits on top of the resolved commit, and returns to the normal workspace.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: cancel
+    description: Cancel conflict resolution and return to workspace mode
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Cancel conflict resolution and return to workspace mode.
+
+        This discards all changes made during resolution and restores the workspace to its pre-resolution state.
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: squash
+  description: Squash commits together.
+  flags:
+    -i, --ai?: Generate commit message using AI with optional user summary or instructions. Use --ai by itself or --ai="your instructions" (equals sign required for value)
+    -d, --drop-message: Drop source commit messages and keep only the target commit's message
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: Provide a new commit message for the resulting commit
+  documentation:
+    command: |-
+      Squash commits together.
+
+      Can be invoked in three ways:
+      1. Using commit identifiers: `but squash <commit1> <commit2>` or `but squash <commit1> <commit2> <commit3>...`
+         - Squashes all commits except the last into the last commit
+      2. Using a commit range: `but squash <commit1>..<commit4>`
+         - Squashes all commits in the range into the last commit in the range
+      3. Using a branch name: `but squash <branch>`
+         - Squashes all commits in the branch into the bottom-most commit
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: uncommit
+  description: Uncommit changes from a commit or file-in-commit to the unstaged area.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Uncommit changes from a commit or file-in-commit to the unstaged area.
+
+      Wrapper for `but rub <source> zz`.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: amend
+  description: Amend a file change into a specific commit and rebases any dependent commits.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Amend a file change into a specific commit and rebases any dependent commits.
+
+      Wrapper for `but rub <file> <commit>`.
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: merge
+  description: Merge a branch into your local target branch.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Merge a branch into your local target branch.
+
+      If the target branch is local (`gb-local`), finds the local branch that the target
+      references (e.g., `gb-local/master` becomes `master`) and merges the specified
+      branch into that local branch. After merging, runs the equivalent of `but pull`
+      to update all branches.
+
+      ## Examples
+
+      Merge a branch by its CLI ID:
+
+      ```text
+      but merge bu
+      ```
+
+      Merge a branch by name:
+
+      ```text
+      but merge my-feature-branch
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: move
+  description: Move a commit to a different location in the stack.
+  flags:
+    -a, --after: Move the commit after (above) the target instead of before (below)
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Move a commit to a different location in the stack.
+
+      By default, commits are moved to be before (below) the target.
+      Use `--after` to move the commit after (above) the target instead.
+
+      When moving to a branch, the commit is placed at the top of that branch's stack.
+
+      ## Examples
+
+      Move a commit before another commit:
+
+      ```text
+      but move abc123 def456
+      ```
+
+      Move a commit after another commit:
+
+      ```text
+      but move abc123 def456 --after
+      ```
+
+      Move a commit to a different branch (places at top):
+
+      ```text
+      but move abc123 my-feature-branch
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: pick
+  description: Cherry-pick a commit from an unapplied branch into an applied virtual branch.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Cherry-pick a commit from an unapplied branch into an applied virtual branch.
+
+      This command allows you to pick individual commits from unapplied branches
+      and apply them to your current workspace branches.
+
+      The source can be:
+      - A commit SHA (full or short)
+      - A CLI ID (e.g., "c5" from `but status`)
+      - An unapplied branch name (shows interactive commit selection)
+
+      If no target branch is specified:
+      - In interactive mode: prompts you to select a target branch
+      - If only one branch exists: automatically uses that branch
+      - In non-interactive mode: fails with an error
+
+      ## Examples
+
+      Pick a specific commit into a branch:
+
+      ```text
+      but pick abc1234 my-feature
+      ```
+
+      Pick using a CLI ID:
+
+      ```text
+      but pick c5 my-feature
+      ```
+
+      Interactively select commits from an unapplied branch:
+
+      ```text
+      but pick feature-branch
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: unapply
+  description: Unapply a branch from the workspace.
+  flags:
+    -f, --force: Force unapply without confirmation
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Unapply a branch from the workspace.
+
+      If you want to unapply an applied branch from your workspace
+      (effectively stashing it) so you can work on other branches,
+      you can run `but unapply <branch-name>`.
+
+      This will remove the changes in that branch from your working
+      directory and you can re-apply it later when needed. You will then
+      see the branch as unapplied in `but branch list`.
+
+      The identifier can be:
+      - A CLI ID pointing to a stack or branch (e.g., "bu" from `but status`)
+      - A branch name
+
+      If a branch name (or an identifier pointing to a branch) is provided,
+      the entire stack containing that branch will be unapplied.
+
+      ## Examples
+
+      Unapply by branch name:
+
+      ```text
+      but unapply my-feature-branch
+      ```
+
+      Unapply by CLI ID:
+
+      ```text
+      but unapply bu
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: apply
+  description: Apply a branch to the workspace.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Apply a branch to the workspace.
+
+      If you want to apply an unapplied branch to your workspace so you
+      can work on it, you can run `but apply <branch-name>`.
+
+      This will apply the changes in that branch into your working directory
+      as a parallel applied branch.
+
+      ## Examples
+
+      Apply by branch name:
+
+      ```text
+      but apply my-feature-branch
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: stage
+  description: Stages a file or hunk to a specific branch.
+  flags:
+    -b, --branch=: Branch to stage to (for interactive mode)
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Stages a file or hunk to a specific branch.
+
+      Without arguments, opens an interactive TUI for selecting files and hunks to stage.
+      With arguments, stages the specified file or hunk to the given branch.
+
+      Usage:
+        `but stage`                             (interactive TUI selector)
+        `but stage --branch <branch>`           (interactive, specific branch)
+        `but stage <file-or-hunk> <branch>`     (direct staging)
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+- name: skill
+  description: Manage Claude AI skills for GitButler.
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Manage Claude AI skills for GitButler.
+
+      Skills provide enhanced AI capabilities for working with GitButler through
+      Claude Code and other AI assistants.
+
+      Use `but skill install` to install the GitButler skill files. By default,
+      it prompts for scope (repository or global home directory) and then format.
+      When run outside a git repository, local scope is unavailable and the
+      default install location is global (home directory). You can still
+      install to a custom location with `--path` using an absolute or `~` path.
+
+      ## Examples
+
+      Install interactively (prompts for scope and format):
+
+      ```text
+      but skill install
+      ```
+
+      Install the skill globally:
+
+      ```text
+      but skill install --global
+      ```
+    flag:
+      help: Print help (see a summary with '-h')
+      status-after: |-
+        After a mutation command completes, also output workspace status.
+
+        In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  commands:
+  - name: install
+    description: Install the GitButler CLI skill files for Coding agents
+    flags:
+      -d, --detect: Automatically detect where to install by finding existing installation
+      -g, --global: Install the skill globally instead of in the current repository
+      -h, --help: Print help (see more with '--help')
+      -p, --path=: Custom path where to install the skill (relative to repository root or absolute). Outside a repository, relative paths require --global
+    documentation:
+      command: |-
+        Install the GitButler CLI skill files for Coding agents
+
+        By default, the command prompts you to choose installation scope first
+        (current repository or global home directory), then prompts you to
+        select a skill folder format (Claude Code, OpenCode, Codex, GitHub
+        Copilot, Cursor, Windsurf) unless you specify a custom path with --path.
+        When run outside a git repository, local scope is unavailable and the
+        default install location is global (home directory). You can still
+        install to a custom location with `--path` using an absolute or `~` path.
+
+        Use --global to install the skill in a global location instead of the
+        current repository.
+
+        In non-interactive mode, specify --path or --detect.
+
+        ## Examples
+
+        Install interactively (prompts for scope and format):
+
+        ```text
+        but skill install
+        ```
+
+        Install globally (prompts for format):
+
+        ```text
+        but skill install --global
+        ```
+
+        Install to a custom path:
+
+        ```text
+        but skill install --path .claude/skills/gitbutler
+        ```
+
+        Auto-detect installation location (update existing installation):
+
+        ```text
+        but skill install --detect
+        ```
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
+  - name: check
+    description: Check if installed GitButler skills are up to date with the CLI version
+    flags:
+      -g, --global: Only check global installations (in home directory)
+      -h, --help: Print help (see more with '--help')
+      -l, --local: Only check local installations (in current repository)
+      -u, --update: Automatically update any outdated skills found
+    documentation:
+      command: |-
+        Check if installed GitButler skills are up to date with the CLI version
+
+        Scans for installed skill files and compares their version with the current
+        CLI version. By default, checks both local (repository) and global installations.
+
+        ## Examples
+
+        Check all installed skills:
+
+        ```text
+        but skill check
+        ```
+
+        Check and automatically update outdated skills:
+
+        ```text
+        but skill check --update
+        ```
+
+        Check only global installations:
+
+        ```text
+        but skill check --global
+        ```
+      flag:
+        help: Print help (see a summary with '-h')
+        status-after: |-
+          After a mutation command completes, also output workspace status.
+
+          In human mode, prints status after the command output. In JSON mode, wraps both in {"result": ..., "status": ...} on success, or {"result": ..., "status_error": ...} if the status query fails (in which case "status" is absent).
