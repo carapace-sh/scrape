@@ -6,6 +6,7 @@ on:
 
 jobs:
   atuin: {uses: ./.github/workflows/scrape-template.yml, with: {command: atuin}}
+  bazel: {uses: ./.github/workflows/scrape-template.yml, with: {command: bazel}}
   but: {uses: ./.github/workflows/scrape-template.yml, with: {command: but}}
   cargo: {uses: ./.github/workflows/scrape-template.yml, with: {command: cargo}}
   devbox: {uses: ./.github/workflows/scrape-template.yml, with: {command: devbox}}

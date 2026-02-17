@@ -1,0 +1,223 @@
+diff --git a/src/main/java/sh/carapace/BUILD b/src/main/java/sh/carapace/BUILD
+new file mode 100644
+index 00000000..0c3d0e83
+--- /dev/null
++++ b/src/main/java/sh/carapace/BUILD
+@@ -0,0 +1,22 @@
++load("@rules_java//java:defs.bzl", "java_binary")
++
++java_binary(
++    name = "Spec",
++    srcs = ["Spec.java"],
++    deps = [
++        "//src/main/java/com/google/devtools/build/lib:runtime",
++        "//src/main/java/com/google/devtools/build/lib/bazel:modules",
++        "//src/main/java/com/google/devtools/build/lib/bazel/commands",
++        "//src/main/java/com/google/devtools/build/lib/runtime/commands",
++        "//src/main/java/com/google/devtools/build/lib/runtime/mobileinstall",
++        "//src/main/java/com/google/devtools/common/options",
++        "@maven//:org_yaml_snakeyaml",
++    ],
++)
++
++genrule(
++    name = "gen_spec",
++    outs = ["bazel.yaml"],
++    tools = [":Spec"],
++    cmd = "$(location :Spec) > $@",
++)
+diff --git a/src/main/java/sh/carapace/Spec.java b/src/main/java/sh/carapace/Spec.java
+new file mode 100644
+index 00000000..69eb2462
+--- /dev/null
++++ b/src/main/java/sh/carapace/Spec.java
+@@ -0,0 +1,189 @@
++package sh.carapace;
++
++import com.google.devtools.build.lib.bazel.commands.*;
++import com.google.devtools.build.lib.runtime.BlazeCommand;
++import com.google.devtools.build.lib.runtime.BlazeServerStartupOptions;
++import com.google.devtools.build.lib.runtime.Command;
++import com.google.devtools.build.lib.runtime.HostJvmStartupOptions;
++import com.google.devtools.build.lib.runtime.commands.*;
++import com.google.devtools.build.lib.runtime.mobileinstall.MobileInstallCommand;
++import com.google.devtools.common.options.Option;
++import com.google.devtools.common.options.OptionsBase;
++import java.io.PrintWriter;
++import java.lang.annotation.Annotation;
++import java.lang.reflect.AnnotatedElement;
++import java.lang.reflect.Field;
++import java.util.*;
++import java.util.Arrays;
++import java.util.stream.Collectors;
++import org.yaml.snakeyaml.Yaml;
++
++class Spec {
++  public static void main(String[] args) {
++    Map<String, Object> spec = new HashMap<>();
++    spec.put("name", "bazel");
++    String[] aliases = {"bazelisk"};
++    spec.put("aliases", aliases);
++    spec.put("description", "build system");
++
++    List<Class<? extends BlazeCommand>> commandObjects = new ArrayList<>();
++    // see public commands in main/java/com/google/devtools/build/lib/runtime/commands/ 
++    commandObjects.add(AqueryCommand.class);
++    commandObjects.add(BuildCommand.class);
++    commandObjects.add(CanonicalizeCommand.class);
++    commandObjects.add(CleanCommand.class);
++    commandObjects.add(ConfigCommand.class);
++    commandObjects.add(CoverageCommand.class);
++    commandObjects.add(CqueryCommand.class);
++    commandObjects.add(DumpCommand.class);
++    commandObjects.add(FetchCommand.class);
++    commandObjects.add(HelpCommand.class);
++    commandObjects.add(InfoCommand.class);
++    commandObjects.add(LicenseCommand.class);
++    commandObjects.add(MobileInstallCommand.class);
++    commandObjects.add(ModCommand.class);
++    commandObjects.add(PrintActionCommand.class);
++    commandObjects.add(QueryCommand.class);
++    commandObjects.add(QueryEnvironmentBasedCommand.class);
++    commandObjects.add(RunCommand.class);
++    commandObjects.add(ShutdownCommand.class);
++    commandObjects.add(TestCommand.class);
++    commandObjects.add(VendorCommand.class);
++    commandObjects.add(VersionCommand.class);
++
++    List<Map<String, Object>> subcommands =
++        commandObjects.stream()
++            .map(Spec::readCommandAnnotation)
++            .collect(Collectors.toCollection(ArrayList::new));
++
++    // `help` subcommand needs all other bazel subcommands as its subcommands
++    // but just the names without all the flags.
++    List<Map<String, Object>> subcommandNames =
++        subcommands.stream()
++            .map(
++                map -> {
++                  Map<String, Object> filteredMap = new HashMap<>();
++                  if (map.containsKey("name")) {
++                    filteredMap.put("name", map.get("name"));
++                  }
++                  return filteredMap;
++                })
++            .collect(Collectors.toList());
++
++    Map<String, Object> helpCommand = readCommandAnnotation(HelpCommand.class);
++    helpCommand.put("commands", subcommandNames);
++    subcommands.add(helpCommand);
++
++    spec.put("commands", subcommands);
++
++    List<Class<? extends OptionsBase>> startupOptions = new ArrayList<>();
++    startupOptions.add(com.google.devtools.build.lib.bazel.BazelStartupOptionsModule.Options.class);
++    startupOptions.add(HostJvmStartupOptions.class);
++    startupOptions.add(BlazeServerStartupOptions.class);
++
++    Map<String, String> startupOptionFlags =
++        startupOptions.stream()
++            .map(Spec::readOptionAnnotation)
++            .flatMap(map -> map.entrySet().stream())
++            .collect(
++                Collectors.toMap(
++                    entry -> entry.getKey(),
++                    entry -> entry.getValue(),
++                    (existingValue, newValue) -> newValue));
++
++    spec.put("flags", startupOptionFlags);
++
++    PrintWriter writer = new PrintWriter(System.out, true);
++    Yaml yaml = new Yaml();
++    yaml.dump(spec, writer);
++  }
++
++  static Map<String, Object> readCommandAnnotation(AnnotatedElement element) {
++    Map<String, Object> spec = new HashMap<>();
++    try {
++      if (element.isAnnotationPresent(Command.class)) {
++        // getAnnotation returns Annotation type
++        Annotation singleAnnotation = element.getAnnotation(Command.class);
++        Command cmd = (Command) singleAnnotation;
++
++        spec.put("name", cmd.name());
++        spec.put("description", cmd.shortDescription());
++
++        Map<String, String> options =
++            Arrays.stream(cmd.options())
++                .map(Spec::readOptionAnnotation)
++                .flatMap(map -> map.entrySet().stream())
++                .collect(
++                    Collectors.toMap(
++                        entry -> entry.getKey(),
++                        entry -> entry.getValue(),
++                        (existingValue, newValue) -> newValue));
++
++        // Recursively gather inherited flags
++        List<Map<String, String>> allOptions =
++            Arrays.stream(cmd.inheritsOptionsFrom())
++                .map(Spec::readCommandAnnotation)
++                .map(inheritCmd -> inheritCmd.get("flags"))
++                .filter(obj -> obj instanceof Map)
++                .map(obj -> (Map<String, String>) obj)
++                .collect(Collectors.toList());
++
++        allOptions.add(options);
++
++        Map<String, String> flags =
++            allOptions.stream()
++                .flatMap(map -> map.entrySet().stream())
++                .collect(
++                    Collectors.toMap(
++                        entry -> entry.getKey(),
++                        entry -> entry.getValue(),
++                        (existingValue, newValue) -> newValue));
++
++        spec.put("flags", flags);
++      }
++
++    } catch (Exception exception) {
++      exception.printStackTrace();
++    }
++    return spec;
++  }
++
++  static Map<String, String> readOptionAnnotation(Class<? extends OptionsBase> optionGroup) {
++    Map<String, String> optionMap = new HashMap<>();
++    Field[] fields = optionGroup.getDeclaredFields();
++    for (Field field : fields) {
++      try {
++        if (field.isAnnotationPresent(Option.class)) {
++          // getAnnotation returns Annotation type
++          Annotation singleAnnotation = field.getAnnotation(Option.class);
++          Option opt = (Option) singleAnnotation;
++
++          if (opt.name().contains(" ")) {
++            continue; // ignore flags containing space in name
++          }
++
++          String flagSuffix = "";
++          if (opt.allowMultiple()) {
++            flagSuffix += "*";
++          }
++          if (field.getType() != boolean.class) {
++            flagSuffix += "=";
++          }
++
++          String flag = "--" + opt.name() + flagSuffix;
++          if (opt.abbrev() != '\0') {
++            flag = "-" + opt.abbrev() + ", " + flag;
++          }
++          optionMap.put(flag, opt.valueHelp() + opt.help().replace("\\", "\\\\"));
++
++          if (field.getType().equals(boolean.class)) {
++            optionMap.put("--no" + opt.name(), opt.valueHelp() + opt.help());
++          }
++        }
++      } catch (Exception exception) {
++        exception.printStackTrace();
++      }
++    }
++    return optionMap;
++  }
++}
