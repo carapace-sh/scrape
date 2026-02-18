@@ -7,7 +7,7 @@
     "devbox": "https://github.com/jetify-com/devbox#0.16.0",
     "docker": "https://github.com/docker/cli#v29.2.1",
     "docker-compose": "https://github.com/docker/compose#v5.0.2",
-    "gh": "https://github.com/cli/cli#v2.86.0",
+    "gh": "https://github.com/cli/cli#v2.87.0",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.74.0",
     "golangci-lint": "https://github.com/golangci/golangci-lint#v2.10.1",
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.13.3",
