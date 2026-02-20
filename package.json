@@ -18,6 +18,7 @@
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.2",
     "minikube": "https://github.com/kubernetes/minikube#v1.38.1",
     "mise": "https://github.com/jdx/mise#v2025.10.21",
+    "pixi": "https://github.com/prefix-dev/pixi#v0.63.2",
     "rustup": "https://github.com/rust-lang/rustup#1.28.2",
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
     "task": "https://github.com/go-task/task#v3.48.0",

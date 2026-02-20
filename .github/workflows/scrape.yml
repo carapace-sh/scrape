@@ -23,6 +23,7 @@ jobs:
   mdbook: {uses: ./.github/workflows/scrape-template.yml, with: {command: mdbook}}
   minikube: {uses: ./.github/workflows/scrape-template.yml, with: {command: minikube}}
   mise: {uses: ./.github/workflows/scrape-template.yml, with: {command: mise}}
+  pixi: {uses: ./.github/workflows/scrape-template.yml, with: {command: pixi}}
   rustup: {uses: ./.github/workflows/scrape-template.yml, with: {command: rustup}}
   taplo: {uses: ./.github/workflows/scrape-template.yml, with: {command: taplo}}
   task: {uses: ./.github/workflows/scrape-template.yml, with: {command: task}}
