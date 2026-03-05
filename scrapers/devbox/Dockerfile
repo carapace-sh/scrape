@@ -9,6 +9,7 @@ ADD devbox.patch /
 WORKDIR /devbox
 RUN git apply ../devbox.patch
 RUN go get github.com/carapace-sh/carapace
+RUN go mod tidy
 RUN GOBIN=/usr/bin/ go install ./cmd/devbox
 
 ENTRYPOINT ["devbox", "_carapace", "spec"]
