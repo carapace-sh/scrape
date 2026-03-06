@@ -1,0 +1,27 @@
+diff --git a/src/main.rs b/src/main.rs
+index 753b3da0..e2e500bc 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -1,6 +1,10 @@
+ use std::collections::HashSet;
+ use std::io::Write;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ use anyhow::Context;
+ use clap::FromArgMatches;
+ use clap::error::ErrorKind as ClapErrorKind;
+@@ -226,6 +230,11 @@ fn handle_hook_command(action: HookCommand) -> anyhow::Result<()> {
+ }
+ 
+ fn main() {
++    generate(Spec, &mut cli::build_command(), "wt", &mut io::stdout());
++    if true {
++        return;
++    }
++
+     // Configure Rayon's global thread pool for mixed I/O workloads.
+     // The `wt list` command runs git operations (CPU + disk I/O) and network
+     // requests (CI status, URL health checks) in parallel. Using 2x CPU cores
