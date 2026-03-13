@@ -2,7 +2,7 @@
   "dependencies": {
     "atuin": "https://github.com/atuinsh/atuin#v18.12.1",
     "bazel": "https://github.com/bazelbuild/bazel#9.0.1",
-    "but": "https://github.com/gitbutlerapp/gitbutler#release/0.19.5",
+    "but": "https://github.com/gitbutlerapp/gitbutler#release/0.19.6",
     "cargo": "https://github.com/rust-lang/cargo#0.95.0",
     "devbox": "https://github.com/jetify-com/devbox#0.17.0",
     "docker": "https://github.com/docker/cli#v29.3.0",
