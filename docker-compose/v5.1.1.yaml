@@ -1,0 +1,393 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: compose
+description: Docker Compose
+flags:
+    --all-resources: Include all resources, even those not used by services
+    --ansi=: Control when to print ANSI control characters ("never"|"always"|"auto")
+    --compatibility: Run compose in backward compatibility mode
+    --env-file*=: Specify an alternate environment file
+    --insecure-registry&*=: Use insecure registry to pull Compose OCI artifacts. Doesn't apply to images
+    --no-ansi&: Do not print ANSI control characters (DEPRECATED)
+    --parallel=: Control max parallelism, -1 for unlimited
+    --profile*=: Specify a profile to enable
+    --progress=: Set type of progress output (auto, tty, plain, json, quiet)
+    --project-directory=: |-
+        Specify an alternate working directory
+        (default: the path of the, first specified, Compose file)
+    --verbose&: Show more output
+    --workdir&=: |-
+        DEPRECATED! USE --project-directory INSTEAD.
+        Specify an alternate working directory
+        (default: the path of the, first specified, Compose file)
+    -f, --file*=: Compose configuration files
+    -p, --project-name=: Project name
+    -v, --version&: Show the Docker Compose version information
+persistentflags:
+    --dry-run: Execute command in dry run mode
+commands:
+    - name: alpha [COMMAND]
+      description: Experimental commands
+      hidden: true
+      commands:
+        - name: generate [OPTIONS] [CONTAINERS...]
+          description: EXPERIMENTAL - Generate a Compose file from existing containers
+          flags:
+            --format=: 'Format the output. Values: [yaml | json]'
+            --name=: Project name to set in the Compose file
+            --project-dir=: Directory to use for the project
+        - name: publish [OPTIONS] REPOSITORY[:TAG]
+          description: Publish compose application
+          flags:
+            --app: Published compose application (includes referenced images)
+            --insecure-registry&: Use insecure registry
+            --oci-version=: OCI image/artifact specification version (automatically determined by default)
+            --resolve-image-digests: Pin image tags to digests
+            --with-env: Include environment variables in the published OCI artifact
+            -y, --yes: Assume "yes" as answer to all prompts
+        - name: viz [OPTIONS]
+          description: EXPERIMENTAL - Generate a graphviz graph from your compose file
+          flags:
+            --image: Include service's image name in output graph
+            --indentation-size=: Number of tabs or spaces to use for indentation
+            --networks: Include service's attached networks in output graph
+            --ports: Include service's exposed ports in output graph
+            --spaces: |-
+                If given, space character ' ' will be used to indent,
+                otherwise tab character '\t' will be used
+    - name: attach [OPTIONS] SERVICE
+      description: Attach local standard input, output, and error streams to a service's running container
+      flags:
+        --detach-keys=: Override the key sequence for detaching from a container.
+        --index=: index of the container if service has multiple replicas.
+        --no-stdin: Do not attach STDIN
+        --sig-proxy: Proxy all received signals to the process
+    - name: bridge CMD [OPTIONS]
+      description: Convert compose files into another model
+      commands:
+        - name: convert
+          description: Convert compose files to Kubernetes manifests, Helm charts, or another model
+          flags:
+            --templates=: Directory containing transformation templates
+            -o, --output=: The output directory for the Kubernetes resources
+            -t, --transformation*=: 'Transformation to apply to compose model (default: docker/compose-bridge-kubernetes)'
+        - name: transformations CMD [OPTIONS]
+          description: Manage transformation images
+          commands:
+            - name: create [OPTION] PATH
+              description: Create a new transformation
+              flags:
+                -f, --from=: 'Existing transformation to copy (default: docker/compose-bridge-kubernetes)'
+            - name: list
+              aliases:
+                - ls
+              description: List available transformations
+              flags:
+                --format=: 'Format the output. Values: [table | json]'
+                -q, --quiet: Only display transformer names
+    - name: build [OPTIONS] [SERVICE...]
+      description: Build or rebuild services
+      flags:
+        --build-arg*=: Set build-time variables for services
+        --builder=: Set builder to use
+        --check: Check build configuration
+        --compress&: Compress the build context using gzip. DEPRECATED
+        --force-rm&: Always remove intermediate containers. DEPRECATED
+        --no-cache: Do not use cache when building the image
+        --no-rm&: Do not remove intermediate containers after a successful build. DEPRECATED
+        --parallel&: Build images in parallel. DEPRECATED
+        --print: Print equivalent bake file
+        --progress&=: Set type of ui output (auto, tty, plain, json, quiet)
+        --provenance=: Add a provenance attestation
+        --pull: Always attempt to pull a newer version of the image
+        --push: Push service images
+        --sbom=: Add a SBOM attestation
+        --ssh=: Set SSH authentications used when building service images. (use 'default' for using your default SSH Agent)
+        --with-dependencies: Also build dependencies (transitively)
+        -m, --memory=: Set memory limit for the build container. Not supported by BuildKit.
+        -q, --quiet: Suppress the build output
+    - name: commit [OPTIONS] SERVICE [REPOSITORY[:TAG]]
+      description: Create a new image from a service container's changes
+      flags:
+        --index=: index of the container if service has multiple replicas.
+        -a, --author=: Author (e.g., "John Hannibal Smith <hannibal@a-team.com>")
+        -c, --change=: Apply Dockerfile instruction to the created image
+        -m, --message=: Commit message
+        -p, --pause: Pause container during commit
+    - name: config [OPTIONS] [SERVICE...]
+      description: Parse, resolve and render compose file in canonical format
+      flags:
+        --environment: Print environment used for interpolation.
+        --format=: 'Format the output. Values: [yaml | json]'
+        --hash=: Print the service config hash, one per line.
+        --images: Print the image names, one per line.
+        --lock-image-digests: Produces an override file with image digests
+        --models: Print the model names, one per line.
+        --networks: Print the network names, one per line.
+        --no-consistency: 'Don''t check model consistency - warning: may produce invalid Compose output'
+        --no-env-resolution: Don't resolve service env files
+        --no-interpolate: Don't interpolate environment variables
+        --no-normalize: Don't normalize compose model
+        --no-path-resolution: Don't resolve file paths
+        --profiles: Print the profile names, one per line.
+        --resolve-image-digests: Pin image tags to digests
+        --services: Print the service names, one per line.
+        --variables: Print model variables and default values.
+        --volumes: Print the volume names, one per line.
+        -o, --output=: Save to file (default to stdout)
+        -q, --quiet: Only validate the configuration, don't print anything
+    - name: |-
+        cp [OPTIONS] SERVICE:SRC_PATH DEST_PATH|-
+        	docker compose cp [OPTIONS] SRC_PATH|- SERVICE:DEST_PATH
+      description: Copy files/folders between a service container and the local filesystem
+      flags:
+        --all: Include containers created by the run command
+        --index=: Index of the container if service has multiple replicas
+        -L, --follow-link: Always follow symbol link in SRC_PATH
+        -a, --archive: Archive mode (copy all uid/gid information)
+    - name: create [OPTIONS] [SERVICE...]
+      description: Creates containers for a service
+      flags:
+        --build: Build images before starting containers
+        --force-recreate: Recreate containers even if their configuration and image haven't changed
+        --no-build: Don't build an image, even if it's policy
+        --no-recreate: If containers already exist, don't recreate them. Incompatible with --force-recreate.
+        --pull=: Pull image before running ("always"|"missing"|"never"|"build")
+        --quiet-pull: Pull without printing progress information
+        --remove-orphans: Remove containers for services not defined in the Compose file
+        --scale*=: Scale SERVICE to NUM instances. Overrides the `scale` setting in the Compose file if present.
+        -y, --yes: Assume "yes" as answer to all prompts and run non-interactively
+    - name: down [OPTIONS] [SERVICES]
+      description: Stop and remove containers, networks
+      flags:
+        --remove-orphans: Remove containers for services not defined in the Compose file
+        --rmi=: Remove images used by services. "local" remove only images that don't have a custom tag ("local"|"all")
+        -t, --timeout=: Specify a shutdown timeout in seconds
+        -v, --volumes: Remove named volumes declared in the "volumes" section of the Compose file and anonymous volumes attached to containers
+    - name: events [OPTIONS] [SERVICE...]
+      description: Receive real time events from containers
+      flags:
+        --json: Output events as a stream of json objects
+        --since=: Show all events created since timestamp
+        --until=: Stream events until this timestamp
+    - name: exec [OPTIONS] SERVICE COMMAND [ARGS...]
+      description: Execute a command in a running container
+      flags:
+        --index=: Index of the container if service has multiple replicas
+        --privileged: Give extended privileges to the process
+        -T, --no-tty: Disable pseudo-TTY allocation. By default 'docker compose exec' allocates a TTY.
+        -d, --detach: 'Detached mode: Run command in the background'
+        -e, --env*=: Set environment variables
+        -i, --interactive&: Keep STDIN open even if not attached
+        -t, --tty&: Allocate a pseudo-TTY
+        -u, --user=: Run the command as this user
+        -w, --workdir=: Path to workdir directory for this command
+    - name: export [OPTIONS] SERVICE
+      description: Export a service container's filesystem as a tar archive
+      flags:
+        --index=: index of the container if service has multiple replicas.
+        -o, --output=: Write to a file, instead of STDOUT
+    - name: images [OPTIONS] [SERVICE...]
+      description: List images used by the created containers
+      flags:
+        --format=: 'Format the output. Values: [table | json]'
+        -q, --quiet: Only display IDs
+    - name: kill [OPTIONS] [SERVICE...]
+      description: Force stop service containers
+      flags:
+        --remove-orphans: Remove containers for services not defined in the Compose file
+        -s, --signal=: SIGNAL to send to the container
+    - name: logs [OPTIONS] [SERVICE...]
+      description: View output from containers
+      flags:
+        --index=: index of the container if service has multiple replicas
+        --no-color: Produce monochrome output
+        --no-log-prefix: Don't print prefix in logs
+        --since=: Show logs since timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for 42 minutes)
+        --until=: Show logs before a timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for 42 minutes)
+        -f, --follow: Follow log output
+        -n, --tail=: Number of lines to show from the end of the logs for each container
+        -t, --timestamps: Show timestamps
+    - name: ls [OPTIONS]
+      description: List running compose projects
+      flags:
+        --filter=: Filter output based on conditions provided
+        --format=: 'Format the output. Values: [table | json]'
+        -a, --all: Show all stopped Compose projects
+        -q, --quiet: Only display project names
+    - name: pause [SERVICE...]
+      description: Pause services
+    - name: port [OPTIONS] SERVICE PRIVATE_PORT
+      description: Print the public port for a port binding
+      flags:
+        --index=: Index of the container if service has multiple replicas
+        --protocol=: tcp or udp
+    - name: ps [OPTIONS] [SERVICE...]
+      description: List containers
+      flags:
+        --filter=: 'Filter services by a property (supported filters: status)'
+        --format=: |-
+            Format output using a custom template:
+            'table':            Print output in table format with column headers (default)
+            'table TEMPLATE':   Print output in table format using the given Go template
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        --no-trunc: Don't truncate output
+        --orphans: Include orphaned services (not declared by project)
+        --services: Display services
+        --status*=: 'Filter services by status. Values: [paused | restarting | removing | running | dead | created | exited]'
+        -a, --all: Show all stopped containers (including those created by the run command)
+        -q, --quiet: Only display IDs
+    - name: publish [OPTIONS] REPOSITORY[:TAG]
+      description: Publish compose application
+      flags:
+        --app: Published compose application (includes referenced images)
+        --insecure-registry&: Use insecure registry
+        --oci-version=: OCI image/artifact specification version (automatically determined by default)
+        --resolve-image-digests: Pin image tags to digests
+        --with-env: Include environment variables in the published OCI artifact
+        -y, --yes: Assume "yes" as answer to all prompts
+    - name: pull [OPTIONS] [SERVICE...]
+      description: Pull service images
+      flags:
+        --ignore-buildable: Ignore images that can be built
+        --ignore-pull-failures: Pull what it can and ignores images with pull failures
+        --include-deps: Also pull services declared as dependencies
+        --no-parallel&: DEPRECATED disable parallel pulling
+        --parallel&: DEPRECATED pull multiple images in parallel
+        --policy=: Apply pull policy ("missing"|"always")
+        -q, --quiet: Pull without printing progress information
+    - name: push [OPTIONS] [SERVICE...]
+      description: Push service images
+      flags:
+        --ignore-push-failures: Push what it can and ignores images with push failures
+        --include-deps: Also push images of services declared as dependencies
+        -q, --quiet: Push without printing progress information
+    - name: restart [OPTIONS] [SERVICE...]
+      description: Restart service containers
+      flags:
+        --no-deps: Don't restart dependent services
+        -t, --timeout=: Specify a shutdown timeout in seconds
+    - name: rm [OPTIONS] [SERVICE...]
+      description: Removes stopped service containers
+      flags:
+        -a, --all&: Deprecated - no effect
+        -f, --force: Don't ask to confirm removal
+        -s, --stop: Stop the containers, if required, before removing
+        -v, --volumes: Remove any anonymous volumes attached to containers
+    - name: run [OPTIONS] SERVICE [COMMAND] [ARGS...]
+      description: Run a one-off command on a service
+      flags:
+        --build: Build image before starting container
+        --cap-add=: Add Linux capabilities
+        --cap-drop=: Drop Linux capabilities
+        --entrypoint=: Override the entrypoint of the image
+        --env-from-file*=: Set environment variables from file
+        --name=: Assign a name to the container
+        --no-deps: Don't start linked services
+        --pull=: Pull image before running ("always"|"missing"|"never")
+        --quiet-build: Suppress progress output from the build process
+        --quiet-pull: Pull without printing progress information
+        --remove-orphans: Remove containers for services not defined in the Compose file
+        --rm: Automatically remove the container when it exits
+        --use-aliases: Use the service's network useAliases in the network(s) the container connects to
+        -P, --service-ports: Run command with all service's ports enabled and mapped to the host
+        -T, --no-TTY: 'Disable pseudo-TTY allocation (default: auto-detected)'
+        -d, --detach: Run container in background and print container ID
+        -e, --env*=: Set environment variables
+        -i, --interactive: Keep STDIN open even if not attached
+        -l, --label*=: Add or override a label
+        -p, --publish*=: Publish a container's port(s) to the host
+        -q, --quiet: Don't print anything to STDOUT
+        -t, --tty&: Allocate a pseudo-TTY
+        -u, --user=: Run as specified username or uid
+        -v, --volume*=: Bind mount a volume
+        -w, --workdir=: Working directory inside the container
+    - name: scale [SERVICE=REPLICAS...]
+      description: 'Scale services '
+      flags:
+        --no-deps: Don't start linked services
+    - name: start [SERVICE...]
+      description: Start services
+      flags:
+        --wait: Wait for services to be running|healthy. Implies detached mode.
+        --wait-timeout=: Maximum duration in seconds to wait for the project to be running|healthy
+    - name: stats [OPTIONS] [SERVICE]
+      description: Display a live stream of container(s) resource usage statistics
+      flags:
+        --format=: |-
+            Format output using a custom template:
+            'table':            Print output in table format with column headers (default)
+            'table TEMPLATE':   Print output in table format using the given Go template
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/engine/cli/formatting/ for more information about formatting output with templates
+        --no-stream: Disable streaming stats and only pull the first result
+        --no-trunc: Do not truncate output
+        -a, --all: Show all containers (default shows just running)
+    - name: stop [OPTIONS] [SERVICE...]
+      description: Stop services
+      flags:
+        -t, --timeout=: Specify a shutdown timeout in seconds
+    - name: top [SERVICES...]
+      description: Display the running processes
+    - name: unpause [SERVICE...]
+      description: Unpause services
+    - name: up [OPTIONS] [SERVICE...]
+      description: Create and start containers
+      flags:
+        --abort-on-container-exit: Stops all containers if any container was stopped. Incompatible with -d
+        --abort-on-container-failure: Stops all containers if any container exited with failure. Incompatible with -d
+        --always-recreate-deps: Recreate dependent containers. Incompatible with --no-recreate.
+        --attach*=: Restrict attaching to the specified services. Incompatible with --attach-dependencies.
+        --attach-dependencies: Automatically attach to log output of dependent services
+        --build: Build images before starting containers
+        --exit-code-from=: Return the exit code of the selected service container. Implies --abort-on-container-exit
+        --force-recreate: Recreate containers even if their configuration and image haven't changed
+        --menu: Enable interactive shortcuts when running attached. Incompatible with --detach. Can also be enable/disable by setting COMPOSE_MENU environment var.
+        --no-attach*=: Do not attach (stream logs) to the specified services
+        --no-build: Don't build an image, even if it's policy
+        --no-color: Produce monochrome output
+        --no-deps: Don't start linked services
+        --no-log-prefix: Don't print prefix in logs
+        --no-recreate: If containers already exist, don't recreate them. Incompatible with --force-recreate.
+        --no-start: Don't start the services after creating them
+        --pull=: Pull image before running ("always"|"missing"|"never")
+        --quiet-build: Suppress the build output
+        --quiet-pull: Pull without printing progress information
+        --remove-orphans: Remove containers for services not defined in the Compose file
+        --scale*=: Scale SERVICE to NUM instances. Overrides the `scale` setting in the Compose file if present.
+        --timestamps: Show timestamps
+        --wait: Wait for services to be running|healthy. Implies detached mode.
+        --wait-timeout=: Maximum duration in seconds to wait for the project to be running|healthy
+        -V, --renew-anon-volumes: Recreate anonymous volumes instead of retrieving data from the previous containers
+        -d, --detach: 'Detached mode: Run containers in the background'
+        -t, --timeout=: Use this timeout in seconds for container shutdown when attached or when containers are already running
+        -w, --watch: Watch source code and rebuild/refresh containers when files are updated.
+        -y, --yes: Assume "yes" as answer to all prompts and run non-interactively
+    - name: version [OPTIONS]
+      description: Show the Docker Compose version information
+      flags:
+        --short: Shows only Compose's version number
+        -f, --format=: 'Format the output. Values: [pretty | json]. (Default: pretty)'
+    - name: volumes [OPTIONS] [SERVICE...]
+      description: List volumes
+      flags:
+        --format=: |-
+            Format output using a custom template:
+            'table':            Print output in table format with column headers (default)
+            'table TEMPLATE':   Print output in table format using the given Go template
+            'json':             Print in JSON format
+            'TEMPLATE':         Print output using the given Go template.
+            Refer to https://docs.docker.com/go/formatting/ for more information about formatting output with templates
+        -q, --quiet: Only display volume names
+    - name: wait SERVICE [SERVICE...] [OPTIONS]
+      description: Block until containers of all (or specified) services stop.
+      flags:
+        --down-project: Drops project when the first container stops
+    - name: watch [SERVICE...]
+      description: Watch build context for service and rebuild/refresh containers when files are updated
+      flags:
+        --no-up: Do not build & start services before watching
+        --prune: Prune dangling images on rebuild
+        --quiet: hide build output
