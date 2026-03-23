@@ -22,7 +22,7 @@
     "rustup": "https://github.com/rust-lang/rustup#1.29.0",
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
     "task": "https://github.com/go-task/task#v3.49.1",
-    "worktrunk": "https://github.com/max-sixty/worktrunk#v0.30.0",
+    "worktrunk": "https://github.com/max-sixty/worktrunk#v0.30.1",
     "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.9.9"
   }
 }
