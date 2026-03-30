@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "atuin": "https://github.com/atuinsh/atuin#v18.13.5",
+    "atuin": "https://github.com/atuinsh/atuin#v18.13.6",
     "bazel": "https://github.com/bazelbuild/bazel#9.0.1",
     "but": "https://github.com/gitbutlerapp/gitbutler#release/0.19.6",
     "cargo": "https://github.com/rust-lang/cargo#0.95.0",
