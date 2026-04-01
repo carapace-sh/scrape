@@ -4,7 +4,7 @@
     "bazel": "https://github.com/bazelbuild/bazel#9.0.1",
     "but": "https://github.com/gitbutlerapp/gitbutler#release/0.19.6",
     "cargo": "https://github.com/rust-lang/cargo#0.95.0",
-    "devbox": "https://github.com/jetify-com/devbox#0.17.0",
+    "devbox": "https://github.com/jetify-com/devbox#0.17.1",
     "docker": "https://github.com/docker/cli#v29.3.1",
     "docker-compose": "https://github.com/docker/compose#v5.1.1",
     "gh": "https://github.com/cli/cli#v2.89.0",
