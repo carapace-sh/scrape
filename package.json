@@ -3,7 +3,7 @@
     "atuin": "https://github.com/atuinsh/atuin#v18.15.2",
     "bazel": "https://github.com/bazelbuild/bazel#9.0.2",
     "but": "https://github.com/gitbutlerapp/gitbutler#release/0.19.7",
-    "cargo": "https://github.com/rust-lang/cargo#0.95.0",
+    "cargo": "https://github.com/rust-lang/cargo#0.96.0",
     "devbox": "https://github.com/jetify-com/devbox#0.17.1",
     "docker": "https://github.com/docker/cli#v29.4.0",
     "docker-compose": "https://github.com/docker/compose#v5.1.3",
