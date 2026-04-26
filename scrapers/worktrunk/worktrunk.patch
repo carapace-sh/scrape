@@ -1,5 +1,5 @@
 diff --git a/src/main.rs b/src/main.rs
-index 753b3da0..e2e500bc 100644
+index d0726156..b62fe000 100644
 --- a/src/main.rs
 +++ b/src/main.rs
 @@ -1,6 +1,10 @@
@@ -13,7 +13,7 @@ index 753b3da0..e2e500bc 100644
  use anyhow::Context;
  use clap::FromArgMatches;
  use clap::error::ErrorKind as ClapErrorKind;
-@@ -226,6 +230,11 @@ fn handle_hook_command(action: HookCommand) -> anyhow::Result<()> {
+@@ -1193,6 +1197,11 @@ fn print_help_to_stderr() {
  }
  
  fn main() {
@@ -22,6 +22,6 @@ index 753b3da0..e2e500bc 100644
 +        return;
 +    }
 +
-     // Configure Rayon's global thread pool for mixed I/O workloads.
-     // The `wt list` command runs git operations (CPU + disk I/O) and network
-     // requests (CI status, URL health checks) in parallel. Using 2x CPU cores
+     // Capture the startup working directory before anything else. This is
+     // used by shell_exec to resolve relative `GIT_*` path variables inherited
+     // from a parent `git` (e.g. when invoked via `git wt ...` with
