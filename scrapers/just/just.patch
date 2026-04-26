@@ -1,0 +1,25 @@
+diff --git a/src/run.rs b/src/run.rs
+index 90d24839..ac3e039e 100644
+--- a/src/run.rs
++++ b/src/run.rs
+@@ -1,11 +1,20 @@
+ use super::*;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ /// Main entry point into `just`. Parse arguments from `args` and run.
+ #[allow(clippy::missing_errors_doc)]
+ pub fn run(args: impl Iterator<Item = impl Into<OsString> + Clone>) -> Result<(), i32> {
+   #[cfg(windows)]
+   ansi_term::enable_ansi_support().ok();
+ 
++  generate(Spec, &mut Arguments::command(), "just", &mut io::stdout());
++  if true {
++    return Ok(());
++  }
++
+   let arguments = Arguments::try_parse_from(args).map_err(|err| {
+     err.print().ok();
+     err.exit_code()

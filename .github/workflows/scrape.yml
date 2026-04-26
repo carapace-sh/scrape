@@ -18,6 +18,7 @@ jobs:
   goreleaser: {uses: ./.github/workflows/scrape-template.yml, with: {command: goreleaser}}
   gum: {uses: ./.github/workflows/scrape-template.yml, with: {command: gum}}
   jj: {uses: ./.github/workflows/scrape-template.yml, with: {command: jj}}
+  just: {uses: ./.github/workflows/scrape-template.yml, with: {command: just}}
   kubeadm: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubeadm}}
   kubectl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubectl}}
   mdbook: {uses: ./.github/workflows/scrape-template.yml, with: {command: mdbook}}
