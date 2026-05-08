@@ -1,8 +1,8 @@
 diff --git a/crates/but/src/lib.rs b/crates/but/src/lib.rs
-index a4805b16c..6473da069 100644
+index 8c4569a918..2afb8e7e35 100644
 --- a/crates/but/src/lib.rs
 +++ b/crates/but/src/lib.rs
-@@ -42,8 +42,17 @@ mod tui;
+@@ -59,8 +59,18 @@ mod tui;
  
  const CLI_DATE: CustomFormat = gix::date::time::format::ISO8601;
  
@@ -17,6 +17,7 @@ index a4805b16c..6473da069 100644
 +    if true {
 +        return Ok(());
 +    }
-     let args: Vec<_> = args.collect();
- 
-     // Check if version is requested
++
+     {
+         let theme = dirs::config_dir()
+             .map(|dir| dir.join("gitbutler").join("but-theme.json"))
