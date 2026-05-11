@@ -1,0 +1,1315 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: wt
+description: Git worktree management for parallel AI agent workflows
+flags:
+  -h, --help: Print help (see more with '--help')
+  -V, --version: Print version
+persistentflags:
+  -C=: Working directory for this command
+  --config=: User config file path
+  -v, --verbose*: 'Verbose output (-v: info logs + hook/alias template variable & output; -vv: debug logs + diagnostic report + trace.log/output.log under .git/wt/logs/)'
+  -y, --yes: Skip approval prompts
+completion:
+  flag:
+    C:
+    - $files
+    config:
+    - $files
+documentation:
+  flag:
+    help: Print help (see a summary with '-h')
+commands:
+- name: switch
+  description: Switch to a worktree; create if needed
+  flags:
+    -b, --base=: Base branch
+    --branches: Include branches without worktrees
+    --clobber: Remove stale paths at target
+    -c, --create: Create a new branch
+    -x, --execute=: Command to run after switch
+    --format=: Output format
+    -h, --help: Print help (see more with '--help')
+    --no-cd: Skip directory change after switching
+    --no-hooks: Skip hooks
+    --remotes: Include remote branches
+  completion:
+    flag:
+      C:
+      - $files
+      config:
+      - $files
+      format:
+      - "text\tHuman-readable text output"
+      - "json\tJSON output"
+  documentation:
+    flag:
+      base: |-
+        Base branch
+
+        Defaults to default branch. Supports the same shortcuts as the branch argument: ^, @, -, pr:{N}, mr:{N}.
+      execute: |-
+        Command to run after switch
+
+        Replaces the wt process with the command after switching, giving it full terminal control. Useful for launching editors, AI agents, or other interactive tools.
+
+        Supports hook template variables ({{ branch }}, {{ worktree_path }}, etc.) and filters. {{ base }} and {{ base_worktree_path }} require --create.
+
+        Especially useful with shell aliases:
+
+          alias wsc='wt switch --create -x claude'
+          wsc feature-branch -- 'Fix GH #322'
+
+        Then wsc feature-branch creates the worktree and launches Claude Code. Arguments after -- are passed to the command, so wsc feature -- 'Fix GH #322' runs claude 'Fix GH #322', starting Claude with a prompt.
+
+        Template example: -x 'code {{ worktree_path }}' opens VS Code at the worktree, -x 'tmux new -s {{ branch | sanitize }}' starts a tmux session named after the branch.
+      format: |-
+        Output format
+
+        JSON prints structured result to stdout. Designed for tool integration (e.g., Claude Code WorktreeCreate hooks).
+      help: Print help (see a summary with '-h')
+      no-cd: |-
+        Skip directory change after switching
+
+        Hooks still run normally. Useful when hooks handle navigation (e.g., tmux workflows) or for CI/automation. Use --cd to override.
+
+        In picker mode (no branch argument), prints the selected branch name and exits without switching. Useful for scripting.
+- name: list
+  description: List worktrees and their status
+  flags:
+    --branches: Include branches without worktrees
+    --format=: Output format (table, json)
+    --full: Show CI, diff analysis, and LLM summaries
+    -h, --help: Print help (see more with '--help')
+    --progressive: Show fast info immediately, update with slow info
+    --remotes: Include remote branches
+  completion:
+    flag:
+      C:
+      - $files
+      config:
+      - $files
+      format:
+      - "table\tHuman-readable table format"
+      - "json\tJSON output"
+      - "claude-code\tClaude Code statusline mode (reads context from stdin)"
+  documentation:
+    flag:
+      help: Print help (see a summary with '-h')
+      progressive: |-
+        Show fast info immediately, update with slow info
+
+        Displays local data (branches, paths, status) first, then updates with remote data (CI, upstream) as it arrives. Use --no-progressive to force buffered rendering. Auto-enabled for TTY.
+  commands:
+  - name: statusline
+    description: Single-line status for shell prompts
+    flags:
+      --format=: Output format (table, json, claude-code)
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "table\tHuman-readable table format"
+        - "json\tJSON output"
+        - "claude-code\tClaude Code statusline mode (reads context from stdin)"
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+- name: remove
+  description: Remove worktree; delete branch if merged
+  flags:
+    -f, --force: Force worktree removal
+    -D, --force-delete: Delete unmerged branches
+    --foreground: Run removal in foreground (block until complete)
+    --format=: Output format
+    -h, --help: Print help (see more with '--help')
+    --no-delete-branch: Keep branch after removal
+    --no-hooks: Skip hooks
+  completion:
+    flag:
+      C:
+      - $files
+      config:
+      - $files
+      format:
+      - "text\tHuman-readable text output"
+      - "json\tJSON output"
+  documentation:
+    command: |-
+      Remove worktree; delete branch if merged
+
+      Defaults to the current worktree.
+    flag:
+      force: |-
+        Force worktree removal
+
+        Remove worktrees even if they contain untracked files (like build artifacts). Without this flag, removal fails if untracked files exist.
+      format: |-
+        Output format
+
+        JSON prints structured result to stdout after removal completes.
+      help: Print help (see a summary with '-h')
+- name: merge
+  description: Merge current branch into the target branch
+  flags:
+    --format=: Output format
+    -h, --help: Print help (see more with '--help')
+    --no-commit: Skip commit and squash
+    --no-ff: Create a merge commit (no fast-forward)
+    --no-hooks: Skip hooks
+    --no-rebase: Skip rebase (fail if not already rebased)
+    --no-remove: Keep worktree after merge
+    --no-squash: Skip commit squashing
+    --stage=: 'What to stage before committing [default: all]'
+  completion:
+    flag:
+      C:
+      - $files
+      config:
+      - $files
+      format:
+      - "text\tHuman-readable text output"
+      - "json\tJSON output"
+      stage:
+      - "all\tStage everything: untracked files + unstaged tracked changes"
+      - "tracked\tStage tracked changes only (like git add -u)"
+      - "none\tStage nothing, commit only what's already in the index"
+  documentation:
+    command: |-
+      Merge current branch into the target branch
+
+      Squash & rebase, fast-forward the target branch, remove the worktree.
+    flag:
+      format: |-
+        Output format
+
+        JSON prints structured result to stdout after merge completes.
+      help: Print help (see a summary with '-h')
+- name: step
+  description: Run individual operations
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      C:
+      - $files
+      config:
+      - $files
+  documentation:
+    command: |-
+      Run individual operations
+
+      The building blocks of wt merge — commit, squash, rebase, push — plus standalone utilities.
+    flag:
+      help: Print help (see a summary with '-h')
+  commands:
+  - name: commit
+    description: Stage and commit with LLM-generated message
+    flags:
+      -b, --branch=: Branch to operate on (defaults to current worktree)
+      --dry-run: Preview prompt, command, and generated message without committing
+      --format=: Output format
+      -h, --help: Print help (see more with '--help')
+      --no-hooks: Skip hooks
+      --stage=: 'What to stage before committing [default: all]'
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+        stage:
+        - "all\tStage everything: untracked files + unstaged tracked changes"
+        - "tracked\tStage tracked changes only (like git add -u)"
+        - "none\tStage nothing, commit only what's already in the index"
+    documentation:
+      flag:
+        format: |-
+          Output format
+
+          JSON prints structured result to stdout after the commit completes.
+        help: Print help (see a summary with '-h')
+  - name: squash
+    description: Squash commits since branching
+    flags:
+      --dry-run: Preview prompt, command, and generated message without squashing
+      --format=: Output format
+      -h, --help: Print help (see more with '--help')
+      --no-hooks: Skip hooks
+      --stage=: 'What to stage before committing [default: all]'
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+        stage:
+        - "all\tStage everything: untracked files + unstaged tracked changes"
+        - "tracked\tStage tracked changes only (like git add -u)"
+        - "none\tStage nothing, commit only what's already in the index"
+    documentation:
+      command: |-
+        Squash commits since branching
+
+        Stages changes and generates message with LLM.
+      flag:
+        format: |-
+          Output format
+
+          JSON prints structured result to stdout after the squash completes.
+        help: Print help (see a summary with '-h')
+  - name: rebase
+    description: Rebase onto target
+    flags:
+      --format=: Output format
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+    documentation:
+      flag:
+        format: |-
+          Output format
+
+          JSON prints structured result to stdout after the rebase completes.
+        help: Print help (see a summary with '-h')
+  - name: push
+    description: Fast-forward target to current branch
+    flags:
+      --format=: Output format
+      -h, --help: Print help (see more with '--help')
+      --no-ff: Create a merge commit (no fast-forward)
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+    documentation:
+      flag:
+        format: |-
+          Output format
+
+          JSON prints structured result to stdout after the push completes.
+        help: Print help (see a summary with '-h')
+  - name: diff
+    description: Show all changes since branching
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    documentation:
+      command: |-
+        Show all changes since branching
+
+        Includes committed, staged, unstaged, and untracked files.
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: copy-ignored
+    description: Copy gitignored files to another worktree
+    flags:
+      --dry-run: Show what would be copied
+      --force: Overwrite existing files in destination
+      --format=: Output format
+      --from=: Source worktree branch
+      -h, --help: Print help (see more with '--help')
+      --to=: Destination worktree branch
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+    documentation:
+      command: |-
+        Copy gitignored files to another worktree
+
+        Eliminates cold starts by copying build caches and dependencies.
+      flag:
+        format: |-
+          Output format
+
+          JSON prints structured result to stdout after the copy completes.
+        from: |-
+          Source worktree branch
+
+          Defaults to main worktree.
+        help: Print help (see a summary with '-h')
+        to: |-
+          Destination worktree branch
+
+          Defaults to current worktree.
+  - name: eval
+    description: '[experimental] Evaluate a template expression'
+    flags:
+      --dry-run: Show template variables and expanded result
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    documentation:
+      command: |-
+        [experimental] Evaluate a template expression
+
+        Prints the result to stdout for use in scripts and shell substitutions.
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: for-each
+    description: '[experimental] Run command in each worktree'
+    flags:
+      --format=: Output format (text, json)
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+    documentation:
+      command: |-
+        [experimental] Run command in each worktree
+
+        Executes sequentially with real-time output; continues on failure.
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: promote
+    description: '[experimental] Swap a branch into the main worktree'
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    documentation:
+      command: |-
+        [experimental] Swap a branch into the main worktree
+
+        Exchanges branches and gitignored files between two worktrees.
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: prune
+    description: '[experimental] Remove worktrees merged into the default branch'
+    flags:
+      --dry-run: Show what would be removed
+      --foreground: Run removal in foreground (block until complete)
+      --format=: Output format (text, json)
+      -h, --help: Print help (see more with '--help')
+      --min-age=: Skip worktrees younger than this
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: relocate
+    description: '[experimental] Move worktrees to expected paths'
+    flags:
+      --clobber: Backup non-worktree paths at target locations
+      --commit: Commit uncommitted changes before relocating
+      --dry-run: Show what would be moved
+      --format=: Output format
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+    documentation:
+      command: |-
+        [experimental] Move worktrees to expected paths
+
+        Relocates worktrees whose path doesn't match the worktree-path template.
+      flag:
+        clobber: |-
+          Backup non-worktree paths at target locations
+
+          Moves blocking paths to <path>.bak-<timestamp>.
+        format: |-
+          Output format
+
+          JSON prints structured result to stdout after the relocate completes.
+        help: Print help (see a summary with '-h')
+- name: hook
+  description: Run configured hooks
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      C:
+      - $files
+      config:
+      - $files
+  documentation:
+    flag:
+      help: Print help (see a summary with '-h')
+  commands:
+  - name: show
+    description: Show configured hooks
+    flags:
+      --expanded: Show expanded commands with current variables
+      --format=: Output format
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+      positional:
+      - - pre-switch
+        - post-switch
+        - pre-start
+        - post-start
+        - pre-commit
+        - post-commit
+        - pre-merge
+        - post-merge
+        - pre-remove
+        - post-remove
+    documentation:
+      command: |-
+        Show configured hooks
+
+        Lists user and project hooks. Project hooks show approval status (❓ = needs approval).
+      flag:
+        format: |-
+          Output format
+
+          JSON prints structured result to stdout — one record per configured command.
+        help: Print help (see a summary with '-h')
+- name: config
+  description: Manage user & project configs
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      C:
+      - $files
+      config:
+      - $files
+  documentation:
+    command: |-
+      Manage user & project configs
+
+      Includes shell integration, hooks, and saved state.
+    flag:
+      help: Print help (see a summary with '-h')
+  commands:
+  - name: create
+    description: Create configuration file
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --project: Create project config (.config/wt.toml) instead of user config
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: show
+    description: Show configuration files & locations
+    flags:
+      --format=: Output format (text, json)
+      --full: Run diagnostic checks (CI tools, commit generation, version)
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+        format:
+        - "text\tHuman-readable text output"
+        - "json\tJSON output"
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: update
+    description: Update deprecated config settings
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --print: Print the migrated config to stdout instead of writing it
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: approvals
+    description: Manage command approvals
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+    commands:
+    - name: add
+      description: Store approvals in approvals.toml
+      flags:
+        --all: Show all commands
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+    - name: clear
+      description: Clear approved commands from approvals.toml
+      flags:
+        -g, --global: Clear global approvals
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+  - name: alias
+    description: Inspect and preview aliases
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+    commands:
+    - name: show
+      description: Show an alias's template as configured
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+    - name: dry-run
+      description: Preview an alias invocation with template expansion
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+  - name: plugins
+    description: Plugin management
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+    commands:
+    - name: claude
+      description: Claude Code plugin
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+      commands:
+      - name: install
+        description: Install the Worktrunk plugin
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: uninstall
+        description: Remove the Worktrunk plugin
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: install-statusline
+        description: Configure the Claude Code statusline
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+    - name: opencode
+      description: OpenCode plugin
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+      commands:
+      - name: install
+        description: Install the activity tracking plugin
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: uninstall
+        description: Remove the activity tracking plugin
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+  - name: state
+    description: Manage internal data and cache
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+    commands:
+    - name: get
+      description: Get all stored state
+      flags:
+        --format=: Output format (table, json)
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+          format:
+          - "table\tHuman-readable table format"
+          - "json\tJSON output"
+          - "claude-code\tClaude Code statusline mode (reads context from stdin)"
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+    - name: clear
+      description: Clear all stored state
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+    - name: default-branch
+      description: Default branch detection and override
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+      commands:
+      - name: get
+        description: Get the default branch
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: set
+        description: Set the default branch
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: clear
+        description: Clear the default branch cache
+        flags:
+          -h, --help: Print help
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+    - name: previous-branch
+      description: Previous branch (for wt switch -)
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+      commands:
+      - name: get
+        description: Get the previous branch
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: set
+        description: Set the previous branch
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: clear
+        description: Clear the previous branch
+        flags:
+          -h, --help: Print help
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+    - name: logs
+      description: Operation and debug logs
+      flags:
+        -h, --help: Print help (see more with '--help')
+      persistentflags:
+        --format=: 'Output format (text, json) [default: text]'
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+          format:
+          - "text\tHuman-readable text output"
+          - "json\tJSON output"
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+      commands:
+      - name: get
+        description: List all log file paths
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: clear
+        description: Clear all log files
+        flags:
+          -h, --help: Print help
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+    - name: hints
+      description: One-time hints shown in this repo
+      flags:
+        -h, --help: Print help (see more with '--help')
+      persistentflags:
+        --format=: 'Output format (text, json) [default: text]'
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+          format:
+          - "text\tHuman-readable text output"
+          - "json\tJSON output"
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+      commands:
+      - name: get
+        description: List hints that have been shown
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: clear
+        description: Clear hints (re-show on next trigger)
+        flags:
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+    - name: ci-status
+      description: CI status cache
+      flags:
+        -h, --help: Print help (see more with '--help')
+      persistentflags:
+        --format=: 'Output format (text, json) [default: text]'
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+          format:
+          - "text\tHuman-readable text output"
+          - "json\tJSON output"
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+      commands:
+      - name: get
+        description: Get CI status for a branch
+        flags:
+          --branch=: Target branch (defaults to current)
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: clear
+        description: Clear CI status cache
+        flags:
+          --all: Clear all CI status cache
+          --branch=: Target branch (defaults to current)
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+    - name: marker
+      description: Branch markers
+      flags:
+        -h, --help: Print help (see more with '--help')
+      persistentflags:
+        --format=: 'Output format (text, json) [default: text]'
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+          format:
+          - "text\tHuman-readable text output"
+          - "json\tJSON output"
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+      commands:
+      - name: get
+        description: Get marker for a branch
+        flags:
+          --branch=: Target branch (defaults to current)
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: set
+        description: Set marker for a branch
+        flags:
+          --branch=: Target branch (defaults to current)
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: clear
+        description: Clear marker for a branch
+        flags:
+          --all: Clear all markers
+          --branch=: Target branch (defaults to current)
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+    - name: vars
+      description: '[experimental] Custom variables per branch'
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+      commands:
+      - name: get
+        description: Get a value
+        flags:
+          --branch=: Target branch (defaults to current)
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: list
+        description: List all keys
+        flags:
+          --branch=: Target branch (defaults to current)
+          --format=: Output format (text, json)
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+            format:
+            - "text\tHuman-readable text output"
+            - "json\tJSON output"
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: set
+        description: Set a value
+        flags:
+          --branch=: Target branch (defaults to current)
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+      - name: clear
+        description: Clear a key or all keys
+        flags:
+          --all: Clear all keys for the branch
+          --branch=: Target branch (defaults to current)
+          -h, --help: Print help (see more with '--help')
+        completion:
+          flag:
+            C:
+            - $files
+            config:
+            - $files
+        documentation:
+          flag:
+            help: Print help (see a summary with '-h')
+  - name: shell
+    description: Shell integration setup
+    flags:
+      -h, --help: Print help
+    completion:
+      flag:
+        C:
+        - $files
+        config:
+        - $files
+    commands:
+    - name: show-theme
+      description: Show output theme samples
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
+    - name: init
+      description: Generate shell integration code
+      flags:
+        --cmd=: Command name for shell integration (defaults to binary name)
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+        positional:
+        - - bash
+          - fish
+          - nu
+          - zsh
+          - powershell
+      documentation:
+        flag:
+          cmd: |-
+            Command name for shell integration (defaults to binary name)
+
+            Use this to create shell integration for an alternate command name. For example, --cmd=git-wt creates a git-wt shell function instead of wt, useful on Windows where wt conflicts with Windows Terminal.
+          help: Print help (see a summary with '-h')
+    - name: install
+      description: Write shell integration to config files
+      flags:
+        --cmd=: Command name for shell integration (defaults to binary name)
+        --dry-run: Show what would be changed
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+        positional:
+        - - bash
+          - fish
+          - nu
+          - zsh
+          - powershell
+      documentation:
+        flag:
+          cmd: |-
+            Command name for shell integration (defaults to binary name)
+
+            Use this to create shell integration for an alternate command name. For example, --cmd=git-wt creates a git-wt shell function instead of wt, useful on Windows where wt conflicts with Windows Terminal.
+          help: Print help (see a summary with '-h')
+    - name: uninstall
+      description: Remove shell integration from config files
+      flags:
+        --dry-run: Show what would be changed
+        -h, --help: Print help (see more with '--help')
+      completion:
+        flag:
+          C:
+          - $files
+          config:
+          - $files
+        positional:
+        - - bash
+          - fish
+          - nu
+          - zsh
+          - powershell
+      documentation:
+        flag:
+          help: Print help (see a summary with '-h')
