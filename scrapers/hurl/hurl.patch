@@ -1,0 +1,27 @@
+diff --git a/packages/hurl/src/cli/options/args.rs b/packages/hurl/src/cli/options/args.rs
+index 08af3b1b2b..6d7e89767b 100644
+--- a/packages/hurl/src/cli/options/args.rs
++++ b/packages/hurl/src/cli/options/args.rs
+@@ -21,6 +21,10 @@ use std::path::{Path, PathBuf};
+ use std::str::FromStr;
+ use std::time::Duration;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ use clap::ArgMatches;
+ use clap::builder::Styles;
+ use clap::builder::styling::{AnsiColor, Effects};
+@@ -135,6 +139,11 @@ pub fn parse_cli_args(
+         .arg(commands::netrc_file())
+         .arg(commands::netrc_optional());
+ 
++    generate(Spec, &mut command, "hurl", &mut io::stdout());
++    if true {
++        std::process::exit(0);
++    }
++
+     let arg_matches = command.try_get_matches_from_mut(std::env::args_os());
+     let arg_matches = match arg_matches {
+         Ok(args) => args,
