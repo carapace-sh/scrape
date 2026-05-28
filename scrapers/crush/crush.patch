@@ -1,0 +1,21 @@
+diff --git a/internal/cmd/root.go b/internal/cmd/root.go
+index d9a2789f..9368f857 100644
+--- a/internal/cmd/root.go
++++ b/internal/cmd/root.go
+@@ -23,6 +23,7 @@ import (
+ 	tea "charm.land/bubbletea/v2"
+ 	fang "charm.land/fang/v2"
+ 	"charm.land/lipgloss/v2"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/charmbracelet/colorprofile"
+ 	"github.com/charmbracelet/crush/internal/app"
+ 	"github.com/charmbracelet/crush/internal/client"
+@@ -165,6 +166,8 @@ const defaultVersionTemplate = `{{with .DisplayName}}{{printf "%s " .}}{{end}}{{
+ `
+ 
+ func Execute() {
++	carapace.Gen(rootCmd)
++
+ 	// FIXME: config.Load uses slog internally during provider resolution,
+ 	// but the file-based logger isn't set up until after config is loaded
+ 	// (because the log path depends on the data directory from config).
