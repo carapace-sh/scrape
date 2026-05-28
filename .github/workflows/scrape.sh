@@ -19,6 +19,7 @@ for line in "${lines[@]}"; do
     out="$(docker compose run --quiet --remove-orphans "${command}")"
     mkdir -p "gh-pages/${command}/"
     echo "${out}" > "gh-pages/${command}/${version}.yaml"
+    [ -n "$GITHUB_OUTPUT" ] && echo "file=gh-pages/${command}/${version}.yaml" > "$GITHUB_OUTPUT"
   else
     echo "gh-pages/${command}/${version}.yaml already exists" >/dev/stderr
   fi

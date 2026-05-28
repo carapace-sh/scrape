@@ -17,9 +17,17 @@ jobs:
         run: git clone https://github.com/carapace-sh/scrape --branch gh-pages --depth 1 gh-pages
 
       - name: scrape
+        id: scrape
         run: |
             ./init.sh
             ./.github/workflows/scrape.sh "${{ inputs.command }}"
+
+      - name: upload artifact
+        if: steps.scrape.outputs.file != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.command }}
+          path: ${{ steps.scrape.outputs.file }}
 
       - name: "push gh-pages"
         if: github.ref == 'refs/heads/master'
