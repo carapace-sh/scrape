@@ -2,7 +2,7 @@
 
 Command scrapers that generate carapace-bin completion specs by patching and building upstream CLI tools.
 
-> **Requirement**: The [carapace-scrape skill](https://github.com/carapace-sh/carapace-bin/blob/master/skills/carapace-scrape/SKILL.md) **must** be loaded before working here. It covers supported frameworks, patch-and-container patterns, and how scraping works.
+> **Requirement**: The [carapace-scrape](https://github.com/carapace-sh/carapace-bin/blob/master/skills/carapace-scrape/SKILL.md) skill **must** be loaded before working here. It covers supported frameworks, patch-and-container patterns, and how scraping works.
 
 ## Overview
 
