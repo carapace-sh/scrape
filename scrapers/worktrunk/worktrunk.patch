@@ -1,9 +1,9 @@
 diff --git a/src/main.rs b/src/main.rs
-index 5711e6188..653c41f18 100644
+index 63c12aa7c..45b8942a1 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -2,6 +2,10 @@ use std::collections::HashSet;
- use std::io::Write;
+@@ -1,6 +1,10 @@
+ use std::collections::HashSet;
  use std::path::Path;
  
 +use carapace_spec_clap::Spec;
@@ -13,7 +13,7 @@ index 5711e6188..653c41f18 100644
  use anyhow::Context;
  use clap::FromArgMatches;
  use clap::error::ErrorKind as ClapErrorKind;
-@@ -1530,6 +1534,11 @@ fn print_help_to_stderr() {
+@@ -1439,6 +1443,11 @@ fn print_help_to_stderr() {
  }
  
  fn main() {
