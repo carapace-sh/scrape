@@ -11,7 +11,7 @@ lines=$(grep "^    \"$1\":.*#.*" package.json | sed 's/^ \+"\([^:]\+\)": "[^#]\+
 mapfile -t lines <<< "${lines}"
 
 for line in "${lines[@]}"; do
-  read command version <<< "$line"
+  read -r command version <<< "$line"
   version="${version//\//_}"
 
   if [ ! -f "gh-pages/${command}/${version}.yaml" ]; then

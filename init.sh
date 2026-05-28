@@ -9,7 +9,7 @@ mapfile -t lines <<< "${lines}"
 (
   echo 'services:'
   for line in "${lines[@]}"; do
-    read command version <<< "$line"
+    read -r command version <<< "$line"
     echo "  ${command}: { build: {context: scrapers/${command}, args: {VERSION: ${version}}}}"
   done
 ) > compose.yaml
@@ -23,7 +23,7 @@ mapfile -t lines <<< "${lines}"
   echo ""
   echo "jobs:"
   for line in "${lines[@]}"; do
-    read command version <<< "$line"
+    read -r command version <<< "$line"
     echo "  ${command}: {uses: ./.github/workflows/scrape-template.yml, with: {command: ${command}}}"
   done
 ) > ./.github/workflows/scrape.yml
