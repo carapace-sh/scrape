@@ -1,0 +1,27 @@
+diff --git a/src/main.rs b/src/main.rs
+index 3035844e..26e79b60 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -18,6 +18,10 @@ use pager::StartedPager;
+ use terminal_size::terminal_size_of;
+ use utf8_supported::{Utf8Support, utf8_supported};
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ // local imports
+ use hl::{
+     Delimiter, IncludeExcludeKeyFilter, KeyMatchOptions, app, cli, config,
+@@ -416,6 +420,11 @@ fn run() -> Result<()> {
+ }
+ 
+ fn main() {
++    generate(Spec, &mut hl::cli::Opt::command(), "hl", &mut io::stdout());
++    if true {
++        return;
++    }
++
+     if let Err(err) = run() {
+         err.log(&AppInfo);
+         process::exit(1);
