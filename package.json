@@ -14,7 +14,7 @@
     "gum": "https://github.com/charmbracelet/gum#v0.17.0",
     "hl": "https://github.com/pamburus/hl#v0.36.2",
     "hurl": "https://github.com/Orange-OpenSource/hurl#8.0.1",
-    "jj": "https://github.com/jj-vcs/jj#v0.41.0",
+    "jj": "https://github.com/jj-vcs/jj#v0.42.0",
     "just": "https://github.com/casey/just#1.51.0",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.36.1",
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.36.1",
