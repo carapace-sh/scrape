@@ -1,0 +1,20 @@
+diff --git a/internal/cmd/root.go b/internal/cmd/root.go
+index 2e4eb1d22..31b753758 100644
+--- a/internal/cmd/root.go
++++ b/internal/cmd/root.go
+@@ -23,6 +23,7 @@ import (
+ 	tea "charm.land/bubbletea/v2"
+ 	fang "charm.land/fang/v2"
+ 	"charm.land/lipgloss/v2"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/charmbracelet/colorprofile"
+ 	"github.com/charmbracelet/crush/internal/app"
+ 	"github.com/charmbracelet/crush/internal/client"
+@@ -134,6 +135,7 @@ crush --continue
+ 			tea.WithFilter(ui.MouseEventFilter),
+ 		)
+ 		go ws.Subscribe(program)
++		carapace.Gen(cmd)
+ 
+ 		if _, err := program.Run(); err != nil {
+ 			event.Error(err)
