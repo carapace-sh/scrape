@@ -16,7 +16,7 @@
     "hurl": "https://github.com/Orange-OpenSource/hurl#8.0.1",
     "jj": "https://github.com/jj-vcs/jj#v0.42.0",
     "just": "https://github.com/casey/just#1.52.0",
-    "kubeadm": "https://github.com/kubernetes/kubernetes#v1.36.1",
+    "kubeadm": "https://github.com/kubernetes/kubernetes#v1.36.2",
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.36.2",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.3",
     "minikube": "https://github.com/kubernetes/minikube#v1.38.1",
