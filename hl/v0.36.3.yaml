@@ -1,0 +1,226 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: hl
+description: JSON and logfmt log converter to human readable representation
+flags:
+  -P: Handful alias for --paging=never, overrides --paging option
+  --allow-prefix: Allow non-JSON prefixes before JSON log entries
+  --ascii=: Whether to restrict punctuation to ASCII characters only
+  --buffer-size=: Buffer size
+  -c: Handful alias for --color=always, overrides --color option
+  --color=: Whether to use ANSI colors and styles
+  -C, --concurrency=: Number of processing threads
+  --config=*: Configuration file path
+  --delimiter=: Log entry delimiter
+  --dump-index: Print debug index metadata (in --sort mode) and exit
+  -x, --expansion=: Whether to expand fields and messages
+  -f, --filter=*: Filter entries by matching field values [k=v, k~=v, k~~=v, 'k!=v', 'k?!=v', etc]
+  --flatten=: Whether to flatten objects
+  -F, --follow: Follow input streams and sort entries chronologically within time frame set by --sync-interval-ms option
+  --help?: Print help
+  -h, --hide=*: Hide or reveal fields with the specified keys, prefix with ! to reveal, provide '!*' to reveal all
+  -e, --hide-empty-fields: Hide empty fields, applies for null, string, object and array fields only
+  --input-format=: Input format
+  --input-info=: Input number and filename layouts
+  --interrupt-ignore-count=: Number of interrupts to ignore, i.e. Ctrl-C (SIGINT)
+  -l, --level=: Display entries with level >= <LEVEL>
+  --list-themes?: Print available themes optionally filtered by tags
+  -L, --local: Use local time zone, overrides --time-zone option
+  --man-page: Print man page and exit
+  --max-message-size=: Maximum log entry size
+  --no-local: Disable local time zone, overrides --local option
+  --no-raw: Disable raw source entries output, overrides --raw option
+  -o, --output=: Output file
+  --output-delimiter=: Output entry delimiter
+  --paging=: Control pager usage (HL_PAGER or PAGER)
+  -q, --query=*: Filter entries using a query expression ['status>=400 or duration>=15', etc]
+  -r, --raw: Output raw source entries instead of formatted entries
+  --raw-fields: Output field values as is, without unescaping or prettifying
+  --shell-completions=: Print shell auto-completion script and exit
+  -E, --show-empty-fields: Show empty fields, overrides --hide-empty-fields option
+  --since=: Display entries with timestamp >= <TIME>
+  -s, --sort: Sort entries chronologically
+  --sync-interval-ms=: Synchronization interval for live streaming mode enabled by --follow option
+  --tail=: Number of last entries to preload from each file in --follow mode
+  --theme=: Color theme
+  -t, --time-format=: Time format, see https://man7.org/linux/man-pages/man1/date.1.html
+  -Z, --time-zone=: Time zone name, see column "TZ identifier" at https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  --unix-timestamp-unit=: Unix timestamp unit
+  --until=: Display entries with timestamp <= <TIME>
+  -V, --version: Print version
+completion:
+  flag:
+    ascii:
+    - auto
+    - never
+    - always
+    color:
+    - auto
+    - always
+    - never
+    delimiter:
+    - auto
+    - cr
+    - lf
+    - crlf
+    - newline
+    - nul
+    expansion:
+    - never
+    - inline
+    - auto
+    - always
+    flatten:
+    - never
+    - always
+    help:
+    - short
+    - long
+    input-format:
+    - auto
+    - json
+    - logfmt
+    input-info:
+    - auto
+    - none
+    - minimal
+    - compact
+    - full
+    list-themes:
+    - dark
+    - light
+    - 16color
+    - 256color
+    - truecolor
+    - overlay
+    - base
+    output-delimiter:
+    - newline
+    - nul
+    paging:
+    - auto
+    - always
+    - never
+    shell-completions:
+    - bash
+    - elvish
+    - fish
+    - powershell
+    - zsh
+    unix-timestamp-unit:
+    - auto
+    - s
+    - ms
+    - us
+    - ns
+  positionalany:
+  - $files
+documentation:
+  flag:
+    P: Handful alias for --paging=never, overrides --paging option
+    allow-prefix: Allow non-JSON prefixes before JSON log entries
+    ascii: |-
+      Whether to restrict punctuation to ASCII characters only
+
+      When enabled, unicode punctuation (like fancy quotes) will be replaced with ASCII equivalents.
+      The actual characters can be configured in the configuration file.
+    buffer-size: Buffer size
+    c: Handful alias for --color=always, overrides --color option
+    color: Whether to use ANSI colors and styles
+    concurrency: Number of processing threads
+    config: Configuration file path
+    delimiter: |-
+      Log entry delimiter
+
+      By default, the delimiter is considered to be LF or CRLF followed by an empty line or a line that
+      starts with a character other than '}', a space, or a tab.
+      This works well for most JSON and logfmt logs, including series of pretty-printed JSON objects.
+
+      Possible values:
+      • auto: Auto-select delimiter based on input format (default)
+      • cr: Carriage return (\r)
+      • lf: Line feed (\n)
+      • crlf: Carriage return followed by line feed (\r\n)
+      • newline: Either lf or crlf, whichever comes first
+      • nul: Null character (\0)
+    dump-index: Print debug index metadata (in --sort mode) and exit
+    expansion: |-
+      Whether to expand fields and messages
+
+      Controls how large field values and messages are formatted.
+      Higher expansion levels will break up long content into multiple lines.
+    filter: |-
+      Filter entries by matching field values [k=v, k~=v, k~~=v, 'k!=v', 'k?!=v', etc]
+
+      The format is <key> <operator> <value>.
+      The <key> is the field name to match.
+      The <value> is the string to match against (case-sensitive).
+
+      Operators:
+      •   = : perform exact string match
+      •  ~= : perform sub-string match
+      • ~~= : perform regular expression match
+
+      Modifiers:
+      •   ! : negate the match (placed before operator) ['k!=v', 'k!~=v', etc]
+      •   ? : include entry if the field is missing (placed after the key) ['k?=v', 'k?!~=v', etc]
+    flatten: Whether to flatten objects
+    follow: Follow input streams and sort entries chronologically within time frame set by --sync-interval-ms option
+    help: Print help
+    hide: Hide or reveal fields with the specified keys, prefix with ! to reveal, provide '!*' to reveal all
+    hide-empty-fields: Hide empty fields, applies for null, string, object and array fields only
+    input-format: Input format
+    input-info: Input number and filename layouts
+    interrupt-ignore-count: Number of interrupts to ignore, i.e. Ctrl-C (SIGINT)
+    level: Display entries with level >= <LEVEL>
+    list-themes: Print available themes optionally filtered by tags
+    local: Use local time zone, overrides --time-zone option
+    man-page: Print man page and exit
+    max-message-size: Maximum log entry size
+    no-local: Disable local time zone, overrides --local option
+    no-raw: Disable raw source entries output, overrides --raw option
+    output: Output file
+    output-delimiter: |-
+      Output entry delimiter
+
+      Possible values:
+      • newline: Either lf or crlf, depends on the platform (default)
+      • nul: Null character (\0)
+    paging: Control pager usage (HL_PAGER or PAGER)
+    query: |-
+      Filter entries using a query expression ['status>=400 or duration>=15', etc]
+
+      Query expression supports all operators and modifiers from --filter and additionally
+      • Logical: 'and', 'or', 'not' (aliases: '&&', '||', '!')
+      • Comparison: '<', '>', '<=', '>=', '=', '!='
+      • Sets: 'status in (500,503,504)', 'id in @ids.txt' (values from file), 'id in @-' (values from stdin)
+      • Strings: 'message contains "timeout"' (substring), 'message matches "^Error.*timeout$"' (regular expression)
+      • Existence: 'exists(user-id)', 'not exists(user-id)'
+      • Grouping: '(status>=500 and status<=504) or (status==404)'
+    raw: |-
+      Output raw source entries instead of formatted entries
+
+      This can be useful for applying filters and saving results in their original format.
+    raw-fields: Output field values as is, without unescaping or prettifying
+    shell-completions: Print shell auto-completion script and exit
+    show-empty-fields: Show empty fields, overrides --hide-empty-fields option
+    since: |-
+      Display entries with timestamp >= <TIME>
+
+      Note that --time-zone and --local options are honored.
+    sort: Sort entries chronologically
+    sync-interval-ms: Synchronization interval for live streaming mode enabled by --follow option
+    tail: Number of last entries to preload from each file in --follow mode
+    theme: |-
+      Color theme
+
+      Run hl --list-themes to see available themes.
+    time-format: Time format, see https://man7.org/linux/man-pages/man1/date.1.html
+    time-zone: |-
+      Time zone name, see column "TZ identifier" at https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+      Examples: 'UTC', 'America/New_York', 'Asia/Shanghai', 'Europe/Berlin', etc.
+    unix-timestamp-unit: Unix timestamp unit
+    until: |-
+      Display entries with timestamp <= <TIME>
+
+      Note that --time-zone and --local options are honored.
