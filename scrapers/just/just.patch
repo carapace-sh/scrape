@@ -1,5 +1,5 @@
 diff --git a/src/run.rs b/src/run.rs
-index 90d24839..ac3e039e 100644
+index 884952de..643a492c 100644
 --- a/src/run.rs
 +++ b/src/run.rs
 @@ -1,11 +1,20 @@
@@ -13,7 +13,7 @@ index 90d24839..ac3e039e 100644
  #[allow(clippy::missing_errors_doc)]
  pub fn run(args: impl Iterator<Item = impl Into<OsString> + Clone>) -> Result<(), i32> {
    #[cfg(windows)]
-   ansi_term::enable_ansi_support().ok();
+   nu_ansi_term::enable_ansi_support().ok();
  
 +  generate(Spec, &mut Arguments::command(), "just", &mut io::stdout());
 +  if true {
