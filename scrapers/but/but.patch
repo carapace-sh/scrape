@@ -1,16 +1,20 @@
 diff --git a/crates/but/src/lib.rs b/crates/but/src/lib.rs
-index 8c4569a918..2afb8e7e35 100644
+index 967ed5653f..4780de6e24 100644
 --- a/crates/but/src/lib.rs
 +++ b/crates/but/src/lib.rs
-@@ -59,8 +59,18 @@ mod tui;
+@@ -63,6 +63,10 @@ mod tui;
  
  const CLI_DATE: CustomFormat = gix::date::time::format::ISO8601;
  
 +use carapace_spec_clap::Spec;
-+use clap::CommandFactory;
 +use clap_complete::generate;
 +use std::io;
 +
+ /// The format for help output printed before clap parses arguments, taken from a
+ /// `--format` argument or the `BUT_OUTPUT_FORMAT` environment variable.
+ ///
+@@ -100,6 +104,11 @@ fn early_help_format(args: &[OsString]) -> OutputFormat {
+ 
  /// Handle `args` which must be what's passed by `std::env::args_os()`.
  pub async fn handle_args(args: impl Iterator<Item = OsString>) -> Result<()> {
 +    generate(Spec, &mut Args::command(), "but", &mut io::stdout());
@@ -18,6 +22,6 @@ index 8c4569a918..2afb8e7e35 100644
 +        return Ok(());
 +    }
 +
-     {
-         let theme = dirs::config_dir()
-             .map(|dir| dir.join("gitbutler").join("but-theme.json"))
+     let theme_preset_from_env: anyhow::Result<theme::ThemePreset> =
+         if let Some(theme_name) = std::env::var_os(envs::BUT_THEME) {
+             theme_name.to_string_lossy().parse()
