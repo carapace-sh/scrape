@@ -1,10 +1,10 @@
 diff --git a/src/bin/cargo/cli.rs b/src/bin/cargo/cli.rs
-index 7a16b5d48..719c0cfa2 100644
+index 83eba6895..8ab432833 100644
 --- a/src/bin/cargo/cli.rs
 +++ b/src/bin/cargo/cli.rs
-@@ -18,13 +18,24 @@ use crate::util::is_rustup;
- use cargo::core::shell::ColorChoice;
+@@ -19,6 +19,11 @@ use crate::util::is_rustup;
  use cargo::util::style;
+ use cargo_util_terminal::ColorChoice;
  
 +use carapace_spec_clap::Spec;
 +use clap::{Arg, ArgAction, Command};
@@ -14,10 +14,10 @@ index 7a16b5d48..719c0cfa2 100644
  #[tracing::instrument(skip_all)]
  pub fn main(gctx: &mut GlobalContext) -> CliResult {
      // CAUTION: Be careful with using `config` until it is configured below.
-     // In general, try to avoid loading config values unless necessary (like
-     // the [alias] table).
+@@ -27,6 +32,14 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
  
--    let args = cli(gctx).try_get_matches()?;
+     let args = cli(gctx).try_get_matches()?;
+ 
 +    let mut cmd = cli(gctx);
 +    generate(Spec, &mut cmd, "cargo", &mut io::stdout());
 +    if true {
@@ -25,6 +25,7 @@ index 7a16b5d48..719c0cfa2 100644
 +    }
 +
 +    let args = cmd.try_get_matches()?;
- 
++
      // Update the process-level notion of cwd
      if let Some(new_cwd) = args.get_one::<std::path::PathBuf>("directory") {
+         // This is a temporary hack.
