@@ -25,7 +25,7 @@
     "pixi": "https://github.com/prefix-dev/pixi#v0.72.0",
     "rustup": "https://github.com/rust-lang/rustup#1.29.0",
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
-    "task": "https://github.com/go-task/task#v3.51.1",
+    "task": "https://github.com/go-task/task#v3.52.0",
     "worktrunk": "https://github.com/max-sixty/worktrunk#v0.65.0",
     "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.9.9"
   }
