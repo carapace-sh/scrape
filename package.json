@@ -27,6 +27,6 @@
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
     "task": "https://github.com/go-task/task#v3.52.0",
     "worktrunk": "https://github.com/max-sixty/worktrunk#v0.65.0",
-    "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.9.9"
+    "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.10.0"
   }
 }
