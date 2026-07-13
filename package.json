@@ -12,7 +12,7 @@
     "golangci-lint": "https://github.com/golangci/golangci-lint#v2.12.2",
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.17.0",
     "gum": "https://github.com/charmbracelet/gum#v0.17.0",
-    "crush": "https://github.com/charmbracelet/crush#v0.83.0",
+    "crush": "https://github.com/charmbracelet/crush#v0.84.1",
     "hl": "https://github.com/pamburus/hl#v0.36.3",
     "hurl": "https://github.com/Orange-OpenSource/hurl#8.0.1",
     "jj": "https://github.com/jj-vcs/jj#v0.43.0",
