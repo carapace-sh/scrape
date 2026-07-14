@@ -1,0 +1,207 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: grit
+description: A simple Grit-powered CLI
+flags:
+  -h, --help: Print help (see more with '--help')
+  -V, --version: Print version
+persistentflags:
+  --filter=: jq-like expression applied to JSON output (requires `--json`)
+  --json: Emit machine-readable JSON instead of human-readable text
+documentation:
+  flag:
+    filter: |-
+      jq-like expression applied to JSON output (requires `--json`).
+
+      Examples: `.branch`, `.commits[].oid`, `{branch, clean}`.
+    help: Print help (see a summary with '-h')
+commands:
+- name: init
+  description: Create a new, empty repository
+  flags:
+    --bare: Create a bare repository (no working tree)
+    -h, --help: Print help (see more with '--help')
+- name: clone
+  description: Copy a remote repository into a new directory
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: remote
+  description: List remotes, or add one
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: add
+    description: Add a new remote
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: add
+      description: Add a new remote
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: log
+  description: Show recent commits reachable from HEAD
+  flags:
+    --before=: Continue listing from before this commit (for paging)
+    -h, --help: Print help (see more with '--help')
+- name: diff
+  description: 'Show changes as a diff. No argument: uncommitted changes; with a commit: the change that commit introduced'
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: show
+  description: Show information about a commit, tag, or branch (defaults to HEAD)
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: status
+  aliases:
+  - st
+  description: Show what's changed and where you are (this is the default)
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: shortlog
+  aliases:
+  - sl
+  description: List the commits on this branch that aren't on the target branch yet
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: add
+  description: Stage changes. With no paths, stages everything
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: commit
+  description: Stage every change and record a new commit
+  flags:
+    -a, --all: Stage every change first, then commit. This is the default behavior
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: Commit message
+- name: branch
+  description: List branches, or create / delete one
+  flags:
+    -d, --delete: Delete the named branch instead of creating it
+    -h, --help: Print help (see more with '--help')
+- name: switch
+  aliases:
+  - checkout
+  - co
+  description: Switch to another branch
+  flags:
+    -c, --create: Create the branch first, then switch to it
+    -h, --help: Print help (see more with '--help')
+- name: merge
+  description: Merge another branch into the current one
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: pick
+  description: Cherry-pick a commit onto the current branch
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: fetch
+  description: Download refs and objects from a remote
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: pull
+  description: Fetch from the remote and integrate it into the current branch
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: push
+  description: Publish the current branch to its remote
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -t, --tags: Push tags instead of the current branch. Pushes every local tag under `refs/tags/` to the remote
+- name: tag
+  description: List tags, or create / delete one. A new tag points at HEAD
+  flags:
+    -d, --delete: Delete the named tag instead of creating it
+    -h, --help: Print help (see more with '--help')
+- name: auth
+  description: Sign in to GitHub (device flow) and store a token for HTTPS push/fetch
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: logout
+    description: Forget the stored GitHub token (sign out)
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: logout
+      description: Forget the stored GitHub token (sign out)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: update
+  description: Update grit to the latest release (re-runs the install script)
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: config
+  description: Read, set, or list configuration values
+  flags:
+    --global: Use the global (per-user) config file instead of this repository's
+    -h, --help: Print help (see more with '--help')
+    -l, --list: List all configuration values
+    --unset: Remove the key instead of reading or setting it
+- name: manager
+  description: Git credential helper backed by the Windows Credential Manager
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Git credential helper backed by the Windows Credential Manager.
+
+      You don't normally run this yourself — `grit auth` wires it into `credential.helper` on Windows. It speaks Git's credential protocol.
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: init
+    description: Create a new, empty repository
+  - name: clone
+    description: Copy a remote repository into a new directory
+  - name: remote
+    description: List remotes, or add one
+    commands:
+    - name: add
+      description: Add a new remote
+  - name: log
+    description: Show recent commits reachable from HEAD
+  - name: diff
+    description: 'Show changes as a diff. No argument: uncommitted changes; with a commit: the change that commit introduced'
+  - name: show
+    description: Show information about a commit, tag, or branch (defaults to HEAD)
+  - name: status
+    description: Show what's changed and where you are (this is the default)
+  - name: shortlog
+    description: List the commits on this branch that aren't on the target branch yet
+  - name: add
+    description: Stage changes. With no paths, stages everything
+  - name: commit
+    description: Stage every change and record a new commit
+  - name: branch
+    description: List branches, or create / delete one
+  - name: switch
+    description: Switch to another branch
+  - name: merge
+    description: Merge another branch into the current one
+  - name: pick
+    description: Cherry-pick a commit onto the current branch
+  - name: fetch
+    description: Download refs and objects from a remote
+  - name: pull
+    description: Fetch from the remote and integrate it into the current branch
+  - name: push
+    description: Publish the current branch to its remote
+  - name: tag
+    description: List tags, or create / delete one. A new tag points at HEAD
+  - name: auth
+    description: Sign in to GitHub (device flow) and store a token for HTTPS push/fetch
+    commands:
+    - name: logout
+      description: Forget the stored GitHub token (sign out)
+  - name: update
+    description: Update grit to the latest release (re-runs the install script)
+  - name: config
+    description: Read, set, or list configuration values
+  - name: manager
+    description: Git credential helper backed by the Windows Credential Manager
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
