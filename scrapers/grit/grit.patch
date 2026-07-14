@@ -1,0 +1,29 @@
+diff --git a/grit-cli/src/main.rs b/grit-cli/src/main.rs
+index fb3a0d7a7..10b85f7ab 100644
+--- a/grit-cli/src/main.rs
++++ b/grit-cli/src/main.rs
+@@ -13,7 +13,11 @@ mod output;
+ mod ui;
+ 
+ use anyhow::Result;
+-use clap::{Parser, Subcommand};
++use clap::{CommandFactory, Parser, Subcommand};
++
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
+ 
+ use output::{emit, OutputMode, OutputOptions};
+ 
+@@ -197,6 +201,11 @@ enum Command {
+ }
+ 
+ fn main() {
++    generate(Spec, &mut Cli::command(), "grit", &mut io::stdout());
++    if true {
++        return;
++    }
++
+     let cli = Cli::parse();
+     let opts = OutputOptions {
+         mode: if cli.json {
