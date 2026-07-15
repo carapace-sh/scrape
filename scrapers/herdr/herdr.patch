@@ -1,0 +1,49 @@
+diff --git a/src/cli.rs b/src/cli.rs
+index 1ce262b..c662420 100644
+--- a/src/cli.rs
++++ b/src/cli.rs
+@@ -19,7 +19,7 @@ mod pane;
+ mod plugin;
+ mod runtime;
+ mod server;
+-mod spec;
++pub(crate) mod spec;
+ mod status;
+ mod tab;
+ mod workspace;
+diff --git a/src/cli/spec.rs b/src/cli/spec.rs
+index f27eed4..394f14f 100644
+--- a/src/cli/spec.rs
++++ b/src/cli/spec.rs
+@@ -1,6 +1,6 @@
+ use clap::{Arg, ArgAction, Command, ValueHint};
+ 
+-pub(super) fn command() -> Command {
++pub(crate) fn command() -> Command {
+     let command = Command::new("herdr")
+         .about("terminal workspace manager for AI coding agents")
+         .disable_help_flag(true)
+diff --git a/src/main.rs b/src/main.rs
+index 1e44b05..abd6a55 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -1,5 +1,7 @@
+ use std::io;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
+ use crossterm::event::{
+     DisableBracketedPaste, DisableFocusChange, DisableMouseCapture, EnableBracketedPaste,
+     EnableFocusChange, EnableMouseCapture,
+@@ -441,6 +443,11 @@ fn exit_if_nested_disabled(config: &config::Config) {
+ }
+ 
+ fn main() -> io::Result<()> {
++    generate(Spec, &mut cli::spec::command(), "herdr", &mut io::stdout());
++    if true {
++        return Ok(());
++    }
++
+     let raw_args: Vec<String> = std::env::args().collect();
+     let args = match session::configure_from_args(&raw_args) {
+         Ok(args) => args,
