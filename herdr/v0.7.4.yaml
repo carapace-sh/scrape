@@ -1,0 +1,718 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: herdr
+description: terminal workspace manager for AI coding agents
+flags:
+  --default-config: Print default configuration and exit
+  --handoff: Opt into live handoff for update or remote attach
+  -h, --help: Show help
+  --no-session: Run monolithically without server/client session mode
+  --remote=: Attach through SSH to a remote Herdr server
+  --remote-keybindings=: Choose local or server keybindings for remote attach
+  --session=: Use or create a named persistent session
+  -V, --version: Print version and exit
+completion:
+  flag:
+    remote-keybindings:
+    - local
+    - server
+commands:
+- name: completion
+  aliases:
+  - completions
+  description: Generate shell completion scripts
+  completion:
+    positional:
+    - - bash
+      - elvish
+      - fish
+      - powershell
+      - zsh
+- name: update
+  description: Download and install the latest version
+  flags:
+    --handoff: Try live handoff after installing
+- name: status
+  description: Show local client and running server status
+  flags:
+    --json: ''
+  commands:
+  - name: server
+    description: Show running server status
+    flags:
+      --json: ''
+  - name: client
+    description: Show local client status
+    flags:
+      --json: ''
+- name: config
+  description: Manage local configuration
+  commands:
+  - name: check
+    description: Validate config.toml and print diagnostics
+  - name: reset-keys
+    description: Reset custom keybindings
+- name: channel
+  description: Manage stable and preview update channels
+  commands:
+  - name: show
+    description: Print the configured update channel
+  - name: set
+    description: Choose the update channel
+    completion:
+      positional:
+      - - stable
+        - preview
+- name: server
+  description: Run or control the headless server
+  commands:
+  - name: stop
+    description: Stop the running server
+  - name: reload-config
+    description: Reload config in the running server
+  - name: agent-manifests
+    description: Show active agent detection manifests
+    flags:
+      --json: ''
+  - name: update-agent-manifests
+    description: Fetch and reload agent detection manifests
+    flags:
+      --json: ''
+  - name: reload-agent-manifests
+    description: Reload local agent detection manifest overrides
+- name: api
+  description: Inspect socket API metadata and live runtime state
+  commands:
+  - name: snapshot
+    description: Print the live session snapshot
+  - name: schema
+    description: Print or write the bundled API schema
+    flags:
+      --json: ''
+      --output=: ''
+    completion:
+      flag:
+        output:
+        - $files
+- name: workspace
+  description: Manage workspaces over the socket API
+  commands:
+  - name: list
+    description: List workspaces
+  - name: create
+    description: Create a workspace
+    flags:
+      --cwd=: ''
+      --env=*: Set an environment variable for the launched process
+      --focus: ''
+      --label=: ''
+      --no-focus: ''
+    completion:
+      flag:
+        cwd:
+        - $files
+  - name: get
+    description: Show a workspace
+  - name: focus
+    description: Focus a workspace
+  - name: rename
+    description: Rename a workspace
+  - name: report-metadata
+    description: Report display-only workspace metadata
+    flags:
+      --clear-token=*: ''
+      --seq=: ''
+      --source=: ''
+      --token=*: ''
+      --ttl-ms=: ''
+  - name: close
+    description: Close a workspace
+- name: worktree
+  description: Manage Git worktree-backed workspaces
+  commands:
+  - name: list
+    description: List worktree workspaces
+    flags:
+      --cwd=: ''
+      --json: ''
+      --workspace=: ''
+    completion:
+      flag:
+        cwd:
+        - $files
+  - name: create
+    description: Create and open a Git worktree
+    flags:
+      --base=: ''
+      --branch=: ''
+      --cwd=: ''
+      --focus: ''
+      --json: ''
+      --label=: ''
+      --no-focus: ''
+      --path=: ''
+      --workspace=: ''
+    completion:
+      flag:
+        cwd:
+        - $files
+        path:
+        - $files
+  - name: open
+    description: Open an existing Git worktree
+    flags:
+      --branch=: ''
+      --cwd=: ''
+      --focus: ''
+      --json: ''
+      --label=: ''
+      --no-focus: ''
+      --path=: ''
+      --workspace=: ''
+    completion:
+      flag:
+        cwd:
+        - $files
+        path:
+        - $files
+  - name: remove
+    description: Remove a worktree checkout
+    flags:
+      --force: ''
+      --json: ''
+      --workspace=: ''
+- name: tab
+  description: Manage tabs over the socket API
+  commands:
+  - name: list
+    description: List tabs
+    flags:
+      --workspace=: ''
+  - name: create
+    description: Create a tab
+    flags:
+      --cwd=: ''
+      --env=*: Set an environment variable for the launched process
+      --focus: ''
+      --label=: ''
+      --no-focus: ''
+      --workspace=: ''
+    completion:
+      flag:
+        cwd:
+        - $files
+  - name: get
+    description: Show a tab
+  - name: focus
+    description: Focus a tab
+  - name: rename
+    description: Rename a tab
+  - name: close
+    description: Close a tab
+- name: notification
+  description: Show Herdr notifications
+  commands:
+  - name: show
+    description: Show a notification
+    flags:
+      --body=: ''
+      --position=: ''
+      --sound=: ''
+    completion:
+      flag:
+        position:
+        - top-left
+        - top-right
+        - bottom-left
+        - bottom-right
+        sound:
+        - none
+        - done
+        - request
+- name: agent
+  description: Control and inspect agent panes
+  commands:
+  - name: list
+    description: List agents
+  - name: get
+    description: Show an agent
+  - name: read
+    description: Read agent terminal output
+    flags:
+      --ansi: ''
+      --format=: ''
+      --lines=: ''
+      --source=: ''
+    completion:
+      flag:
+        format:
+        - text
+        - ansi
+        source:
+        - visible
+        - recent
+        - recent-unwrapped
+        - detection
+  - name: send
+    description: Send text to an agent
+  - name: rename
+    description: Rename an agent
+    flags:
+      --clear: ''
+  - name: focus
+    description: Focus an agent
+  - name: wait
+    description: Wait for an agent status
+    flags:
+      --status!=: ''
+      --timeout=: ''
+    completion:
+      flag:
+        status:
+        - idle
+        - working
+        - blocked
+        - unknown
+  - name: attach
+    description: Attach directly to an agent terminal
+    flags:
+      --takeover: ''
+  - name: start
+    description: Start an agent command
+    flags:
+      --cwd=: ''
+      --env=*: Set an environment variable for the launched process
+      --focus: ''
+      --no-focus: ''
+      --split=: ''
+      --tab=: ''
+      --workspace=: ''
+    completion:
+      flag:
+        cwd:
+        - $files
+        split:
+        - right
+        - down
+  - name: explain
+    description: Explain agent detection state
+    flags:
+      --agent=: ''
+      --file=: ''
+      --format=: ''
+      --json: ''
+      -v, --verbose: ''
+    completion:
+      flag:
+        file:
+        - $files
+        format:
+        - text
+        - json
+- name: pane
+  description: Control terminal panes
+  commands:
+  - name: list
+    description: List panes
+    flags:
+      --workspace=: ''
+  - name: current
+    description: Show the current pane
+    flags:
+      --current: ''
+      --pane=: ''
+  - name: get
+    description: Show a pane
+  - name: layout
+    description: Show pane layout information
+    flags:
+      --current: ''
+      --pane=: ''
+  - name: process-info
+    description: Show pane process information
+    flags:
+      --current: ''
+      --pane=: ''
+  - name: neighbor
+    description: Find a pane neighbor
+    flags:
+      --current: ''
+      --direction=: ''
+      --pane=: ''
+    completion:
+      flag:
+        direction:
+        - left
+        - right
+        - up
+        - down
+  - name: edges
+    description: Show pane edge information
+    flags:
+      --current: ''
+      --pane=: ''
+  - name: focus
+    description: Focus a neighboring pane
+    flags:
+      --current: ''
+      --direction=: ''
+      --pane=: ''
+    completion:
+      flag:
+        direction:
+        - left
+        - right
+        - up
+        - down
+  - name: resize
+    description: Resize a pane split
+    flags:
+      --amount=: ''
+      --current: ''
+      --direction=: ''
+      --pane=: ''
+    completion:
+      flag:
+        direction:
+        - left
+        - right
+        - up
+        - down
+  - name: zoom
+    description: Toggle or set pane zoom
+    flags:
+      --current: ''
+      --off: ''
+      --on: ''
+      --pane=: ''
+      --toggle: ''
+  - name: read
+    description: Read pane terminal output
+    flags:
+      --ansi: ''
+      --format=: ''
+      --lines=: ''
+      --raw: ''
+      --source=: ''
+    completion:
+      flag:
+        format:
+        - text
+        - ansi
+        source:
+        - visible
+        - recent
+        - recent-unwrapped
+        - detection
+  - name: rename
+    description: Rename a pane
+    flags:
+      --clear: ''
+  - name: split
+    description: Split a pane
+    flags:
+      --current: ''
+      --cwd=: ''
+      --direction=: ''
+      --env=*: Set an environment variable for the launched process
+      --focus: ''
+      --no-focus: ''
+      --pane=: ''
+      --ratio=: ''
+    completion:
+      flag:
+        cwd:
+        - $files
+        direction:
+        - right
+        - down
+  - name: swap
+    description: Swap panes
+    flags:
+      --current: ''
+      --direction=: ''
+      --pane=: ''
+      --source-pane=: ''
+      --target-pane=: ''
+    completion:
+      flag:
+        direction:
+        - left
+        - right
+        - up
+        - down
+  - name: move
+    description: Move a pane
+    flags:
+      --focus: ''
+      --label=: ''
+      --new-tab: ''
+      --new-workspace: ''
+      --no-focus: ''
+      --ratio=: ''
+      --split=: ''
+      --tab=: ''
+      --tab-label=: ''
+      --target-pane=: ''
+      --workspace=: ''
+    completion:
+      flag:
+        split:
+        - right
+        - down
+  - name: close
+    description: Close a pane
+  - name: send-text
+    description: Send literal text to a pane
+  - name: send-keys
+    description: Send key presses to a pane
+  - name: run
+    description: Run a command in a pane
+  - name: report-agent
+    description: Report pane agent lifecycle state
+    flags:
+      --agent=: ''
+      --agent-session-id=: ''
+      --agent-session-path=: ''
+      --message=: ''
+      --seq=: ''
+      --source=: ''
+      --state!=: ''
+    completion:
+      flag:
+        agent-session-path:
+        - $files
+        state:
+        - idle
+        - working
+        - blocked
+        - unknown
+  - name: report-agent-session
+    description: Report pane agent session identity
+    flags:
+      --agent=: ''
+      --agent-session-id=: ''
+      --agent-session-path=: ''
+      --seq=: ''
+      --session-start-source=: ''
+      --source=: ''
+    completion:
+      flag:
+        agent-session-path:
+        - $files
+  - name: release-agent
+    description: Release pane agent lifecycle authority
+    flags:
+      --agent=: ''
+      --seq=: ''
+      --source=: ''
+  - name: report-metadata
+    description: Report display-only pane metadata
+    flags:
+      --agent=: ''
+      --applies-to-source=: ''
+      --clear-display-agent: ''
+      --clear-state-labels: ''
+      --clear-title: ''
+      --clear-token=*: ''
+      --display-agent=: ''
+      --seq=: ''
+      --source=: ''
+      --state-label=: ''
+      --title=: ''
+      --token=*: ''
+      --ttl-ms=: ''
+- name: wait
+  description: Wait for pane output or agent state
+  commands:
+  - name: output
+    description: Wait for matching pane output
+    flags:
+      --lines=: ''
+      --match=: ''
+      --raw: ''
+      --regex: ''
+      --source=: ''
+      --timeout=: ''
+    completion:
+      flag:
+        source:
+        - visible
+        - recent
+        - recent-unwrapped
+  - name: agent-status
+    description: Wait for pane agent status
+    flags:
+      --status!=: ''
+      --timeout=: ''
+    completion:
+      flag:
+        status:
+        - idle
+        - working
+        - blocked
+        - done
+        - unknown
+- name: terminal
+  description: Attach to or observe raw terminal streams
+  commands:
+  - name: attach
+    description: Attach directly to a terminal stream
+    flags:
+      --takeover: ''
+  - name: session
+    description: Work with terminal sessions
+    commands:
+    - name: observe
+      description: Observe a terminal stream
+      flags:
+        --cols=: ''
+        --rows=: ''
+  - name: title
+    description: Manage the outer terminal title
+    commands:
+    - name: set
+      description: Set the outer terminal title
+    - name: clear
+      description: Clear the outer terminal title
+- name: session
+  description: Manage named persistent sessions
+  commands:
+  - name: list
+    description: List sessions
+    flags:
+      --json: ''
+  - name: attach
+    description: Attach to a session
+  - name: stop
+    description: Stop a session
+    flags:
+      --json: ''
+  - name: delete
+    description: Delete a stopped session
+    flags:
+      --json: ''
+- name: integration
+  description: Manage built-in agent integrations
+  commands:
+  - name: install
+    description: Install an integration
+    completion:
+      positional:
+      - - pi
+        - omp
+        - claude
+        - codex
+        - copilot
+        - devin
+        - droid
+        - kimi
+        - opencode
+        - kilo
+        - hermes
+        - qodercli
+        - cursor
+  - name: uninstall
+    description: Uninstall an integration
+    completion:
+      positional:
+      - - pi
+        - omp
+        - claude
+        - codex
+        - copilot
+        - devin
+        - droid
+        - kimi
+        - opencode
+        - kilo
+        - hermes
+        - qodercli
+        - cursor
+  - name: status
+    description: Show integration status
+    flags:
+      --outdated-only: ''
+- name: plugin
+  description: Install and run workflow plugins
+  commands:
+  - name: install
+    description: Install a plugin from GitHub
+    flags:
+      --ref=: ''
+      -y, --yes: ''
+  - name: uninstall
+    description: Uninstall a plugin
+  - name: link
+    description: Link a local plugin
+    flags:
+      --disabled: ''
+      --enabled: ''
+    completion:
+      positional:
+      - - $files
+  - name: unlink
+    description: Unlink a local plugin
+  - name: enable
+    description: Enable a plugin
+  - name: disable
+    description: Disable a plugin
+  - name: list
+    description: List installed plugins
+    flags:
+      --json: ''
+      --plugin=: ''
+  - name: config-dir
+    description: Print a plugin config directory
+  - name: action
+    description: List or invoke plugin actions
+    commands:
+    - name: list
+      description: List plugin actions
+      flags:
+        --plugin=: ''
+    - name: invoke
+      description: Invoke a plugin action
+      flags:
+        --plugin=: ''
+  - name: log
+    aliases:
+    - logs
+    description: Inspect plugin command logs
+    commands:
+    - name: list
+      description: List plugin command logs
+      flags:
+        --limit=: ''
+        --plugin=: ''
+  - name: pane
+    description: Manage plugin-owned panes
+    commands:
+    - name: open
+      description: Open a plugin pane
+      flags:
+        --cwd=: ''
+        --direction=: ''
+        --entrypoint=: ''
+        --env=*: Set an environment variable for the launched process
+        --focus: ''
+        --no-focus: ''
+        --placement=: ''
+        --plugin=: ''
+        --target-pane=: ''
+        --workspace=: ''
+      completion:
+        flag:
+          cwd:
+          - $files
+          direction:
+          - right
+          - down
+          placement:
+          - overlay
+          - split
+          - tab
+          - zoomed
+    - name: focus
+      description: Focus a plugin pane
+    - name: close
+      description: Close a plugin pane
