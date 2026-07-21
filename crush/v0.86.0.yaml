@@ -1,0 +1,120 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: crush
+description: A terminal-first AI assistant for software development
+flags:
+    -C, --continue: Continue the most recent session
+    -h, --help: Help
+    -s, --session=: Continue a previous session by ID
+    -y, --yolo: Automatically accept all permissions (dangerous mode)
+persistentflags:
+    -D, --data-dir=: Custom crush data directory
+    -H, --host=: Connect to a specific crush server host (for advanced users)
+    -c, --cwd=: Current working directory
+    -d, --debug: Debug
+commands:
+    - name: completion
+      description: Generate the autocompletion script for the specified shell
+      commands:
+        - name: bash
+          description: Generate the autocompletion script for bash
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: fish
+          description: Generate the autocompletion script for fish
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: powershell
+          description: Generate the autocompletion script for powershell
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: zsh
+          description: Generate the autocompletion script for zsh
+          flags:
+            --no-descriptions: disable completion descriptions
+    - name: dirs
+      description: Show config and data directories
+    - name: help [command]
+      description: Help about any command
+    - name: login [platform]
+      aliases:
+        - auth
+      description: Login Crush to a platform
+      flags:
+        -f, --force: Force re-authentication even if already logged in
+    - name: logout [platform]
+      aliases:
+        - signout
+      description: Logout Crush from a platform
+      flags:
+        -f, --force: Skip logout confirmation prompt
+    - name: logs
+      description: View crush logs
+      flags:
+        -f, --follow: Follow log output
+        -t, --tail=: 'Show only the last N lines default: 1000 for performance'
+    - name: man
+      description: Generates manpages
+      hidden: true
+    - name: models
+      description: List all available models from known providers
+    - name: projects
+      description: List project directories
+      flags:
+        --json: Output as JSON
+    - name: run [prompt...]
+      aliases:
+        - r
+      description: Run a single non-interactive prompt
+      flags:
+        --small-model=: Small model to use. If not provided, uses the default small model for the provider
+        -C, --continue: Continue the most recent session
+        -m, --model=: Model to use. Accepts 'model' or 'provider/model' to disambiguate models with the same name across providers
+        -q, --quiet: Hide spinner
+        -s, --session=: Continue a previous session by ID
+        -v, --verbose: Show logs
+    - name: schema
+      description: Generate JSON schema for configuration
+      hidden: true
+    - name: server
+      description: Start the Crush server
+      flags:
+        -H, --host=: Server host (TCP or Unix socket)
+    - name: session
+      aliases:
+        - sessions
+        - s
+      description: Manage sessions
+      commands:
+        - name: delete <id>
+          aliases:
+            - rm
+          description: Delete a session
+          flags:
+            --json: output in JSON format
+        - name: last
+          description: Show most recent session
+          flags:
+            --json: output in JSON format
+        - name: list
+          aliases:
+            - ls
+          description: List all sessions
+          flags:
+            --json: output in JSON format
+        - name: rename <id> <title>
+          description: Rename a session
+          flags:
+            --json: output in JSON format
+        - name: show <id>
+          description: Show session details
+          flags:
+            --json: output in JSON format
+    - name: stats
+      description: Show usage statistics
+      flags:
+        --all: Aggregate stats from all known projects (from projects.json)
+        --crawl-dir=: Crawl a directory recursively for all crush projects and aggregate stats
+    - name: update-providers [path-or-url]
+      description: Update providers
+      flags:
+        --source=: Provider source to update (catwalk or hyper)
