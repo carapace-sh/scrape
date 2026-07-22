@@ -13,7 +13,7 @@
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.17.0",
     "grit": "https://github.com/gitbutlerapp/grit#v0.5.0",
     "gum": "https://github.com/charmbracelet/gum#v0.17.0",
-    "herdr": "https://github.com/ogulcancelik/herdr#v0.7.4",
+    "herdr": "https://github.com/ogulcancelik/herdr#v0.7.5",
     "crush": "https://github.com/charmbracelet/crush#v0.86.0",
     "hl": "https://github.com/pamburus/hl#v0.36.3",
     "hurl": "https://github.com/Orange-OpenSource/hurl#8.0.1",
