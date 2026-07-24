@@ -1,0 +1,4 @@
+# openstack uses carapace-spec-argparse runtime introspection (scrape.py)
+# rather than a source patch: python-openstackclient uses cliff, which builds
+# a fresh argparse parser per command at runtime instead of a static
+# subparser tree. No source modifications are needed.
