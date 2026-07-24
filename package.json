@@ -20,7 +20,7 @@
     "jj": "https://github.com/jj-vcs/jj#v0.43.0",
     "just": "https://github.com/casey/just#1.57.0",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.36.2",
-    "kubectl": "https://github.com/kubernetes/kubernetes#v1.36.2",
+    "kubectl": "https://github.com/kubernetes/kubernetes#v1.36.3",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.4",
     "minikube": "https://github.com/kubernetes/minikube#v1.38.1",
     "mise": "https://github.com/jdx/mise#v2025.10.21",
