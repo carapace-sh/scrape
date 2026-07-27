@@ -1,8 +1,8 @@
 diff --git a/crates/but/src/lib.rs b/crates/but/src/lib.rs
-index 967ed5653f..4780de6e24 100644
+index f7f5042b9b..32096c2a9b 100644
 --- a/crates/but/src/lib.rs
 +++ b/crates/but/src/lib.rs
-@@ -63,6 +63,10 @@ mod tui;
+@@ -60,6 +60,10 @@ mod tui;
  
  const CLI_DATE: CustomFormat = gix::date::time::format::ISO8601;
  
@@ -11,9 +11,9 @@ index 967ed5653f..4780de6e24 100644
 +use std::io;
 +
  /// The format for help output printed before clap parses arguments, taken from a
- /// `--format` argument or the `BUT_OUTPUT_FORMAT` environment variable.
+ /// `--format` argument, the `BUT_OUTPUT_FORMAT` environment variable, or agent detection.
  ///
-@@ -100,6 +104,11 @@ fn early_help_format(args: &[OsString]) -> OutputFormat {
+@@ -130,6 +134,11 @@ pub(crate) fn app_settings() -> Result<&'static AppSettings> {
  
  /// Handle `args` which must be what's passed by `std::env::args_os()`.
  pub async fn handle_args(args: impl Iterator<Item = OsString>) -> Result<()> {
