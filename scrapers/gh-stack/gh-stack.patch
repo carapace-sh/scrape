@@ -1,0 +1,20 @@
+diff --git a/cmd/root.go b/cmd/root.go
+index f4100c7..bbf1d92 100644
+--- a/cmd/root.go
++++ b/cmd/root.go
+@@ -5,6 +5,7 @@ import (
+ 	"fmt"
+ 	"os"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/github/gh-stack/internal/config"
+ 	"github.com/github/gh-stack/internal/theme"
+ 	"github.com/spf13/cobra"
+@@ -155,6 +156,7 @@ locally, then push to GitHub to create your stack of PRs.`,
+ 
+ func Execute() {
+ 	cmd := RootCmd()
++	carapace.Gen(cmd)
+ 
+ 	// Wrap in a "gh" parent so help output shows "gh stack" instead of just "stack".
+ 	wrapCmd := &cobra.Command{Use: "gh", SilenceUsage: true, SilenceErrors: true}
