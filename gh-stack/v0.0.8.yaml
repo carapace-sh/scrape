@@ -1,0 +1,102 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: stack <command>
+description: Manage stacked branches and pull requests
+commands:
+    - name: add [branch]
+      description: Add a new branch on top of the current stack
+      group: stack
+      flags:
+        -A, --all: Stage all changes including untracked files
+        -m, --message=: Create a commit with this message
+        -u, --update: Stage changes to tracked files only
+    - name: alias [name]
+      description: Create a shell alias for gh stack
+      group: utils
+      flags:
+        --remove: Remove a previously created alias
+    - name: bottom
+      description: Check out the bottom branch of the stack (closest to the trunk)
+      group: nav
+    - name: checkout [<stack-number> | <pr-number> | <pr-url> | <branch>]
+      description: Checkout a stack by stack number, PR number, PR URL, or branch name
+      group: stack
+    - name: down [n]
+      description: Check out a branch further down in the stack (closer to the trunk)
+      group: nav
+    - name: feedback [title]
+      description: Submit feedback for gh-stack
+      group: utils
+    - name: init [branches...]
+      description: Initialize a new stack
+      group: stack
+      flags:
+        -a, --adopt&: 'Deprecated: existing branches are now adopted automatically'
+        -b, --base=: Trunk branch for stack (defaults to default branch)
+    - name: link <stack-number | branch-or-pr> <branch-or-pr> [<branch-or-pr>...]
+      description: Link PRs into a stack on GitHub without local tracking
+      group: remote
+      flags:
+        --base=: Base branch for the bottom of the stack
+        --open: Mark new and existing PRs as ready for review
+        --remote=: Remote to push to (defaults to auto-detected remote)
+    - name: modify
+      description: Interactively restructure a stack
+      group: stack
+      flags:
+        --abort: Abort the modify session and restore the stack to its pre-modify state
+        --continue: Continue after resolving conflicts
+    - name: push
+      description: Push all branches in the current stack to the remote
+      group: remote
+      flags:
+        --remote=: Remote to push to (defaults to auto-detected remote)
+    - name: rebase [branch]
+      description: Rebase a stack of branches
+      group: remote
+      flags:
+        --abort: Abort rebase and restore all branches
+        --committer-date-is-author-date: Set the committer date to the author date during rebase
+        --continue: Continue rebase after resolving conflicts
+        --downstack: Only rebase branches from trunk to current branch
+        --no-trunk: Skip trunk — only rebase stack branches onto each other
+        --preserve-dates: Alias for --committer-date-is-author-date
+        --remote=: Remote to fetch from (defaults to auto-detected remote)
+        --upstack: Only rebase branches from current branch to top
+    - name: submit
+      description: Create a stack of PRs on GitHub
+      group: remote
+      flags:
+        --auto: Use auto-generated PR titles without prompting
+        --open: Mark new and existing PRs as ready for review
+        --remote=: Remote to push to (defaults to auto-detected remote)
+    - name: switch
+      description: Interactively switch to another branch in the stack
+      group: nav
+    - name: sync
+      description: Sync the current stack with the remote
+      group: remote
+      flags:
+        --prune: Delete local branches for merged PRs
+        --remote=: Remote to fetch from and push to (defaults to auto-detected remote)
+    - name: top
+      description: Check out the top branch of the stack (furthest from the trunk)
+      group: nav
+    - name: trunk
+      description: Check out the trunk branch of the stack
+      group: nav
+    - name: unstack [<stack-number>]
+      aliases:
+        - delete
+      description: Remove a stack locally and on GitHub
+      group: stack
+      flags:
+        --local: Only delete the stack locally
+    - name: up [n]
+      description: Check out a branch further up in the stack (further from the trunk)
+      group: nav
+    - name: view
+      description: View the current stack
+      group: stack
+      flags:
+        --json: Output stack data as JSON
+        -s, --short: Show compact output
