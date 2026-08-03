@@ -1,5 +1,5 @@
 diff --git a/src/main.rs b/src/main.rs
-index cd8c9b1ae..da9f1c468 100644
+index e36f21c..390a290 100644
 --- a/src/main.rs
 +++ b/src/main.rs
 @@ -12,6 +12,10 @@ use worktrunk::styling::{
@@ -13,7 +13,7 @@ index cd8c9b1ae..da9f1c468 100644
  mod cli;
  mod commands;
  mod completion;
-@@ -1032,6 +1036,11 @@ fn print_help_to_stderr() {
+@@ -1061,6 +1065,11 @@ fn print_help_to_stderr() {
  }
  
  fn main() {
@@ -22,6 +22,6 @@ index cd8c9b1ae..da9f1c468 100644
 +        return;
 +    }
 +
-     // Capture the startup working directory before anything else. This is
-     // used by shell_exec to resolve relative `GIT_*` path variables inherited
-     // from a parent `git` (e.g. when invoked via `git wt ...` with
+     // Capture startup state before anything else: the working directory
+     // (used by shell_exec to resolve relative `GIT_*` path variables
+     // inherited from a parent `git` — e.g. when invoked via `git wt ...`
