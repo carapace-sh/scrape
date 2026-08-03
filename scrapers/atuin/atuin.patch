@@ -1,28 +1,26 @@
 diff --git a/crates/atuin/src/main.rs b/crates/atuin/src/main.rs
-index 1a45988a..cc417bca 100644
+index c977c8e..f5dcead 100644
 --- a/crates/atuin/src/main.rs
 +++ b/crates/atuin/src/main.rs
-@@ -1,13 +1,18 @@
- #![warn(clippy::pedantic, clippy::nursery)]
+@@ -2,12 +2,17 @@
  #![allow(clippy::use_self, clippy::missing_const_for_fn)] // not 100% reliable
  
--use clap::Parser;
+ use clap::Parser;
++use clap::CommandFactory;
  use clap::builder::Styles;
  use clap::builder::styling::{AnsiColor, Effects};
-+use clap::{CommandFactory, Parser};
  use eyre::Result;
  
  use command::AtuinCmd;
  
 +use carapace_spec_clap::Spec;
-+use clap::{Arg, ArgAction, Command};
 +use clap_complete::generate;
 +use std::io;
 +
  mod command;
- 
- #[cfg(feature = "sync")]
-@@ -55,5 +60,6 @@ impl Atuin {
+ pub(crate) mod logs;
+ #[cfg(feature = "client")]
+@@ -60,5 +65,6 @@ impl Atuin {
  }
  
  fn main() -> Result<()> {
