@@ -1,0 +1,277 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: k3d
+description: https://k3d.io/ -> Run k3s in Docker!
+flags:
+    --version: Show k3d and default k3s version
+persistentflags:
+    --timestamps: Enable Log timestamps
+    --trace: Enable super verbose output (trace logging)
+    --verbose: Enable verbose output (debug logging)
+commands:
+    - name: cluster
+      description: Manage cluster(s)
+      commands:
+        - name: create NAME
+          description: Create a new cluster
+          flags:
+            --agents-memory=: Memory limit imposed on the agents nodes [From docker]
+            --api-port=: |-
+                Specify the Kubernetes API server port exposed on the LoadBalancer (Format: `[HOST:]HOSTPORT`)
+                 - Example: `k3d cluster create --servers 3 --api-port 0.0.0.0:6550`
+            --enforce-registry-port-match: Make the internal registry port match the external one
+            --gpus=: GPU devices to add to the cluster node containers ('all' to pass all GPUs) [From docker]
+            --host-alias*=: Add `ip:host[,host,...]` mappings
+            --host-pid-mode: Enable host pid mode of server(s) and agent(s)
+            --k3s-arg*=: |-
+                Additional args passed to k3s command (Format: `ARG@NODEFILTER[;@NODEFILTER]`)
+                 - Example: `k3d cluster create --k3s-arg "--disable=traefik@server:0"`
+            --k3s-node-label*=: |-
+                Add label to k3s node (Format: `KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]`
+                 - Example: `k3d cluster create --agents 2 --k3s-node-label "my.label@agent:0,1" --k3s-node-label "other.label=somevalue@server:0"`
+            --kubeconfig-switch-context: Directly switch the default kubeconfig's current-context to the new cluster's context (requires --kubeconfig-update-default)
+            --kubeconfig-update-default: Directly update the default kubeconfig with the new cluster's context
+            --lb-config-override*=: Use dotted YAML path syntax to override nginx loadbalancer settings
+            --network=: Join an existing network
+            --no-image-volume: Disable the creation of a volume for importing images
+            --no-lb: Disable the creation of a LoadBalancer in front of the server nodes
+            --no-rollback: Disable the automatic rollback actions, if anything goes wrong
+            --registry-config=: Specify path to an extra registries.yaml file
+            --registry-create=: |-
+                Create a k3d-managed registry and connect it to the cluster (Format: `NAME[:HOST][:HOSTPORT]`
+                 - Example: `k3d cluster create --registry-create mycluster-registry:0.0.0.0:5432`
+            --registry-use*=: Connect to one or more k3d-managed registries running locally
+            --runtime-label*=: |-
+                Add label to container runtime (Format: `KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]`
+                 - Example: `k3d cluster create --agents 2 --runtime-label "my.label@agent:0,1" --runtime-label "other.label=somevalue@server:0"`
+            --runtime-ulimit*=: |-
+                Add ulimit to container runtime (Format: `NAME[=SOFT]:[HARD]`
+                 - Example: `k3d cluster create --agents 2 --runtime-ulimit "nofile=1024:1024" --runtime-ulimit "noproc=1024:1024"`
+            --servers-memory=: Memory limit imposed on the server nodes [From docker]
+            --subnet=: '[Experimental: IPAM] Define a subnet for the newly created container network (Example: `172.28.0.0/16`)'
+            --timeout=: Rollback changes if cluster couldn't be created in specified duration.
+            --token=: Specify a cluster token. By default, we generate one.
+            --wait: Wait for the server(s) to be ready before returning. Use '--timeout DURATION' to not wait forever.
+            -a, --agents=: Specify how many agents you want to create
+            -c, --config=: Path of a config file to use
+            -e, --env*=: |-
+                Add environment variables to nodes (Format: `KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]`
+                 - Example: `k3d cluster create --agents 2 -e "HTTP_PROXY=my.proxy.com@server:0" -e "SOME_KEY=SOME_VAL@server:0"`
+            -i, --image=: Specify k3s image that you want to use for the nodes
+            -p, --port*=: |-
+                Map ports from the node containers (via the serverlb) to the host (Format: `[HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER]`)
+                 - Example: `k3d cluster create --agents 2 -p 8080:80@agent:0 -p 8081@agent:1`
+            -s, --servers=: Specify how many servers you want to create
+            -v, --volume*=: |-
+                Mount volumes into the nodes (Format: `[SOURCE:]DEST[@NODEFILTER[;NODEFILTER...]]`
+                 - Example: `k3d cluster create --agents 2 -v /my/path@agent:0,1 -v /tmp/test:/tmp/other@server:0`
+        - name: delete [NAME [NAME ...] | --all]
+          aliases:
+            - del
+            - rm
+          description: Delete cluster(s).
+          flags:
+            -a, --all: Delete all existing clusters
+            -c, --config=: Path of a config file to use
+        - name: edit CLUSTER
+          aliases:
+            - update
+          description: '[EXPERIMENTAL] Edit cluster(s).'
+          flags:
+            --port-add*=: |-
+                Map ports from the node containers (via the serverlb) to the host (Format: `[HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER]`)
+                 - Example: `k3d cluster edit k3d-mycluster-serverlb --port-add 8080:80`
+            --port-delete*=: |-
+                [EXPERIMENTAL] Delete a port mapping with the given format
+                The mapping spec needs to be exactly the same as the one used during creation
+                 - Example: `k3d cluster edit k3d-mycluster-serverlb --port-delete 8080:80`
+        - name: list [NAME [NAME...]]
+          aliases:
+            - ls
+            - get
+          description: List cluster(s)
+          flags:
+            --no-headers: Disable headers
+            --token: Print k3s cluster token
+            -o, --output=: 'Output format. One of: json|yaml'
+        - name: restart [NAME [NAME...] | --all]
+          description: Restart existing k3d cluster(s)
+          flags:
+            --timeout=: Maximum waiting time for '--wait' before canceling/returning.
+            --wait: Wait for the server(s) (and loadbalancer) to be ready before returning.
+            -a, --all: Restart all existing clusters
+        - name: start [NAME [NAME...] | --all]
+          description: Start existing k3d cluster(s)
+          flags:
+            --timeout=: Maximum waiting time for '--wait' before canceling/returning.
+            --wait: Wait for the server(s) (and loadbalancer) to be ready before returning.
+            -a, --all: Start all existing clusters
+        - name: stop [NAME [NAME...] | --all]
+          description: Stop existing k3d cluster(s)
+          flags:
+            -a, --all: Stop all existing clusters
+    - name: completion SHELL
+      description: Generate completion scripts for [bash, zsh, fish, powershell | psh]
+    - name: config
+      description: Work with config file(s)
+      commands:
+        - name: init
+          aliases:
+            - create
+          flags:
+            -f, --force: Force overwrite of target file
+            -o, --output=: Write a default k3d config
+        - name: migrate INPUT [OUTPUT]
+          aliases:
+            - update
+    - name: debug
+      description: Debug k3d cluster(s)
+      hidden: true
+      commands:
+        - name: loadbalancer
+          aliases:
+            - lb
+          description: Debug the loadbalancer
+          commands:
+            - name: get-config CLUSTERNAME
+    - name: help [command]
+      description: Help about any command
+    - name: image
+      aliases:
+        - images
+      description: Handle container images.
+      commands:
+        - name: import [IMAGE | ARCHIVE [IMAGE | ARCHIVE...]]
+          aliases:
+            - load
+          description: Import image(s) from docker into k3d cluster(s).
+          flags:
+            -c, --cluster*=: Select clusters to load the image to.
+            -k, --keep-tarball: Do not delete the tarball containing the saved images from the shared volume
+            -m, --mode=: Which method to use to import images into the cluster [auto, direct, tools]. See https://k3d.io/stable/usage/importing_images/
+            -t, --keep-tools: Do not delete the tools node after import
+    - name: kubeconfig
+      description: Manage kubeconfig(s)
+      commands:
+        - name: get [CLUSTER [CLUSTER [...]] | --all]
+          aliases:
+            - print
+            - show
+          description: Print kubeconfig(s) from cluster(s).
+          flags:
+            -a, --all: Output kubeconfigs from all existing clusters
+        - name: merge [CLUSTER [CLUSTER [...]] | --all]
+          aliases:
+            - write
+          description: Write/Merge kubeconfig(s) from cluster(s) into new or existing kubeconfig/file.
+          flags:
+            --overwrite: '[Careful!] Overwrite existing file, ignoring its contents'
+            -a, --all: Get kubeconfigs from all existing clusters
+            -d, --kubeconfig-merge-default: Merge into the default kubeconfig ($KUBECONFIG or /root/.kube/config)
+            -o, --output=: Define output [ - | FILE ] (default from $KUBECONFIG or /root/.kube/config
+            -s, --kubeconfig-switch-context: Switch to new context
+            -u, --update: Update conflicting fields in existing kubeconfig
+    - name: node
+      description: Manage node(s)
+      commands:
+        - name: create NAME
+          description: Create a new k3s node in docker
+          flags:
+            --k3s-arg*=: Additional args passed to k3d command
+            --k3s-node-label*=: Specify k3s node labels in format "foo=bar"
+            --memory=: Memory limit imposed on the node [From docker]
+            --replicas=: Number of replicas of this node specification.
+            --role=: Specify node role [server, agent]
+            --runtime-label*=: Specify container runtime labels in format "foo=bar"
+            --runtime-ulimit*=: Specify container runtime ulimit in format "ulimit=soft:hard"
+            --timeout=: Maximum waiting time for '--wait' before canceling/returning.
+            --wait: Wait for the node(s) to be ready before returning.
+            -c, --cluster=: Cluster URL or k3d cluster name to connect to.
+            -i, --image=: 'Specify k3s image used for the node(s) (default: copied from existing node)'
+            -n, --network*=: Add node to (another) runtime network
+            -t, --token=: Override cluster token (required when connecting to an external cluster)
+        - name: delete (NAME | --all)
+          description: Delete node(s).
+          flags:
+            -a, --all: Delete all existing nodes
+            -r, --registries: Also delete registries
+        - name: edit NODE
+          aliases:
+            - update
+          description: '[EXPERIMENTAL] Edit node(s).'
+          flags:
+            --port-add*=: |-
+                [EXPERIMENTAL] (serverlb only!) Map ports from the node container to the host (Format: `[HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER]`)
+                 - Example: `k3d node edit k3d-mycluster-serverlb --port-add 8080:80`
+            --port-delete*=: |-
+                [EXPERIMENTAL] (serverlb only!) Remove port mappings between a node and the host (Format: `[HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER]`)
+                 - Example: `k3d node edit k3d-mycluster-serverlb --port-delete 8080:80`
+        - name: list [NODE [NODE...]]
+          aliases:
+            - ls
+            - get
+          description: List node(s)
+          flags:
+            --no-headers: Disable headers
+            -o, --output=: 'Output format. One of: json|yaml'
+        - name: start NODE
+          description: Start an existing k3d node
+        - name: stop NAME
+          description: Stop an existing k3d node
+    - name: registry
+      aliases:
+        - registries
+        - reg
+      description: Manage registry/registries
+      commands:
+        - name: ""
+        - name: ""
+        - name: create NAME
+          description: Create a new registry
+          flags:
+            --default-network=: Specify the network connected to the registry
+            --delete-enabled: Enable image deletion
+            --enforce-port-match: Make the internal registry port match the external one
+            --no-help: Disable the help text (How-To use the registry)
+            --proxy-password=: Specify the password of the proxied remote registry
+            --proxy-remote-url=: Specify the url of the proxied remote registry
+            --proxy-username=: Specify the username of the proxied remote registry
+            -c, --cluster&*=: '[NotReady] Select the cluster(s) that the registry shall connect to.'
+            -i, --image=: Specify image used for the registry
+            -p, --port=: |-
+                Select which port the registry should be listening on on your machine (localhost) (Format: `[HOST:]HOSTPORT`)
+                 - Example: `k3d registry create --port 0.0.0.0:5111`
+            -v, --volume*=: 'Mount volumes into the registry node (Format: `[SOURCE:]DEST`'
+        - name: delete (NAME | --all)
+          aliases:
+            - del
+            - rm
+          description: Delete registry/registries.
+          flags:
+            -a, --all: Delete all existing registries
+        - name: list [NAME [NAME...]]
+          aliases:
+            - ls
+            - get
+          description: List registries
+          flags:
+            --no-headers: Disable headers
+            -o, --output=: 'Output format. One of: json|yaml'
+    - name: runtime-info
+      description: Show runtime information
+      hidden: true
+    - name: version
+      description: Show k3d and default k3s version
+      flags:
+        -o, --output=: This will return version information as a different format.  Only json is supported
+      commands:
+        - name: list COMPONENT
+          aliases:
+            - ls
+          description: List k3d/K3s versions. Component can be one of 'k3d', 'k3s', 'k3d-proxy', 'k3d-tools'.
+          flags:
+            -e, --exclude=: Exclude Regexp (default excludes pre-releases, arch-specific tags and digests)
+            -f, --format=: '[DEPRECATED] Use --output instead'
+            -i, --include=: Include Regexp (default includes everything
+            -l, --limit=: Limit number of tags in output (0 = unlimited)
+            -o, --output=: Output Format [raw | repo]
+            -s, --sort=: Sort Mode (asc | desc | off)
