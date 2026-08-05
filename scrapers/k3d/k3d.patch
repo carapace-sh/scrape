@@ -1,0 +1,20 @@
+diff --git a/cmd/root.go b/cmd/root.go
+index c248cb5..3cf94f3 100644
+--- a/cmd/root.go
++++ b/cmd/root.go
+@@ -32,6 +32,7 @@ import (
+ 	"strconv"
+ 	"strings"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/sirupsen/logrus"
+ 	"github.com/sirupsen/logrus/hooks/writer"
+ 	"github.com/spf13/cobra"
+@@ -126,6 +127,7 @@ All Nodes of a k3d cluster are part of the same docker network.`,
+ 	// Init
+ 	cobra.OnInitialize(initLogging, initRuntime)
+ 
++	carapace.Gen(rootCmd)
+ 	return rootCmd
+ }
+ 
