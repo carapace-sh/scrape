@@ -1,16 +1,16 @@
 diff --git a/cmd/glab/main.go b/cmd/glab/main.go
-index f966bf5f..2d194f39 100644
+index fb47d0c55..466519c84 100644
 --- a/cmd/glab/main.go
 +++ b/cmd/glab/main.go
-@@ -14,6 +14,7 @@ import (
- 	"gitlab.com/gitlab-org/cli/internal/iostreams"
- 	"gitlab.com/gitlab-org/cli/internal/utils"
+@@ -12,6 +12,7 @@ import (
  
+ 	"charm.land/fang/v2"
+ 	"charm.land/lipgloss/v2"
 +	"github.com/carapace-sh/carapace"
- 	"github.com/mgutz/ansi"
+ 	"github.com/spf13/cobra"
  
- 	surveyCore "github.com/AlecAivazis/survey/v2/core"
-@@ -172,6 +173,7 @@ func main() {
+ 	"gitlab.com/gitlab-org/cli/internal/api"
+@@ -113,6 +114,7 @@ func main() {
  		expandedArgs = os.Args[1:]
  	}
  	rootCmd := commands.NewCmdRoot(cmdFactory)
