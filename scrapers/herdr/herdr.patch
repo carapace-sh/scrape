@@ -1,18 +1,18 @@
 diff --git a/src/cli.rs b/src/cli.rs
-index 9d7389b..181839f 100644
+index 4d3c67c0..7dcd3174 100644
 --- a/src/cli.rs
 +++ b/src/cli.rs
-@@ -18,7 +18,7 @@ mod plugin;
- mod protocol_guard;
+@@ -19,7 +19,7 @@ mod protocol_guard;
  mod runtime;
  mod server;
+ mod server_not_running;
 -mod spec;
 +pub(crate) mod spec;
  mod status;
  mod tab;
  mod workspace;
 diff --git a/src/cli/spec.rs b/src/cli/spec.rs
-index f3d0d27..06c6948 100644
+index 3be83328..79236454 100644
 --- a/src/cli/spec.rs
 +++ b/src/cli/spec.rs
 @@ -2,7 +2,7 @@ use std::io::Write;
@@ -25,17 +25,16 @@ index f3d0d27..06c6948 100644
          .about("terminal workspace manager for AI coding agents")
          .disable_help_flag(true)
 diff --git a/src/main.rs b/src/main.rs
-index a73423b..d53547d 100644
+index 27c1d92f..604d37f4 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -1,4 +1,6 @@
- use std::io;
+@@ -1,3 +1,5 @@
 +use carapace_spec_clap::Spec;
 +use clap_complete::generate;
+ use std::io;
  
  use crossterm::event::{
-     DisableBracketedPaste, DisableFocusChange, DisableMouseCapture, EnableBracketedPaste,
-@@ -451,6 +453,11 @@ fn exit_if_nested_disabled(config: &config::Config) {
+@@ -478,6 +480,11 @@ where
  }
  
  fn main() -> io::Result<()> {
@@ -44,6 +43,6 @@ index a73423b..d53547d 100644
 +        return Ok(());
 +    }
 +
-     let raw_args: Vec<String> = std::env::args().collect();
-     let args = match session::configure_from_args(&raw_args) {
+     let raw_args: Vec<String> = match args_as_utf8(std::env::args_os()) {
          Ok(args) => args,
+         Err(err) => {
