@@ -1,0 +1,1977 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: lore
+description: ''
+flags:
+  -h, --help: Print help
+  --markdown-help&: ''
+  -V, --version: Print version
+persistentflags:
+  --cache: Cache fragment payloads fetched from remote in the local store
+  --compress-limit=: Set maximum number of parallel compress operations
+  -d, --debug: Enable debug output
+  --dry-run: Dry run mode, only report what would have been changed and perform no changes to local file system
+  --file-count-limit=: Set maximum number of parallel files opened
+  --file-size-limit=: Set maximum total size in bytes of parallel files opened
+  -f, --force: Force the operation if possible
+  --identity=: Use given identity
+  -j, --json&: Enable machine-readable json output
+  --local: Use local data
+  --log-level=: Set the logging level
+  --max-connections=: Set maximum number of parallel connections
+  --max-threads&=: Set maximum total number of threads Lore sizes its pools for
+  --no-gc: Prevent automatic incremental garbage collection for this command; it otherwise runs in the background on writes. `lore repository gc` always runs a full pass regardless
+  -P, --no-pager: Disable pagination
+  --nocompress&: Avoid using compression
+  --non-interactive: Disable interactive prompts (e.g., per-link commit messages)
+  --offline: Force offline mode
+  --remote: Use remote data
+  --repository=: Use given path as repository path
+  --search-limit=: Set maximum number of revisions to search when matching or finding revisions
+  --search-nearest: Set to search for nearest match when matching revisions
+  -s, --silent&: Suppress all output
+  --sync-data: Force sync data to storage media during flush
+  -t, --time&: Time execution of command
+commands:
+- name: repository
+  description: Repository commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: status
+    description: Show current repository status
+    flags:
+      --check-dirty: Verify already-dirty files against the filesystem without a full scan
+      --count: Count directories and files (staged state if present, else current revision; view-filtered)
+      -h, --help: Print help (see more with '--help')
+      --reset: Drop the existing staged anchor before computing status. Combine with --scan to scan from a clean slate
+      --revision-only: Only show revision info, skip all diffs
+      --scan: Walk the filesystem under the given paths and reconcile every file against the current revision
+      --targets=: Path to a targets file
+      --unstaged&: Alias for --scan (backward compatibility)
+    documentation:
+      command: |-
+        Show current repository status.
+
+        Reports the staged revision (if any) and the files currently marked dirty. No filesystem walk runs by default — pass `--scan` to walk the filesystem and refresh dirty flags. See `lore status --help` (top-level alias) for the full workflow.
+      flag:
+        check-dirty: |-
+          Verify already-dirty files against the filesystem without a full scan.
+
+          Each file currently marked dirty is re-checked: one whose on-disk content still matches the tracked revision (same size, and same content when the modification time differs) has its dirty flag cleared and is dropped from the report, unless it is also staged. Adds, moves, copies, and deletes are always reported. The refreshed flags are persisted, so this requires write access.
+        help: Print help (see a summary with '-h')
+        scan: |-
+          Walk the filesystem under the given paths and reconcile every file against the current revision.
+
+          Detected modifications, adds, and deletes are marked dirty; stale dirty flags are cleared. The refreshed flags are persisted in the staged state so subsequent `lore stage` and `lore status` calls see an accurate picture without rescanning.
+
+          Without `--scan`, status reports only what is currently tracked: the staged revision (if any) plus files already marked dirty. Mark files individually with `lore dirty` for targeted updates, or pass `--scan` here for bulk reconciliation.
+  - name: info
+    description: Get info about a repository
+    flags:
+      -h, --help: Print help
+  - name: list
+    description: List repositories
+    flags:
+      -h, --help: Print help
+  - name: create
+    description: Create a repository in the given directory
+    flags:
+      --description=: Optional description of repository
+      -h, --help: Print help
+      --id=: Optional ID of repository
+      --shared-store-path=: Use this path rather than the system default as the shared store location
+      --use-shared-store: Use the shared store rather than create a local immutable store
+  - name: clone
+    description: Clone a remote repository into the given path
+    flags:
+      --bare: Clone without files, only fetch latest revision tree
+      --branch=: Optional branch to sync (shorthand for a full revision specifier)
+      --dependency-depth-limit=:
+        description: Maximum dependency traversal depth (0 means unlimited)
+        default: '0'
+      --dependency-recursive: Follow transitive dependencies recursively during dependency-based clone
+      --dependency-tag=*: Tags to filter dependencies by during dependency-based clone
+      --direct-file-io: Use direct file I/O instead of memory mapping files
+      --direct-file-write: Write directly to the destination file instead of write to a temporary file and move into place
+      -h, --help: Print help
+      --layer=: Layer to add
+      --layer-metadata=: Metadata key to link layer revisions with
+      --no-tracking: Clone without local repository tracking (memory-only stores)
+      --prefetch=: File containing list of files to prefetch
+      --revision=: Optional revision to sync
+      --root-file=*: Root files for dependency-based selective clone (only clone these files and their dependencies)
+      --shared-store-path=: Use this path rather than the system default as the shared store location
+      --use-shared-store: Use the shared store rather than create a local immutable store
+      --view=: Optional client side view filter file
+      --virtual: Clone virtually using split-write filesystem
+  - name: delete
+    description: Delete a repository
+    flags:
+      -h, --help: Print help
+  - name: verify
+    description: Verify repository state consistency
+    flags:
+      --heal: Attempt to heal discrepancies found in a new staged state
+      -h, --help: Print help
+      --path=: Optional path in the repository to start verification from (for state verification)
+    commands:
+    - name: state
+      description: Verify repository state consistency (default)
+      flags:
+        --heal: Attempt to heal discrepancies found in a new staged state
+        -h, --help: Print help
+        --path=: Optional path in the repository to start verification from
+    - name: fragment
+      description: Verify a specific fragment in the local store
+      flags:
+        --context=: Context part of the address to verify
+        --heal: Attempt to heal if verification fails (remote only)
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: state
+        description: Verify repository state consistency (default)
+      - name: fragment
+        description: Verify a specific fragment in the local store
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: dump
+    description: Dump repository state information
+    flags:
+      -h, --help: Print help
+      --max-depth=: Optional max depth of tree dump
+      --path=: Optional path in the repository to start dumping from
+      --revision=: Optional revision to dump
+  - name: gc
+    description: Run a full garbage collection pass on the local repository store
+    flags:
+      -h, --help: Print help
+  - name: store
+    description: Access the repository data store
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: immutable
+      description: Operations on the immutable store
+      flags:
+        -h, --help: Print help
+      commands:
+      - name: query
+        description: Query the store
+        flags:
+          -h, --help: Print help
+          --recurse: Recurse into subfragments
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+        commands:
+        - name: query
+          description: Query the store
+        - name: help
+          description: Print this message or the help of the given subcommand(s)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: immutable
+        description: Operations on the immutable store
+        commands:
+        - name: query
+          description: Query the store
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: metadata
+    description: Repository metadata operations
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: get
+      description: Get metadata from the repository (omit key to list all)
+      flags:
+        -h, --help: Print help
+    - name: set
+      description: Set metadata on the repository
+      flags:
+        --binary: Indicator that values are paths to binary files
+        -h, --help: Print help
+        --numeric: Indicator that values are numeric (u64)
+    - name: clear
+      description: Clear metadata from the repository
+      flags:
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: get
+        description: Get metadata from the repository (omit key to list all)
+      - name: set
+        description: Set metadata on the repository
+      - name: clear
+        description: Clear metadata from the repository
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: instance
+    description: Instance management
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: list
+      description: List all registered instances for this repository
+      flags:
+        -h, --help: Print help
+    - name: prune
+      description: Remove stale instance entries
+      flags:
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: list
+        description: List all registered instances for this repository
+      - name: prune
+        description: Remove stale instance entries
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: config
+    description: Read a configuration value
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: get
+      description: Get a configuration value
+      flags:
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: get
+        description: Get a configuration value
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: update-path
+    description: Update the stored path for this instance
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: status
+      description: Show current repository status
+    - name: info
+      description: Get info about a repository
+    - name: list
+      description: List repositories
+    - name: create
+      description: Create a repository in the given directory
+    - name: clone
+      description: Clone a remote repository into the given path
+    - name: delete
+      description: Delete a repository
+    - name: verify
+      description: Verify repository state consistency
+      commands:
+      - name: state
+        description: Verify repository state consistency (default)
+      - name: fragment
+        description: Verify a specific fragment in the local store
+    - name: dump
+      description: Dump repository state information
+    - name: gc
+      description: Run a full garbage collection pass on the local repository store
+    - name: store
+      description: Access the repository data store
+      commands:
+      - name: immutable
+        description: Operations on the immutable store
+        commands:
+        - name: query
+          description: Query the store
+    - name: metadata
+      description: Repository metadata operations
+      commands:
+      - name: get
+        description: Get metadata from the repository (omit key to list all)
+      - name: set
+        description: Set metadata on the repository
+      - name: clear
+        description: Clear metadata from the repository
+    - name: instance
+      description: Instance management
+      commands:
+      - name: list
+        description: List all registered instances for this repository
+      - name: prune
+        description: Remove stale instance entries
+    - name: config
+      description: Read a configuration value
+      commands:
+      - name: get
+        description: Get a configuration value
+    - name: update-path
+      description: Update the stored path for this instance
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: branch
+  description: Branch commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: list
+    description: List available branches
+    flags:
+      --archived: Include archived local branches
+      -h, --help: Print help
+  - name: info
+    description: Get info about the given branch
+    flags:
+      -h, --help: Print help
+  - name: create
+    description: Create a new branch
+    flags:
+      -h, --help: Print help
+      --id=: Optional explicit branch ID (hex-encoded 16-byte identifier)
+  - name: switch
+    description: Switch to a different branch
+    flags:
+      --bare: Only update anchor tracking without modifying or verifying files, useful for bare repositories
+      --dry-run: Do a dry run sync and only report what changes would be done, do not change anything in the file system
+      -h, --help: Print help
+      --local: Keep last local latest revision, do not sync latest revision from remote (implied by offline mode)
+      --reset: Reset any local modified files to match the incoming revision
+  - name: push
+    description: Push commits to remote
+    flags:
+      --fast-forward-merge: Allow the server to fast-forward merge if the target branch head has moved
+      -h, --help: Print help
+  - name: merge
+    description: Merge two branches
+    flags:
+      -h, --help: Print help
+      --id=: ID of the source branch to merge into the current branch
+      --message=: Change the message for committing when no conflicts arise from the merge
+    commands:
+    - name: unresolve
+      description: Marks the merge unresolved
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file
+    - name: into
+      description: Merge into branch
+      flags:
+        -h, --help: Print help
+        --id=: ID of the target branch to merge the current branch into
+        --ignore-links: Merge only the main repository, skipping all linked repositories
+        --link=: Merge only a specific linked repository at the given mount path
+    - name: start
+      description: Start a merge process
+      flags:
+        --dry-run: Do a dry run merge start and only report what changes would be done, do not change anything in the file system
+        -h, --help: Print help
+        --id=: ID of the source branch to merge into the current branch
+        --ignore-links: Merge only the main repository, skipping all linked repositories
+        --link=: Merge only a specific linked repository at the given mount path
+        --message=: Change the message for committing when no conflicts arise from the merge
+        --no-commit: Disable auto commits even if no conflicts arise from the merge
+    - name: restart
+      description: Restart the merge, resetting the current merge state
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file
+    - name: resolve
+      description: Resolves the merge
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file
+      commands:
+      - name: mine
+        description: Resolve using my changes
+        flags:
+          -h, --help: Print help
+          --targets=: Path to a targets file
+      - name: theirs
+        description: Resolve using their changes
+        flags:
+          -h, --help: Print help
+          --targets=: Path to a targets file
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using their changes
+        - name: help
+          description: Print this message or the help of the given subcommand(s)
+    - name: abort
+      description: Abort a merge process
+      flags:
+        -h, --help: Print help
+        --ignore-links: Abort only the main repository merge, keeping link pin updates
+        --link=: Abort only a specific linked repository merge at the given mount path
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: unresolve
+        description: Marks the merge unresolved
+      - name: into
+        description: Merge into branch
+      - name: start
+        description: Start a merge process
+      - name: restart
+        description: Restart the merge, resetting the current merge state
+      - name: resolve
+        description: Resolves the merge
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using their changes
+      - name: abort
+        description: Abort a merge process
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: diff
+    description: Diff two branches using the common ancestor base revision Will calculate the set of changes between source branch latest revision and the base revision that is not in the set of changes between the target branch latest revision and the base revision
+    flags:
+      --auto-resolve: Attempt to auto resolve conflicts if true
+      -h, --help: Print help
+      --source=: Name of the source branch
+  - name: archive
+    description: Archive an existing branch
+    flags:
+      -h, --help: Print help
+  - name: reset
+    description: Reset local latest pointer for a branch
+    flags:
+      --branch=: Branch to reset, or the current branch if not set
+      -h, --help: Print help
+  - name: protect
+    description: Protect a branch from direct pushes
+    flags:
+      -h, --help: Print help
+  - name: unprotect
+    description: Remove push protection from a branch
+    flags:
+      -h, --help: Print help
+  - name: latest
+    description: Branch latest related commands
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: list
+      description: ''
+      flags:
+        --branch=: Branch to query
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: list
+        description: ''
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: metadata
+    description: Branch metadata operations
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: get
+      description: Get metadata from the branch (omit key to list all)
+      flags:
+        --branch=: Branch name (uses current branch if not specified)
+        -h, --help: Print help
+    - name: set
+      description: Set metadata on the branch
+      flags:
+        --binary: Indicator that values are paths to binary files
+        --branch=: Branch name (uses current branch if not specified)
+        -h, --help: Print help
+        --numeric: Indicator that values are numeric (u64)
+    - name: clear
+      description: Clear metadata from the branch
+      flags:
+        --branch=: Branch name (uses current branch if not specified)
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: get
+        description: Get metadata from the branch (omit key to list all)
+      - name: set
+        description: Set metadata on the branch
+      - name: clear
+        description: Clear metadata from the branch
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: List available branches
+    - name: info
+      description: Get info about the given branch
+    - name: create
+      description: Create a new branch
+    - name: switch
+      description: Switch to a different branch
+    - name: push
+      description: Push commits to remote
+    - name: merge
+      description: Merge two branches
+      commands:
+      - name: unresolve
+        description: Marks the merge unresolved
+      - name: into
+        description: Merge into branch
+      - name: start
+        description: Start a merge process
+      - name: restart
+        description: Restart the merge, resetting the current merge state
+      - name: resolve
+        description: Resolves the merge
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using their changes
+      - name: abort
+        description: Abort a merge process
+    - name: diff
+      description: Diff two branches using the common ancestor base revision Will calculate the set of changes between source branch latest revision and the base revision that is not in the set of changes between the target branch latest revision and the base revision
+    - name: archive
+      description: Archive an existing branch
+    - name: reset
+      description: Reset local latest pointer for a branch
+    - name: protect
+      description: Protect a branch from direct pushes
+    - name: unprotect
+      description: Remove push protection from a branch
+    - name: latest
+      description: Branch latest related commands
+      commands:
+      - name: list
+        description: ''
+    - name: metadata
+      description: Branch metadata operations
+      commands:
+      - name: get
+        description: Get metadata from the branch (omit key to list all)
+      - name: set
+        description: Set metadata on the branch
+      - name: clear
+        description: Clear metadata from the branch
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: revision
+  description: Revision commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: history
+    description: List revisions of a repository
+    flags:
+      --branch=: Show branch revisions
+      --date&=: Stop when reaching a revision created before this date (Unix timestamp)
+      -h, --help: Print help
+      --oneline: Output each revision on one line only
+      --only-branch: Stop when reaching a revision on a different branch (includes the branch point revision)
+      --revision=: Start listing from the specified revision. If not specified, start listing from the current branch latest revision
+  - name: info
+    description: Get info about a revision
+    flags:
+      --delta: Show delta information
+      -h, --help: Print help
+      --metadata: Show file metadata information
+  - name: commit
+    description: Commit the staged state
+    flags:
+      -h, --help: Print help
+      --layer=: Commit only changes in this layer (mount path relative to repo root)
+      --layer-message=*:
+        description: 'Per-layer commit message. Takes two values: <path> <message>. Can be specified multiple times'
+        nargs: 2
+      --link=: Commit only changes in this linked repository (mount path relative to repo root)
+      --link-message=*:
+        description: 'Per-link commit message. Takes two values: <path> <message>. Can be specified multiple times'
+        nargs: 2
+      --stats: Print stats
+  - name: amend
+    description: Amend the latest commit's message
+    flags:
+      -h, --help: Print help
+      --stats: Print stats
+  - name: sync
+    aliases:
+    - synchronize
+    description: Synchronize to a given state of a repository
+    flags:
+      --dependency-depth-limit=:
+        description: Maximum dependency traversal depth (0 means unlimited)
+        default: '0'
+      --dependency-recursive: Follow transitive dependencies recursively during dependency-based sync
+      --dependency-tag=*: Tags to filter dependencies by during dependency-based sync
+      --forward-changes: Fast forward any local changes if syncing to a local revision
+      -h, --help: Print help
+      --reset: Reset any local modified files to match the incoming revision
+      --root-file=*: Root files for dependency-based selective sync (only sync changes for these files and their dependencies)
+  - name: bisect
+    description: Binary search for a change introduced between start (exclusive) and end (inclusive.)
+    flags:
+      --end!=: The earliest revision known to have the change
+      -h, --help: Print help
+      --start!=: The latest revision known to not have the change
+  - name: diff
+    description: Diff two revisions
+    flags:
+      -h, --help: Print help
+      --path=*: Optional path in repository
+      --target=: Target revision to compare, by default the current revision
+      --targets=: Path to a targets file
+  - name: find
+    description: Find revision
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: metadata
+      description: Find revision by metadata
+      flags:
+        -h, --help: Print help
+    - name: number
+      description: Find revision by number
+      flags:
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: metadata
+        description: Find revision by metadata
+      - name: number
+        description: Find revision by number
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: restore
+    description: Restore current revision as latest revision
+    flags:
+      -h, --help: Print help
+  - name: cherry-pick
+    description: Cherry-pick a revision onto the currently synced revision
+    flags:
+      -h, --help: Print help
+      --message=: Change the message for committing when no conflicts arise from the cherry-pick
+      --no-commit: Disable auto commits even if no conflicts arise from the cherry-pick
+    commands:
+    - name: unresolve
+      description: Marks the cherry-pick unresolved
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file
+    - name: restart
+      description: Restart the cherry-pick, resetting the current cherry-pick state
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file
+    - name: resolve
+      description: Resolve conflicts
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file
+      commands:
+      - name: mine
+        description: Resolve using my changes
+        flags:
+          -h, --help: Print help
+          --targets=: Path to a targets file
+      - name: theirs
+        description: Resolve using the incoming changes
+        flags:
+          -h, --help: Print help
+          --targets=: Path to a targets file
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using the incoming changes
+        - name: help
+          description: Print this message or the help of the given subcommand(s)
+    - name: abort
+      description: Abort a cherry-pick
+      flags:
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: unresolve
+        description: Marks the cherry-pick unresolved
+      - name: restart
+        description: Restart the cherry-pick, resetting the current cherry-pick state
+      - name: resolve
+        description: Resolve conflicts
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using the incoming changes
+      - name: abort
+        description: Abort a cherry-pick
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: revert
+    description: Revert a revision from the currently synced revision
+    flags:
+      -h, --help: Print help
+      --message=: Change the message for committing when no conflicts arise from the revert
+      --no-commit: Disable auto commits even if no conflicts arise from the revert
+    commands:
+    - name: unresolve
+      description: Marks the revert unresolved
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file
+    - name: restart
+      description: Restart the revert, resetting the current revert state
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file
+    - name: resolve
+      description: Resolve conflicts
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file
+      commands:
+      - name: mine
+        description: Resolve using my changes
+        flags:
+          -h, --help: Print help
+          --targets=: Path to a targets file
+      - name: theirs
+        description: Resolve using the incoming changes
+        flags:
+          -h, --help: Print help
+          --targets=: Path to a targets file
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using the incoming changes
+        - name: help
+          description: Print this message or the help of the given subcommand(s)
+    - name: abort
+      description: Abort a revert
+      flags:
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: unresolve
+        description: Marks the revert unresolved
+      - name: restart
+        description: Restart the revert, resetting the current revert state
+      - name: resolve
+        description: Resolve conflicts
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using the incoming changes
+      - name: abort
+        description: Abort a revert
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: metadata
+    description: Manage metadata of a given revision
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: clear
+      description: Clear metadata for a staged revision
+      flags:
+        -h, --help: Print help
+    - name: get
+      description: Get metadata from a revision
+      flags:
+        -h, --help: Print help
+        --revision=: Revision to get metadata for
+    - name: set
+      description: Set metadata on for a staged revision
+      flags:
+        --binary: Indicator that values are paths to files
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: clear
+        description: Clear metadata for a staged revision
+      - name: get
+        description: Get metadata from a revision
+      - name: set
+        description: Set metadata on for a staged revision
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: history
+      description: List revisions of a repository
+    - name: info
+      description: Get info about a revision
+    - name: commit
+      description: Commit the staged state
+    - name: amend
+      description: Amend the latest commit's message
+    - name: sync
+      description: Synchronize to a given state of a repository
+    - name: bisect
+      description: Binary search for a change introduced between start (exclusive) and end (inclusive.)
+    - name: diff
+      description: Diff two revisions
+    - name: find
+      description: Find revision
+      commands:
+      - name: metadata
+        description: Find revision by metadata
+      - name: number
+        description: Find revision by number
+    - name: restore
+      description: Restore current revision as latest revision
+    - name: cherry-pick
+      description: Cherry-pick a revision onto the currently synced revision
+      commands:
+      - name: unresolve
+        description: Marks the cherry-pick unresolved
+      - name: restart
+        description: Restart the cherry-pick, resetting the current cherry-pick state
+      - name: resolve
+        description: Resolve conflicts
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using the incoming changes
+      - name: abort
+        description: Abort a cherry-pick
+    - name: revert
+      description: Revert a revision from the currently synced revision
+      commands:
+      - name: unresolve
+        description: Marks the revert unresolved
+      - name: restart
+        description: Restart the revert, resetting the current revert state
+      - name: resolve
+        description: Resolve conflicts
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using the incoming changes
+      - name: abort
+        description: Abort a revert
+    - name: metadata
+      description: Manage metadata of a given revision
+      commands:
+      - name: clear
+        description: Clear metadata for a staged revision
+      - name: get
+        description: Get metadata from a revision
+      - name: set
+        description: Set metadata on for a staged revision
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: file
+  description: File commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: info
+    description: Get info about the given file or directory
+    flags:
+      --filtered: If given, calculate the repository size based on the current local filter
+      -h, --help: Print help
+      --local: If given, calculate the local file system size and hash based on the current local filter
+      --revision=: Revision to get info from
+      --targets=: Path to a targets file containing all the paths to all files
+  - name: metadata
+    description: Manage metadata of a given file or directory
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: clear
+      description: Clear metadata for a staged file
+      flags:
+        -h, --help: Print help
+    - name: get
+      description: Get metadata from a file
+      flags:
+        -h, --help: Print help
+        --revision=: Revision to get metadata for
+    - name: set
+      description: Set metadata on for a staged file
+      flags:
+        --binary: Indicator that values are paths to files
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: clear
+        description: Clear metadata for a staged file
+      - name: get
+        description: Get metadata from a file
+      - name: set
+        description: Set metadata on for a staged file
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: dependency
+    description: Manage file dependencies
+    flags:
+      -h, --help: Print help
+    commands:
+    - name: add
+      description: Add dependency edges from a source file to one or more dependency files
+      flags:
+        --force: Skip cycle detection
+        -h, --help: Print help
+        --tag=*:
+          description: Tags to apply to all added dependency edges
+          nargs: -1
+    - name: remove
+      description: Remove dependency edges from a source file to one or more dependency files
+      flags:
+        -h, --help: Print help
+        --tag=*:
+          description: Remove only specific tags instead of entire edges
+          nargs: -1
+    - name: list
+      description: List dependencies or dependents for files
+      flags:
+        --depth=:
+          description: Maximum recursion depth (0 = unlimited)
+          default: '0'
+        -h, --help: Print help
+        --recursive: Recursively resolve transitive dependencies
+        --reverse: List dependents instead of dependencies
+        --revision=: Revision to query (defaults to staged/current)
+        --tag=*:
+          description: Filter by tag
+          nargs: -1
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: add
+        description: Add dependency edges from a source file to one or more dependency files
+      - name: remove
+        description: Remove dependency edges from a source file to one or more dependency files
+      - name: list
+        description: List dependencies or dependents for files
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: stage
+    description: Stage changes for commit
+    flags:
+      --case=: Case change handling
+      -h, --help: Print help (see more with '--help')
+      --scan: Walk the filesystem under the given paths to detect modified, added, and deleted files
+      --targets=: Path to a targets file containing all the paths to all files
+    completion:
+      flag:
+        case:
+        - "error\tGenerate error on case mismatch"
+        - "keep\tKeep current case in repository (update file system)"
+        - "rename\tRename case in repository (keep file system)"
+    documentation:
+      command: |-
+        Stage changes for commit.
+
+        Directory paths (including `.`) stage only files already marked dirty under that directory; clean or unmarked files are skipped. Mark files first with `lore file dirty` (or `lore status --scan` to reconcile dirty flags in bulk), or pass `--scan` here to walk the filesystem and stage in one pass.
+
+        Specific file paths are checked against the filesystem and staged if content differs from the current revision, regardless of their dirty flag.
+
+        `--scan` walks the filesystem under the given paths, marks every detected modification/add/delete dirty, and stages them in one step.
+      flag:
+        help: Print help (see a summary with '-h')
+        scan: |-
+          Walk the filesystem under the given paths to detect modified, added, and deleted files.
+
+          Detected changes are marked dirty and staged in a single pass. Use this when changes were made externally (without going through `lore dirty`), or to recover after losing track of dirty state. Equivalent in effect to running `lore status --scan` followed by `lore stage`, but performed in one traversal.
+
+          Without `--scan`, directory staging stages only files already marked dirty under that directory — mark them first with `lore dirty <paths>`, or run `lore status --scan` to reconcile dirty flags across a tree. Single-file stage paths are always checked against the filesystem regardless of this flag.
+    commands:
+    - name: move
+      description: Move or rename a file or directory
+      flags:
+        -h, --help: Print help
+    - name: merge
+      description: Stage as a merge
+      flags:
+        -h, --help: Print help
+        --targets=: Path to a targets file containing all the paths to all files
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: move
+        description: Move or rename a file or directory
+      - name: merge
+        description: Stage as a merge
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: dirty
+    description: Mark files as dirty so they show up in `lore status` and get picked up by directory-scoped `lore stage` (no content is read or staged)
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --targets=: Path to a targets file containing all the paths to all files
+    documentation:
+      command: |-
+        Mark files as dirty so they show up in `lore status` and get picked up by directory-scoped `lore stage` (no content is read or staged).
+
+        Use when files were changed externally and you want to notify Lore of specific paths without performing a full filesystem walk. For bulk reconciliation across a tree, prefer `lore status --scan` or `lore stage --scan`.
+      flag:
+        help: Print help (see a summary with '-h')
+    commands:
+    - name: move
+      description: Mark a file as moved (dirty)
+      flags:
+        -h, --help: Print help
+    - name: copy
+      description: Mark a file as copied (dirty)
+      flags:
+        -h, --help: Print help
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+      commands:
+      - name: move
+        description: Mark a file as moved (dirty)
+      - name: copy
+        description: Mark a file as copied (dirty)
+      - name: help
+        description: Print this message or the help of the given subcommand(s)
+  - name: unstage
+    description: Unstage changes to a file or directory
+    flags:
+      -h, --help: Print help
+      --targets=: Path to a targets file
+  - name: reset
+    description: Reset changes to a path or file to the current revision, discarding your local changes
+    flags:
+      -h, --help: Print help
+      --last-merged-from=: If given, the files will be reset to the last point of merge from this branch, or the branch point from this branch if no merge has been performed
+      --purge: Delete untracked files
+      --revision=: Revision to reset files to
+      --targets=: Path to a targets file containing all the paths to all files
+  - name: obliterate
+    description: Obliterate a file or fragment
+    flags:
+      --address=: Address of a blob
+      -h, --help: Print help
+      --path=: Path to a file
+  - name: history
+    description: List revisions of a file
+    flags:
+      --branch=: Show branch revisions
+      --depth=: Number of revisions to search initially
+      -h, --help: Print help
+      --oneline: Output each revision on one line only
+      --revision=: Revision to start from
+  - name: diff
+    description: Show differences between two revisions of a file
+    flags:
+      -U, --context=:
+        description: Number of unchanged context lines to show around each hunk
+        default: '3'
+      --diff3: If given, produce three-way merge output with conflict markers instead of a two-way unified diff
+      -h, --help: Print help
+      --ignore-space-at-eol: Treat lines that differ only in trailing whitespace as unchanged
+      --ignore-space-change: Collapse runs of internal whitespace to a single space before comparing
+      --source=: Optional signature of the source revision to diff from, by default the current revision
+      --target=: Optional signature of the target revision to diff to, by default the current file system state
+      --targets=: Path to a targets file containing all the paths to all files
+  - name: write
+    description: Write data to a specific location
+    flags:
+      --address=: Address of a blob
+      -h, --help: Print help
+      --output!=: Path to a destination
+      --path=: Path to a file
+      --revision=: Revision specifier
+  - name: hash
+    description: Hash a local file
+    flags:
+      -h, --help: Print help
+      --targets=: Path to a targets file
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: info
+      description: Get info about the given file or directory
+    - name: metadata
+      description: Manage metadata of a given file or directory
+      commands:
+      - name: clear
+        description: Clear metadata for a staged file
+      - name: get
+        description: Get metadata from a file
+      - name: set
+        description: Set metadata on for a staged file
+    - name: dependency
+      description: Manage file dependencies
+      commands:
+      - name: add
+        description: Add dependency edges from a source file to one or more dependency files
+      - name: remove
+        description: Remove dependency edges from a source file to one or more dependency files
+      - name: list
+        description: List dependencies or dependents for files
+    - name: stage
+      description: Stage changes for commit
+      commands:
+      - name: move
+        description: Move or rename a file or directory
+      - name: merge
+        description: Stage as a merge
+    - name: dirty
+      description: Mark files as dirty so they show up in `lore status` and get picked up by directory-scoped `lore stage` (no content is read or staged)
+      commands:
+      - name: move
+        description: Mark a file as moved (dirty)
+      - name: copy
+        description: Mark a file as copied (dirty)
+    - name: unstage
+      description: Unstage changes to a file or directory
+    - name: reset
+      description: Reset changes to a path or file to the current revision, discarding your local changes
+    - name: obliterate
+      description: Obliterate a file or fragment
+    - name: history
+      description: List revisions of a file
+    - name: diff
+      description: Show differences between two revisions of a file
+    - name: write
+      description: Write data to a specific location
+    - name: hash
+      description: Hash a local file
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: auth
+  description: Authentication commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: login
+    description: Authenticate the CLI
+    flags:
+      --auth-url=: Auth service URL with scheme (e.g. `ucs-auth://auth.example.com`). Required when logging in with `--token` outside a repository without a remote-url
+      -h, --help: Print help
+      --no-browser: Avoid opening a browser to login
+      --token=: Token value for non-interactive login (requires --token-type)
+      --token-type=: Token type for non-interactive login (e.g. "api-key", "eg1", "lore")
+  - name: info
+    description: Display identity information for the current user or specified user IDs
+    flags:
+      -h, --help: Print help
+      --with-token: Include cached tokens in the output
+  - name: list
+    description: List all stored authentication identities
+    flags:
+      -h, --help: Print help
+      --with-token: Include cached tokens in the output
+  - name: logout
+    description: Remove stored authentication and authorization tokens
+    flags:
+      --auth-url=: Auth service URL (omit to use current repository's auth URL)
+      -h, --help: Print help
+      --resource=: Resource ID to remove a specific authorization (e.g. "urc-{id}")
+      --user-id=: User ID to remove (omit to remove all identities)
+  - name: clear
+    description: Clear all stored authentication data
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: login
+      description: Authenticate the CLI
+    - name: info
+      description: Display identity information for the current user or specified user IDs
+    - name: list
+      description: List all stored authentication identities
+    - name: logout
+      description: Remove stored authentication and authorization tokens
+    - name: clear
+      description: Clear all stored authentication data
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: layer
+  description: Layer commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: add
+    description: Add a repository layer
+    flags:
+      -h, --help: Print help
+      --metadata=: Metadata key to use for matching revisions
+  - name: remove
+    description: Remove a repository layer
+    flags:
+      -h, --help: Print help
+      --purge: Also delete untracked files and all directories inside the layer mount
+  - name: list
+    description: List repository layers
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: add
+      description: Add a repository layer
+    - name: remove
+      description: Remove a repository layer
+    - name: list
+      description: List repository layers
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: logfile
+  description: Logfile commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: info
+    description: Info
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: info
+      description: Info
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: login
+  description: Authenticate the CLI
+  flags:
+    --auth-url=: Auth service URL with scheme (e.g. `ucs-auth://auth.example.com`). Required when logging in with `--token` outside a repository without a remote-url
+    -h, --help: Print help
+    --no-browser: Avoid opening a browser to login
+    --token=: Token value for non-interactive login (requires --token-type)
+    --token-type=: Token type for non-interactive login (e.g. "api-key", "eg1", "lore")
+- name: link
+  description: Link commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: add
+    description: Link to the given point in the repository and subpath from the given repository
+    flags:
+      --disable-branching: Disable automatic branch creation in the linked repository
+      -h, --help: Print help
+      --pin=: Branch or specific revision to pin the link to, defaulting to latest on the main branch
+  - name: remove
+    description: Remove the link at the given point in the repository
+    flags:
+      -h, --help: Print help
+  - name: update
+    description: Update the link to a new pin
+    flags:
+      -h, --help: Print help
+      --pin=: Branch or specific revision to pin the link to, defaulting to latest on the current branch
+  - name: list
+    description: List all links in the repository
+    flags:
+      -h, --help: Print help
+      --staged: Only show links with staged changes
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: add
+      description: Link to the given point in the repository and subpath from the given repository
+    - name: remove
+      description: Remove the link at the given point in the repository
+    - name: update
+      description: Update the link to a new pin
+    - name: list
+      description: List all links in the repository
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: status
+  description: Show current repository status
+  flags:
+    --check-dirty: Verify already-dirty files against the filesystem without a full scan
+    --count: Count directories and files (staged state if present, else current revision; view-filtered)
+    -h, --help: Print help (see more with '--help')
+    --reset: Drop the existing staged anchor before computing status. Combine with --scan to scan from a clean slate
+    --revision-only: Only show revision info, skip all diffs
+    --scan: Walk the filesystem under the given paths and reconcile every file against the current revision
+    --targets=: Path to a targets file
+    --unstaged&: Alias for --scan (backward compatibility)
+  documentation:
+    command: |-
+      Show current repository status.
+
+      Reports the staged revision (if any) plus the files and directories currently marked dirty. By default no filesystem walk is performed — only the tracked dirty flags are read, so changes made without prior `lore dirty` or `--scan` will not appear.
+
+      Pass `--scan` to walk the filesystem under the given paths, reconcile every file against the current revision, and refresh dirty flags (setting them on detected modifications/adds/deletes and clearing stale ones). The refreshed flags are persisted so subsequent `lore stage` / `lore status` calls see an accurate picture without rescanning.
+    flag:
+      check-dirty: |-
+        Verify already-dirty files against the filesystem without a full scan.
+
+        Each file currently marked dirty is re-checked: one whose on-disk content still matches the tracked revision (same size, and same content when the modification time differs) has its dirty flag cleared and is dropped from the report, unless it is also staged. Adds, moves, copies, and deletes are always reported. The refreshed flags are persisted, so this requires write access.
+      help: Print help (see a summary with '-h')
+      scan: |-
+        Walk the filesystem under the given paths and reconcile every file against the current revision.
+
+        Detected modifications, adds, and deletes are marked dirty; stale dirty flags are cleared. The refreshed flags are persisted in the staged state so subsequent `lore stage` and `lore status` calls see an accurate picture without rescanning.
+
+        Without `--scan`, status reports only what is currently tracked: the staged revision (if any) plus files already marked dirty. Mark files individually with `lore dirty` for targeted updates, or pass `--scan` here for bulk reconciliation.
+- name: clone
+  description: Clone a remote repository into the given path
+  flags:
+    --bare: Clone without files, only fetch latest revision tree
+    --branch=: Optional branch to sync (shorthand for a full revision specifier)
+    --dependency-depth-limit=:
+      description: Maximum dependency traversal depth (0 means unlimited)
+      default: '0'
+    --dependency-recursive: Follow transitive dependencies recursively during dependency-based clone
+    --dependency-tag=*: Tags to filter dependencies by during dependency-based clone
+    --direct-file-io: Use direct file I/O instead of memory mapping files
+    --direct-file-write: Write directly to the destination file instead of write to a temporary file and move into place
+    -h, --help: Print help
+    --layer=: Layer to add
+    --layer-metadata=: Metadata key to link layer revisions with
+    --no-tracking: Clone without local repository tracking (memory-only stores)
+    --prefetch=: File containing list of files to prefetch
+    --revision=: Optional revision to sync
+    --root-file=*: Root files for dependency-based selective clone (only clone these files and their dependencies)
+    --shared-store-path=: Use this path rather than the system default as the shared store location
+    --use-shared-store: Use the shared store rather than create a local immutable store
+    --view=: Optional client side view filter file
+    --virtual: Clone virtually using split-write filesystem
+- name: stage
+  description: Stage changes for commit
+  flags:
+    --case=: Case change handling
+    -h, --help: Print help (see more with '--help')
+    --scan: Walk the filesystem under the given paths to detect modified, added, and deleted files
+    --targets=: Path to a targets file containing all the paths to all files
+  completion:
+    flag:
+      case:
+      - "error\tGenerate error on case mismatch"
+      - "keep\tKeep current case in repository (update file system)"
+      - "rename\tRename case in repository (keep file system)"
+  documentation:
+    command: |-
+      Stage changes for commit.
+
+      Directory path (including `.`): stages only files already marked dirty under that directory. No filesystem walk is performed; clean or unmarked files are skipped. Mark files first with `lore dirty` (or `lore status --scan` to reconcile in bulk), or pass `--scan` here to discover and stage in one pass.
+
+      Specific file path: checked against the filesystem and staged if its on-disk content differs from the current revision, regardless of its dirty flag.
+
+      `--scan`: forces a filesystem walk under the given paths, marks modified, added, and deleted files dirty, and stages them in one step. Use this when changes were made externally without going through `lore dirty`, or to recover after losing track of dirty state.
+    flag:
+      help: Print help (see a summary with '-h')
+      scan: |-
+        Walk the filesystem under the given paths to detect modified, added, and deleted files.
+
+        Detected changes are marked dirty and staged in a single pass. Use this when changes were made externally (without going through `lore dirty`), or to recover after losing track of dirty state. Equivalent in effect to running `lore status --scan` followed by `lore stage`, but performed in one traversal.
+
+        Without `--scan`, directory staging stages only files already marked dirty under that directory — mark them first with `lore dirty <paths>`, or run `lore status --scan` to reconcile dirty flags across a tree. Single-file stage paths are always checked against the filesystem regardless of this flag.
+  commands:
+  - name: move
+    description: Move or rename a file or directory
+    flags:
+      -h, --help: Print help
+  - name: merge
+    description: Stage as a merge
+    flags:
+      -h, --help: Print help
+      --targets=: Path to a targets file containing all the paths to all files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: move
+      description: Move or rename a file or directory
+    - name: merge
+      description: Stage as a merge
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: dirty
+  description: Mark files as dirty so they show up in `lore status` and get picked up by `lore stage` (no content is read or staged)
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --targets=: Path to a targets file containing all the paths to all files
+  documentation:
+    command: |-
+      Mark files as dirty so they show up in `lore status` and get picked up by `lore stage` (no content is read or staged).
+
+      Use this when your editor or build tool has modified files and you want to inform Lore of the change without performing a full `--scan`. For bulk reconciliation across a tree, prefer `lore status --scan` or `lore stage --scan`.
+    flag:
+      help: Print help (see a summary with '-h')
+  commands:
+  - name: move
+    description: Mark a file as moved (dirty)
+    flags:
+      -h, --help: Print help
+  - name: copy
+    description: Mark a file as copied (dirty)
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: move
+      description: Mark a file as moved (dirty)
+    - name: copy
+      description: Mark a file as copied (dirty)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: unstage
+  description: Unstage changes to a file or directory
+  flags:
+    -h, --help: Print help
+    --targets=: Path to a targets file
+- name: reset
+  description: Reset changes to a file or directory
+  flags:
+    -h, --help: Print help
+    --last-merged-from=: If given, the files will be reset to the last point of merge from this branch, or the branch point from this branch if no merge has been performed
+    --purge: Delete untracked files
+    --revision=: Revision to reset files to
+    --targets=: Path to a targets file containing all the paths to all files
+- name: diff
+  description: Show differences between two revisions of a file
+  flags:
+    -U, --context=:
+      description: Number of unchanged context lines to show around each hunk
+      default: '3'
+    --diff3: If given, produce three-way merge output with conflict markers instead of a two-way unified diff
+    -h, --help: Print help
+    --ignore-space-at-eol: Treat lines that differ only in trailing whitespace as unchanged
+    --ignore-space-change: Collapse runs of internal whitespace to a single space before comparing
+    --source=: Optional signature of the source revision to diff from, by default the current revision
+    --target=: Optional signature of the target revision to diff to, by default the current file system state
+    --targets=: Path to a targets file containing all the paths to all files
+- name: history
+  description: List revisions of a repository
+  flags:
+    --branch=: Show branch revisions
+    --date&=: Stop when reaching a revision created before this date (Unix timestamp)
+    -h, --help: Print help
+    --oneline: Output each revision on one line only
+    --only-branch: Stop when reaching a revision on a different branch (includes the branch point revision)
+    --revision=: Start listing from the specified revision. If not specified, start listing from the current branch latest revision
+- name: commit
+  description: Commit the staged revision
+  flags:
+    -h, --help: Print help
+    --layer=: Commit only changes in this layer (mount path relative to repo root)
+    --layer-message=*:
+      description: 'Per-layer commit message. Takes two values: <path> <message>. Can be specified multiple times'
+      nargs: 2
+    --link=: Commit only changes in this linked repository (mount path relative to repo root)
+    --link-message=*:
+      description: 'Per-link commit message. Takes two values: <path> <message>. Can be specified multiple times'
+      nargs: 2
+    --stats: Print stats
+- name: sync
+  aliases:
+  - synchronize
+  description: Synchronize to a repository state
+  flags:
+    --dependency-depth-limit=:
+      description: Maximum dependency traversal depth (0 means unlimited)
+      default: '0'
+    --dependency-recursive: Follow transitive dependencies recursively during dependency-based sync
+    --dependency-tag=*: Tags to filter dependencies by during dependency-based sync
+    --forward-changes: Fast forward any local changes if syncing to a local revision
+    -h, --help: Print help
+    --reset: Reset any local modified files to match the incoming revision
+    --root-file=*: Root files for dependency-based selective sync (only sync changes for these files and their dependencies)
+- name: push
+  description: Push commits to remote
+  flags:
+    --fast-forward-merge: Allow the server to fast-forward merge if the target branch head has moved
+    -h, --help: Print help
+- name: lock
+  description: Lock file
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: acquire
+    description: Acquire lock on file(s)
+    flags:
+      --branch=: Branch where lock is to be acquired
+      -h, --help: Print help
+  - name: status
+    description: Get lock status on file(s)
+    flags:
+      --branch=: Branch where lock was acquired
+      -h, --help: Print help
+  - name: query
+    description: Query the lock status given a branch, owner or path
+    flags:
+      --branch=: Branch to query locks on
+      -h, --help: Print help
+      --owner=: Owner to query locks belonging to them
+      --path=: Path to query lock information on
+  - name: release
+    description: Release lock on file(s)
+    flags:
+      --branch=: Branch where lock was acquired
+      -h, --help: Print help
+      --owner=: Owner of the lock
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: acquire
+      description: Acquire lock on file(s)
+    - name: status
+      description: Get lock status on file(s)
+    - name: query
+      description: Query the lock status given a branch, owner or path
+    - name: release
+      description: Release lock on file(s)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: service
+  description: Manage the repository in a service process
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: run
+    description: Run this process as the service
+    flags:
+      -h, --help: Print help
+  - name: start
+    description: Start service for a repository
+    flags:
+      -h, --help: Print help
+  - name: stop
+    description: Stop service for a repository
+    flags:
+      -h, --help: Print help
+    completion:
+      positional:
+      - - 'true'
+        - 'false'
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: run
+      description: Run this process as the service
+    - name: start
+      description: Start service for a repository
+    - name: stop
+      description: Stop service for a repository
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: notification
+  description: Notifications
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: subscribe
+    description: Subscribe to events on the given repository
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: subscribe
+      description: Subscribe to events on the given repository
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: completions
+  description: Generate terminal autocompletions
+  flags:
+    -h, --help: Print help
+  completion:
+    positional:
+    - - bash
+      - elvish
+      - fish
+      - powershell
+      - zsh
+- name: shared-store
+  description: Manage the shared store
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: create
+    description: ''
+    flags:
+      -h, --help: Print help
+      --make-default=: Set this as the default shared store in the global config file, defaults to true
+      --path=: Where to create the shared store
+    completion:
+      flag:
+        make-default:
+        - 'true'
+        - 'false'
+  - name: info
+    description: ''
+    flags:
+      -h, --help: Print help
+  - name: set-use-automatically
+    description: ''
+    flags:
+      -h, --help: Print help
+    completion:
+      positional:
+      - - 'true'
+        - 'false'
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: create
+      description: ''
+    - name: info
+      description: ''
+    - name: set-use-automatically
+      description: ''
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: repository
+    description: Repository commands
+    commands:
+    - name: status
+      description: Show current repository status
+    - name: info
+      description: Get info about a repository
+    - name: list
+      description: List repositories
+    - name: create
+      description: Create a repository in the given directory
+    - name: clone
+      description: Clone a remote repository into the given path
+    - name: delete
+      description: Delete a repository
+    - name: verify
+      description: Verify repository state consistency
+      commands:
+      - name: state
+        description: Verify repository state consistency (default)
+      - name: fragment
+        description: Verify a specific fragment in the local store
+    - name: dump
+      description: Dump repository state information
+    - name: gc
+      description: Run a full garbage collection pass on the local repository store
+    - name: store
+      description: Access the repository data store
+      commands:
+      - name: immutable
+        description: Operations on the immutable store
+        commands:
+        - name: query
+          description: Query the store
+    - name: metadata
+      description: Repository metadata operations
+      commands:
+      - name: get
+        description: Get metadata from the repository (omit key to list all)
+      - name: set
+        description: Set metadata on the repository
+      - name: clear
+        description: Clear metadata from the repository
+    - name: instance
+      description: Instance management
+      commands:
+      - name: list
+        description: List all registered instances for this repository
+      - name: prune
+        description: Remove stale instance entries
+    - name: config
+      description: Read a configuration value
+      commands:
+      - name: get
+        description: Get a configuration value
+    - name: update-path
+      description: Update the stored path for this instance
+  - name: branch
+    description: Branch commands
+    commands:
+    - name: list
+      description: List available branches
+    - name: info
+      description: Get info about the given branch
+    - name: create
+      description: Create a new branch
+    - name: switch
+      description: Switch to a different branch
+    - name: push
+      description: Push commits to remote
+    - name: merge
+      description: Merge two branches
+      commands:
+      - name: unresolve
+        description: Marks the merge unresolved
+      - name: into
+        description: Merge into branch
+      - name: start
+        description: Start a merge process
+      - name: restart
+        description: Restart the merge, resetting the current merge state
+      - name: resolve
+        description: Resolves the merge
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using their changes
+      - name: abort
+        description: Abort a merge process
+    - name: diff
+      description: Diff two branches using the common ancestor base revision Will calculate the set of changes between source branch latest revision and the base revision that is not in the set of changes between the target branch latest revision and the base revision
+    - name: archive
+      description: Archive an existing branch
+    - name: reset
+      description: Reset local latest pointer for a branch
+    - name: protect
+      description: Protect a branch from direct pushes
+    - name: unprotect
+      description: Remove push protection from a branch
+    - name: latest
+      description: Branch latest related commands
+      commands:
+      - name: list
+        description: ''
+    - name: metadata
+      description: Branch metadata operations
+      commands:
+      - name: get
+        description: Get metadata from the branch (omit key to list all)
+      - name: set
+        description: Set metadata on the branch
+      - name: clear
+        description: Clear metadata from the branch
+  - name: revision
+    description: Revision commands
+    commands:
+    - name: history
+      description: List revisions of a repository
+    - name: info
+      description: Get info about a revision
+    - name: commit
+      description: Commit the staged state
+    - name: amend
+      description: Amend the latest commit's message
+    - name: sync
+      description: Synchronize to a given state of a repository
+    - name: bisect
+      description: Binary search for a change introduced between start (exclusive) and end (inclusive.)
+    - name: diff
+      description: Diff two revisions
+    - name: find
+      description: Find revision
+      commands:
+      - name: metadata
+        description: Find revision by metadata
+      - name: number
+        description: Find revision by number
+    - name: restore
+      description: Restore current revision as latest revision
+    - name: cherry-pick
+      description: Cherry-pick a revision onto the currently synced revision
+      commands:
+      - name: unresolve
+        description: Marks the cherry-pick unresolved
+      - name: restart
+        description: Restart the cherry-pick, resetting the current cherry-pick state
+      - name: resolve
+        description: Resolve conflicts
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using the incoming changes
+      - name: abort
+        description: Abort a cherry-pick
+    - name: revert
+      description: Revert a revision from the currently synced revision
+      commands:
+      - name: unresolve
+        description: Marks the revert unresolved
+      - name: restart
+        description: Restart the revert, resetting the current revert state
+      - name: resolve
+        description: Resolve conflicts
+        commands:
+        - name: mine
+          description: Resolve using my changes
+        - name: theirs
+          description: Resolve using the incoming changes
+      - name: abort
+        description: Abort a revert
+    - name: metadata
+      description: Manage metadata of a given revision
+      commands:
+      - name: clear
+        description: Clear metadata for a staged revision
+      - name: get
+        description: Get metadata from a revision
+      - name: set
+        description: Set metadata on for a staged revision
+  - name: file
+    description: File commands
+    commands:
+    - name: info
+      description: Get info about the given file or directory
+    - name: metadata
+      description: Manage metadata of a given file or directory
+      commands:
+      - name: clear
+        description: Clear metadata for a staged file
+      - name: get
+        description: Get metadata from a file
+      - name: set
+        description: Set metadata on for a staged file
+    - name: dependency
+      description: Manage file dependencies
+      commands:
+      - name: add
+        description: Add dependency edges from a source file to one or more dependency files
+      - name: remove
+        description: Remove dependency edges from a source file to one or more dependency files
+      - name: list
+        description: List dependencies or dependents for files
+    - name: stage
+      description: Stage changes for commit
+      commands:
+      - name: move
+        description: Move or rename a file or directory
+      - name: merge
+        description: Stage as a merge
+    - name: dirty
+      description: Mark files as dirty so they show up in `lore status` and get picked up by directory-scoped `lore stage` (no content is read or staged)
+      commands:
+      - name: move
+        description: Mark a file as moved (dirty)
+      - name: copy
+        description: Mark a file as copied (dirty)
+    - name: unstage
+      description: Unstage changes to a file or directory
+    - name: reset
+      description: Reset changes to a path or file to the current revision, discarding your local changes
+    - name: obliterate
+      description: Obliterate a file or fragment
+    - name: history
+      description: List revisions of a file
+    - name: diff
+      description: Show differences between two revisions of a file
+    - name: write
+      description: Write data to a specific location
+    - name: hash
+      description: Hash a local file
+  - name: auth
+    description: Authentication commands
+    commands:
+    - name: login
+      description: Authenticate the CLI
+    - name: info
+      description: Display identity information for the current user or specified user IDs
+    - name: list
+      description: List all stored authentication identities
+    - name: logout
+      description: Remove stored authentication and authorization tokens
+    - name: clear
+      description: Clear all stored authentication data
+  - name: layer
+    description: Layer commands
+    commands:
+    - name: add
+      description: Add a repository layer
+    - name: remove
+      description: Remove a repository layer
+    - name: list
+      description: List repository layers
+  - name: logfile
+    description: Logfile commands
+    commands:
+    - name: info
+      description: Info
+  - name: login
+    description: Authenticate the CLI
+  - name: link
+    description: Link commands
+    commands:
+    - name: add
+      description: Link to the given point in the repository and subpath from the given repository
+    - name: remove
+      description: Remove the link at the given point in the repository
+    - name: update
+      description: Update the link to a new pin
+    - name: list
+      description: List all links in the repository
+  - name: status
+    description: Show current repository status
+  - name: clone
+    description: Clone a remote repository into the given path
+  - name: stage
+    description: Stage changes for commit
+    commands:
+    - name: move
+      description: Move or rename a file or directory
+    - name: merge
+      description: Stage as a merge
+  - name: dirty
+    description: Mark files as dirty so they show up in `lore status` and get picked up by `lore stage` (no content is read or staged)
+    commands:
+    - name: move
+      description: Mark a file as moved (dirty)
+    - name: copy
+      description: Mark a file as copied (dirty)
+  - name: unstage
+    description: Unstage changes to a file or directory
+  - name: reset
+    description: Reset changes to a file or directory
+  - name: diff
+    description: Show differences between two revisions of a file
+  - name: history
+    description: List revisions of a repository
+  - name: commit
+    description: Commit the staged revision
+  - name: sync
+    description: Synchronize to a repository state
+  - name: push
+    description: Push commits to remote
+  - name: lock
+    description: Lock file
+    commands:
+    - name: acquire
+      description: Acquire lock on file(s)
+    - name: status
+      description: Get lock status on file(s)
+    - name: query
+      description: Query the lock status given a branch, owner or path
+    - name: release
+      description: Release lock on file(s)
+  - name: service
+    description: Manage the repository in a service process
+    commands:
+    - name: run
+      description: Run this process as the service
+    - name: start
+      description: Start service for a repository
+    - name: stop
+      description: Stop service for a repository
+  - name: notification
+    description: Notifications
+    commands:
+    - name: subscribe
+      description: Subscribe to events on the given repository
+  - name: completions
+    description: Generate terminal autocompletions
+  - name: shared-store
+    description: Manage the shared store
+    commands:
+    - name: create
+      description: ''
+    - name: info
+      description: ''
+    - name: set-use-automatically
+      description: ''
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
