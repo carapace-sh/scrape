@@ -1,0 +1,27 @@
+diff --git a/lore-client/src/cli/client_main.rs b/lore-client/src/cli/client_main.rs
+index c355ef8..ef7e291 100644
+--- a/lore-client/src/cli/client_main.rs
++++ b/lore-client/src/cli/client_main.rs
+@@ -4,6 +4,10 @@ use std::time::Instant;
+ use clap::CommandFactory;
+ use clap::Parser;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ use crate::cli::LoreCli;
+ use crate::cli::handle_lore_commands;
+ use crate::cli::lore_globals_from_args;
+@@ -21,6 +25,11 @@ pub fn client_main() -> ExitCode {
+ 
+     let time_start = Instant::now();
+ 
++    generate(Spec, &mut LoreCli::command(), "lore", &mut io::stdout());
++    if true {
++        return ExitCode::SUCCESS;
++    }
++
+     let cli = LoreCli::parse();
+     if cli.markdown_help {
+         clap_markdown::print_help_markdown::<LoreCli>();
