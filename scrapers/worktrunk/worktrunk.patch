@@ -1,5 +1,5 @@
 diff --git a/src/main.rs b/src/main.rs
-index e36f21c..390a290 100644
+index 77f7cab..37374c3 100644
 --- a/src/main.rs
 +++ b/src/main.rs
 @@ -12,6 +12,10 @@ use worktrunk::styling::{
@@ -13,7 +13,7 @@ index e36f21c..390a290 100644
  mod cli;
  mod commands;
  mod completion;
-@@ -1061,6 +1065,11 @@ fn print_help_to_stderr() {
+@@ -1088,6 +1092,11 @@ fn print_help_to_stderr() {
  }
  
  fn main() {
@@ -22,6 +22,6 @@ index e36f21c..390a290 100644
 +        return;
 +    }
 +
-     // Capture startup state before anything else: the working directory
-     // (used by shell_exec to resolve relative `GIT_*` path variables
-     // inherited from a parent `git` — e.g. when invoked via `git wt ...`
+     // Mock-command playback for the test suite: when the harness linked this
+     // binary onto PATH under another name (`gh`, `glab`, …), play back the
+     // mock config and exit instead of running wt. Inert without
