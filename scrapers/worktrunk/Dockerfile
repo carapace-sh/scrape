@@ -7,7 +7,7 @@ ADD worktrunk.patch /
 
 WORKDIR /worktrunk
 RUN git apply ../worktrunk.patch
-RUN cargo add --package worktrunk carapace_spec_clap
+RUN cargo add --package worktrunk carapace_spec_clap clap_complete
 RUN cargo install --path . --root /usr --locked
 
 ENTRYPOINT ["/usr/bin/wt"]
