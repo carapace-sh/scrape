@@ -1,0 +1,41 @@
+diff --git a/src/cli.rs b/src/cli.rs
+index b12f6d3..ef543ab 100644
+--- a/src/cli.rs
++++ b/src/cli.rs
+@@ -15,7 +15,7 @@ where
+ }
+ 
+ /// Build the clap command for parsing command line arguments
+-fn build_command() -> Command {
++pub fn build_command() -> Command {
+     Command::new("hyperfine")
+         .version(crate_version!())
+         .next_line_help(true)
+diff --git a/src/main.rs b/src/main.rs
+index 2a97505..1cf30ea 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -5,6 +5,10 @@
+ 
+ use std::env;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ use benchmark::scheduler::Scheduler;
+ use cli::get_cli_arguments;
+ use command::Commands;
+@@ -27,6 +31,12 @@ pub mod timer;
+ pub mod util;
+ 
+ fn run() -> Result<()> {
++    let mut cmd = cli::build_command();
++    generate(Spec, &mut cmd, "hyperfine", &mut io::stdout());
++    if true {
++        return Ok(());
++    }
++
+     // Enabled ANSI colors on Windows 10
+     #[cfg(windows)]
+     colored::control::set_virtual_terminal(true).unwrap();
