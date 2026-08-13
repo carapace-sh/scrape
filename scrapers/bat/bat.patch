@@ -1,0 +1,27 @@
+diff --git a/src/bin/bat/main.rs b/src/bin/bat/main.rs
+index 7ca08b9..ac787b9 100644
+--- a/src/bin/bat/main.rs
++++ b/src/bin/bat/main.rs
+@@ -26,6 +26,9 @@ use crate::{
+     config::{config_file, generate_config_file},
+ };
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++
+ #[cfg(feature = "bugreport")]
+ use crate::config::system_config_file;
+ 
+@@ -343,6 +346,12 @@ fn invoke_bugreport(app: &App, cache_dir: &Path) {
+ /// Returns `Err(..)` upon fatal errors. Otherwise, returns `Ok(true)` on full success and
+ /// `Ok(false)` if any intermediate errors occurred (were printed).
+ fn run() -> Result<bool> {
++    let mut cmd = clap_app::build_app(false);
++    generate(Spec, &mut cmd, "bat", &mut io::stdout());
++    if true {
++        return Ok(true);
++    }
++
+     let app = App::new()?;
+     let config_dir = PROJECT_DIRS.config_dir();
+     let cache_dir = PROJECT_DIRS.cache_dir();
