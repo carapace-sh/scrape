@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: drift
+description: A standalone git diff pager for the terminal, built on uncurses.
+flags:
+  -A, --all: Also show untracked (non-ignored) files as new-file diffs. Only affects the working-tree view
+  -c, --config=: Path to a config file (toml/yaml/json). Overrides auto-discovery
+  -U, --context=: Lines of context around each change (git `-U`)
+  --diff-algorithm=: 'Diff algorithm: myers, minimal, patience, or histogram'
+  -C, --directory=: Run as if drift was started in this directory (like `git -C`). Works with worktrees and bare repositories
+  -h, --help: Print help
+  --ignore-whitespace: Ignore whitespace-only changes (git `-w`)
+  --interval=:
+    description: How often (ms) watch mode polls for unstaged working-tree edits, which the git index/refs watcher can't see
+    default: '300'
+  --no-syntax: Disable syntax highlighting for this run
+  --staged: Show staged changes (index vs HEAD)
+  --cached: Show staged changes (index vs HEAD)
+  -V, --version: Print version
+  -w, --watch: Watch the git index and refs and refresh the diff on change
+completion:
+  flag:
+    config:
+    - $files
+    directory:
+    - $files
