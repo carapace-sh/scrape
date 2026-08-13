@@ -1,0 +1,28 @@
+diff --git a/src/main.rs b/src/main.rs
+index 0620988..257859a 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -15,6 +15,9 @@ use std::io::{self, ErrorKind, IsTerminal, Read, Write, stdin};
+ use std::path::{Component, PathBuf};
+ use std::process::exit;
+ 
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++
+ use nu_ansi_term::{AnsiStrings as ANSIStrings, Style};
+ use options::parser::get_command;
+ 
+@@ -43,7 +46,12 @@ fn main() {
+ 
+     logger::configure(env::var_os(vars::EZA_DEBUG).or_else(|| env::var_os(vars::EXA_DEBUG)));
+ 
+-    let cli = get_command().get_matches();
++    let mut cmd = get_command();
++    generate(Spec, &mut cmd, "eza", &mut io::stdout());
++    if true {
++        return;
++    }
++    let cli = cmd.get_matches();
+ 
+     let stdout_istty = io::stdout().is_terminal();
+     let mut input = String::new();

@@ -23,6 +23,7 @@ jobs:
   herdr: {uses: ./.github/workflows/scrape-template.yml, with: {command: herdr}}
   crush: {uses: ./.github/workflows/scrape-template.yml, with: {command: crush}}
   drift: {uses: ./.github/workflows/scrape-template.yml, with: {command: drift}}
+  eza: {uses: ./.github/workflows/scrape-template.yml, with: {command: eza}}
   hl: {uses: ./.github/workflows/scrape-template.yml, with: {command: hl}}
   hurl: {uses: ./.github/workflows/scrape-template.yml, with: {command: hurl}}
   jj: {uses: ./.github/workflows/scrape-template.yml, with: {command: jj}}
