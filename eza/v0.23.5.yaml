@@ -1,0 +1,154 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: eza
+description: A modern replacement for ls
+flags:
+  --absolute=:
+    description: display entries with their absolute path
+    default: off
+  -u, --accessed: show the accessed timestamp field (replace default field, combinable)
+  -x, --across: sort the grid across, rather than downwards
+  -a, --all*: show hidden files. Use this twice to also show the '.' and '..' directories
+  -A, --almost-all: equivalent to --all; included for compatibility with `ls -A`
+  -b, --binary: show file sizes with binary prefixes
+  -S, --blocksize: list size of allocated file system blocks
+  -B, --bytes: show file sizes in bytes, without any prefixes
+  --changed: show the changed timestamp field (replace default field, combinable)
+  -F, --classify=: display type indicator by file names
+  --code?: summarise lines of code by language, recursing the tree or git repo
+  --color=:
+    description: When to use colours.
+    default: auto
+  --colour=&:
+    description: When to use colours.
+    default: auto
+  --color-scale=:
+    description: highlight value of FIELDS distinctly
+    nargs: -1
+  --color-scale-mode=:
+    description: mode for --color-scale
+    default: gradient
+  -Z, --context: list each file's security context
+  -U, --created: show the created timestamp field (replace default field, combinable)
+  -X, --dereference: dereference symbolic links when displaying information
+  -@, --extended: list each file's extended attributes and sizes
+  -O, --flags: list file flags (Mac, BSD, and Windows only)
+  --follow-symlinks: drill down into symbolic links that point to directories
+  --git: list each file's Git status, if tracked or ignored
+  --git-ignore: ignore files mentioned in '.gitignore'
+  --git-repos: list root of git-tree status
+  --git-repos-no-status: list each git-repos branch name (much faster)
+  -G, --grid: display entries as a grid (default)
+  -g, --group: list each file's group
+  --group-directories-first: list directories before other files
+  --group-directories-last: list directories after other files
+  -h, --header: add a header row to each column
+  -?, --help: Print help
+  --hyperlink=: when to display entries as hyperlinks
+  --icons=: when to display icons
+  -I, --ignore-glob=: glob patterns (pipe-separated) of files to ignore
+  -i, --inode: list each file's inode number
+  -L, --level=: limit the depth of recursion
+  -H, --links: list each file's number of hard links
+  --loc?: 'add lines-of-code and language columns [modes: lines, percent, both]'
+  -l, --long: display extended file metadata as a table
+  -m, --modified: show the modified timestamp field (replace default field, combinable)
+  -M, --mounts: show mount details (Linux and macOS only)
+  --no-filesize: suppress the filesize field
+  --no-git: suppress Git fields (overrides --git, --git-repos, --git-repos-no-status)
+  --no-permissions: suppress the permissions field
+  --no-quotes: don't quote file names with spaces
+  --no-symlinks: do not show symbolic links
+  --no-time: suppress the time field
+  --no-user: suppress the user field
+  -n, --numeric: show user and group as their numeric IDs
+  -o, --octal-permissions: list each file's permission in octal format
+  -1, --oneline: display one entry per line
+  -D, --only-dirs: list only directories
+  -f, --only-files: list only files
+  -R, --recurse: recurse into directories
+  -r, --reverse: reverse the sort order
+  --short-nix: abbreviate Nix store hashes in file names and paths
+  --show-symlinks: explicitly show symbolic links (with --only-dirs and --only-files)
+  --smart-group: only show group if it has a different name from owner
+  -s, --sort=:
+    description: |-
+      which field to sort by [default: name] [possible values:
+        name, Name, .name, .Name, ext, ext, created,
+        date, age, accessed, changed,
+        size, inode, type, none]
+    default: name
+  --stdin: read file names from stdin
+  -t, --time=: |-
+    which timestamp field to show [possible values:
+      mod|modified, acc|accessed, ch|changed, cr|created]
+  --time-style=: |-
+    how to format timestamps [possible values:
+      default, iso, long-iso, full-iso, relative, "+<CUSTOM_FORMAT>"]
+  --total-size: show the size of a directory as the one of its content (unix only)
+  -d, --treat-dirs-as-files: treat directories as files; don't list their contents
+  --list-dirs&: treat directories as files; don't list their contents
+  -T, --tree: recurse into directories as a tree
+  -v, --version: Print help
+  -w, --width=: set screen width in columns
+completion:
+  flag:
+    absolute:
+    - on
+    - off
+    - follow
+    classify:
+    - always
+    - auto
+    - never
+    code:
+    - lines
+    - percent
+    - both
+    color:
+    - always
+    - auto
+    - never
+    colour:
+    - always
+    - auto
+    - never
+    color-scale:
+    - all
+    - age
+    - size
+    color-scale-mode:
+    - fixed
+    - gradient
+    hyperlink:
+    - always
+    - auto
+    - never
+    icons:
+    - always
+    - auto
+    - never
+    loc:
+    - lines
+    - percent
+    - both
+    sort:
+    - name
+    - Name
+    - .name
+    - .Name
+    - size
+    - ext
+    - Ext
+    - date
+    - age
+    - changed
+    - accessed
+    - created
+    - inode
+    - type
+    - none
+    time:
+    - modified
+    - changed
+    - accessed
+    - created
