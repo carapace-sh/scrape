@@ -24,6 +24,7 @@ jobs:
   crush: {uses: ./.github/workflows/scrape-template.yml, with: {command: crush}}
   drift: {uses: ./.github/workflows/scrape-template.yml, with: {command: drift}}
   eza: {uses: ./.github/workflows/scrape-template.yml, with: {command: eza}}
+  fd: {uses: ./.github/workflows/scrape-template.yml, with: {command: fd}}
   hl: {uses: ./.github/workflows/scrape-template.yml, with: {command: hl}}
   hyperfine: {uses: ./.github/workflows/scrape-template.yml, with: {command: hyperfine}}
   hurl: {uses: ./.github/workflows/scrape-template.yml, with: {command: hurl}}
