@@ -1,0 +1,450 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: chezmoi
+description: Manage your dotfiles across multiple diverse machines, securely
+persistentflags:
+    --age-recipient-file=: Override age recipient
+    --age-recipient=: Override age recipient
+    --cache=: Set cache directory
+    --color=: Colorize output
+    --config-format=: Set config file format
+    --debug: Include debug information in output
+    --error-on-conflict: Error on conflict
+    --force: Make all changes without prompting
+    --interactive: Prompt for all changes
+    --less-interactive: Prompt for changed or pre-existing targets
+    --mode=: Mode
+    --no-pager: Do not use the pager
+    --no-tty: Do not attempt to get a TTY for prompts
+    --override-data-file=: Override data with file
+    --override-data=: Override data
+    --persistent-state=: Set persistent state file
+    --progress=: Display progress bars
+    --safe&: Safely replace files and symlinks
+    --skip-secrets: Skip all templates containing secrets
+    --source-path: Specify targets by source path
+    --use-builtin-age=: Use builtin age
+    --use-builtin-diff: Use builtin diff
+    --use-builtin-git=: Use builtin git
+    -D, --destination=: Set destination directory
+    -R, --refresh-externals?: Refresh external cache
+    -S, --source=: Set source directory
+    -W, --working-tree=: Set working tree directory
+    -c, --config=: Set config file
+    -k, --keep-going: Keep going as far as possible after an error
+    -n, --dry-run: Do not make any modifications to the destination directory
+    -o, --output=: Write output to path instead of stdout
+    -v, --verbose: Make output more verbose
+commands:
+    - name: add targets...
+      aliases:
+        - manage
+      description: Add an existing file, directory, or symlink to the source state
+      group: daily
+      flags:
+        --create: Add files that should exist, irrespective of their contents
+        --encrypt: Encrypt files
+        --exact: Add directories exactly
+        --new: Create new file if target does not exist
+        --secrets=: Scan for secrets when adding unencrypted files
+        --template-symlinks: Add symlinks with target in source or home dirs as templates
+        -T, --template: Add files as templates
+        -a, --autotemplate: Generate the template when adding files as templates
+        -f, --follow: Add symlink targets instead of symlinks
+        -i, --include=: Include entry types
+        -p, --prompt: Prompt before adding each entry
+        -q, --quiet: Suppress warnings
+        -r, --recursive: Recurse into subdirectories
+        -x, --exclude=: Exclude entry types
+    - name: age
+      description: Interact with age
+      group: encryption
+      commands:
+        - name: decrypt [file...]
+          description: Decrypt file or standard input
+          flags:
+            -p, --passphrase: Decrypt with a passphrase
+        - name: encrypt [file...]
+          description: Encrypt file or standard input
+          flags:
+            -p, --passphrase: Encrypt with a passphrase
+    - name: age-keygen
+      description: Generate an age identity or convert an age identity to an age recipient
+      group: encryption
+      flags:
+        --pq: generate a post-quantum key pair
+        -y, --convert: convert identities to recipients
+    - name: apply [target]...
+      description: Update the destination directory to match the target state
+      group: daily
+      flags:
+        --init: Recreate config file from template
+        -P, --parent-dirs: Apply all parent directories
+        -i, --include=: Include entry types
+        -r, --recursive: Recurse into subdirectories
+        -x, --exclude=: Exclude entry types
+    - name: archive [target]...
+      description: Generate a tar archive of the target state
+      group: migration
+      flags:
+        --init: Recreate config file from template
+        -P, --parent-dirs: Archive parent directories
+        -f, --format=: Set archive format
+        -i, --include=: Include entry types
+        -r, --recursive: Recurse into subdirectories
+        -x, --exclude=: Exclude entry types
+        -z, --gzip: Compress output with gzip
+    - name: cat target...
+      description: Print the target contents of a file, script, or symlink
+      group: template
+    - name: cat-config
+      description: Print the configuration file
+      group: internal
+    - name: cd [path]
+      description: Launch a shell in the source directory
+      group: advanced
+    - name: chattr attributes target...
+      description: Change the attributes of a target in the source state
+      group: daily
+      flags:
+        -r, --recursive: Recurse into subdirectories
+    - name: completion shell
+      description: Generate shell completion code
+      group: internal
+    - name: data
+      description: Print the template data
+      group: template
+      flags:
+        -f, --format=: Output format
+    - name: decrypt [file...]
+      description: Decrypt file or standard input
+      group: encryption
+    - name: destroy target...
+      description: Permanently delete an entry from the source state, the destination directory, and the state
+      group: migration
+      flags:
+        -r, --recursive: Recurse into subdirectories
+    - name: diff [target]...
+      description: Print the diff between the target state and the destination state
+      group: daily
+      flags:
+        --init: Recreate config file from template
+        --pager=: Set pager
+        --reverse: Reverse the direction of the diff
+        --script-contents: Show script contents
+        -P, --parent-dirs: Print the diff of all parent directories
+        -i, --include=: Include entry types
+        -r, --recursive: Recurse into subdirectories
+        -x, --exclude=: Exclude entry types
+    - name: docker
+      aliases:
+        - podman
+      description: Use your dotfiles in a Docker container
+      group: remote
+      commands:
+        - name: exec container-id [args...]
+          description: Install your dotfiles in an existing Docker container and execute a shell
+          flags:
+            -i, --interactive: Run interactively
+            -p, --package-manager=: Package manager
+            -s, --shell: Execute shell afterwards
+        - name: run image-id [args...]
+          description: Create a new Docker container with your dotfiles and execute a shell
+          flags:
+            -p, --package-manager=: Package manager
+    - name: doctor
+      description: Check your system for potential problems
+      group: documentation
+      flags:
+        --no-network: do not use network connection
+    - name: dump [target]...
+      description: Generate a dump of the target state
+      group: internal
+      flags:
+        --init: Recreate config file from template
+        -P, --parent-dirs: Dump all parent directories
+        -f, --format=: Output format
+        -i, --include=: Include entry types
+        -r, --recursive: Recurse into subdirectories
+        -x, --exclude=: Exclude entry types
+    - name: dump-config
+      description: Dump the configuration values
+      group: internal
+      flags:
+        -f, --format=: Output format
+    - name: edit targets...
+      description: Edit the source state of a target
+      group: daily
+      flags:
+        --hardlink: Invoke editor with a hardlink to the source file
+        --init: Recreate config file from template
+        --watch: Apply on save
+        -a, --apply: Apply after editing
+        -i, --include=: Include entry types
+        -x, --exclude=: Exclude entry types
+    - name: edit-config
+      description: Edit the configuration file
+      group: advanced
+    - name: edit-config-template
+      description: Edit the configuration file template
+      group: advanced
+    - name: edit-encrypted filename...
+      description: Edit an encrypted file
+      group: encryption
+    - name: encrypt [file...]
+      description: Encrypt file or standard input
+      group: encryption
+    - name: execute-template [template]...
+      description: Execute the given template(s)
+      group: template
+      flags:
+        --left-delimiter=: Set left template delimiter
+        --promptBool=: Simulate promptBool
+        --promptChoice=: Simulate promptChoice
+        --promptInt=: Simulate promptInt
+        --promptMultichoice=: Simulate promptMultichoice
+        --right-delimiter=: Set right template delimiter
+        --stdinisatty: Simulate stdinIsATTY
+        --with-stdin: Set .chezmoi.stdin to the contents of the standard input
+        -f, --file: Treat arguments as filenames
+        -i, --init: Simulate chezmoi init
+        -p, --promptString=: Simulate promptString
+    - name: forget target...
+      aliases:
+        - unmanage
+      description: Remove a target from the source state
+      group: daily
+    - name: generate file
+      description: Generate a file for use with chezmoi
+      group: advanced
+      commands:
+        - name: git-commit-message
+          description: Generate a git commit message
+        - name: install-init-shell.sh
+          description: Generate an install script that also executes a shell
+          flags:
+            -i, --interactive: Set interactive
+            -p, --package-manager=: Package manager
+            -s, --shell: Set shell
+        - name: install.sh
+          description: Generate an install script
+    - name: git [arg]...
+      description: Run git in the source directory
+      group: advanced
+    - name: help [command]
+      description: Print help about a command
+      group: documentation
+    - name: ignored
+      description: Print ignored targets
+      group: advanced
+      flags:
+        -0, --nul-path-separator: Use the NUL character as a path separator
+        -t, --tree: Print paths as a tree
+    - name: import archive
+      description: Import an archive into the source state
+      group: migration
+      flags:
+        --exact: Set exact_ attribute on imported directories
+        --strip-components=: Strip leading path components
+        -d, --destination=: Set destination prefix
+        -i, --include=: Include entry types
+        -r, --remove-destination: Remove destination before import
+        -x, --exclude=: Exclude entry types
+    - name: init [repo]
+      description: Setup the source directory and update the destination directory to match the target state
+      group: daily
+      flags:
+        --branch=: Set initial branch to checkout
+        --data: Include existing template data
+        --git-lfs: Run git pull lfs after cloning
+        --one-shot: Run in one-shot mode
+        --prompt: Force prompt*Once template functions to prompt
+        --promptBool=: Populate promptBool
+        --promptChoice=: Populate promptChoice
+        --promptDefaults: Make prompt functions return default values
+        --promptInt=: Populate promptInt
+        --promptMultichoice=: Populate promptMultichoice
+        --promptString=: Populate promptString
+        --recurse-submodules: Checkout submodules recursively
+        --revision=: Set initial revision to checkout
+        --ssh: Use ssh instead of https when guessing repo URL
+        --tag=: Set initial tag to checkout
+        -C, --config-path=: Path to write generated config file
+        -P, --purge-binary: Purge chezmoi binary after running
+        -a, --apply: Update destination directory
+        -d, --depth=: Create a shallow clone
+        -g, --guess-repo-url: Guess the repo URL
+        -i, --include=: Include entry types
+        -p, --purge: Purge config and source directories after running
+        -x, --exclude=: Exclude entry types
+    - name: internal-test
+      description: Expose functionality for testing
+      hidden: true
+      commands:
+        - name: prompt-bool prompt [default]
+          description: Run promptBool
+        - name: prompt-choice prompt choices [default]
+          description: Run promptChoice
+        - name: prompt-int prompt [default]
+          description: Run promptInt
+        - name: prompt-multichoice prompt choices [defaults]
+          description: Run promptMultichoice
+        - name: prompt-string prompt [default]
+          description: Run promptString
+        - name: read-password
+          description: Read a password
+    - name: license
+      description: Print license
+      group: documentation
+    - name: managed [path]...
+      aliases:
+        - list
+      description: List the managed entries in the destination directory
+      group: advanced
+      flags:
+        -0, --nul-path-separator: Use the NUL character as a path separator
+        -f, --format=: Format
+        -i, --include=: Include entry types
+        -p, --path-style=: Path style
+        -t, --tree: Print paths as a tree
+        -x, --exclude=: Exclude entry types
+    - name: merge target...
+      description: Perform a three-way merge between the destination state, the source state, and the target state
+      group: daily
+    - name: merge-all
+      description: Perform a three-way merge for each modified file
+      group: daily
+      flags:
+        --init: Recreate config file from template
+        -r, --recursive: Recurse into subdirectories
+    - name: purge
+      description: Purge chezmoi's configuration and data
+      group: migration
+      flags:
+        -P, --binary: Purge chezmoi binary
+    - name: re-add
+      description: Re-add modified files
+      group: daily
+      flags:
+        --re-encrypt: Re-encrypt encrypted files
+        -i, --include=: Include entry types
+        -r, --recursive: Recurse into subdirectories
+        -x, --exclude=: Exclude entry types
+    - name: secret
+      description: Interact with a secret manager
+      group: internal
+      commands:
+        - name: keyring
+          description: Interact with keyring
+          commands:
+            - name: delete
+              description: Delete a value from keyring
+              flags:
+                --service!=: service
+                --user!=: user
+            - name: get
+              description: Get a value from keyring
+              flags:
+                --service!=: service
+                --user!=: user
+            - name: set
+              description: Set a value in keyring
+              flags:
+                --service!=: service
+                --user!=: user
+                --value=: value
+    - name: source-path [target]...
+      description: Print the source path of a target
+      group: internal
+    - name: ssh host
+      description: SSH to a host and initialize dotfiles
+      group: remote
+      flags:
+        -p, --package-manager=: Package manager
+        -s, --shell: Execute shell afterwards
+    - name: state
+      description: Manipulate the persistent state
+      group: internal
+      commands:
+        - name: data
+          description: Print the raw data in the persistent state
+          flags:
+            -f, --format=: Output format
+        - name: delete
+          description: Delete a value from the persistent state
+          flags:
+            --bucket=: Bucket
+            --key=: Key
+        - name: delete-bucket
+          description: Delete a bucket from the persistent state
+          flags:
+            --bucket=: Bucket
+        - name: dump
+          description: Generate a dump of the persistent state
+          flags:
+            -f, --format=: Output format
+        - name: get
+          description: Get a value from the persistent state
+          flags:
+            --bucket=: Bucket
+            --key=: Key
+        - name: get-bucket
+          description: Get a bucket from the persistent state
+          flags:
+            --bucket=: bucket
+            -f, --format=: Output format
+        - name: reset
+          description: Reset the persistent state
+        - name: set
+          description: Set a value from the persistent state
+          flags:
+            --bucket=: Bucket
+            --key=: Key
+            --value=: Value
+    - name: status [target]...
+      description: Show the status of targets
+      group: daily
+      flags:
+        --init: Recreate config file from template
+        -P, --parent-dirs: Show status of all parent directories
+        -i, --include=: Include entry types
+        -p, --path-style=: Path style
+        -r, --recursive: Recurse into subdirectories
+        -x, --exclude=: Exclude entry types
+    - name: target-path [source-path]...
+      description: Print the target path of a source path
+      group: internal
+    - name: unmanaged [path]...
+      description: List the unmanaged files in the destination directory
+      group: advanced
+      flags:
+        -0, --nul-path-separator: Use the NUL character as a path separator
+        -i, --include=: Include entry types
+        -p, --path-style=: Path style
+        -t, --tree: Print paths as a tree
+        -x, --exclude=: Exclude entry types
+    - name: update
+      description: Pull and apply any changes
+      group: daily
+      flags:
+        --init: Recreate config file from template
+        --recurse-submodules: Recursively update submodules
+        -P, --parent-dirs: Update all parent directories
+        -a, --apply: Apply after pulling
+        -i, --include=: Include entry types
+        -r, --recursive: Recurse into subdirectories
+        -x, --exclude=: Exclude entry types
+    - name: upgrade
+      description: Upgrade chezmoi to the latest released version
+      group: migration
+      flags:
+        --executable=: Set executable to replace
+        --method=: Set upgrade method
+    - name: verify [target]...
+      description: Exit with success if the destination state matches the target state, fail otherwise
+      group: advanced
+      flags:
+        --init: Recreate config file from template
+        -P, --parent-dirs: Verify all parent directories
+        -i, --include=: Include entry types
+        -r, --recursive: Recurse into subdirectories
+        -x, --exclude=: Exclude entry types
