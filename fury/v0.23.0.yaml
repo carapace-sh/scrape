@@ -1,0 +1,85 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: fury
+description: Command line interface to Gemfury API
+persistentflags:
+    --api-token=: Inline authentication token
+    -a, --account=: Current account username
+commands:
+    - name: accounts
+      description: Listing of your collaborations
+    - name: beta
+      description: Experimental features
+      hidden: true
+      commands:
+        - name: backup DIR
+          description: Save all files to a directory
+          flags:
+            --kind=: Filter to one kind of package
+        - name: download PACKAGE@VERSION
+          description: Download a package to the current directory
+    - name: git
+      description: Git repository commands
+      commands:
+        - name: config REPO
+          description: Configure Git build
+          commands:
+            - name: get REPO KEY
+              description: Get Git build environment key
+            - name: set REPO KEY=VAL
+              description: Set Git build environment key
+            - name: unset REPO KEY
+              description: Remove Git build environment key
+        - name: destroy REPO
+          aliases:
+            - reset
+          description: Remove Git repository
+          flags:
+            --reset-only: Reset repo without destroying
+        - name: list
+          description: List repos in this account
+        - name: rebuild REPO
+          description: Run the builder on the repo
+          flags:
+            -r, --revision=: Revision
+        - name: rename REPO NEWNAME
+          description: Rename a Git repository
+        - name: stack REPO
+          description: Configure Git stack
+          commands:
+            - name: set REPO STACK
+              description: Set Git stack for repo
+    - name: help [command]
+      description: Help about any command
+    - name: login
+      description: Authenticate into Gemfury account
+      flags:
+        --interactive: Interactive login
+    - name: logout
+      description: Clear CLI session credentials
+    - name: packages
+      aliases:
+        - list
+      description: List packages in this account
+    - name: push PACKAGE
+      description: Upload a new version of a package
+      flags:
+        --public: Create as public package
+        --quiet: Do not show progress bar
+    - name: sharing
+      description: Collaboration commands
+      commands:
+        - name: add EMAIL
+          description: Add a collaborator
+          flags:
+            --role=: Collaborator role
+        - name: remove EMAIL
+          description: Remove a collaborator
+    - name: versions PACKAGE
+      description: List versions for a package
+    - name: whoami
+      description: Show current account
+    - name: yank PACKAGE@VERSION
+      description: Remove a package version
+      flags:
+        -f, --force: Skip confirmation
+        -v, --version=: Version
