@@ -1,0 +1,369 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: fnm
+description: A fast and simple Node.js manager
+flags:
+  -h, --help: Print help (see more with '--help')
+  --multishell-path&=: Where the current node version link is stored. This value will be populated automatically by evaluating `fnm env` in your shell profile. Read more about it using `fnm help env`
+  -V, --version: Print version
+persistentflags:
+  --arch=:
+    description: Override the architecture of the installed Node binary. Defaults to arch of fnm binary
+    default: x64
+  --corepack-enabled: Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
+  --fnm-dir=: The root directory of fnm installations
+  --log-level=:
+    description: The log level of fnm commands
+    default: info
+  --node-dist-mirror=:
+    description: <https://nodejs.org/dist/> mirror
+    default: https://nodejs.org/dist
+  --resolve-engines=: |-
+    Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+    This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
+  --version-file-strategy=:
+    description: A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
+    default: local
+completion:
+  flag:
+    fnm-dir:
+    - $files
+    log-level:
+    - quiet
+    - error
+    - info
+    multishell-path:
+    - $files
+    resolve-engines:
+    - 'true'
+    - 'false'
+    version-file-strategy:
+    - "local\tUse the local version of Node defined within the current directory"
+    - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+documentation:
+  flag:
+    help: Print help (see a summary with '-h')
+    resolve-engines: |-
+      Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+      This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
+
+      Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
+      Note 2: If you disable it, please open an issue on GitHub describing _why_ you disabled it.
+              In the future, disabling it might be a no-op, so it's worth knowing any reason to
+              do that.
+commands:
+- name: list-remote
+  aliases:
+  - ls-remote
+  description: List all remote Node.js versions
+  flags:
+    --filter=: Filter versions by a user-defined version or a semver range
+    -h, --help: Print help (see more with '--help')
+    --latest: Only show the latest matching version
+    --lts=: Show only LTS versions (optionally filter by LTS codename)
+    --sort=:
+      description: Version sorting order
+      default: asc
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      sort:
+      - "desc\tSort versions in descending order (latest to earliest)"
+      - "asc\tSort versions in ascending order (earliest to latest)"
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+- name: list
+  aliases:
+  - ls
+  description: List all locally installed Node.js versions
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+- name: install
+  aliases:
+  - i
+  description: Install a new Node.js version
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --latest: Install latest version
+    --lts: Install latest LTS
+    --progress=:
+      description: Show an interactive progress bar for the download status
+      default: auto
+    --use: Use the installed version immediately after installation
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      progress:
+      - auto
+      - never
+      - always
+      resolve-engines:
+      - 'true'
+      - 'false'
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+- name: use
+  description: Change Node.js version
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --install-if-missing: Install the version if it isn't installed yet
+    --silent-if-unchanged: Don't output a message identifying the version being used if it will not change due to execution of this command
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+- name: env
+  description: Print and set up required environment variables for fnm
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --json: Print JSON instead of shell commands
+    --multi&: Deprecated. This is the default now
+    --shell=: The shell syntax to use. Infers when missing
+    --use-on-cd: Print the script to change Node versions every directory change
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      shell:
+      - bash
+      - zsh
+      - fish
+      - powershell
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+  documentation:
+    command: |-
+      Print and set up required environment variables for fnm
+
+      This command generates a series of shell commands that should be evaluated by your shell to create a fnm-ready environment.
+
+      Each shell has its own syntax of evaluating a dynamic expression. For example, evaluating fnm on Bash and Zsh would look like `eval "$(fnm env)"`. In Fish, evaluating would look like `fnm env | source`
+- name: completions
+  description: Print shell completions to stdout
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --shell=: The shell syntax to use. Infers when missing
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      shell:
+      - bash
+      - zsh
+      - fish
+      - powershell
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+- name: alias
+  description: Alias a version to a common name
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+- name: unalias
+  description: Remove an alias definition
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+- name: default
+  description: Set a version as the default version or get the current default version
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+  documentation:
+    command: |-
+      Set a version as the default version or get the current default version.
+
+      This is a shorthand for `fnm alias VERSION default`
+- name: current
+  description: Print the current Node.js version
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+- name: exec
+  description: Run a command within fnm context
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --using=: Either an explicit version, or a filename with the version written in it
+    --using-file&: Deprecated. This is the default now
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+  documentation:
+    command: |-
+      Run a command within fnm context
+
+      Example:
+      --------
+      fnm exec --using=v12.0.0 node --version
+      => v12.0.0
+- name: uninstall
+  aliases:
+  - uni
+  description: Uninstall a Node.js version
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      fnm-dir:
+      - $files
+      log-level:
+      - quiet
+      - error
+      - info
+      resolve-engines:
+      - 'true'
+      - 'false'
+      version-file-strategy:
+      - "local\tUse the local version of Node defined within the current directory"
+      - "recursive\tUse the version of Node defined within the current directory and all parent directories"
+  documentation:
+    command: |-
+      Uninstall a Node.js version
+
+      > Warning: when providing an alias, it will remove the Node version the alias > is pointing to, along with the other aliases that point to the same version.
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: list-remote
+    description: List all remote Node.js versions
+  - name: list
+    description: List all locally installed Node.js versions
+  - name: install
+    description: Install a new Node.js version
+  - name: use
+    description: Change Node.js version
+  - name: env
+    description: Print and set up required environment variables for fnm
+  - name: completions
+    description: Print shell completions to stdout
+  - name: alias
+    description: Alias a version to a common name
+  - name: unalias
+    description: Remove an alias definition
+  - name: default
+    description: Set a version as the default version or get the current default version
+  - name: current
+    description: Print the current Node.js version
+  - name: exec
+    description: Run a command within fnm context
+  - name: uninstall
+    description: Uninstall a Node.js version
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
