@@ -1,0 +1,617 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: faas-cli
+description: Manage your OpenFaaS functions from the command line
+persistentflags:
+    --filter=: Wildcard to match with function names in YAML file
+    --regex=: Regex to match with function names in YAML file
+    -f, --yaml=: Path to YAML file describing function(s)
+commands:
+    - name: |-
+        build -f YAML_FILE [--no-cache] [--squash]
+          faas-cli build --image IMAGE_NAME
+                         --handler HANDLER_DIR
+                         --name FUNCTION_NAME
+                         [--lang <ruby|python|python3|node|csharp|dockerfile>]
+                         [--no-cache] [--squash]
+                         [--regex "REGEX"]
+                         [--filter "WILDCARD"]
+                         [--parallel PARALLEL_DEPTH]
+                         [--build-arg KEY=VALUE]
+                         [--build-option VALUE]
+                         [--copy-extra PATH]
+                         [--tag <digest|sha|branch|describe>]
+        				 [--forcePull]
+      description: Builds OpenFaaS function containers
+      flags:
+        --build-label*=: Add a label for Docker image (LABEL=VALUE)
+        --copy-extra*=: Extra paths that will be copied into the function build context
+        --debug: Enable debug output when pulling templates
+        --disable-stack-pull: Disables the template configuration in the stack.yaml
+        --envsubst: Substitute environment variables in stack.yaml file
+        --handler=: Directory with handler for function, e.g. handler.js
+        --image=: Docker image name to build
+        --lang=: Programming language template
+        --name=: Name of the deployed function
+        --no-cache: Do not use Docker's build cache
+        --overwrite: Overwrite existing templates from the template repository
+        --parallel=: Build in parallel to depth specified.
+        --pull: Force a re-pull of base images in template during build, useful for publishing images
+        --quiet: Perform a quiet build, without showing output from Docker
+        --shrinkwrap: Just write files to ./build/ folder for shrink-wrapping
+        --squash: 'Use Docker''s squash flag for smaller images [experimental] '
+        --tag=: Override latest tag on function Docker image, accepts 'digest', 'sha', 'branch', or 'describe', or 'latest'
+        -b, --build-arg*=: Add a build-arg for Docker (KEY=VALUE)
+        -o, --build-option*=: Set a build option, e.g. dev
+    - name: chart
+      description: Helm chart commands
+      commands:
+        - name: export [CHART_NAME] [flags]
+          description: Render a Helm chart and export each resource as a separate YAML file
+          flags:
+            --crds: Include CRDs in the output
+            --release=: Helm release name
+            --set*=: Set individual values (key=value)
+            --values*=: Path to values file(s) to use during rendering
+            -n, --namespace=: Kubernetes namespace for rendered manifests
+            -o, --output=: Output directory for rendered YAML files
+    - name: completion SHELL
+      description: Generates shell auto completion
+      flags:
+        --shell!=: Outputs shell completion, must be bash or zsh
+    - name: |-
+        deploy -f YAML_FILE [--replace=false]
+          faas-cli deploy --image IMAGE_NAME
+                          --name FUNCTION_NAME
+                          [--lang <ruby|python|node|csharp>]
+                          [--gateway GATEWAY_URL]
+                          [--network NETWORK_NAME]
+                          [--handler HANDLER_DIR]
+                          [--fprocess PROCESS]
+                          [--env ENVVAR=VALUE ...]
+        				  [--label LABEL=VALUE ...]
+        				  [--annotation ANNOTATION=VALUE ...]
+        				  [--replace=false]
+        				  [--update=false]
+                          [--constraint PLACEMENT_CONSTRAINT ...]
+                          [--regex "REGEX"]
+                          [--filter "WILDCARD"]
+        				  [--secret "SECRET_NAME"]
+        				  [--tag <sha|branch|describe>]
+        				  [--readonly=false]
+        				  [--tls-no-verify]
+      description: Deploy OpenFaaS functions
+      flags:
+        --annotation*=: Set one or more annotation (ANNOTATION=VALUE)
+        --constraint*=: Apply a constraint to the function
+        --cpu-limit=: Supply the CPU limit for the function in Mi (when not using a YAML file)
+        --cpu-request=: Supply the CPU request for the function in Mi (when not using a YAML file)
+        --envsubst: Substitute environment variables in stack.yaml file
+        --fprocess=: fprocess value to be run as a serverless function by the watchdog
+        --handler=: Directory with handler for function, e.g. handler.js
+        --image=: Docker image name to build
+        --lang=: Programming language template
+        --memory-limit=: Supply the memory limit for the function in Mi (when not using a YAML file)
+        --memory-request=: Supply the memory request for the function in Mi (when not using a YAML file)
+        --name=: Name of the deployed function
+        --network=: Name of the network
+        --read-template: Read the function's template
+        --readonly: Force the root container filesystem to be read only
+        --replace: Remove and re-create existing function(s)
+        --secret*=: Give the function access to a secure secret
+        --tag=: Override latest tag on function Docker image, accepts 'latest', 'sha', 'branch', or 'describe'
+        --timeout=: Timeout for any HTTP calls made to the OpenFaaS API.
+        --tls-no-verify: Disable TLS validation
+        --update: Perform rolling update on existing function(s)
+        -e, --env*=: Set one or more environment variables (ENVVAR=VALUE)
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -k, --token=: Pass a JWT token to use instead of basic auth
+        -l, --label*=: Set one or more label (LABEL=VALUE)
+        -n, --namespace=: Namespace of the function
+    - name: describe FUNCTION_NAME [--gateway GATEWAY_URL] [--json]
+      description: Describe an OpenFaaS function
+      flags:
+        --envsubst: Substitute environment variables in stack.yaml file
+        --name=: Name of the function
+        --tls-no-verify: Disable TLS validation
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -j, --json: Output function details as JSON
+        -k, --token=: Pass a JWT token to use instead of basic auth
+        -n, --namespace=: Namespace of the function
+        -v, --verbose: Enable verbose output
+    - name: diff [--gateway GATEWAY_URL]
+      description: Diff stack.yaml against deployed functions
+      flags:
+        --env=: 'Environment diff mode: local, remote, or all'
+        --envsubst: Substitute environment variables in stack.yaml file
+        --tag=: Override latest tag on function Docker image, accepts 'digest', 'sha', 'branch', or 'describe', or 'latest'
+        --tls-no-verify: Disable TLS validation
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -k, --token=: Pass a JWT token to use instead of basic auth
+        -n, --namespace=: Namespace override for the diff
+    - name: generate --api=openfaas.com/v1 --yaml stack.yaml --tag sha --namespace=openfaas-fn
+      description: Generate Kubernetes CRD YAML file
+      flags:
+        --annotation*=: Any annotations you want to add (to store functions only)
+        --api=: CRD API version e.g openfaas.com/v1, serving.knative.dev/v1
+        --arch=: Desired image arch. (Default x86_64)
+        --envsubst: Substitute environment variables in stack.yaml file
+        --from-store=: generate using a store image
+        --label*=: Any labels you want to add (to store functions only)
+        --name=: for use with --from-store, override the name for the Function CR
+        --tag=: Override latest tag on function Docker image, accepts 'digest', 'latest', 'sha', 'branch', 'describe'
+        -n, --namespace=: Kubernetes namespace for functions
+    - name: help [command]
+      description: Help about any command
+    - name: 'invoke FUNCTION_NAME [--gateway GATEWAY_URL] [--content-type CONTENT_TYPE] [--query KEY=VALUE] [--header "KEY: VALUE"] [--method HTTP_METHOD]'
+      description: Invoke an OpenFaaS function
+      flags:
+        --auth: Authenticate with an OpenFaaS token when invoking the function
+        --content-type=: The content-type HTTP header such as application/json
+        --envsubst: Substitute environment variables in stack.yaml file
+        --key=: key to be used to sign the request (must be used with --sign)
+        --name=: Name of the deployed function
+        --query*=: pass query-string options
+        --sign=: name of HTTP request header to hold the signature
+        --tls-no-verify: Disable TLS validation
+        -H, --header*=: pass HTTP request header
+        -a, --async: Invoke the function asynchronously
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -m, --method=: pass HTTP request method
+        -n, --namespace=: Namespace of the deployed function
+    - name: list [--gateway GATEWAY_URL] [--verbose] [--tls-no-verify] [--json]
+      aliases:
+        - ls
+      description: List OpenFaaS functions
+      flags:
+        --envsubst: Substitute environment variables in stack.yaml file
+        --sort=: Sort the functions by "name" or "invocations"
+        --tls-no-verify: Disable TLS validation
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -j, --json: Output functions as JSON
+        -k, --token=: Pass a JWT token to use instead of basic auth
+        -n, --namespace=: Namespace of the function
+        -q, --quiet: Quiet mode - print out only the function's ID
+        -v, --verbose: Verbose output for the function list
+    - name: local-run NAME --port PORT -f YAML_FILE [flags from build]
+      description: Start a function with docker for local testing (experimental feature)
+      flags:
+        --build: Build function prior to local-run
+        --build-label*=: Add a label for Docker image (LABEL=VALUE)
+        --copy-extra*=: Extra paths that will be copied into the function build context
+        --debug: Enable debug output when pulling templates
+        --disable-stack-pull: Disables the template configuration in the stack.yaml
+        --envsubst: Substitute environment variables in stack.yaml file
+        --handler=: Directory with handler for function, e.g. handler.js
+        --image=: Docker image name to build
+        --lang=: Programming language template
+        --name=: Name of the deployed function
+        --network=: connect function to an existing network, use 'host' to access other process already running on localhost. When using this, '--port' is ignored, if you have port collisions, you may change the port using '-e port=NEW_PORT'
+        --no-cache: Do not use Docker's build cache
+        --overwrite: Overwrite existing templates from the template repository
+        --parallel=: Build in parallel to depth specified.
+        --print: Print the docker command instead of running it
+        --pull: Force a re-pull of base images in template during build, useful for publishing images
+        --quiet: Perform a quiet build, without showing output from Docker
+        --shrinkwrap: Just write files to ./build/ folder for shrink-wrapping
+        --squash: 'Use Docker''s squash flag for smaller images [experimental] '
+        --tag=: Override latest tag on function Docker image, accepts 'digest', 'sha', 'branch', or 'describe', or 'latest'
+        --watch: Watch for changes in files and re-deploy
+        -b, --build-arg*=: Add a build-arg for Docker (KEY=VALUE)
+        -e, --env=: additional environment variables (ENVVAR=VALUE), use this to experiment with different values for your function
+        -o, --build-option*=: Set a build option, e.g. dev
+        -p, --port=: port to bind the function to, set to "0" to use a random port
+    - name: login [--username admin|USERNAME] [--password PASSWORD] [--gateway GATEWAY_URL] [--tls-no-verify]
+      description: Log in to OpenFaaS gateway
+      flags:
+        --timeout=: Override the timeout for this API call
+        --tls-no-verify: Disable TLS validation
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -p, --password=: Gateway password
+        -s, --password-stdin: Reads the gateway password from stdin
+        -u, --username=: Gateway username
+    - name: logout [--gateway GATEWAY_URL]
+      description: Log out from OpenFaaS gateway
+      flags:
+        -g, --gateway=: Gateway URL starting with http(s)://
+    - name: logs <NAME> [--tls-no-verify] [--gateway] [--output=text/json] [--json]
+      description: Fetch logs for a functions
+      flags:
+        --instance: print the function instance name/id
+        --lines=: number of recent log lines file to display. Defaults to -1, unlimited if <=0
+        --name: print the function name
+        --since-time=: include logs since the given timestamp (RFC3339)
+        --since=: return logs newer than a relative duration like 5s
+        --time-format=: string format for the timestamp, any value go time format string is allowed, empty will not print the timestamp
+        --tls-no-verify: Disable TLS validation
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -j, --json: Output logs as JSON (equivalent to --output=json)
+        -k, --token=: Pass a JWT token to use instead of basic auth
+        -n, --namespace=: Namespace of the function
+        -o, --output=: output logs as (plain|keyvalue|json), JSON includes all available keys
+        -t, --tail: tail logs and continue printing new logs until the end of the request, up to 30s
+    - name: namespace [--gateway GATEWAY_URL] [--tls-no-verify] [--token JWT_TOKEN]
+      aliases:
+        - ns
+      description: Manage OpenFaaS namespaces
+      persistentflags:
+        --tls-no-verify: Disable TLS validation
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -k, --token=: Pass a JWT token to use instead of basic auth
+      commands:
+        - name: |-
+            create NAME
+            			[--label LABEL=VALUE ...]
+            			[--annotation ANNOTATION=VALUE ...]
+          description: Create a new namespace
+          flags:
+            --annotation*=: Set one or more annotation (ANNOTATION=VALUE)
+            -l, --label*=: Set one or more label (LABEL=VALUE)
+        - name: get NAME
+          description: Get existing namespace
+        - name: list [--json]
+          aliases:
+            - ls
+          description: List OpenFaaS namespaces
+          flags:
+            -j, --json: Output namespaces as JSON
+        - name: remove NAME
+          aliases:
+            - rm
+            - delete
+          description: Remove existing namespace
+        - name: |-
+            update NAME
+            			[--label LABEL=VALUE ...]
+            			[--annotation ANNOTATION=VALUE ...]
+          description: Update a namespace
+          flags:
+            --annotation*=: Set one or more annotation (ANNOTATION=VALUE)
+            -l, --label*=: Set one or more label (LABEL=VALUE)
+    - name: new FUNCTION_NAME --lang=FUNCTION_LANGUAGE [--gateway=http://host:port] | --list | --append=STACK_FILE)
+      description: Create a new template in the current folder with the name given as name
+      flags:
+        --cpu-limit=: Set a limit for the CPU
+        --cpu-request=: Set a request value for the CPU
+        --handler=: directory the handler will be written to
+        --lang=: Language or template to use
+        --list: List available languages
+        --memory-limit=: Set a limit for the memory
+        --memory-request=: Set a request or the memory
+        -a, --append=: Append to existing YAML file
+        -g, --gateway=: Gateway URL to store in YAML stack file
+        -p, --prefix=: Set prefix for the function image
+        -q, --quiet: Skip template notes
+    - name: plugin
+      description: Manage plugins
+      commands:
+        - name: get
+          description: Get a plugin
+          flags:
+            --arch=: The architecture to pull the plugin for, give a value or leave blank for auto-detection
+            --os=: The OS to pull the plugin for, give a value or leave blank for auto-detection
+            --path=: The path for the plugin
+            --registry=: The registry to pull the plugin from
+            --version=: Version or SHA for plugin
+            -v, --verbose: Verbose output
+    - name: print-token ./token.txt
+      description: Pretty-print the contents of a JWT token
+      hidden: true
+    - name: |-
+        publish -f YAML_FILE [--no-cache] [--squash]
+          faas-cli publish --image IMAGE_NAME
+                           --handler HANDLER_DIR
+                           --name FUNCTION_NAME
+                           [--lang LANG]
+                           [--no-cache] [--squash]
+                           [--regex "REGEX"]
+                           [--filter "WILDCARD"]
+                           [--parallel PARALLEL_DEPTH]
+                           [--build-arg KEY=VALUE]
+                           [--build-option VALUE]
+                           [--copy-extra PATH]
+                           [--tag <digest|sha|branch|describe>]
+                           [--platforms linux/amd64,linux/arm64]
+                           [--reset-qemu]
+                           [--remote-builder http://127.0.0.1:8081]
+      description: Builds and pushes multi-arch OpenFaaS container images
+      flags:
+        --build-label*=: Add a label for Docker image (LABEL=VALUE)
+        --builder-public-key=: Builder public key as a literal value, or a path to a file containing raw base64 or the JSON response from /publickey
+        --copy-extra*=: Extra paths that will be copied into the function build context
+        --debug: Enable debug output when pulling templates
+        --disable-stack-pull: Disables the template configuration in the stack.yaml
+        --envsubst: Substitute environment variables in stack.yaml file
+        --extra-tag*=: Additional extra image tag
+        --handler=: Directory with handler for function, e.g. handler.js
+        --image=: Docker image name to build
+        --lang=: Programming language template
+        --name=: Name of the deployed function
+        --no-cache: Do not use Docker's build cache
+        --overwrite: Overwrite existing templates from the template repository
+        --parallel=: Build in parallel to depth specified.
+        --payload-secret=: Path to the payload secret file
+        --platforms=: A set of platforms to publish
+        --pull: Force a re-pull of base images in template during build, useful for publishing images
+        --quiet: Perform a quiet build, without showing output from Docker
+        --remote-builder=: URL to the builder
+        --reset-qemu: Runs "docker run multiarch/qemu-user-static --reset -p yes" to enable multi-arch builds. Compatible with AMD64 machines only.
+        --shrinkwrap: Just write files to ./build/ folder for shrink-wrapping
+        --squash: 'Use Docker''s squash flag for smaller images [experimental] '
+        --tag=: Override latest tag on function Docker image, accepts 'digest', 'latest', 'sha', 'branch', or 'describe'
+        -b, --build-arg*=: Add a build-arg for Docker (KEY=VALUE)
+        -o, --build-option*=: Set a build option, e.g. dev
+    - name: push -f YAML_FILE [--regex "REGEX"] [--filter "WILDCARD"] [--parallel] [--tag <sha|branch>]
+      description: Push OpenFaaS functions to remote registry (Docker Hub)
+      flags:
+        --envsubst: Substitute environment variables in stack.yaml file
+        --parallel=: Push images in parallel to depth specified.
+        --quiet: Perform a quiet build, without showing output from Docker
+        --tag=: Override latest tag on function Docker image, accepts 'digest', 'latest', 'sha', 'branch', 'describe'
+    - name: ready [--gateway GATEWAY_URL] [--tls-no-verify] [FUNCTION_NAME]
+      description: Block until the gateway or a function is ready for use
+      flags:
+        --attempts=: Number of attempts to check the gateway
+        --interval=: Interval between attempts in seconds
+        --tls-no-verify: Disable TLS validation
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -n, --namespace=: Namespace of the function
+    - name: registry-login
+      description: Generate and save the registry authentication file
+      flags:
+        --account-id=: Your AWS Account id
+        --ecr: If we are using ECR we need a different set of flags, so if this is set, we need to set --account-id and --region
+        --password=: The registry password
+        --region=: Your AWS region
+        --server=: The server URL, it is defaulted to the docker registry
+        -s, --password-stdin: Reads the docker password from stdin, either pipe to the command or remember to press ctrl+d when reading interactively
+        -u, --username=: The Registry Username
+    - name: |-
+        remove FUNCTION_NAME [--gateway GATEWAY_URL]
+          faas-cli remove -f YAML_FILE [--regex "REGEX"] [--filter "WILDCARD"]
+      aliases:
+        - rm
+        - delete
+      description: Remove deployed OpenFaaS functions
+      flags:
+        --envsubst: Substitute environment variables in stack.yaml file
+        --tls-no-verify: Disable TLS validation
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -k, --token=: Pass a JWT token to use instead of basic auth
+        -n, --namespace=: Namespace of the function
+    - name: secret
+      description: OpenFaaS secret commands
+      commands:
+        - name: apply [--tls-no-verify]
+          description: Apply secrets from .secrets folder
+          flags:
+            --tls-no-verify: Disable TLS validation
+            --trim: Trim whitespace from the start and end of the secret value
+            -g, --gateway=: Gateway URL starting with http(s)://
+            -k, --token=: Pass a JWT token to use instead of basic auth
+            -n, --namespace=: Namespace of the function
+        - name: |-
+            create SECRET_NAME
+            			[--trim=false]
+            			[--from-literal=SECRET_VALUE]
+            			[--from-file=/path/to/secret/file]
+            			[--replace]
+            			[STDIN]
+            			[--tls-no-verify]
+          description: Create a new secret
+          flags:
+            --from-file=: Path and filename containing value for the secret
+            --from-literal=: Literal value for the secret
+            --replace: Replace the secret if it already exists using an update
+            --tls-no-verify: Disable TLS validation
+            --trim: Trim whitespace from the start and end of the secret value
+            -g, --gateway=: Gateway URL starting with http(s)://
+            -k, --token=: Pass a JWT token to use instead of basic auth
+            -n, --namespace=: Namespace of the function
+        - name: generate
+          aliases:
+            - gen
+          description: Generate a random secret value
+          flags:
+            --length=: Number of random bytes
+            -o, --output=: Write to file instead of stdout
+        - name: keygen
+          description: Generate a keypair for sealing build secrets
+          flags:
+            -o, --output=: Output path for the private key (public key gets .pub appended)
+        - name: list [--tls-no-verify] [--json]
+          aliases:
+            - ls
+          description: List all secrets
+          flags:
+            --tls-no-verify: Disable TLS validation
+            -g, --gateway=: Gateway URL starting with http(s)://
+            -j, --json: Output secrets as JSON
+            -k, --token=: Pass a JWT token to use instead of basic auth
+            -n, --namespace=: Namespace of the function
+        - name: remove [--tls-no-verify]
+          aliases:
+            - rm
+            - delete
+          description: remove a secret
+          flags:
+            --tls-no-verify: Disable TLS validation
+            -g, --gateway=: Gateway URL starting with http(s)://
+            -k, --token=: Pass a JWT token to use instead of basic auth
+            -n, --namespace=: Namespace of the function
+        - name: seal [public-key-file]
+          description: Seal build secrets into an encrypted file
+          flags:
+            --from-file*=: Secret from file in key=path format (can be repeated)
+            --from-literal*=: Literal secret in key=value format (can be repeated)
+            -o, --output=: Output file path
+        - name: unseal [private-key-file] [--json]
+          description: Unseal and inspect a sealed secrets file
+          flags:
+            --in=: Path to the sealed secrets file
+            --key=: Unseal a single key (omit to print all)
+            -j, --json: Output secrets as JSON
+        - name: update [--tls-no-verify]
+          aliases:
+            - u
+          description: Update a secret
+          flags:
+            --from-file=: Path to the secret file
+            --from-literal=: Value of the secret
+            --tls-no-verify: Disable TLS validation
+            --trim: trim whitespace from the start and end of the secret value
+            -g, --gateway=: Gateway URL starting with http(s)://
+            -k, --token=: Pass a JWT token to use instead of basic auth
+            -n, --namespace=: Namespace of the function
+    - name: store
+      description: OpenFaaS store commands
+      persistentflags:
+        -p, --platform=: Target platform for store
+        -u, --url=: Alternative Store URL starting with http(s)://
+      commands:
+        - name: |-
+            deploy (FUNCTION_NAME|FUNCTION_TITLE)
+            			[--name FUNCTION_NAME]
+            			[--gateway GATEWAY_URL]
+            			[--env ENVVAR=VALUE ...]
+            			[--label LABEL=VALUE ...]
+            			[--annotation ANNOTATION=VALUE ...]
+            			[--replace=false]
+            			[--update=true]
+            			[--constraint PLACEMENT_CONSTRAINT ...]
+            			[--secret "SECRET_NAME"]
+            			[--url STORE_URL]
+            			[--tls-no-verify=false]
+          description: Deploy OpenFaaS functions from a store
+          flags:
+            --annotation*=: Set one or more annotation (ANNOTATION=VALUE)
+            --constraint*=: Apply a constraint to the function
+            --cpu-limit=: Supply the CPU limit for the function in Mi
+            --cpu-request=: Supply the CPU request for the function in Mi
+            --memory-limit=: Supply the memory limit for the function in Mi
+            --memory-request=: Supply the memory request for the function in Mi
+            --name=: Name of the deployed function (overriding name from the store)
+            --replace: Replace any existing function
+            --secret*=: Give the function access to a secure secret
+            --timeout=: Timeout for any HTTP calls made to the OpenFaaS API.
+            --tls-no-verify: Disable TLS validation
+            --update: Update existing functions
+            -e, --env*=: Adds one or more environment variables to the defined ones by store (ENVVAR=VALUE)
+            -g, --gateway=: Gateway URL starting with http(s)://
+            -k, --token=: Pass a JWT token to use instead of basic auth
+            -l, --label*=: Set one or more label (LABEL=VALUE)
+            -n, --namespace=: Namespace of the function
+        - name: describe (FUNCTION_NAME|FUNCTION_TITLE) [--url STORE_URL] [--json]
+          aliases:
+            - inspect
+          description: Show details of OpenFaaS function from a store
+          flags:
+            -j, --json: Output function details as JSON
+        - name: list [--url STORE_URL] [--json]
+          aliases:
+            - ls
+          description: List available OpenFaaS functions in a store
+          flags:
+            -j, --json: Output functions as JSON
+            -v, --verbose: Enable verbose output to see the full description of each function in the store
+    - name: template [COMMAND]
+      description: OpenFaaS template store and pull commands
+      commands:
+        - name: pull [REPOSITORY_URL]
+          description: Downloads templates from the specified git repo
+          flags:
+            --debug: Enable debug output
+            --overwrite: Overwrite existing templates?
+          commands:
+            - name: stack
+              description: Downloads templates specified in the function definition yaml file
+              flags:
+                --debug: Enable debug output
+                --overwrite: Overwrite existing templates?
+        - name: store [COMMAND]
+          description: Command for pulling and listing templates from store
+          persistentflags:
+            --debug: Enable debug output
+            --overwrite: Overwrite existing templates?
+          commands:
+            - name: describe [--json]
+              description: Describe the template
+              flags:
+                -j, --json: Output template details as JSON
+              persistentflags:
+                -u, --url=: Use as alternative store for templates
+            - name: list [--json]
+              aliases:
+                - ls
+              description: List templates from OpenFaaS organizations
+              flags:
+                -j, --json: Output templates as JSON
+                -o, --official: Shows only official templates
+                -p, --platform=: Shows the platform if the output is verbose
+                -r, --recommended: Shows only recommended templates
+                -v, --verbose: Shows additional language and platform
+              persistentflags:
+                -u, --url=: Use as alternative store for templates
+            - name: pull [TEMPLATE_NAME]
+              description: Pull templates from store
+              persistentflags:
+                -u, --url=: Use as alternative store for templates
+    - name: up -f [YAML_FILE] [--skip-push] [--skip-deploy] [flags from build, push, deploy]
+      description: Builds, pushes and deploys OpenFaaS function containers
+      flags:
+        --annotation*=: Set one or more annotation (ANNOTATION=VALUE)
+        --build-label*=: Add a label for Docker image (LABEL=VALUE)
+        --builder-public-key=: Builder public key as a literal value, or a path to a file containing raw base64 or the JSON response from /publickey
+        --constraint*=: Apply a constraint to the function
+        --copy-extra*=: Extra paths that will be copied into the function build context
+        --cpu-limit=: Supply the CPU limit for the function in Mi (when not using a YAML file)
+        --cpu-request=: Supply the CPU request for the function in Mi (when not using a YAML file)
+        --debug: Enable debug output when pulling templates
+        --disable-stack-pull: Disables the template configuration in the stack.yaml
+        --envsubst: Substitute environment variables in stack.yaml file
+        --fprocess=: fprocess value to be run as a serverless function by the watchdog
+        --handler=: Directory with handler for function, e.g. handler.js
+        --image=: Docker image name to build
+        --lang=: Programming language template
+        --memory-limit=: Supply the memory limit for the function in Mi (when not using a YAML file)
+        --memory-request=: Supply the memory request for the function in Mi (when not using a YAML file)
+        --name=: Name of the deployed function
+        --network=: Name of the network
+        --no-cache: Do not use Docker's build cache
+        --overwrite: Overwrite existing templates from the template repository
+        --parallel=: Build in parallel to depth specified.
+        --payload-secret=: Path to the payload secret file
+        --platforms=: Publish for these platforms, when used with --publish
+        --publish: Use faas-cli publish instead of faas-cli build followed by faas-cli push
+        --pull: Force a re-pull of base images in template during build, useful for publishing images
+        --quiet: Perform a quiet build, without showing output from Docker
+        --read-template: Read the function's template
+        --readonly: Force the root container filesystem to be read only
+        --remote-builder=: URL to the builder
+        --replace: Remove and re-create existing function(s)
+        --secret*=: Give the function access to a secure secret
+        --shrinkwrap: Just write files to ./build/ folder for shrink-wrapping
+        --skip-deploy: Skip function deployment
+        --skip-push: Skip pushing function to remote registry
+        --squash: 'Use Docker''s squash flag for smaller images [experimental] '
+        --tag=: Override latest tag on function Docker image, accepts 'digest', 'sha', 'branch', or 'describe', or 'latest'
+        --timeout=: Timeout for any HTTP calls made to the OpenFaaS API.
+        --tls-no-verify: Disable TLS validation
+        --update: Perform rolling update on existing function(s)
+        --watch: Watch for changes in files and re-deploy
+        -b, --build-arg*=: Add a build-arg for Docker (KEY=VALUE)
+        -e, --env*=: Set one or more environment variables (ENVVAR=VALUE)
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -k, --token=: Pass a JWT token to use instead of basic auth
+        -l, --label*=: Set one or more label (LABEL=VALUE)
+        -n, --namespace=: Namespace of the function
+        -o, --build-option*=: Set a build option, e.g. dev
+    - name: version [--short-version] [--gateway GATEWAY_URL] [--json]
+      description: Display the clients version information
+      flags:
+        --envsubst: Substitute environment variables in stack.yaml file
+        --short-version: Just print Git SHA
+        --tls-no-verify: Disable TLS validation
+        --warn-update: Check for new version and warn about updating
+        -g, --gateway=: Gateway URL starting with http(s)://
+        -j, --json: Output version as JSON
+        -k, --token=: Pass a JWT token to use instead of basic auth
