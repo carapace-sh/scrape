@@ -1,0 +1,84 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: agg
+description: asciinema gif generator
+flags:
+  --bold-is-bright: Render bold text with bright colors (ANSI 0..7 → 8..15)
+  --cols=: Override terminal width (number of columns)
+  --emoji-font-family=:
+    description: Specify emoji font families
+    default: Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,JoyPixels,Twemoji,Noto Emoji
+  --font-dir=*: Use additional font directory; may be specified multiple times
+  --font-family=: Specify the complete font family list, bypassing automatic fallbacks; must start with a monospace text font
+  --font-size=:
+    description: Specify font size (in pixels)
+    default: '16'
+  --fps-cap=:
+    description: Set FPS cap
+    default: '30'
+  -h, --help: Print help (see more with '--help')
+  --idle-time-limit=: 'Limit idle time to max number of seconds [default: 5]'
+  --last-frame-duration=:
+    description: Set last frame duration
+    default: '3'
+  --line-height=:
+    description: Specify line height
+    default: '1.4'
+  --no-loop: Disable animation loop
+  -q, --quiet: Quiet mode - suppress diagnostic messages and progress bars
+  --renderer=:
+    description: Select frame rendering backend
+    default: swash
+  --rows=: Override terminal height (number of rows)
+  --select=: Select frames to render (see --help for details)
+  --speed=:
+    description: Adjust playback speed
+    default: '1'
+  --text-font-family=:
+    description: Specify regular text font families
+    default: JetBrains Mono,Fira Code,SF Mono,Menlo,Consolas,DejaVu Sans Mono,Liberation Mono
+  --theme=: Select color theme
+  -v, --verbose*: Enable verbose logging
+  -V, --version: Print version
+completion:
+  flag:
+    renderer:
+    - swash
+    - resvg
+    theme:
+    - asciinema
+    - dracula
+    - github-dark
+    - github-light
+    - kanagawa
+    - kanagawa-dragon
+    - kanagawa-light
+    - monokai
+    - nord
+    - solarized-dark
+    - solarized-light
+    - gruvbox-dark
+    - custom
+documentation:
+  flag:
+    help: Print help (see a summary with '-h')
+    select: |-
+      Select frames to render.
+
+      A selector is one of:
+        .., POS.., ..POS, POS..POS      time range
+        POS, POS,POS,...                discrete positions
+        markers                         all marker positions
+
+      POS may be:
+        12.5, 12.5s, 1m20s, 1:20        time
+        50%                             percent of adjusted duration
+        marker:build, marker:3          marker label prefix or 0-based marker index
+        event:100                       0-based event index
+
+      Times are on the adjusted output timeline, after --idle-time-limit and --speed.
+      The `markers` selector is standalone; use `marker:<label>` in ranges or lists.
+
+      Examples:
+        --select 5..100%
+        --select marker:build..marker:test
+        --select 1,50%,marker:build,event:100
