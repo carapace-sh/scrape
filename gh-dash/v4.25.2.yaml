@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: gh dash
+description: A rich terminal UI for GitHub that doesn't break your flow.
+flags:
+    --cpuprofile=: write cpu profile to file
+    --debug: passing this flag will allow writing debug output to debug.log
+    -h, --help: help for gh-dash
+persistentflags:
+    -c, --config=: |-
+        use this configuration file
+        (default lookup:
+          1. a .gh-dash.yml file if inside a git repo
+          2. $GH_DASH_CONFIG env var
+          3. $XDG_CONFIG_HOME/gh-dash/config.yml
+        )
+commands:
+    - name: help [command]
+      description: Help about any command
+    - name: sponsors
+      description: Show the list of current sponsors for gh-dash
