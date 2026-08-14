@@ -1,0 +1,658 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: helm
+description: The Helm package manager for Kubernetes.
+persistentflags:
+    --add-dir-header&: If true, adds the file directory to the header of the log messages
+    --alsologtostderr&: log to standard error as well as files (no effect when -logtostderr=true)
+    --alsologtostderrthreshold&=: logs at or above this threshold go to stderr when -alsologtostderr=true (no effect when -logtostderr=true)
+    --burst-limit=: client-side default throttling limit
+    --color=: use colored output (never, auto, always)
+    --colour=: use colored output (never, auto, always)
+    --content-cache=: path to the directory containing cached content (e.g. charts)
+    --debug: enable verbose output
+    --kube-apiserver=: the address and the port for the Kubernetes API server
+    --kube-as-group*=: group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+    --kube-as-user=: username to impersonate for the operation
+    --kube-ca-file=: the certificate authority file for the Kubernetes API server connection
+    --kube-context=: name of the kubeconfig context to use
+    --kube-insecure-skip-tls-verify: if true, the Kubernetes API server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+    --kube-tls-server-name=: server name to use for Kubernetes API server certificate validation. If it is not provided, the hostname used to contact the server is used
+    --kube-token=: bearer token used for authentication
+    --kubeconfig=: path to the kubeconfig file
+    --legacy-stderr-threshold-behavior&: If true, stderrthreshold is ignored when logtostderr=true (legacy behavior). If false, stderrthreshold is honored even when logtostderr=true
+    --log-backtrace-at&=: when logging hits line file:N, emit a stack trace
+    --log-dir&=: If non-empty, write log files in this directory (no effect when -logtostderr=true)
+    --log-file&=: If non-empty, use this log file (no effect when -logtostderr=true)
+    --log-file-max-size&=: Defines the maximum size a log file can grow to (no effect when -logtostderr=true). Unit is megabytes. If the value is 0, the maximum file size is unlimited.
+    --logtostderr&: log to standard error instead of files
+    --one-output&: If true, only write logs to their native severity level (vs also writing to each lower severity level; no effect when -logtostderr=true)
+    --qps=: queries per second used when communicating with the Kubernetes API, not including bursting
+    --registry-config=: path to the registry config file
+    --repository-cache=: path to the directory containing cached repository indexes
+    --repository-config=: path to the file containing repository names and URLs
+    --skip-headers&: If true, avoid header prefixes in the log messages
+    --skip-log-headers&: If true, avoid headers when opening log files (no effect when -logtostderr=true)
+    --stderrthreshold&=: logs at or above this threshold go to stderr when writing to files and stderr (no effect when -logtostderr=true or -alsologtostderr=true unless -legacy_stderr_threshold_behavior=false)
+    --vmodule&=: comma-separated list of pattern=N settings for file-filtered logging
+    -n, --namespace=: namespace scope for this request
+    -v, --v&=: number for the log level verbosity
+commands:
+    - name: completion
+      description: generate autocompletion scripts for the specified shell
+      commands:
+        - name: bash
+          description: generate autocompletion script for bash
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: fish
+          description: generate autocompletion script for fish
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: powershell
+          description: generate autocompletion script for powershell
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: zsh
+          description: generate autocompletion script for zsh
+          flags:
+            --no-descriptions: disable completion descriptions
+    - name: create NAME
+      description: create a new chart with the given name
+      flags:
+        --chart-api-version&=: chart API version to use (v2 or v3)
+        -p, --starter=: the name or absolute path to Helm starter scaffold
+    - name: dependency update|build|list
+      aliases:
+        - dep
+        - dependencies
+      description: manage a chart's dependencies
+      commands:
+        - name: build CHART
+          description: rebuild the charts/ directory based on the Chart.lock file
+          flags:
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify HTTPS client using this SSL certificate file
+            --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+            --key-file=: identify HTTPS client using this SSL key file
+            --keyring=: keyring containing public keys
+            --password=: chart repository password where to locate the requested chart
+            --plain-http: use insecure HTTP connections for the chart download
+            --skip-refresh: do not refresh the local repository cache
+            --username=: chart repository username where to locate the requested chart
+            --verify: verify the packages against signatures
+        - name: list CHART
+          aliases:
+            - ls
+          description: list the dependencies for the given chart
+          flags:
+            --max-col-width=: maximum column width for output table
+        - name: update CHART
+          aliases:
+            - up
+          description: update charts/ based on the contents of Chart.yaml
+          flags:
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify HTTPS client using this SSL certificate file
+            --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+            --key-file=: identify HTTPS client using this SSL key file
+            --keyring=: keyring containing public keys
+            --password=: chart repository password where to locate the requested chart
+            --plain-http: use insecure HTTP connections for the chart download
+            --skip-refresh: do not refresh the local repository cache
+            --username=: chart repository username where to locate the requested chart
+            --verify: verify the packages against signatures
+    - name: docs
+      description: generate documentation as markdown or man pages
+      hidden: true
+      flags:
+        --dir=: directory to which documentation is written
+        --generate-headers: generate standard headers for markdown files
+        --type=: the type of documentation to generate (markdown, man, bash)
+    - name: env
+      description: helm client environment information
+    - name: get
+      description: download extended information of a named release
+      commands:
+        - name: all RELEASE_NAME
+          description: download all information for a named release
+          flags:
+            --revision=: get the named release with revision
+            --template=: 'go template for formatting the output, eg: {{.Release.Name}}'
+        - name: hooks RELEASE_NAME
+          description: download all hooks for a named release
+          flags:
+            --revision=: get the named release with revision
+        - name: manifest RELEASE_NAME
+          description: download the manifest for a named release
+          flags:
+            --revision=: get the named release with revision
+        - name: metadata RELEASE_NAME
+          description: This command fetches metadata for a given release
+          flags:
+            --revision=: specify release revision
+            -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+        - name: notes RELEASE_NAME
+          description: download the notes for a named release
+          flags:
+            --revision=: get the named release with revision
+        - name: values RELEASE_NAME
+          description: download the values file for a named release
+          flags:
+            --revision=: get the named release with revision
+            -a, --all: dump all (computed) values
+            -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+    - name: help [command]
+      description: Help about any command
+    - name: history RELEASE_NAME
+      aliases:
+        - hist
+      description: fetch release history
+      flags:
+        --max=: maximum number of revision to include in history
+        -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+    - name: install [NAME] [CHART]
+      description: install a chart
+      flags:
+        --atomic&: deprecated
+        --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+        --cert-file=: identify HTTPS client using this SSL certificate file
+        --create-namespace: create the release namespace if not present
+        --dependency-update: update dependencies if they are missing before installing the chart
+        --description=: add a custom description
+        --devel: use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored
+        --disable-openapi-validation: if set, the installation process will not validate rendered templates against the Kubernetes OpenAPI Schema
+        --dry-run?: 'simulates the operation without persisting changes. Must be one of: "none" (default), "client", or "server". ''--dry-run=none'' executes the operation normally and persists changes (no simulation). ''--dry-run=client'' simulates the operation client-side only and avoids cluster connections. ''--dry-run=server'' simulates the operation on the server, requiring cluster connectivity.'
+        --enable-dns: enable DNS lookups when rendering templates
+        --force&: deprecated
+        --force-conflicts: if set server-side apply will force changes against conflicts
+        --force-replace: force resource updates by replacement
+        --hide-notes: if set, do not show notes in install output. Does not affect presence in chart metadata
+        --hide-secret: hide Kubernetes Secrets when also using the --dry-run flag
+        --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+        --key-file=: identify HTTPS client using this SSL key file
+        --keyring=: location of public keys used for verification
+        --name-template=: specify template used to name the release
+        --no-hooks: prevent hooks from running during install
+        --pass-credentials: pass credentials to all domains
+        --password=: chart repository password where to locate the requested chart
+        --plain-http: use insecure HTTP connections for the chart download
+        --post-renderer-args*=: an argument to the post-renderer (can specify multiple)
+        --post-renderer=: the name of a postrenderer type plugin to be used for post rendering. If it exists, the plugin will be used
+        --render-subchart-notes: if set, render subchart notes along with the parent
+        --replace: reuse the given name, only if that name is a deleted release which remains in the history. This is unsafe in production
+        --repo=: chart repository url where to locate the requested chart
+        --rollback-on-failure: if set, Helm will rollback (uninstall) the installation upon failure. The --wait flag will be default to "watcher" if --rollback-on-failure is set
+        --server-side: object updates run in the server instead of the client
+        --set*=: 'set values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)'
+        --set-file*=: 'set values from respective files specified via the command line (can specify multiple or separate values with commas: key1=path1,key2=path2)'
+        --set-json*=: 'set JSON values on the command line (can specify multiple or separate values with commas: key1=jsonval1,key2=jsonval2 or using json format: {"key1": jsonval1, "key2": "jsonval2"})'
+        --set-literal*=: set a literal STRING value on the command line
+        --set-string*=: 'set STRING values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)'
+        --skip-crds: if set, no CRDs will be installed. By default, CRDs are installed if not already present
+        --skip-schema-validation: if set, disables JSON schema validation
+        --take-ownership: if set, install will ignore the check for helm annotations and take ownership of the existing resources
+        --timeout=: time to wait for any individual Kubernetes operation (like Jobs for hooks)
+        --username=: chart repository username where to locate the requested chart
+        --verify: verify the package before using it
+        --version=: specify a version constraint for the chart version to use. This constraint can be a specific tag (e.g. 1.1.1) or it may reference a valid range (e.g. ^2.0.0). If this is not specified, the latest version is used
+        --wait-for-jobs: if set and --wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as --timeout
+        --wait?: 'wait until resources are ready (up to --timeout). Use ''--wait'' alone for ''watcher'' strategy, or specify one of: ''watcher'', ''hookOnly'', ''legacy''. Default when flag is omitted: ''hookOnly''.'
+        -f, --values*=: specify values in a YAML file or a URL (can specify multiple)
+        -g, --generate-name: generate the name (and omit the NAME parameter)
+        -l, --labels=: Labels that would be added to release metadata. Should be divided by comma.
+        -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+    - name: lint PATH
+      description: examine a chart for possible issues
+      flags:
+        --kube-version=: Kubernetes version used for capabilities and deprecation checks
+        --quiet: print only warnings and errors
+        --set*=: 'set values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)'
+        --set-file*=: 'set values from respective files specified via the command line (can specify multiple or separate values with commas: key1=path1,key2=path2)'
+        --set-json*=: 'set JSON values on the command line (can specify multiple or separate values with commas: key1=jsonval1,key2=jsonval2 or using json format: {"key1": jsonval1, "key2": "jsonval2"})'
+        --set-literal*=: set a literal STRING value on the command line
+        --set-string*=: 'set STRING values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)'
+        --skip-schema-validation: if set, disables JSON schema validation
+        --strict: fail on lint warnings
+        --with-subcharts: lint dependent charts
+        -f, --values*=: specify values in a YAML file or a URL (can specify multiple)
+    - name: list
+      aliases:
+        - ls
+      description: list releases
+      flags:
+        --deployed: show deployed releases
+        --failed: show failed releases
+        --no-headers: don't print headers when using the default output format
+        --offset=: next release index in the list, used to offset from start value
+        --pending: show pending releases
+        --superseded: show superseded releases
+        --time-format=: 'format time using golang time formatter. Example: --time-format "2006-01-02 15:04:05Z0700"'
+        --uninstalled: show uninstalled releases (if 'helm uninstall --keep-history' was used)
+        --uninstalling: show releases that are currently being uninstalled
+        -A, --all-namespaces: list releases across all namespaces
+        -d, --date: sort by release date
+        -f, --filter=: a regular expression (Perl compatible). Any releases that match the expression will be included in the results
+        -l, --selector=: Selector (label query) to filter on, supports '=', '==', and '!='.(e.g. -l key1=value1,key2=value2). Works only for secret(default) and configmap storage backends.
+        -m, --max=: maximum number of releases to fetch
+        -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+        -q, --short: output short (quiet) listing format
+        -r, --reverse: reverse the sort order
+    - name: package [CHART_PATH] [...]
+      description: package a chart directory into a chart archive
+      flags:
+        --app-version=: set the appVersion on the chart to this version
+        --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+        --cert-file=: identify HTTPS client using this SSL certificate file
+        --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+        --key-file=: identify HTTPS client using this SSL key file
+        --key=: name of the key to use when signing. Used if --sign is true
+        --keyring=: location of a public keyring
+        --passphrase-file=: location of a file which contains the passphrase for the signing key. Use "-" in order to read from stdin.
+        --password=: chart repository password where to locate the requested chart
+        --plain-http: use insecure HTTP connections for the chart download
+        --sign: use a PGP private key to sign this package
+        --username=: chart repository username where to locate the requested chart
+        --version=: set the version on the chart to this semver version
+        -d, --destination=: location to write the chart.
+        -u, --dependency-update: update dependencies from "Chart.yaml" to dir "charts/" before packaging
+    - name: plugin
+      description: install, list, or uninstall Helm plugins
+      commands:
+        - name: install [options] <path|url>
+          aliases:
+            - add
+          description: install a Helm plugin
+          flags:
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify registry client using this SSL certificate file
+            --insecure-skip-tls-verify: skip tls certificate checks for the plugin download
+            --key-file=: identify registry client using this SSL key file
+            --keyring=: location of public keys used for verification
+            --password=: registry password
+            --plain-http: use insecure HTTP connections for the plugin download
+            --username=: registry username
+            --verify: verify the plugin signature before installing
+            --version=: specify a version constraint. If this is not specified, the latest version is installed
+        - name: list
+          aliases:
+            - ls
+          description: list installed Helm plugins
+          flags:
+            --type=: Plugin type
+        - name: package [PATH]
+          description: package a plugin directory into a plugin archive
+          flags:
+            --key=: name of the key to use when signing. Used if --sign is true
+            --keyring=: location of a public keyring
+            --passphrase-file=: location of a file which contains the passphrase for the signing key. Use "-" to read from stdin.
+            --sign: use a PGP private key to sign this plugin
+            -d, --destination=: location to write the plugin tarball.
+        - name: uninstall <plugin>...
+          aliases:
+            - rm
+            - remove
+          description: uninstall one or more Helm plugins
+        - name: update <plugin>...
+          aliases:
+            - up
+          description: update one or more Helm plugins
+        - name: verify [PATH]
+          description: verify that a plugin at the given path has been signed and is valid
+          flags:
+            --keyring=: keyring containing public keys
+    - name: pull [chart URL | repo/chartname] [...]
+      aliases:
+        - fetch
+      description: download a chart from a repository and (optionally) unpack it in local directory
+      flags:
+        --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+        --cert-file=: identify HTTPS client using this SSL certificate file
+        --devel: use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored.
+        --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+        --key-file=: identify HTTPS client using this SSL key file
+        --keyring=: location of public keys used for verification
+        --pass-credentials: pass credentials to all domains
+        --password=: chart repository password where to locate the requested chart
+        --plain-http: use insecure HTTP connections for the chart download
+        --prov: fetch the provenance file, but don't perform verification
+        --repo=: chart repository url where to locate the requested chart
+        --untar: if set to true, will untar the chart after downloading it
+        --untardir=: if untar is specified, this flag specifies the name of the directory into which the chart is expanded
+        --username=: chart repository username where to locate the requested chart
+        --verify: verify the package before using it
+        --version=: specify a version constraint for the chart version to use. This constraint can be a specific tag (e.g. 1.1.1) or it may reference a valid range (e.g. ^2.0.0). If this is not specified, the latest version is used
+        -d, --destination=: location to write the chart. If this and untardir are specified, untardir is appended to this
+    - name: push [chart] [remote]
+      description: push a chart to remote
+      flags:
+        --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+        --cert-file=: identify registry client using this SSL certificate file
+        --insecure-skip-tls-verify: skip tls certificate checks for the chart upload
+        --key-file=: identify registry client using this SSL key file
+        --password=: chart repository password where to locate the requested chart
+        --plain-http: use insecure HTTP connections for the chart upload
+        --username=: chart repository username where to locate the requested chart
+    - name: registry
+      description: login to or logout from a registry
+      commands:
+        - name: login [host]
+          description: login to a registry
+          flags:
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify registry client using this SSL certificate file
+            --insecure: allow connections to TLS registry without certs
+            --key-file=: identify registry client using this SSL key file
+            --password-stdin: read password or identity token from stdin
+            --plain-http: use insecure HTTP connections for the chart upload
+            -p, --password=: registry password or identity token
+            -u, --username=: registry username
+        - name: logout [host]
+          description: logout from a registry
+    - name: repo add|remove|list|index|update [ARGS]
+      description: add, list, remove, update, and index chart repositories
+      commands:
+        - name: add [NAME] [URL]
+          description: add a chart repository
+          flags:
+            --allow-deprecated-repos: by default, this command will not allow adding official repos that have been permanently deleted. This disables that behavior
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify HTTPS client using this SSL certificate file
+            --force-update: replace (overwrite) the repo if it already exists
+            --insecure-skip-tls-verify: skip tls certificate checks for the repository
+            --key-file=: identify HTTPS client using this SSL key file
+            --pass-credentials: pass credentials to all domains
+            --password-stdin: read chart repository password from stdin
+            --password=: chart repository password
+            --timeout=: time to wait for the index file download to complete
+            --username=: chart repository username
+        - name: index [DIR]
+          description: generate an index file given a directory containing packaged charts
+          flags:
+            --json: output in JSON format
+            --merge=: merge the generated index into the given index
+            --url=: url of chart repository
+        - name: list
+          aliases:
+            - ls
+          description: list chart repositories
+          flags:
+            --no-headers: suppress headers in the output
+            -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+        - name: remove [REPO1 [REPO2 ...]]
+          aliases:
+            - rm
+          description: remove one or more chart repositories
+        - name: update [REPO1 [REPO2 ...]]
+          aliases:
+            - up
+          description: update information of available charts locally from chart repositories
+          flags:
+            --timeout=: time to wait for the index file download to complete
+    - name: rollback <RELEASE> [REVISION]
+      description: roll back a release to a previous revision
+      flags:
+        --cleanup-on-fail: allow deletion of new resources created in this rollback when rollback fails
+        --dry-run?: 'simulates the operation without persisting changes. Must be one of: "none" (default), "client", or "server". ''--dry-run=none'' executes the operation normally and persists changes (no simulation). ''--dry-run=client'' simulates the operation client-side only and avoids cluster connections. ''--dry-run=server'' simulates the operation on the server, requiring cluster connectivity.'
+        --force&: deprecated
+        --force-conflicts: if set server-side apply will force changes against conflicts
+        --force-replace: force resource updates by replacement
+        --history-max=: limit the maximum number of revisions saved per release. Use 0 for no limit
+        --no-hooks: prevent hooks from running during rollback
+        --server-side=: must be "true", "false" or "auto". Object updates run in the server instead of the client ("auto" defaults the value from the previous chart release's method)
+        --timeout=: time to wait for any individual Kubernetes operation (like Jobs for hooks)
+        --wait-for-jobs: if set and --wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as --timeout
+        --wait?: 'wait until resources are ready (up to --timeout). Use ''--wait'' alone for ''watcher'' strategy, or specify one of: ''watcher'', ''hookOnly'', ''legacy''. Default when flag is omitted: ''hookOnly''.'
+    - name: search [keyword]
+      description: search for a keyword in charts
+      commands:
+        - name: hub [KEYWORD]
+          description: search for charts in the Artifact Hub or your own hub instance
+          flags:
+            --endpoint=: Hub instance to query for charts
+            --fail-on-no-result: search fails if no results are found
+            --list-repo-url: print charts repository URL
+            --max-col-width=: maximum column width for output table
+            -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+        - name: repo [keyword]
+          description: search repositories for a keyword in charts
+          flags:
+            --devel: use development versions (alpha, beta, and release candidate releases), too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored
+            --fail-on-no-result: search fails if no results are found
+            --max-col-width=: maximum column width for output table
+            --version=: search using semantic versioning constraints on repositories you have added
+            -l, --versions: show the long listing, with each version of each chart on its own line, for repositories you have added
+            -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+            -r, --regexp: use regular expressions for searching repositories you have added
+    - name: show
+      aliases:
+        - inspect
+      description: show information of a chart
+      commands:
+        - name: all [CHART]
+          description: show all information of the chart
+          flags:
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify HTTPS client using this SSL certificate file
+            --devel: use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored
+            --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+            --key-file=: identify HTTPS client using this SSL key file
+            --keyring=: location of public keys used for verification
+            --pass-credentials: pass credentials to all domains
+            --password=: chart repository password where to locate the requested chart
+            --plain-http: use insecure HTTP connections for the chart download
+            --repo=: chart repository url where to locate the requested chart
+            --username=: chart repository username where to locate the requested chart
+            --verify: verify the package before using it
+            --version=: specify a version constraint for the chart version to use. This constraint can be a specific tag (e.g. 1.1.1) or it may reference a valid range (e.g. ^2.0.0). If this is not specified, the latest version is used
+        - name: chart [CHART]
+          description: show the chart's definition
+          flags:
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify HTTPS client using this SSL certificate file
+            --devel: use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored
+            --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+            --key-file=: identify HTTPS client using this SSL key file
+            --keyring=: location of public keys used for verification
+            --pass-credentials: pass credentials to all domains
+            --password=: chart repository password where to locate the requested chart
+            --plain-http: use insecure HTTP connections for the chart download
+            --repo=: chart repository url where to locate the requested chart
+            --username=: chart repository username where to locate the requested chart
+            --verify: verify the package before using it
+            --version=: specify a version constraint for the chart version to use. This constraint can be a specific tag (e.g. 1.1.1) or it may reference a valid range (e.g. ^2.0.0). If this is not specified, the latest version is used
+        - name: crds [CHART]
+          description: show the chart's CRDs
+          flags:
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify HTTPS client using this SSL certificate file
+            --devel: use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored
+            --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+            --key-file=: identify HTTPS client using this SSL key file
+            --keyring=: location of public keys used for verification
+            --pass-credentials: pass credentials to all domains
+            --password=: chart repository password where to locate the requested chart
+            --plain-http: use insecure HTTP connections for the chart download
+            --repo=: chart repository url where to locate the requested chart
+            --username=: chart repository username where to locate the requested chart
+            --verify: verify the package before using it
+            --version=: specify a version constraint for the chart version to use. This constraint can be a specific tag (e.g. 1.1.1) or it may reference a valid range (e.g. ^2.0.0). If this is not specified, the latest version is used
+        - name: readme [CHART]
+          description: show the chart's README
+          flags:
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify HTTPS client using this SSL certificate file
+            --devel: use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored
+            --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+            --key-file=: identify HTTPS client using this SSL key file
+            --keyring=: location of public keys used for verification
+            --pass-credentials: pass credentials to all domains
+            --password=: chart repository password where to locate the requested chart
+            --plain-http: use insecure HTTP connections for the chart download
+            --repo=: chart repository url where to locate the requested chart
+            --username=: chart repository username where to locate the requested chart
+            --verify: verify the package before using it
+            --version=: specify a version constraint for the chart version to use. This constraint can be a specific tag (e.g. 1.1.1) or it may reference a valid range (e.g. ^2.0.0). If this is not specified, the latest version is used
+        - name: values [CHART]
+          description: show the chart's values
+          flags:
+            --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+            --cert-file=: identify HTTPS client using this SSL certificate file
+            --devel: use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored
+            --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+            --jsonpath=: supply a JSONPath expression to filter the output
+            --key-file=: identify HTTPS client using this SSL key file
+            --keyring=: location of public keys used for verification
+            --pass-credentials: pass credentials to all domains
+            --password=: chart repository password where to locate the requested chart
+            --plain-http: use insecure HTTP connections for the chart download
+            --repo=: chart repository url where to locate the requested chart
+            --username=: chart repository username where to locate the requested chart
+            --verify: verify the package before using it
+            --version=: specify a version constraint for the chart version to use. This constraint can be a specific tag (e.g. 1.1.1) or it may reference a valid range (e.g. ^2.0.0). If this is not specified, the latest version is used
+    - name: status RELEASE_NAME
+      description: display the status of the named release
+      flags:
+        --revision=: if set, display the status of the named release with revision
+        -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+    - name: template [NAME] [CHART]
+      description: locally render templates
+      flags:
+        --atomic&: deprecated
+        --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+        --cert-file=: identify HTTPS client using this SSL certificate file
+        --create-namespace: create the release namespace if not present
+        --dependency-update: update dependencies if they are missing before installing the chart
+        --description=: add a custom description
+        --devel: use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored
+        --disable-openapi-validation: if set, the installation process will not validate rendered templates against the Kubernetes OpenAPI Schema
+        --dry-run?: 'simulates the operation either client-side or server-side. Must be either: "client", or "server". ''--dry-run=client simulates the operation client-side only and avoids cluster connections. ''--dry-run=server'' simulates/validates the operation on the server, requiring cluster connectivity.'
+        --enable-dns: enable DNS lookups when rendering templates
+        --force&: deprecated
+        --force-conflicts: if set server-side apply will force changes against conflicts
+        --force-replace: force resource updates by replacement
+        --hide-notes&: if set, do not show notes in install output. Does not affect presence in chart metadata
+        --include-crds: include CRDs in the templated output
+        --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+        --is-upgrade: set .Release.IsUpgrade instead of .Release.IsInstall
+        --key-file=: identify HTTPS client using this SSL key file
+        --keyring=: location of public keys used for verification
+        --kube-version=: Kubernetes version used for Capabilities.KubeVersion
+        --name-template=: specify template used to name the release
+        --no-hooks: prevent hooks from running during install
+        --output-dir=: writes the executed templates to files in output-dir instead of stdout
+        --pass-credentials: pass credentials to all domains
+        --password=: chart repository password where to locate the requested chart
+        --plain-http: use insecure HTTP connections for the chart download
+        --post-renderer-args*=: an argument to the post-renderer (can specify multiple)
+        --post-renderer=: the name of a postrenderer type plugin to be used for post rendering. If it exists, the plugin will be used
+        --release-name: use release name in the output-dir path.
+        --render-subchart-notes&: if set, render subchart notes along with the parent
+        --replace: reuse the given name, only if that name is a deleted release which remains in the history. This is unsafe in production
+        --repo=: chart repository url where to locate the requested chart
+        --rollback-on-failure: if set, Helm will rollback (uninstall) the installation upon failure. The --wait flag will be default to "watcher" if --rollback-on-failure is set
+        --server-side: object updates run in the server instead of the client
+        --set*=: 'set values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)'
+        --set-file*=: 'set values from respective files specified via the command line (can specify multiple or separate values with commas: key1=path1,key2=path2)'
+        --set-json*=: 'set JSON values on the command line (can specify multiple or separate values with commas: key1=jsonval1,key2=jsonval2 or using json format: {"key1": jsonval1, "key2": "jsonval2"})'
+        --set-literal*=: set a literal STRING value on the command line
+        --set-string*=: 'set STRING values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)'
+        --skip-crds: if set, no CRDs will be installed. By default, CRDs are installed if not already present
+        --skip-schema-validation: if set, disables JSON schema validation
+        --skip-tests: skip tests from templated output
+        --take-ownership: if set, install will ignore the check for helm annotations and take ownership of the existing resources
+        --timeout=: time to wait for any individual Kubernetes operation (like Jobs for hooks)
+        --username=: chart repository username where to locate the requested chart
+        --validate&: deprecated
+        --verify: verify the package before using it
+        --version=: specify a version constraint for the chart version to use. This constraint can be a specific tag (e.g. 1.1.1) or it may reference a valid range (e.g. ^2.0.0). If this is not specified, the latest version is used
+        --wait-for-jobs: if set and --wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as --timeout
+        --wait?: 'wait until resources are ready (up to --timeout). Use ''--wait'' alone for ''watcher'' strategy, or specify one of: ''watcher'', ''hookOnly'', ''legacy''. Default when flag is omitted: ''hookOnly''.'
+        -a, --api-versions*=: Kubernetes api versions used for Capabilities.APIVersions (multiple can be specified)
+        -f, --values*=: specify values in a YAML file or a URL (can specify multiple)
+        -g, --generate-name: generate the name (and omit the NAME parameter)
+        -l, --labels=: Labels that would be added to release metadata. Should be divided by comma.
+        -s, --show-only*=: only show manifests rendered from the given templates
+    - name: test [RELEASE]
+      description: run tests for a release
+      flags:
+        --filter*=: 'specify tests by attribute (currently "name") using attribute=value syntax or ''!attribute=value'' to exclude a test (can specify multiple or separate values with commas: name=test1,name=test2)'
+        --logs: dump the logs from test pods (this runs after all tests are complete, but before any cleanup)
+        --timeout=: time to wait for any individual Kubernetes operation (like Jobs for hooks)
+    - name: uninstall RELEASE_NAME [...]
+      aliases:
+        - del
+        - delete
+        - un
+      description: uninstall a release
+      flags:
+        --cascade=: Must be "background", "orphan", or "foreground". Selects the deletion cascading strategy for the dependents. Defaults to background. Use "foreground" with --wait to ensure resources with finalizers are fully deleted before returning.
+        --description=: add a custom description
+        --dry-run: simulate a uninstall
+        --ignore-not-found: Treat "release not found" as a successful uninstall
+        --keep-history: remove all associated resources and mark the release as deleted, but retain the release history
+        --no-hooks: prevent hooks from running during uninstallation
+        --timeout=: time to wait for any individual Kubernetes operation (like Jobs for hooks)
+        --wait?: 'wait until resources are ready (up to --timeout). Use ''--wait'' alone for ''watcher'' strategy, or specify one of: ''watcher'', ''hookOnly'', ''legacy''. Default when flag is omitted: ''hookOnly''.'
+    - name: upgrade [RELEASE] [CHART]
+      description: upgrade a release
+      flags:
+        --atomic&: deprecated
+        --ca-file=: verify certificates of HTTPS-enabled servers using this CA bundle
+        --cert-file=: identify HTTPS client using this SSL certificate file
+        --cleanup-on-fail: allow deletion of new resources created in this upgrade when upgrade fails
+        --create-namespace: if --install is set, create the release namespace if not present
+        --dependency-update: update dependencies if they are missing before installing the chart
+        --description=: add a custom description
+        --devel: use development versions, too. Equivalent to version '>0.0.0-0'. If --version is set, this is ignored
+        --disable-openapi-validation: if set, the upgrade process will not validate rendered templates against the Kubernetes OpenAPI Schema
+        --dry-run?: 'simulates the operation without persisting changes. Must be one of: "none" (default), "client", or "server". ''--dry-run=none'' executes the operation normally and persists changes (no simulation). ''--dry-run=client'' simulates the operation client-side only and avoids cluster connections. ''--dry-run=server'' simulates the operation on the server, requiring cluster connectivity.'
+        --enable-dns: enable DNS lookups when rendering templates
+        --force&: deprecated
+        --force-conflicts: if set server-side apply will force changes against conflicts
+        --force-replace: force resource updates by replacement
+        --hide-notes: if set, do not show notes in upgrade output. Does not affect presence in chart metadata
+        --hide-secret: hide Kubernetes Secrets when also using the --dry-run flag
+        --history-max=: limit the maximum number of revisions saved per release. Use 0 for no limit
+        --insecure-skip-tls-verify: skip tls certificate checks for the chart download
+        --key-file=: identify HTTPS client using this SSL key file
+        --keyring=: location of public keys used for verification
+        --no-hooks: disable pre/post upgrade hooks
+        --pass-credentials: pass credentials to all domains
+        --password=: chart repository password where to locate the requested chart
+        --plain-http: use insecure HTTP connections for the chart download
+        --post-renderer-args*=: an argument to the post-renderer (can specify multiple)
+        --post-renderer=: the name of a postrenderer type plugin to be used for post rendering. If it exists, the plugin will be used
+        --render-subchart-notes: if set, render subchart notes along with the parent
+        --repo=: chart repository url where to locate the requested chart
+        --reset-then-reuse-values: when upgrading, reset the values to the ones built into the chart, apply the last release's values and merge in any overrides from the command line via --set and -f. If '--reset-values' or '--reuse-values' is specified, this is ignored
+        --reset-values: when upgrading, reset the values to the ones built into the chart
+        --reuse-values: when upgrading, reuse the last release's values and merge in any overrides from the command line via --set and -f. If '--reset-values' is specified, this is ignored
+        --rollback-on-failure: if set, Helm will rollback the upgrade to previous success release upon failure. The --wait flag will be defaulted to "watcher" if --rollback-on-failure is set
+        --server-side=: must be "true", "false" or "auto". Object updates run in the server instead of the client ("auto" defaults the value from the previous chart release's method)
+        --set*=: 'set values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)'
+        --set-file*=: 'set values from respective files specified via the command line (can specify multiple or separate values with commas: key1=path1,key2=path2)'
+        --set-json*=: 'set JSON values on the command line (can specify multiple or separate values with commas: key1=jsonval1,key2=jsonval2 or using json format: {"key1": jsonval1, "key2": "jsonval2"})'
+        --set-literal*=: set a literal STRING value on the command line
+        --set-string*=: 'set STRING values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)'
+        --skip-crds: if set, no CRDs will be installed when an upgrade is performed with install flag enabled. By default, CRDs are installed if not already present, when an upgrade is performed with install flag enabled
+        --skip-schema-validation: if set, disables JSON schema validation
+        --take-ownership: if set, upgrade will ignore the check for helm annotations and take ownership of the existing resources
+        --timeout=: time to wait for any individual Kubernetes operation (like Jobs for hooks)
+        --username=: chart repository username where to locate the requested chart
+        --verify: verify the package before using it
+        --version=: specify a version constraint for the chart version to use. This constraint can be a specific tag (e.g. 1.1.1) or it may reference a valid range (e.g. ^2.0.0). If this is not specified, the latest version is used
+        --wait-for-jobs: if set and --wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as --timeout
+        --wait?: 'wait until resources are ready (up to --timeout). Use ''--wait'' alone for ''watcher'' strategy, or specify one of: ''watcher'', ''hookOnly'', ''legacy''. Default when flag is omitted: ''hookOnly''.'
+        -f, --values*=: specify values in a YAML file or a URL (can specify multiple)
+        -i, --install: if a release by this name doesn't already exist, run an install
+        -l, --labels=: Labels that would be added to release metadata. Should be separated by comma. Original release labels will be merged with upgrade labels. You can unset label using null.
+        -o, --output=: 'prints the output in the specified format. Allowed values: table, json, yaml'
+    - name: verify PATH
+      description: verify that a chart at the given path has been signed and is valid
+      flags:
+        --keyring=: keyring containing public keys
+    - name: version
+      description: print the helm version information
+      flags:
+        --short: print the version number
+        --template=: template for version string format
