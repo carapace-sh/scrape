@@ -43,6 +43,7 @@ jobs:
   hyperfine: {uses: ./.github/workflows/scrape-template.yml, with: {command: hyperfine}}
   jj: {uses: ./.github/workflows/scrape-template.yml, with: {command: jj}}
   just: {uses: ./.github/workflows/scrape-template.yml, with: {command: just}}
+  kcl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kcl}}
   k3d: {uses: ./.github/workflows/scrape-template.yml, with: {command: k3d}}
   kubeadm: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubeadm}}
   kubectl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubectl}}
