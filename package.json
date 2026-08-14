@@ -1,10 +1,11 @@
 {
   "dependencies": {
-    "atuin": "https://github.com/atuinsh/atuin#v18.19.0",
     "agg": "https://github.com/asciinema/agg#v1.9.0",
+    "atuin": "https://github.com/atuinsh/atuin#v18.19.0",
     "bat": "https://github.com/sharkdp/bat#v0.26.1",
-    "buildctl": "https://github.com/moby/buildkit#v0.32.2",
     "bazel": "https://github.com/bazelbuild/bazel#9.2.0",
+    "black": "https://github.com/psf/black#26.5.1",
+    "buildctl": "https://github.com/moby/buildkit#v0.32.2",
     "but": "https://github.com/gitbutlerapp/gitbutler#release/0.22.0",
     "cargo": "https://github.com/rust-lang/cargo#0.98.0",
     "charm": "https://github.com/charmbracelet/charm#v0.12.6",
@@ -47,6 +48,7 @@
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.36.3",
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.36.3",
     "procs": "https://github.com/dalance/procs#v0.14.12",
+    "qmk": "https://github.com/qmk/qmk_cli#1.2.0",
     "lore": "https://github.com/EpicGames/lore#v0.8.6",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.4",
     "minikube": "https://github.com/kubernetes/minikube#v1.38.1",
@@ -70,6 +72,8 @@
     "watchexec": "https://github.com/watchexec/watchexec#v2.5.1",
     "worktrunk": "https://github.com/max-sixty/worktrunk#v0.72.0",
     "xh": "https://github.com/ducaale/xh#v0.26.2",
+    "yt-dlp": "https://github.com/yt-dlp/yt-dlp#2026.07.04",
+    "youtube-dl": "https://github.com/ytdl-org/youtube-dl#2021.12.17",
     "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.10.0"
   }
 }

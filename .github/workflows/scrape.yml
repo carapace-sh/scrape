@@ -5,11 +5,12 @@ on:
   push:
 
 jobs:
-  atuin: {uses: ./.github/workflows/scrape-template.yml, with: {command: atuin}}
   agg: {uses: ./.github/workflows/scrape-template.yml, with: {command: agg}}
+  atuin: {uses: ./.github/workflows/scrape-template.yml, with: {command: atuin}}
   bat: {uses: ./.github/workflows/scrape-template.yml, with: {command: bat}}
-  buildctl: {uses: ./.github/workflows/scrape-template.yml, with: {command: buildctl}}
   bazel: {uses: ./.github/workflows/scrape-template.yml, with: {command: bazel}}
+  black: {uses: ./.github/workflows/scrape-template.yml, with: {command: black}}
+  buildctl: {uses: ./.github/workflows/scrape-template.yml, with: {command: buildctl}}
   but: {uses: ./.github/workflows/scrape-template.yml, with: {command: but}}
   cargo: {uses: ./.github/workflows/scrape-template.yml, with: {command: cargo}}
   charm: {uses: ./.github/workflows/scrape-template.yml, with: {command: charm}}
@@ -52,6 +53,7 @@ jobs:
   kubeadm: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubeadm}}
   kubectl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubectl}}
   procs: {uses: ./.github/workflows/scrape-template.yml, with: {command: procs}}
+  qmk: {uses: ./.github/workflows/scrape-template.yml, with: {command: qmk}}
   lore: {uses: ./.github/workflows/scrape-template.yml, with: {command: lore}}
   mdbook: {uses: ./.github/workflows/scrape-template.yml, with: {command: mdbook}}
   minikube: {uses: ./.github/workflows/scrape-template.yml, with: {command: minikube}}
@@ -75,4 +77,6 @@ jobs:
   watchexec: {uses: ./.github/workflows/scrape-template.yml, with: {command: watchexec}}
   worktrunk: {uses: ./.github/workflows/scrape-template.yml, with: {command: worktrunk}}
   xh: {uses: ./.github/workflows/scrape-template.yml, with: {command: xh}}
+  yt-dlp: {uses: ./.github/workflows/scrape-template.yml, with: {command: yt-dlp}}
+  youtube-dl: {uses: ./.github/workflows/scrape-template.yml, with: {command: youtube-dl}}
   zoxide: {uses: ./.github/workflows/scrape-template.yml, with: {command: zoxide}}
