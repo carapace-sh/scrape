@@ -1,0 +1,21 @@
+diff --git a/cmd/root.go b/cmd/root.go
+index 2dfd0a5..f132207 100644
+--- a/cmd/root.go
++++ b/cmd/root.go
+@@ -20,6 +20,7 @@ import (
+ 	"github.com/charmbracelet/fang"
+ 	"github.com/cli/go-gh/v2/pkg/repository"
+ 	zone "github.com/lrstanley/bubblezone/v2"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 
+ 	gitm "github.com/aymanbagabas/git-module"
+@@ -185,6 +186,8 @@ func init() {
+ 		"help for gh-dash",
+ 	)
+ 
++	carapace.Gen(rootCmd)
++
+ 	rootCmd.Run = func(_ *cobra.Command, args []string) {
+ 		debug, _ := rootCmd.Flags().GetBool("debug")
+ 		var loggerFile *os.File

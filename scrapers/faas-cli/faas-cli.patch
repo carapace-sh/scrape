@@ -1,0 +1,21 @@
+diff --git a/commands/faas.go b/commands/faas.go
+index 7a67c9b..841c2ee 100644
+--- a/commands/faas.go
++++ b/commands/faas.go
+@@ -17,6 +17,7 @@ import (
+ 	"github.com/moby/term"
+ 	"github.com/openfaas/faas-cli/version"
+ 	"github.com/openfaas/go-sdk/stack"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ )
+ 
+@@ -77,6 +78,8 @@ func init() {
+ 	faasCmd.PersistentFlags().StringVarP(&regex, "regex", "", "", "Regex to match with function names in YAML file")
+ 	faasCmd.PersistentFlags().StringVarP(&filter, "filter", "", "", "Wildcard to match with function names in YAML file")
+ 
++	carapace.Gen(faasCmd)
++
+ 	// Set Bash completion options
+ 	validYAMLFilenames := []string{"yaml", "yml"}
+ 	_ = faasCmd.PersistentFlags().SetAnnotation("yaml", cobra.BashCompFilenameExt, validYAMLFilenames)

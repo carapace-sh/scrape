@@ -1,0 +1,28 @@
+diff --git a/cmd/fury/main.go b/cmd/fury/main.go
+index 47eac03..f87e8ec 100644
+--- a/cmd/fury/main.go
++++ b/cmd/fury/main.go
+@@ -1,6 +1,7 @@
+ package main
+ 
+ import (
++	"github.com/carapace-sh/carapace"
+ 	"github.com/gemfury/cli/api"
+ 	"github.com/gemfury/cli/cli"
+ 
+@@ -21,6 +22,7 @@ func main() {
+ 
+ 	// Populate version strings everywhere
+ 	api.DefaultConduit.Version = Version
++	carapace.Gen(rootCmd)
+ 	rootCmd.Version = Version
+ 
+ 	// Support for legacy (Ruby) CLI command
+@@ -29,6 +31,7 @@ func main() {
+ 	}
+ 
+ 	// Process command and deliver results
++	if c, _, err := rootCmd.Find([]string{"_carapace"}); err == nil { rootCmd.PersistentPreRunE = nil; _ = c }
+ 	if err := rootCmd.ExecuteContext(cc); err != nil {
+ 		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
+ 		os.Exit(1)

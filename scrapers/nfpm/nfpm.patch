@@ -1,0 +1,19 @@
+diff --git a/internal/cmd/root.go b/internal/cmd/root.go
+index 63019fc..63dd0e1 100644
+--- a/internal/cmd/root.go
++++ b/internal/cmd/root.go
+@@ -12,6 +12,7 @@ import (
+ 	_ "github.com/goreleaser/nfpm/v2/ipk"  // ipk packager
+ 	_ "github.com/goreleaser/nfpm/v2/msix" // msix packager
+ 	_ "github.com/goreleaser/nfpm/v2/rpm"  // rpm packager
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ )
+ 
+@@ -61,5 +62,6 @@ func newRootCmd(version goversion.Info, exit func(int)) *rootCmd {
+ 	)
+ 
+ 	root.cmd = cmd
++	carapace.Gen(cmd)
+ 	return root
+ }

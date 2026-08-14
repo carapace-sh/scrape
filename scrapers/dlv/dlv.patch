@@ -1,0 +1,20 @@
+diff --git a/cmd/dlv/cmds/commands.go b/cmd/dlv/cmds/commands.go
+index 6c2f61b..c68e3a0 100644
+--- a/cmd/dlv/cmds/commands.go
++++ b/cmd/dlv/cmds/commands.go
+@@ -31,6 +31,7 @@ import (
+ 	"github.com/go-delve/delve/service/rpc2"
+ 	"github.com/go-delve/delve/service/rpccommon"
+ 	"github.com/mattn/go-isatty"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ )
+ 
+@@ -541,6 +542,7 @@ File redirects can also be changed using the 'restart' command.
+ 
+ 	configUsageFunc(rootCommand)
+ 
++	carapace.Gen(rootCommand)
+ 	return rootCommand
+ }
+ 

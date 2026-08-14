@@ -1,0 +1,22 @@
+diff --git a/cmd/grype/cli/cli.go b/cmd/grype/cli/cli.go
+index 924cab8..d912c59 100644
+--- a/cmd/grype/cli/cli.go
++++ b/cmd/grype/cli/cli.go
+@@ -8,6 +8,7 @@ import (
+ 
+ 	"github.com/charmbracelet/lipgloss"
+ 	"github.com/muesli/termenv"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 
+ 	"github.com/anchore/clio"
+@@ -25,7 +26,8 @@ import (
+ )
+ 
+ func Application(id clio.Identification) clio.Application {
+-	app, _ := create(id)
++	app, cmd := create(id)
++	carapace.Gen(cmd)
+ 	return app
+ }
+ 

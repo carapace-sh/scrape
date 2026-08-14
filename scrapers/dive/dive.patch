@@ -1,0 +1,20 @@
+diff --git a/cmd/root.go b/cmd/root.go
+index ad9f10b..a8be2b2 100644
+--- a/cmd/root.go
++++ b/cmd/root.go
+@@ -9,6 +9,7 @@ import (
+ 
+ 	"github.com/mitchellh/go-homedir"
+ 	log "github.com/sirupsen/logrus"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 	"github.com/spf13/viper"
+ 
+@@ -34,6 +35,7 @@ the amount of wasted space and identifies the offending files from the image.`,
+ 
+ // Execute adds all child commands to the root command and sets flags appropriately.
+ func Execute() {
++	carapace.Gen(rootCmd)
+ 	if err := rootCmd.Execute(); err != nil {
+ 		fmt.Println(err)
+ 		os.Exit(1)

@@ -1,0 +1,20 @@
+diff --git a/cmd/dagger/main.go b/cmd/dagger/main.go
+index f16672e..a855a43 100644
+--- a/cmd/dagger/main.go
++++ b/cmd/dagger/main.go
+@@ -27,6 +27,7 @@ import (
+ 	"github.com/muesli/reflow/wordwrap"
+ 	"github.com/muesli/termenv"
+ 	"github.com/sirupsen/logrus"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 	"github.com/spf13/pflag"
+ 	"go.opentelemetry.io/otel"
+@@ -697,6 +698,7 @@ func main() {
+ 	interactiveCommandParsed = parsedCommand
+ 
+ 	installGlobalFlags(rootCmd.PersistentFlags())
++	carapace.Gen(rootCmd)
+ 
+ 	ctx = slog.ContextWithColorMode(ctx, termenv.EnvNoColor())
+ 	ctx = slog.ContextWithDebugMode(ctx, debugFlag)

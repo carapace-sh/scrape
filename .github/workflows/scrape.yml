@@ -5,43 +5,62 @@ on:
   push:
 
 jobs:
-  bat: {uses: ./.github/workflows/scrape-template.yml, with: {command: bat}}
   atuin: {uses: ./.github/workflows/scrape-template.yml, with: {command: atuin}}
+  bat: {uses: ./.github/workflows/scrape-template.yml, with: {command: bat}}
   bazel: {uses: ./.github/workflows/scrape-template.yml, with: {command: bazel}}
   but: {uses: ./.github/workflows/scrape-template.yml, with: {command: but}}
   cargo: {uses: ./.github/workflows/scrape-template.yml, with: {command: cargo}}
+  charm: {uses: ./.github/workflows/scrape-template.yml, with: {command: charm}}
+  circleci: {uses: ./.github/workflows/scrape-template.yml, with: {command: circleci}}
+  crush: {uses: ./.github/workflows/scrape-template.yml, with: {command: crush}}
+  dagger: {uses: ./.github/workflows/scrape-template.yml, with: {command: dagger}}
   devbox: {uses: ./.github/workflows/scrape-template.yml, with: {command: devbox}}
+  dive: {uses: ./.github/workflows/scrape-template.yml, with: {command: dive}}
+  dlv: {uses: ./.github/workflows/scrape-template.yml, with: {command: dlv}}
   docker: {uses: ./.github/workflows/scrape-template.yml, with: {command: docker}}
   docker-compose: {uses: ./.github/workflows/scrape-template.yml, with: {command: docker-compose}}
+  drift: {uses: ./.github/workflows/scrape-template.yml, with: {command: drift}}
+  eza: {uses: ./.github/workflows/scrape-template.yml, with: {command: eza}}
+  faas-cli: {uses: ./.github/workflows/scrape-template.yml, with: {command: faas-cli}}
+  fd: {uses: ./.github/workflows/scrape-template.yml, with: {command: fd}}
+  fury: {uses: ./.github/workflows/scrape-template.yml, with: {command: fury}}
+  gdu: {uses: ./.github/workflows/scrape-template.yml, with: {command: gdu}}
   gh: {uses: ./.github/workflows/scrape-template.yml, with: {command: gh}}
+  gh-dash: {uses: ./.github/workflows/scrape-template.yml, with: {command: gh-dash}}
   gh-stack: {uses: ./.github/workflows/scrape-template.yml, with: {command: gh-stack}}
   glab: {uses: ./.github/workflows/scrape-template.yml, with: {command: glab}}
+  glow: {uses: ./.github/workflows/scrape-template.yml, with: {command: glow}}
   golangci-lint: {uses: ./.github/workflows/scrape-template.yml, with: {command: golangci-lint}}
   goreleaser: {uses: ./.github/workflows/scrape-template.yml, with: {command: goreleaser}}
   grit: {uses: ./.github/workflows/scrape-template.yml, with: {command: grit}}
+  grype: {uses: ./.github/workflows/scrape-template.yml, with: {command: grype}}
   gum: {uses: ./.github/workflows/scrape-template.yml, with: {command: gum}}
+  helm: {uses: ./.github/workflows/scrape-template.yml, with: {command: helm}}
   herdr: {uses: ./.github/workflows/scrape-template.yml, with: {command: herdr}}
-  crush: {uses: ./.github/workflows/scrape-template.yml, with: {command: crush}}
-  drift: {uses: ./.github/workflows/scrape-template.yml, with: {command: drift}}
-  eza: {uses: ./.github/workflows/scrape-template.yml, with: {command: eza}}
-  fd: {uses: ./.github/workflows/scrape-template.yml, with: {command: fd}}
   hl: {uses: ./.github/workflows/scrape-template.yml, with: {command: hl}}
-  hyperfine: {uses: ./.github/workflows/scrape-template.yml, with: {command: hyperfine}}
   hurl: {uses: ./.github/workflows/scrape-template.yml, with: {command: hurl}}
+  hyperfine: {uses: ./.github/workflows/scrape-template.yml, with: {command: hyperfine}}
   jj: {uses: ./.github/workflows/scrape-template.yml, with: {command: jj}}
   just: {uses: ./.github/workflows/scrape-template.yml, with: {command: just}}
   k3d: {uses: ./.github/workflows/scrape-template.yml, with: {command: k3d}}
-  lore: {uses: ./.github/workflows/scrape-template.yml, with: {command: lore}}
   kubeadm: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubeadm}}
   kubectl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubectl}}
+  lore: {uses: ./.github/workflows/scrape-template.yml, with: {command: lore}}
   mdbook: {uses: ./.github/workflows/scrape-template.yml, with: {command: mdbook}}
   minikube: {uses: ./.github/workflows/scrape-template.yml, with: {command: minikube}}
   mise: {uses: ./.github/workflows/scrape-template.yml, with: {command: mise}}
+  newrelic: {uses: ./.github/workflows/scrape-template.yml, with: {command: newrelic}}
+  nfpm: {uses: ./.github/workflows/scrape-template.yml, with: {command: nfpm}}
+  ollama: {uses: ./.github/workflows/scrape-template.yml, with: {command: ollama}}
   openstack: {uses: ./.github/workflows/scrape-template.yml, with: {command: openstack}}
   pixi: {uses: ./.github/workflows/scrape-template.yml, with: {command: pixi}}
+  restic: {uses: ./.github/workflows/scrape-template.yml, with: {command: restic}}
   rustup: {uses: ./.github/workflows/scrape-template.yml, with: {command: rustup}}
+  scc: {uses: ./.github/workflows/scrape-template.yml, with: {command: scc}}
+  syft: {uses: ./.github/workflows/scrape-template.yml, with: {command: syft}}
   taplo: {uses: ./.github/workflows/scrape-template.yml, with: {command: taplo}}
   task: {uses: ./.github/workflows/scrape-template.yml, with: {command: task}}
   tsh: {uses: ./.github/workflows/scrape-template.yml, with: {command: tsh}}
+  vhs: {uses: ./.github/workflows/scrape-template.yml, with: {command: vhs}}
   worktrunk: {uses: ./.github/workflows/scrape-template.yml, with: {command: worktrunk}}
   zoxide: {uses: ./.github/workflows/scrape-template.yml, with: {command: zoxide}}

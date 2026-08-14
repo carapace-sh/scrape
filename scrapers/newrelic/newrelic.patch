@@ -1,0 +1,20 @@
+diff --git a/cmd/newrelic/command.go b/cmd/newrelic/command.go
+index f778135..384292f 100644
+--- a/cmd/newrelic/command.go
++++ b/cmd/newrelic/command.go
+@@ -2,6 +2,7 @@ package main
+ 
+ import (
+ 	log "github.com/sirupsen/logrus"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 
+ 	"github.com/newrelic/newrelic-cli/internal/cli"
+@@ -67,6 +68,7 @@ func Execute() error {
+ 	// since we have a custom error handler in main.go
+ 	Command.SilenceErrors = true
+ 
++	carapace.Gen(Command)
+ 	err := Command.Execute()
+ 	if _, ok := err.(*nrErrors.PaymentRequiredError); ok {
+ 		diagnose.PrintPaymentRequiredErrorMessage()

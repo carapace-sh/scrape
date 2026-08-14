@@ -1,0 +1,20 @@
+diff --git a/cmd/cmd.go b/cmd/cmd.go
+index c56834f..edbeffc 100644
+--- a/cmd/cmd.go
++++ b/cmd/cmd.go
+@@ -32,6 +32,7 @@ import (
+ 	"github.com/mattn/go-runewidth"
+ 	"github.com/olekukonko/tablewriter"
+ 	"github.com/pkg/browser"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 	"golang.org/x/crypto/ssh"
+ 	"golang.org/x/sync/errgroup"
+@@ -2551,6 +2552,7 @@ func NewCLI() *cobra.Command {
+ 		launch.LaunchCmd(checkServerHeartbeat, runInteractiveTUI),
+ 	)
+ 
++	carapace.Gen(rootCmd)
+ 	return rootCmd
+ }
+ 

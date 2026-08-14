@@ -1,0 +1,23 @@
+diff --git a/cmd/restic/main.go b/cmd/restic/main.go
+index 619eee6..4dd9ca7 100644
+--- a/cmd/restic/main.go
++++ b/cmd/restic/main.go
+@@ -11,6 +11,7 @@ import (
+ 	"runtime"
+ 	godebug "runtime/debug"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 	"go.uber.org/automaxprocs/maxprocs"
+ 
+@@ -186,7 +187,9 @@ func main() {
+ 		defer cancel()
+ 		globalOptions.Term = term
+ 		ctx := createGlobalContext(os.Stderr)
+-		err = newRootCommand(&globalOptions).ExecuteContext(ctx)
++		cmd := newRootCommand(&globalOptions)
++		carapace.Gen(cmd)
++		err = cmd.ExecuteContext(ctx)
+ 		switch err {
+ 		case nil:
+ 			err = ctx.Err()
