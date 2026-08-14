@@ -76,6 +76,7 @@
     "xh": "https://github.com/ducaale/xh#v0.26.2",
     "yt-dlp": "https://github.com/yt-dlp/yt-dlp#2026.07.04",
     "youtube-dl": "https://github.com/ytdl-org/youtube-dl#2021.12.17",
+    "zellij": "https://github.com/zellij-org/zellij#main",
     "zoxide": "https://github.com/ajeetdsouza/zoxide#v0.10.0"
   }
 }
