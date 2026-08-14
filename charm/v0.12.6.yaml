@@ -1,0 +1,119 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: charm
+description: Do Charm stuff
+commands:
+    - name: backup-keys
+      description: Backup your Charm account keys
+      flags:
+        -o, --output=: keys backup filepath
+    - name: bio
+      hidden: true
+    - name: completion [bash|zsh|fish|powershell]
+      description: Generate shell completion
+    - name: crypt
+      description: Use Charm encryption.
+      commands:
+        - name: decrypt
+          description: Decrypt stdin with your Charm account encryption key
+        - name: decrypt-lookup
+          description: Decrypt arg deterministically
+        - name: encrypt
+          description: Encrypt stdin with your Charm account encryption key
+        - name: encrypt-lookup
+          description: Encrypt arg deterministically
+    - name: fs
+      description: Use the Charm file system.
+      commands:
+        - name: cat [charm:]PATH
+          description: Output the content of the file at path.
+        - name: cp [charm:]PATH [charm:]PATH
+          description: Copy a file, preface source or destination with "charm:" to specify a remote path.
+          flags:
+            -r, --recursive: copy directories recursively
+        - name: ls [charm:]PATH
+          description: List file or directory at path
+        - name: mv [charm:]PATH [charm:]PATH
+          description: Move a file, preface source or destination with "charm:" to specify a remote path.
+          flags:
+            -r, --recursive: move directories recursively
+        - name: rm [charm:]PATH
+          description: Remove file or directory at path
+        - name: tree [charm:]PATH
+          description: Print a file system tree from path.
+    - name: help [command]
+      description: Help about any command
+    - name: id
+      description: Print your Charm ID
+    - name: import-keys BACKUP.tar
+      description: Import previously backed up Charm account keys.
+      flags:
+        -f, --force-overwrite: overwrite if keys exist; don’t prompt for input
+    - name: jwt
+      description: Print a JWT
+    - name: keys
+      description: Browse or print linked SSH keys
+      flags:
+        -r, --randomart: print SSH 5.1 randomart for each key (the Drunken Bishop algorithm)
+        -s, --simple: simple, non-interactive output (good for scripts)
+    - name: kv
+      description: Use the Charm key value store.
+      commands:
+        - name: delete KEY[@DB]
+          description: Delete a key with an optional @ db.
+        - name: get KEY[@DB]
+          description: Get a value for a key with an optional @ db.
+          flags:
+            -b, --show-binary: print binary values
+        - name: list [@DB]
+          description: List all key value pairs with an optional @ db.
+          flags:
+            -b, --show-binary: print binary values
+            -d, --delimiter=: delimiter to separate keys and values
+            -k, --keys-only: only print keys and don't fetch values from the db
+            -r, --reverse: list in reverse lexicographic order
+            -v, --values-only: only print values
+        - name: reset [@DB]
+          description: Delete local db and pull down fresh copy from Charm Cloud.
+        - name: set KEY[@DB] VALUE
+          description: Set a value for a key with an optional @ db.
+        - name: sync [@DB]
+          description: Sync local db with latest Charm Cloud db.
+    - name: link [code]
+      description: Link multiple machines to your Charm account
+    - name: man
+      description: Generate man pages
+      hidden: true
+    - name: migrate-account
+      hidden: true
+      flags:
+        -v, --verbose: print debug output
+    - name: name [username]
+      description: Username stuff
+    - name: post-news
+      description: Post news to the self-hosted Charm server.
+      hidden: true
+      flags:
+        --data-dir=: Directory to store SQLite db, SSH keys and file data
+        -s, --subject=: Subject for news post
+        -t, --tags=: Tags for news post, comma separated
+    - name: serve
+      aliases:
+        - server
+      description: Start a self-hosted Charm Cloud server.
+      flags:
+        --data-dir=: Directory to store SQLite db, SSH keys and file data
+        --health-port=: Health port to listen on
+        --http-port=: HTTP port to listen on
+        --ssh-port=: SSH port to listen on
+        --stats-port=: Stats port to listen on
+      commands:
+        - name: migrate
+          aliases:
+            - migration
+          description: Run the server migration tool.
+          hidden: true
+    - name: sync-keys
+      description: Re-encrypt encrypt keys for all linked public keys
+      hidden: true
+    - name: where
+      description: Find where your cloud.charm.sh folder resides on your machine
