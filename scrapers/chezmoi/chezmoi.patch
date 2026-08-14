@@ -1,0 +1,21 @@
+diff --git a/internal/cmd/config.go b/internal/cmd/config.go
+index e2eb0aa..9ae13eb 100644
+--- a/internal/cmd/config.go
++++ b/internal/cmd/config.go
+@@ -36,6 +36,7 @@ import (
+ 	"github.com/go-git/go-git/v5/plumbing/format/diff"
+ 	"github.com/go-viper/mapstructure/v2"
+ 	"github.com/muesli/termenv"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 	"github.com/spf13/pflag"
+ 	"github.com/twpayne/go-shell"
+@@ -1402,6 +1403,8 @@ func (c *Config) execute(args []string) error {
+ 	}
+ 	defer c.finalize()
+ 
++	carapace.Gen(rootCmd)
++
+ 	rootCmd.SetArgs(args)
+ 
+ 	return rootCmd.Execute()

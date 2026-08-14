@@ -7,6 +7,7 @@
     "but": "https://github.com/gitbutlerapp/gitbutler#release/0.22.0",
     "cargo": "https://github.com/rust-lang/cargo#0.98.0",
     "charm": "https://github.com/charmbracelet/charm#v0.12.6",
+    "chezmoi": "https://github.com/twpayne/chezmoi#v2.72.0",
     "circleci": "https://github.com/CircleCI-Public/circleci-cli#v1.0.48223",
     "crush": "https://github.com/charmbracelet/crush#v0.88.1",
     "dagger": "https://github.com/dagger/dagger#v0.21.8",
