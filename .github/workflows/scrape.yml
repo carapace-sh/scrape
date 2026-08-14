@@ -13,6 +13,7 @@ jobs:
   but: {uses: ./.github/workflows/scrape-template.yml, with: {command: but}}
   cargo: {uses: ./.github/workflows/scrape-template.yml, with: {command: cargo}}
   charm: {uses: ./.github/workflows/scrape-template.yml, with: {command: charm}}
+  chezmoi: {uses: ./.github/workflows/scrape-template.yml, with: {command: chezmoi}}
   circleci: {uses: ./.github/workflows/scrape-template.yml, with: {command: circleci}}
   csview: {uses: ./.github/workflows/scrape-template.yml, with: {command: csview}}
   crush: {uses: ./.github/workflows/scrape-template.yml, with: {command: crush}}
