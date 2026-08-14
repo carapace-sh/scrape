@@ -1,0 +1,30 @@
+diff --git a/tool/tsh/common/tsh.go b/tool/tsh/common/tsh.go
+index 5838fa74..8e3616b7 100644
+--- a/tool/tsh/common/tsh.go
++++ b/tool/tsh/common/tsh.go
+@@ -111,6 +111,7 @@ import (
+ 	"github.com/gravitational/teleport/tool/common/fido2"
+ 	"github.com/gravitational/teleport/tool/common/touchid"
+ 	"github.com/gravitational/teleport/tool/common/webauthnwin"
++	carapacespeckingpin "github.com/carapace-sh/carapace-spec-kingpin"
+ )
+ 
+ var (
+@@ -948,6 +949,7 @@ func Run(ctx context.Context, args []string, opts ...CliOption) error {
+ 	// configure CLI argument parser:
+ 	cf.kingpinApp = utils.InitCLIParser("tsh", "Teleport Command Line Client.").Interspersed(true)
+ 	app := cf.kingpinApp
++	carapacespeckingpin.Register(app)
+ 
+ 	app.Flag("login", "Remote host login.").Short('l').Envar(loginEnvVar).StringVar(&cf.NodeLogin)
+ 	app.Flag("proxy", "Teleport proxy address.").Envar(proxyEnvVar).StringVar(&cf.Proxy)
+@@ -1639,6 +1641,9 @@ func Run(ctx context.Context, args []string, opts ...CliOption) error {
+ 	// parse CLI commands+flags:
+ 	utils.UpdateAppUsageTemplate(app, args)
+ 	command, err := app.Parse(insertDoubleDashAfterKubectl(args))
++	if strings.HasPrefix(command, "_carapace") {
++		return nil
++	}
+ 	if errors.Is(err, kingpin.ErrExpectedCommand) {
+ 		if _, ok := cf.TSHConfig.Aliases[aliasCommand]; ok {
+ 			logger.DebugContext(ctx, "Failing due to recursive alias",
