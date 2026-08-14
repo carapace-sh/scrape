@@ -1,0 +1,22 @@
+diff --git a/src/main.rs b/src/main.rs
+index 3322c7f..39899da 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -1,3 +1,6 @@
++use clap::CommandFactory;
++use carapace_spec_clap::Spec;
++use clap_complete::generate as clap_generate;
+ use std::io;
+ use std::num::ParseFloatError;
+ use std::{fs::File, io::BufReader, iter};
+@@ -231,6 +234,10 @@ fn reader(path: &str) -> Result<Box<dyn io::Read>> {
+ }
+ 
+ fn main() -> Result<()> {
++    clap_generate(Spec, &mut Cli::command(), "agg", &mut io::stdout());
++    if true {
++        return Ok(());
++    }
+     let cli = Cli::parse();
+ 
+     let log_level = if cli.quiet {

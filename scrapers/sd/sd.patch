@@ -1,0 +1,24 @@
+diff --git a/sd-cli/src/main.rs b/sd-cli/src/main.rs
+index a8c2812..db86291 100644
+--- a/sd-cli/src/main.rs
++++ b/sd-cli/src/main.rs
+@@ -1,4 +1,8 @@
+ mod cli;
++use clap::CommandFactory;
++use carapace_spec_clap::Spec;
++use clap_complete::generate as clap_generate;
++use std::io;
+ 
+ use clap::Parser;
+ use std::{io::stdout, process};
+@@ -13,6 +17,10 @@ fn main() {
+ }
+ 
+ fn try_main() -> Result<()> {
++    clap_generate(Spec, &mut cli::Options::command(), "sd", &mut io::stdout());
++    if true {
++        return Ok(());
++    }
+     let options = cli::Options::parse();
+ 
+     let replacer = Replacer::new(

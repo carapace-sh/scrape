@@ -1,0 +1,24 @@
+diff --git a/src/main.rs b/src/main.rs
+index fddad48..c3e9c1f 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -19,6 +19,8 @@ use crate::view::View;
+ use crate::watcher::Watcher;
+ use anyhow::{Context, Error};
+ use clap::{CommandFactory, Parser};
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
+ use clap_mangen::Man;
+ use console::Term;
+ use once_cell::sync::Lazy;
+@@ -139,6 +141,10 @@ fn main() {
+ }
+ 
+ fn run() -> Result<(), Error> {
++    generate(Spec, &mut Opt::command(), "procs", &mut std::io::stdout());
++    if true {
++        return Ok(());
++    }
+     let mut opt: Opt = Parser::parse();
+     opt.watch_mode = opt.watch || opt.watch_interval.is_some();
+     validate_search_args(&opt)?;

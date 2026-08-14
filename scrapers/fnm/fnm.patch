@@ -1,0 +1,27 @@
+diff --git a/src/main.rs b/src/main.rs
+index 6ab10ea..5bbb1d1 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -6,6 +6,11 @@
+     clippy::similar_names
+ )]
+ 
++use clap::CommandFactory;
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
++
+ mod alias;
+ mod arch;
+ mod archive;
+@@ -40,6 +45,10 @@ mod directories;
+ mod pretty_serde;
+ 
+ fn main() {
++    generate(Spec, &mut crate::cli::Cli::command(), "fnm", &mut io::stdout());
++    if true {
++        return;
++    }
+     env_logger::init();
+     let value = crate::cli::parse();
+     value.subcmd.call(value.config);

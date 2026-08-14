@@ -1,0 +1,31 @@
+diff --git a/src/main.rs b/src/main.rs
+index bd9c721..18b037c 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -9,12 +9,14 @@ mod util;
+ use etcetera::BaseStrategy;
+ use rust_embed::RustEmbed;
+ use std::io::{self, Write};
++use carapace_spec_clap::Spec;
++use clap_complete::generate as clap_generate;
+ use std::path::{Path, PathBuf};
+ use std::process;
+ use std::{env, fs};
+ 
+ use clap::{
+-    crate_description, crate_name, crate_version, Arg, ArgAction, ArgMatches, ColorChoice, Command,
++    crate_description, crate_name, crate_version, Arg, ArgAction, ArgMatches, ColorChoice, CommandFactory, Command,
+ };
+ 
+ use crate::color::ColorMode;
+@@ -166,6 +168,10 @@ fn cli() -> clap::Command {
+ }
+ 
+ fn run() -> Result<()> {
++    clap_generate(Spec, &mut cli(), "vivid", &mut std::io::stdout());
++    if true {
++        return Ok(());
++    }
+     let matches = cli().get_matches();
+     let color_mode = match matches.get_one::<String>("color-mode").map(|s| s.as_str()) {
+         Some("8-bit") => ColorMode::BitDepth8,
