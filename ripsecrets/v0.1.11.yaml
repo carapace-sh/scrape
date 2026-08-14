@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: ripsecrets
+description: A command-line tool to prevent committing secret keys into your source code
+flags:
+  --additional-pattern=*: Additional regex patterns used to find secrets. If there is a matching group in the regex the matched group will be tested for randomness before being reported as a secret
+  -h, --help: Print help (see more with '--help')
+  --install-pre-commit: Install `ripsecrets` as a pre-commit hook automatically in git directory provided
+  --only-matching: Print only the matched (non-empty) parts of a matching line, with each such part on a separate output line
+  --strict-ignore: If you pass a path as an argument that's ignored by .secretsignore it will be scanned by default. --strict-ignore will override this behavior and not search the paths passed as arguments that are excluded by the .secretsignore file. This is useful when invoking secrets as a pre-commit
+  -V, --version: Print version
+completion:
+  positionalany:
+  - $files
+documentation:
+  command: |-
+    ripsecrets searches files and directories recursively for secret API keys.
+    It's primarily designed to be used as a pre-commit to prevent committing
+    secrets into version control.
+  flag:
+    help: Print help (see a summary with '-h')
