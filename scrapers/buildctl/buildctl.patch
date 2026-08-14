@@ -1,0 +1,20 @@
+diff --git a/cmd/buildctl/main.go b/cmd/buildctl/main.go
+index 8279cd1..61a49fb 100644
+--- a/cmd/buildctl/main.go
++++ b/cmd/buildctl/main.go
+@@ -25,6 +25,7 @@ import (
+ 	"github.com/pkg/errors"
+ 	"github.com/sirupsen/logrus"
+ 	"github.com/urfave/cli/v3"
++	"github.com/carapace-sh/carapace-spec-urfavecli"
+ 	"go.opentelemetry.io/otel"
+ )
+ 
+@@ -139,6 +140,7 @@ func main() {
+ 	}
+ 
+ 	profiler.Attach(app)
++	spec.Register(app)
+ 
+ 	handleErr(debugEnabled, app.Run(context.Background(), os.Args))
+ }

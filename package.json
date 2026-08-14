@@ -2,6 +2,7 @@
   "dependencies": {
     "atuin": "https://github.com/atuinsh/atuin#v18.19.0",
     "bat": "https://github.com/sharkdp/bat#v0.26.1",
+    "buildctl": "https://github.com/moby/buildkit#v0.32.2",
     "bazel": "https://github.com/bazelbuild/bazel#9.2.0",
     "but": "https://github.com/gitbutlerapp/gitbutler#release/0.22.0",
     "cargo": "https://github.com/rust-lang/cargo#0.98.0",
