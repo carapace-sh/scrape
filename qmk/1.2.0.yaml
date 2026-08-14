@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: qmk
+commands:
+    - name: clone
+      flags:
+        --baseurl=: 'The URL all git operations start from (Default: https://github.com)'
+        -b, --branch=: The branch to clone.
+      documentation:
+        flag:
+            baseurl: 'The URL all git operations start from (Default: https://github.com)'
+            branch: 'The branch to clone. Default: master'
+    - name: console
+      flags:
+        --bootloaders: Enable displaying bootloaders.
+        --no-bootloaders: Disable displaying bootloaders.
+        -d, --device=: Device to select - uses format <pid>:<vid>[:<index>].
+        -l, --list: List available hid_listen devices.
+        -n, --numeric: Show VID/PID instead of names.
+        -t, --timestamp: Print the timestamp for received messages as well.
+        -w, --wait=: 'How many seconds to wait between checks (Default: 1)'
+      documentation:
+        flag:
+            bootloaders: Enable displaying bootloaders.
+            device: Device to select - uses format <pid>:<vid>[:<index>].
+            list: List available hid_listen devices.
+            no-bootloaders: Disable displaying bootloaders.
+            numeric: Show VID/PID instead of names.
+            timestamp: Print the timestamp for received messages as well.
+            wait: 'How many seconds to wait between checks (Default: 1)'
+    - name: env
+    - name: setup
+      flags:
+        --baseurl=: The URL all git operations start from.
+        -H, --home=: The location for QMK Firmware.
+        -b, --branch=: The branch to clone.
+        -n, --no: Answer no to all questions
+        -y, --yes: Answer yes to all questions
+      documentation:
+        flag:
+            baseurl: 'The URL all git operations start from. Default: https://github.com'
+            branch: 'The branch to clone. Default: master'
+            home: 'The location for QMK Firmware. Default: /qmk_firmware'
+            "no": Answer no to all questions
+            "yes": Answer yes to all questions
