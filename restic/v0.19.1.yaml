@@ -1,0 +1,367 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: restic
+description: Backup and restore files
+persistentflags:
+    --cacert*=: '`file` to load root certificates from (default: use system certificates or $RESTIC_CACERT)'
+    --cache-dir=: 'set the cache `directory`. (default: use system default cache directory)'
+    --cleanup-cache: auto remove old cache directories
+    --compression=: 'compression mode (only available for repository format version 2), one of (auto|off|fastest|better|max) (default: $RESTIC_COMPRESSION)'
+    --http-user-agent=: set a http user agent for outgoing http requests
+    --insecure-no-password: use an empty password for the repository, must be passed to every restic command (insecure)
+    --insecure-tls: skip TLS certificate verification when connecting to the repository (insecure)
+    --json: set output mode to JSON for commands that support it
+    --key-hint=: '`key` ID of key to try decrypting first (default: $RESTIC_KEY_HINT)'
+    --limit-download=: 'limits downloads to a maximum `rate` in KiB/s. (default: unlimited)'
+    --limit-upload=: 'limits uploads to a maximum `rate` in KiB/s. (default: unlimited)'
+    --no-cache: do not use a local cache
+    --no-extra-verify: skip additional verification of data before upload (see documentation)
+    --no-lock: do not lock the repository, this allows some operations on read-only repositories
+    --pack-size=: 'set target pack `size` in MiB, created pack files may be larger (default: $RESTIC_PACK_SIZE)'
+    --password-command=: 'shell `command` to obtain the repository password from (default: $RESTIC_PASSWORD_COMMAND)'
+    --repository-file=: '`file` to read the repository location from (default: $RESTIC_REPOSITORY_FILE)'
+    --retry-lock=: 'retry to lock the repository if it is already locked, takes a value like 5m or 2h (default: no retries)'
+    --stuck-request-timeout=: '`duration` after which to retry stuck requests'
+    --tls-client-cert=: 'path to a `file` containing PEM encoded TLS client certificate and private key (default: $RESTIC_TLS_CLIENT_CERT)'
+    -o, --option*=: set extended option (`key=value`, can be specified multiple times)
+    -p, --password-file=: '`file` to read the repository password from (default: $RESTIC_PASSWORD_FILE)'
+    -q, --quiet: do not output comprehensive progress report
+    -r, --repo=: '`repository` to backup to or restore from (default: $RESTIC_REPOSITORY)'
+    -v, --verbose*: be verbose (specify multiple times or a level using --verbose=n``, max level/times is 2)
+commands:
+    - name: backup [flags] [FILE/DIR] ...
+      description: Create a new backup of files and/or directories
+      group: default
+      flags:
+        --exclude-caches: excludes cache directories that are marked with a CACHEDIR.TAG file. See https://bford.info/cachedir/ for the Cache Directory Tagging Standard
+        --exclude-file*=: read exclude patterns from a `file` (can be specified multiple times)
+        --exclude-if-present*=: takes `filename[:header]`, exclude contents of directories containing filename (except filename itself) if header of that file is as provided (can be specified multiple times)
+        --exclude-larger-than=: 'max `size` of the files to be backed up (allowed suffixes: k/K, m/M, g/G, t/T)'
+        --files-from*=: read the files to backup from `file` (can be combined with file args; can be specified multiple times)
+        --files-from-raw*=: read the files to backup from `file` (can be combined with file args; can be specified multiple times)
+        --files-from-verbatim*=: read the files to backup from `file` (can be combined with file args; can be specified multiple times)
+        --hostname&=: set the `hostname` for the snapshot manually
+        --iexclude*=: same as --exclude `pattern` but ignores the casing of filenames
+        --iexclude-file*=: same as --exclude-file but ignores casing of `file`names in patterns
+        --ignore-ctime: ignore ctime changes when checking for modified files
+        --ignore-inode: ignore inode number and ctime changes when checking for modified files
+        --no-scan: do not run scanner to estimate size of backup
+        --parent=: 'use this parent `snapshot` (default: latest snapshot in the group determined by --group-by and not newer than the timestamp determined by --time)'
+        --read-concurrency=: 'read `n` files concurrently (default: $RESTIC_READ_CONCURRENCY or 2)'
+        --skip-if-unchanged: skip snapshot creation if identical to parent snapshot
+        --stdin: read backup from stdin
+        --stdin-filename=: '`filename` to use when reading from stdin'
+        --stdin-from-command: interpret arguments as command to execute and store its stdout
+        --tag=: add `tags` for the new snapshot in the format `tag[,tag,...]` (can be specified multiple times)
+        --time=: '`time` of the backup (ex. ''2012-11-01 22:08:41'') (default: now)'
+        --with-atime: store the atime for all files and directories
+        -H, --host=: 'set the `hostname` for the snapshot manually (default: $RESTIC_HOST). To prevent an expensive rescan use the "parent" flag'
+        -e, --exclude*=: exclude a `pattern` (can be specified multiple times)
+        -f, --force: force re-reading the source files/directories (overrides the "parent" flag)
+        -g, --group-by=: '`group` snapshots by host, paths and/or tags, separated by comma (disable grouping with '''')'
+        -n, --dry-run: do not upload or write any data, just show what would be done
+        -x, --one-file-system: exclude other file systems, don't cross filesystem boundaries and subvolumes
+    - name: cache
+      description: Operate on local cache directories
+      group: default
+      flags:
+        --cleanup: remove old cache directories
+        --max-age=: max age in `days` for cache directories to be considered old
+        --no-size: do not output the size of the cache directories
+    - name: cat [flags] [masterkey|config|pack ID|blob ID|snapshot ID|index ID|key ID|lock ID|tree snapshot:subfolder]
+      description: Print internal objects to stdout
+      group: default
+    - name: check [flags]
+      description: Check the repository for errors
+      group: default
+      flags:
+        --check-unused&: find unused blobs
+        --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+        --read-data: read all data blobs
+        --read-data-subset=: read a `subset` of data packs, specified as 'n/t' for specific part, or either 'x%' or 'x.y%' or a size in bytes with suffixes k/K, m/M, g/G, t/T for a random subset
+        --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        --with-cache: use existing cache, only read uncached data from repository
+        -H, --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    - name: copy [flags] [snapshotID ...]
+      description: Copy snapshots from one repository to another
+      group: default
+      flags:
+        --from-insecure-no-password: use an empty password for the source repository (insecure)
+        --from-key-hint=: 'key ID of key to try decrypting the source repository first (default: $RESTIC_FROM_KEY_HINT)'
+        --from-password-command=: 'shell `command` to obtain the source repository password from (default: $RESTIC_FROM_PASSWORD_COMMAND)'
+        --from-password-file=: '`file` to read the source repository password from (default: $RESTIC_FROM_PASSWORD_FILE)'
+        --from-repo=: 'source `repository` to copy snapshots from (default: $RESTIC_FROM_REPOSITORY)'
+        --from-repository-file=: '`file` from which to read the source repository location to copy snapshots from (default: $RESTIC_FROM_REPOSITORY_FILE)'
+        --key-hint2&=: 'key ID of key to try decrypting the destination repository first (default: $RESTIC_KEY_HINT2)'
+        --password-command2&=: 'shell `command` to obtain the destination repository password from (default: $RESTIC_PASSWORD_COMMAND2)'
+        --password-file2&=: '`file` to read the destination repository password from (default: $RESTIC_PASSWORD_FILE2)'
+        --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+        --repo2&=: 'destination `repository` to copy snapshots from (default: $RESTIC_REPOSITORY2)'
+        --repository-file2&=: '`file` from which to read the destination repository location to copy snapshots from (default: $RESTIC_REPOSITORY_FILE2)'
+        --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        -H, --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    - name: diff [flags] snapshotID snapshotID
+      description: Show differences between two snapshots
+      group: default
+      flags:
+        --metadata: print changes in metadata
+    - name: dump [flags] snapshotID file
+      description: Print backed-up files or folders to stdout
+      group: default
+      flags:
+        --path*=: only consider snapshots including this (absolute) `path`, when snapshot ID "latest" is given (can be specified multiple times, snapshots must include all specified paths)
+        --tag=: only consider snapshots including `tag[,tag,...]`, when snapshot ID "latest" is given (can be specified multiple times)
+        -H, --host*=: 'only consider snapshots for this `host`, when snapshot ID "latest" is given (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+        -a, --archive=: set archive `format` as "tar" or "zip"
+        -t, --target=: write the output to target `path`
+    - name: features
+      description: Print list of feature flags
+      group: advanced
+    - name: find [flags] PATTERN...
+      description: Find a file, a directory or restic IDs
+      group: default
+      flags:
+        --blob: pattern is a blob-ID
+        --human-readable: print sizes in human readable format
+        --pack: pattern is a pack-ID
+        --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+        --show-pack-id: display the pack-ID the blobs belong to (with --blob or --tree)
+        --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        --tree: pattern is a tree-ID
+        -H, --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+        -N, --newest=: newest modification date/time
+        -O, --oldest=: oldest modification date/time
+        -R, --reverse: reverse sort order oldest to newest
+        -i, --ignore-case: ignore case for pattern
+        -l, --long: use a long listing format showing size and mode
+        -s, --snapshot*=: snapshot `id` to search in (can be given multiple times)
+    - name: forget [flags] [snapshot ID] [...]
+      description: Remove snapshots from the repository
+      group: default
+      flags:
+        --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+        --hostname&*=: only consider snapshots with the given `hostname` (can be specified multiple times)
+        --keep-tag=: keep snapshots with this `taglist` (can be specified multiple times)
+        --keep-within-daily=: keep daily snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+        --keep-within-hourly=: keep hourly snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+        --keep-within-monthly=: keep monthly snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+        --keep-within-weekly=: keep weekly snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+        --keep-within-yearly=: keep yearly snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+        --keep-within=: keep snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+        --max-repack-size=: 'stop after repacking this much data in total (allowed suffixes for `size`: k/K, m/M, g/G, t/T)'
+        --max-unused=: tolerate given `limit` of unused data (absolute value in bytes with suffixes k/K, m/M, g/G, t/T, a value in % or the word 'unlimited')
+        --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+        --prune: automatically run the 'prune' command if snapshots have been removed
+        --repack-cacheable-only: only repack packs which are cacheable
+        --repack-small&: deprecated. Use --repack-smaller-than to specify a minimum size
+        --repack-smaller-than=: 'pack `below-limit` packfiles (allowed suffixes: m/M)'
+        --repack-uncompressed: repack all uncompressed data
+        --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        --unsafe-allow-remove-all: allow deleting all snapshots of a snapshot group
+        -H, --keep-hourly=: keep the last `n` hourly snapshots (use 'unlimited' to keep all hourly snapshots)
+        -c, --compact: use compact output format
+        -d, --keep-daily=: keep the last `n` daily snapshots (use 'unlimited' to keep all daily snapshots)
+        -g, --group-by=: '`group` snapshots by host, paths and/or tags, separated by comma (disable grouping with '''')'
+        -l, --keep-last=: keep the last `n` snapshots (use 'unlimited' to keep all snapshots)
+        -m, --keep-monthly=: keep the last `n` monthly snapshots (use 'unlimited' to keep all monthly snapshots)
+        -n, --dry-run: do not delete anything, just print what would be done
+        -w, --keep-weekly=: keep the last `n` weekly snapshots (use 'unlimited' to keep all weekly snapshots)
+        -y, --keep-yearly=: keep the last `n` yearly snapshots (use 'unlimited' to keep all yearly snapshots)
+    - name: generate [flags]
+      description: Generate manual pages and auto-completion files (bash, fish, zsh, powershell)
+      flags:
+        --bash-completion=: write bash completion `file` (`-` for stdout)
+        --fish-completion=: write fish completion `file` (`-` for stdout)
+        --man=: write man pages to `directory`
+        --powershell-completion=: write powershell completion `file` (`-` for stdout)
+        --zsh-completion=: write zsh completion `file` (`-` for stdout)
+    - name: help [command]
+      description: Help about any command
+    - name: init
+      description: Initialize a new repository
+      group: default
+      flags:
+        --copy-chunker-params: copy chunker parameters from the secondary repository (useful with the copy command)
+        --from-insecure-no-password: use an empty password for the source repository (insecure)
+        --from-key-hint=: 'key ID of key to try decrypting the source repository first (default: $RESTIC_FROM_KEY_HINT)'
+        --from-password-command=: 'shell `command` to obtain the source repository password from (default: $RESTIC_FROM_PASSWORD_COMMAND)'
+        --from-password-file=: '`file` to read the source repository password from (default: $RESTIC_FROM_PASSWORD_FILE)'
+        --from-repo=: 'source `repository` to copy chunker parameters from (default: $RESTIC_FROM_REPOSITORY)'
+        --from-repository-file=: '`file` from which to read the source repository location to copy chunker parameters from (default: $RESTIC_FROM_REPOSITORY_FILE)'
+        --key-hint2&=: 'key ID of key to try decrypting the secondary repository first (default: $RESTIC_KEY_HINT2)'
+        --password-command2&=: 'shell `command` to obtain the secondary repository password from (default: $RESTIC_PASSWORD_COMMAND2)'
+        --password-file2&=: '`file` to read the secondary repository password from (default: $RESTIC_PASSWORD_FILE2)'
+        --repo2&=: 'secondary `repository` to copy chunker parameters from (default: $RESTIC_REPOSITORY2)'
+        --repository-file2&=: '`file` from which to read the secondary repository location to copy chunker parameters from (default: $RESTIC_REPOSITORY_FILE2)'
+        --repository-version=: repository format version to use, allowed values are a format version, 'latest' and 'stable'
+    - name: key
+      description: Manage keys (passwords)
+      group: default
+      commands:
+        - name: add
+          description: Add a new key (password) to the repository; returns the new key ID
+          flags:
+            --host=: the hostname for new key
+            --new-insecure-no-password: add an empty password for the repository (insecure)
+            --new-password-file=: '`file` from which to read the new password'
+            --user=: the username for new key
+        - name: list
+          description: List keys (passwords)
+        - name: passwd
+          description: Change key (password); creates a new key ID and removes the old key ID, returns new key ID
+          flags:
+            --host=: the hostname for new key
+            --new-insecure-no-password: add an empty password for the repository (insecure)
+            --new-password-file=: '`file` from which to read the new password'
+            --user=: the username for new key
+        - name: remove [ID]
+          description: Remove key ID (password) from the repository
+    - name: list [flags] [blobs|packs|index|snapshots|keys|locks]
+      description: List objects in the repository
+      group: default
+    - name: ls [flags] snapshotID [dir...]
+      description: List files in a snapshot
+      group: default
+      flags:
+        --human-readable: print sizes in human readable format
+        --ncdu: output NCDU export format (pipe into 'ncdu -f -')
+        --path*=: only consider snapshots including this (absolute) `path`, when snapshot ID "latest" is given (can be specified multiple times, snapshots must include all specified paths)
+        --recursive: include files in subfolders of the listed directories
+        --reverse: reverse sorted output
+        --tag=: only consider snapshots including `tag[,tag,...]`, when snapshot ID "latest" is given (can be specified multiple times)
+        -H, --host*=: 'only consider snapshots for this `host`, when snapshot ID "latest" is given (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+        -l, --long: use a long listing format showing size and mode
+        -s, --sort=: sort output by (name|size|time=mtime|atime|ctime|extension)
+    - name: migrate [flags] [migration name] [...]
+      description: Apply migrations
+      group: default
+      flags:
+        -f, --force: apply a migration a second time
+    - name: mount [flags] mountpoint
+      description: Mount the repository
+      group: default
+      flags:
+        --allow-other: allow other users to access the data in the mounted directory
+        --no-default-permissions: for 'allow-other', ignore Unix permissions and allow users to read all snapshot files
+        --owner-root: use 'root' as the owner of files and dirs
+        --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+        --path-template*=: set `template` for path names (can be specified multiple times)
+        --snapshot-template&=: set `template` to use for snapshot dirs
+        --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        --time-template=: set `template` to use for times
+        -H, --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    - name: options
+      description: Print list of extended options
+      group: advanced
+    - name: prune [flags]
+      description: Remove unneeded data from the repository
+      group: default
+      flags:
+        --max-repack-size=: 'stop after repacking this much data in total (allowed suffixes for `size`: k/K, m/M, g/G, t/T)'
+        --max-unused=: tolerate given `limit` of unused data (absolute value in bytes with suffixes k/K, m/M, g/G, t/T, a value in % or the word 'unlimited')
+        --repack-cacheable-only: only repack packs which are cacheable
+        --repack-small&: deprecated. Use --repack-smaller-than to specify a minimum size
+        --repack-smaller-than=: 'pack `below-limit` packfiles (allowed suffixes: m/M)'
+        --repack-uncompressed: repack all uncompressed data
+        --unsafe-recover-no-free-space=: UNSAFE, READ THE DOCUMENTATION BEFORE USING! Try to recover a repository stuck with no free space. Do not use without trying out 'prune --max-repack-size 0' first.
+        -n, --dry-run: do not modify the repository, just print what would be done
+    - name: recover [flags]
+      description: Recover data from the repository not referenced by snapshots
+      group: default
+    - name: repair
+      description: Repair the repository
+      group: default
+      commands:
+        - name: index [flags]
+          description: Build a new index
+          flags:
+            --read-all-packs: read all pack files to generate new index from scratch
+        - name: packs [packIDs...]
+          description: Salvage damaged pack files
+        - name: snapshots [flags] [snapshot ID] [...]
+          description: Repair snapshots
+          flags:
+            --forget: remove original snapshots after creating new ones
+            --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+            --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+            -H, --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+            -n, --dry-run: do not do anything, just print what would be done
+    - name: restore [flags] snapshotID
+      description: Extract the data from a snapshot
+      group: default
+      flags:
+        --delete: delete files from target directory if they do not exist in snapshot. Use '--dry-run -vv' to check what would be deleted
+        --dry-run: do not write any data, just show what would be done
+        --exclude-file*=: read exclude patterns from a `file` (can be specified multiple times)
+        --exclude-xattr*=: exclude xattr by `pattern` (can be specified multiple times)
+        --iexclude*=: same as --exclude `pattern` but ignores the casing of filenames
+        --iexclude-file*=: same as --exclude-file but ignores casing of `file`names in patterns
+        --iinclude*=: same as --include `pattern` but ignores the casing of filenames
+        --iinclude-file*=: same as --include-file but ignores casing of `file`names in patterns
+        --include-file*=: read include patterns from a `file` (can be specified multiple times)
+        --include-xattr*=: include xattr by `pattern` (can be specified multiple times)
+        --overwrite=: overwrite behavior, one of (always|if-changed|if-newer|never)
+        --ownership-by-name: restore file ownership by user name and group name (except POSIX ACLs)
+        --path*=: only consider snapshots including this (absolute) `path`, when snapshot ID "latest" is given (can be specified multiple times, snapshots must include all specified paths)
+        --sparse: restore files as sparse
+        --tag=: only consider snapshots including `tag[,tag,...]`, when snapshot ID "latest" is given (can be specified multiple times)
+        --verify: verify restored files content
+        -H, --host*=: 'only consider snapshots for this `host`, when snapshot ID "latest" is given (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+        -e, --exclude*=: exclude a `pattern` (can be specified multiple times)
+        -i, --include*=: include a `pattern` (can be specified multiple times)
+        -t, --target=: directory to extract data to
+    - name: rewrite [flags] [snapshotID ...]
+      description: Rewrite snapshots to exclude files or change metadata
+      group: default
+      flags:
+        --exclude-file*=: read exclude patterns from a `file` (can be specified multiple times)
+        --forget: remove original snapshots after creating new ones
+        --iexclude*=: same as --exclude `pattern` but ignores the casing of filenames
+        --iexclude-file*=: same as --exclude-file but ignores casing of `file`names in patterns
+        --iinclude*=: same as --include `pattern` but ignores the casing of filenames
+        --iinclude-file*=: same as --include-file but ignores casing of `file`names in patterns
+        --include-file*=: read include patterns from a `file` (can be specified multiple times)
+        --new-host=: replace hostname
+        --new-time=: replace time of the backup
+        --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+        --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        -H, --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+        -e, --exclude*=: exclude a `pattern` (can be specified multiple times)
+        -i, --include*=: include a `pattern` (can be specified multiple times)
+        -n, --dry-run: do not do anything, just print what would be done
+        -s, --snapshot-summary: create snapshot summary record if it does not exist
+    - name: snapshots [flags] [snapshotID ...]
+      description: List all snapshots
+      group: default
+      flags:
+        --last&: only show the last snapshot for each host and path
+        --latest=: only show the last `n` snapshots for each host and path
+        --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+        --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        -H, --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+        -c, --compact: use compact output format
+        -g, --group-by=: '`group` snapshots by host, paths and/or tags, separated by comma'
+    - name: stats [flags] [snapshot ID] [...]
+      description: Scan the repository and show basic statistics
+      group: default
+      flags:
+        --mode=: 'counting mode: restore-size (default), files-by-contents, blobs-per-file or raw-data'
+        --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+        --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        -H, --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    - name: tag [flags] [snapshotID ...]
+      description: Modify tags on snapshots
+      group: default
+      flags:
+        --add=: '`tags` which will be added to the existing tags in the format `tag[,tag,...]` (can be given multiple times)'
+        --path*=: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+        --remove=: '`tags` which will be removed from the existing tags in the format `tag[,tag,...]` (can be given multiple times)'
+        --set=: '`tags` which will replace the existing tags in the format `tag[,tag,...]` (can be given multiple times)'
+        --tag=: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        -H, --host*=: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    - name: unlock
+      description: Remove locks other processes created
+      group: default
+      flags:
+        --remove-all: remove all locks, even non-stale ones
+    - name: version
+      description: Print version information
