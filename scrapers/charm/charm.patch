@@ -1,0 +1,20 @@
+diff --git a/main.go b/main.go
+index bd6894e..dc4f6cc 100644
+--- a/main.go
++++ b/main.go
+@@ -6,6 +6,7 @@ import (
+ 	"runtime/debug"
+ 
+ 	"github.com/charmbracelet/log"
++	"github.com/carapace-sh/carapace"
+ 
+ 	"github.com/charmbracelet/charm/client"
+ 	"github.com/charmbracelet/charm/cmd"
+@@ -118,6 +119,7 @@ func init() {
+ }
+ 
+ func main() {
++	carapace.Gen(rootCmd)
+ 	if err := rootCmd.Execute(); err != nil {
+ 		os.Exit(1)
+ 	}

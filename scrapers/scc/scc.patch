@@ -1,0 +1,20 @@
+diff --git a/main.go b/main.go
+index a715486..dba8c3c 100644
+--- a/main.go
++++ b/main.go
+@@ -10,6 +10,7 @@ import (
+ 	"strings"
+ 
+ 	"github.com/boyter/scc/v3/processor"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 	"github.com/spf13/pflag"
+ )
+@@ -471,6 +472,7 @@ func main() {
+ 		return
+ 	}
+ 
++	carapace.Gen(rootCmd)
+ 	if err := rootCmd.Execute(); err != nil {
+ 		// If a flag does not exist and is not a shorthand, it may be a spelling error. Search for and print possible options.
+ 		if notExistError, ok := err.(*pflag.NotExistError); ok && len(notExistError.GetSpecifiedName()) > 1 {

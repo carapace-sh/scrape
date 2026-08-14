@@ -1,0 +1,20 @@
+diff --git a/cmd/gdu/main.go b/cmd/gdu/main.go
+index 8826871..298457b 100644
+--- a/cmd/gdu/main.go
++++ b/cmd/gdu/main.go
+@@ -12,6 +12,7 @@ import (
+ 	"github.com/mattn/go-isatty"
+ 	"github.com/rivo/tview"
+ 	log "github.com/sirupsen/logrus"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 	"gopkg.in/yaml.v3"
+ 
+@@ -257,6 +258,7 @@ func runE(command *cobra.Command, args []string) error {
+ }
+ 
+ func main() {
++	carapace.Gen(rootCmd)
+ 	if err := rootCmd.Execute(); err != nil {
+ 		os.Exit(1)
+ 	}

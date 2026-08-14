@@ -1,0 +1,20 @@
+diff --git a/cmd/syft/cli/cli.go b/cmd/syft/cli/cli.go
+index 9372ce7..7ba1f6e 100644
+--- a/cmd/syft/cli/cli.go
++++ b/cmd/syft/cli/cli.go
+@@ -5,6 +5,7 @@ import (
+ 	"os"
+ 
+ 	cranecmd "github.com/google/go-containerregistry/cmd/crane/cmd"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 
+ 	"github.com/anchore/clio"
+@@ -58,6 +59,7 @@ func create(id clio.Identification, out io.Writer) (clio.Application, *cobra.Com
+ 	// does not appear to be the correct behavior on cobra's part https://github.com/spf13/cobra/issues/1708 .
+ 	// In the future this functionality should be restored.
+ 
++	carapace.Gen(rootCmd)
+ 	return app, rootCmd
+ }
+ 

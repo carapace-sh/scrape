@@ -1,0 +1,20 @@
+diff --git a/internal/cmd/root/root.go b/internal/cmd/root/root.go
+index e0387e8..cb89b49 100644
+--- a/internal/cmd/root/root.go
++++ b/internal/cmd/root/root.go
+@@ -29,6 +29,7 @@ import (
+ 	"charm.land/glamour/v2"
+ 	"github.com/njayp/ophis"
+ 	"github.com/shirou/gopsutil/v4/host"
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 
+ 	clierrors "github.com/CircleCI-Public/circleci-cli/clikit/errors"
+@@ -382,6 +383,7 @@ func NewRootCmd(version string) *cobra.Command {
+ 		referenceCmd.Long = stringifyReference(cmd)
+ 	}
+ 
++	carapace.Gen(cmd)
+ 	return cmd
+ }
+ 
