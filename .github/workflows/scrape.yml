@@ -81,4 +81,5 @@ jobs:
   xh: {uses: ./.github/workflows/scrape-template.yml, with: {command: xh}}
   yt-dlp: {uses: ./.github/workflows/scrape-template.yml, with: {command: yt-dlp}}
   youtube-dl: {uses: ./.github/workflows/scrape-template.yml, with: {command: youtube-dl}}
+  zellij: {uses: ./.github/workflows/scrape-template.yml, with: {command: zellij}}
   zoxide: {uses: ./.github/workflows/scrape-template.yml, with: {command: zoxide}}

@@ -1,0 +1,27 @@
+diff --git a/src/main.rs b/src/main.rs
+index 15ed027..d1f1d3c 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -2,7 +2,10 @@ mod commands;
+ #[cfg(test)]
+ mod tests;
+ 
+-use clap::Parser;
++use clap::{CommandFactory, Parser};
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
+ use zellij_utils::{
+     cli::{CliAction, CliArgs, Command, Sessions},
+     consts::{create_config_and_cache_folders, VERSION},
+@@ -15,6 +18,10 @@ use zellij_utils::{
+ };
+ 
+ fn main() {
++    generate(Spec, &mut CliArgs::command(), "zellij", &mut io::stdout());
++    if true {
++        return;
++    }
+     configure_logger();
+     create_config_and_cache_folders();
+     let opts = CliArgs::parse();
