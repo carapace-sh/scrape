@@ -1,0 +1,103 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: dlv
+description: Delve is a debugger for the Go programming language.
+persistentflags:
+    --accept-multiclient: Allows a headless server to accept multiple client connections via JSON-RPC or DAP.
+    --allow-non-terminal-interactive: Allows interactive sessions of Delve that don't have a terminal as stdin, stdout and stderr
+    --api-version=: Selects JSON-RPC API version when headless. The only valid value is 2. Can be reset via RPCServer.SetApiVersion. See Documentation/api/json-rpc/README.md.
+    --backend=: Backend selection (see 'dlv help backend').
+    --build-flags=: 'Build flags, to be passed to the compiler. For example: --build-flags="-tags=integration -mod=vendor -cover -v"'
+    --check-go-version: Exits if the version of Go in use is not compatible (too old or too new) with the version of Delve.
+    --disable-aslr: Disables address space randomization
+    --headless: Run debug server only, in headless mode. Server will accept both JSON-RPC or DAP client connections.
+    --init=: Init file, executed by the terminal client.
+    --log: Enable debugging server logging.
+    --log-dest=: Writes logs to the specified file or file descriptor (see 'dlv help log').
+    --log-output=: Comma separated list of components that should produce debug output (see 'dlv help log')
+    --only-same-user: Only connections from the same user that started this instance of Delve are allowed to connect.
+    --wd=: Working directory for running the program.
+    -l, --listen=: Debugging server listen address. Prefix with 'unix:' to use a unix domain socket.
+    -r, --redirect*=: Specifies redirect rules for target process (see 'dlv help redirect')
+commands:
+    - name: attach pid [executable]
+      description: Attach to running process and begin debugging.
+      flags:
+        --continue: Continue the debugged process on start.
+        --waitfor-duration=: Total time to wait for a process
+        --waitfor-interval=: Interval between checks of the process list, in millisecond
+        --waitfor=: Wait for a process with a name beginning with this prefix
+    - name: backend
+      description: Help about the --backend flag.
+    - name: completion
+      description: Generate the autocompletion script for the specified shell
+      commands:
+        - name: bash
+          description: Generate the autocompletion script for bash
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: fish
+          description: Generate the autocompletion script for fish
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: powershell
+          description: Generate the autocompletion script for powershell
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: zsh
+          description: Generate the autocompletion script for zsh
+          flags:
+            --no-descriptions: disable completion descriptions
+    - name: connect addr
+      description: Connect to a headless debug server with a terminal client.
+    - name: core <executable> <core>
+      description: Examine a core dump.
+      flags:
+        -c, --core&: ""
+    - name: dap
+      description: Starts a headless TCP server communicating via Debug Adaptor Protocol (DAP).
+      flags:
+        --client-addr=: Address where the DAP client is waiting for the DAP server to dial in. Prefix with 'unix:' to use a unix domain socket.
+    - name: debug [package]
+      description: Compile and begin debugging main package in current directory, or the package specified.
+      flags:
+        --continue: Continue the debugged process on start.
+        --output=: Output path for the binary.
+        --rr-cleanup: Delete directory containing debug recording on detach.
+        --tty=: TTY to use for the target program
+    - name: exec <path/to/binary>
+      description: Execute a precompiled binary, and begin a debug session.
+      flags:
+        --continue: Continue the debugged process on start.
+        --rr-cleanup: Delete directory containing debug recording on detach.
+        --tty=: TTY to use for the target program
+    - name: help [command]
+      description: Help about any command
+    - name: log
+      description: Help about logging flags.
+    - name: redirect
+      description: Help about file redirection.
+    - name: run
+      description: Deprecated command. Use 'debug' instead.
+      hidden: true
+    - name: substitute-path-guess-helper
+      hidden: true
+    - name: test [package]
+      description: Compile test binary and begin debugging program.
+      flags:
+        --output=: Output path for the binary.
+    - name: trace [package] regexp
+      description: Compile and begin tracing program.
+      flags:
+        --ebpf: Trace using eBPF (experimental).
+        --follow-calls=: Trace all children of the function to the required depth. Trace also supports defer functions and cases where functions are dynamically returned and passed as parameters.
+        --output=: Output path for the binary.
+        --timestamp: Show timestamp in the output
+        -e, --exec=: Binary file to exec and trace.
+        -p, --pid=: Pid to attach to.
+        -s, --stack=: Show stack trace with given depth. (Ignored with --ebpf)
+        -t, --test: Trace a test binary.
+        -v, --verbose=: 'Parameter verbosity: 0=values, 1=types, 2=inline, 3=expanded, 4=full (default 0)'
+    - name: version
+      description: Prints version.
+      flags:
+        -v, --verbose: print verbose version info
