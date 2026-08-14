@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: sd
+description: ''
+flags:
+  -A, --across: Process each input as a whole rather than line by line. This allows patterns to match across line boundaries but uses more memory and prevents streaming
+  -F, --fixed-strings: Treat FIND and REPLACE_WITH args as literal strings
+  --string-mode&: Treat FIND and REPLACE_WITH args as literal strings
+  -s&: Treat FIND and REPLACE_WITH args as literal strings
+  -f, --flags=: Regex flags. May be combined (like `-f mc`).
+  -h, --help: Print help (see more with '--help')
+  -n, --max-replacements=:
+    description: Limit the number of replacements that can occur per file. 0 indicates unlimited replacements
+    default: '0'
+  -p, --preview: Display changes in a human reviewable format (the specifics of the format are likely to change in the future)
+  -V, --version: Print version
+completion:
+  positionalany:
+  - $files
+documentation:
+  flag:
+    flags: |-
+      Regex flags. May be combined (like `-f mc`).
+
+      c - case-sensitive
+
+      e - disable multi-line matching
+
+      i - case-insensitive
+
+      m - multi-line matching
+
+      s - make `.` match newlines
+
+      w - match full words only
+    help: Print help (see a summary with '-h')
