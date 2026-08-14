@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: vivid
+description: LS_COLORS manager with multiple themes
+flags:
+  -m, --color-mode=:
+    description: Type of ANSI colors to be used
+    default: 24-bit
+  -d, --database=: Path to filetypes database (filetypes.yml)
+  -h, --help: Print help
+  -V, --version: Print version
+completion:
+  flag:
+    color-mode:
+    - 8-bit
+    - 24-bit
+commands:
+- name: generate
+  description: Generate a LS_COLORS expression
+  flags:
+    -h, --help: Print help
+- name: preview
+  description: Preview a given theme
+  flags:
+    -h, --help: Print help
+- name: themes
+  description: Prints list of available themes
+  flags:
+    -h, --help: Print help
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: generate
+    description: Generate a LS_COLORS expression
+  - name: preview
+    description: Preview a given theme
+  - name: themes
+    description: Prints list of available themes
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
