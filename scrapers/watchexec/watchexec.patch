@@ -1,0 +1,25 @@
+diff --git a/crates/cli/src/main.rs b/crates/cli/src/main.rs
+index 6139db1..2ad4111 100644
+--- a/crates/cli/src/main.rs
++++ b/crates/cli/src/main.rs
+@@ -2,6 +2,9 @@
+ extern crate eyra;
+ 
+ use std::process::ExitCode;
++use clap::CommandFactory;
++use carapace_spec_clap::Spec;
++
+ 
+ use miette::IntoDiagnostic;
+ 
+@@ -10,6 +13,10 @@ use miette::IntoDiagnostic;
+ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+ 
+ fn main() -> miette::Result<ExitCode> {
++	// Generate carapace spec before arg parsing
++	clap_complete::generate(Spec, &mut watchexec_cli::args::Args::command(), "watchexec", &mut std::io::stdout());
++	if true { return Ok(ExitCode::SUCCESS); }
++
+ 	#[cfg(feature = "pid1")]
+ 	pid1::Pid1Settings::new()
+ 		.enable_log(cfg!(feature = "pid1-withlog"))

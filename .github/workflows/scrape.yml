@@ -6,6 +6,7 @@ on:
 
 jobs:
   atuin: {uses: ./.github/workflows/scrape-template.yml, with: {command: atuin}}
+  agg: {uses: ./.github/workflows/scrape-template.yml, with: {command: agg}}
   bat: {uses: ./.github/workflows/scrape-template.yml, with: {command: bat}}
   buildctl: {uses: ./.github/workflows/scrape-template.yml, with: {command: buildctl}}
   bazel: {uses: ./.github/workflows/scrape-template.yml, with: {command: bazel}}
@@ -13,8 +14,10 @@ jobs:
   cargo: {uses: ./.github/workflows/scrape-template.yml, with: {command: cargo}}
   charm: {uses: ./.github/workflows/scrape-template.yml, with: {command: charm}}
   circleci: {uses: ./.github/workflows/scrape-template.yml, with: {command: circleci}}
+  csview: {uses: ./.github/workflows/scrape-template.yml, with: {command: csview}}
   crush: {uses: ./.github/workflows/scrape-template.yml, with: {command: crush}}
   dagger: {uses: ./.github/workflows/scrape-template.yml, with: {command: dagger}}
+  delta: {uses: ./.github/workflows/scrape-template.yml, with: {command: delta}}
   devbox: {uses: ./.github/workflows/scrape-template.yml, with: {command: devbox}}
   dive: {uses: ./.github/workflows/scrape-template.yml, with: {command: dive}}
   dlv: {uses: ./.github/workflows/scrape-template.yml, with: {command: dlv}}
@@ -24,6 +27,7 @@ jobs:
   eza: {uses: ./.github/workflows/scrape-template.yml, with: {command: eza}}
   faas-cli: {uses: ./.github/workflows/scrape-template.yml, with: {command: faas-cli}}
   fd: {uses: ./.github/workflows/scrape-template.yml, with: {command: fd}}
+  fnm: {uses: ./.github/workflows/scrape-template.yml, with: {command: fnm}}
   fury: {uses: ./.github/workflows/scrape-template.yml, with: {command: fury}}
   gdu: {uses: ./.github/workflows/scrape-template.yml, with: {command: gdu}}
   gh: {uses: ./.github/workflows/scrape-template.yml, with: {command: gh}}
@@ -44,8 +48,10 @@ jobs:
   jj: {uses: ./.github/workflows/scrape-template.yml, with: {command: jj}}
   just: {uses: ./.github/workflows/scrape-template.yml, with: {command: just}}
   k3d: {uses: ./.github/workflows/scrape-template.yml, with: {command: k3d}}
+  kak-lsp: {uses: ./.github/workflows/scrape-template.yml, with: {command: kak-lsp}}
   kubeadm: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubeadm}}
   kubectl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubectl}}
+  procs: {uses: ./.github/workflows/scrape-template.yml, with: {command: procs}}
   lore: {uses: ./.github/workflows/scrape-template.yml, with: {command: lore}}
   mdbook: {uses: ./.github/workflows/scrape-template.yml, with: {command: mdbook}}
   minikube: {uses: ./.github/workflows/scrape-template.yml, with: {command: minikube}}
@@ -56,12 +62,17 @@ jobs:
   openstack: {uses: ./.github/workflows/scrape-template.yml, with: {command: openstack}}
   pixi: {uses: ./.github/workflows/scrape-template.yml, with: {command: pixi}}
   restic: {uses: ./.github/workflows/scrape-template.yml, with: {command: restic}}
+  ripsecrets: {uses: ./.github/workflows/scrape-template.yml, with: {command: ripsecrets}}
   rustup: {uses: ./.github/workflows/scrape-template.yml, with: {command: rustup}}
   scc: {uses: ./.github/workflows/scrape-template.yml, with: {command: scc}}
+  sd: {uses: ./.github/workflows/scrape-template.yml, with: {command: sd}}
   syft: {uses: ./.github/workflows/scrape-template.yml, with: {command: syft}}
   taplo: {uses: ./.github/workflows/scrape-template.yml, with: {command: taplo}}
   task: {uses: ./.github/workflows/scrape-template.yml, with: {command: task}}
   tsh: {uses: ./.github/workflows/scrape-template.yml, with: {command: tsh}}
   vhs: {uses: ./.github/workflows/scrape-template.yml, with: {command: vhs}}
+  vivid: {uses: ./.github/workflows/scrape-template.yml, with: {command: vivid}}
+  watchexec: {uses: ./.github/workflows/scrape-template.yml, with: {command: watchexec}}
   worktrunk: {uses: ./.github/workflows/scrape-template.yml, with: {command: worktrunk}}
+  xh: {uses: ./.github/workflows/scrape-template.yml, with: {command: xh}}
   zoxide: {uses: ./.github/workflows/scrape-template.yml, with: {command: zoxide}}

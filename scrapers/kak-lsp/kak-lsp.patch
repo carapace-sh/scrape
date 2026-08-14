@@ -1,0 +1,25 @@
+diff --git a/src/main.rs b/src/main.rs
+index 1c47689..71ddacb 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -28,6 +28,9 @@ mod types;
+ mod util;
+ mod wcwidth;
+ mod workspace;
++use clap::CommandFactory;
++use carapace_spec_clap::Spec;
++use clap_complete::generate as clap_generate;
+ 
+ use crate::types::*;
+ use crate::util::*;
+@@ -178,6 +181,10 @@ fn run_main() -> Result<(), ()> {
+                 .help("print version"),
+         );
+     let matches = command.clone().get_matches();
++    clap_generate(Spec, &mut command, "kak-lsp", &mut std::io::stdout());
++    if true {
++        return Ok(());
++    }
+ 
+     if matches.get_flag("help") {
+         let _ = command.print_help();

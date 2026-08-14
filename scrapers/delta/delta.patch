@@ -1,0 +1,25 @@
+diff --git a/src/main.rs b/src/main.rs
+index e952a3b..af8f54b 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -26,6 +26,9 @@ mod tests;
+ 
+ use std::ffi::{OsStr, OsString};
+ use std::io::{self, BufRead, Cursor, ErrorKind, IsTerminal, Write};
++use clap::CommandFactory;
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
+ use std::process::{self, Command, Stdio};
+ 
+ use bytelines::ByteLinesReader;
+@@ -58,6 +61,10 @@ pub mod errors {
+ 
+ #[cfg(not(tarpaulin_include))]
+ fn main() -> std::io::Result<()> {
++    generate(Spec, &mut cli::Opt::command(), "delta", &mut io::stdout());
++    if true {
++        return Ok(());
++    }
+     // Do this first because both parsing all the input in `run_app()` and
+     // listing all processes takes about 50ms on Linux.
+     // It also improves the chance that the calling process is still around when

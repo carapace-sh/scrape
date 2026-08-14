@@ -1,0 +1,25 @@
+diff --git a/src/main.rs b/src/main.rs
+index 016a993..afd6921 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -52,6 +52,9 @@ use crate::printer::Printer;
+ use crate::request_items::{Body, FORM_CONTENT_TYPE, JSON_ACCEPT, JSON_CONTENT_TYPE};
+ use crate::session::Session;
+ use crate::utils::{test_mode, test_pretend_term, url_with_query};
++use clap::CommandFactory;
++use carapace_spec_clap::Spec;
++use clap_complete::generate as clap_generate;
+ 
+ #[cfg(not(any(feature = "native-tls", feature = "rustls")))]
+ compile_error!("Either native-tls or rustls feature must be enabled!");
+@@ -66,6 +69,10 @@ fn get_user_agent() -> &'static str {
+ }
+ 
+ fn main() -> ExitCode {
++    clap_generate(Spec, &mut Cli::command(), "xh", &mut io::stdout());
++    if true {
++        return ExitCode::SUCCESS;
++    }
+     let args = Cli::parse();
+ 
+     if args.debug {

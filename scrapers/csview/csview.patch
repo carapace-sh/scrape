@@ -1,0 +1,27 @@
+diff --git a/src/main.rs b/src/main.rs
+index 8251e18..499fb5b 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -2,6 +2,10 @@ mod cli;
+ mod table;
+ mod util;
+ 
++use clap::CommandFactory;
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++
+ use anyhow::bail;
+ use clap::Parser;
+ use cli::App;
+@@ -18,6 +22,11 @@ use util::table_style;
+ use pager::Pager;
+ 
+ fn main() {
++    generate(Spec, &mut App::command(), "csview", &mut io::stdout());
++    if true {
++        return;
++    }
++
+     if let Err(e) = try_main() {
+         if let Some(ioerr) = e.root_cause().downcast_ref::<io::Error>() {
+             if ioerr.kind() == io::ErrorKind::BrokenPipe {
