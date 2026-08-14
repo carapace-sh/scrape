@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: csview
+description: A high performance csv viewer with cjk/emoji support.
+flags:
+  --body-align=:
+    description: Specify the alignment of the table body
+    default: left
+  -d, --delimiter=:
+    description: Specify the field delimiter
+    default: ','
+  -P, --disable-pager: Disable pager
+  --header-align=:
+    description: Specify the alignment of the table header
+    default: center
+  -h, --help: Print help
+  -i, --indent=:
+    description: Specify global indent for table
+    default: '0'
+  -H, --no-headers: Specify that the input has no header row
+  -n, --number: Prepend a column of line numbers to the table
+  --seq&: Prepend a column of line numbers to the table
+  -p, --padding=:
+    description: Specify padding for table cell
+    default: '1'
+  --sniff=:
+    description: Limit column widths sniffing to the specified number of rows. Specify "0" to cancel limit
+    default: '1000'
+  -s, --style=:
+    description: Specify the border style
+    default: sharp
+  -t, --tsv: Use '\t' as delimiter for tsv
+  -V, --version: Print version
+completion:
+  flag:
+    body-align:
+    - left
+    - center
+    - right
+    header-align:
+    - left
+    - center
+    - right
+    style:
+    - none
+    - ascii
+    - ascii2
+    - sharp
+    - rounded
+    - reinforced
+    - markdown
+    - grid
+  positional:
+  - - $files
