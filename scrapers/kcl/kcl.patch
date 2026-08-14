@@ -1,0 +1,35 @@
+diff --git a/cmd/kcl/main.go b/cmd/kcl/main.go
+index 739af52..a4407bb 100644
+--- a/cmd/kcl/main.go
++++ b/cmd/kcl/main.go
+@@ -3,6 +3,7 @@
+ package main
+ 
+ import (
++	"github.com/carapace-sh/carapace"
+ 	"fmt"
+ 	"os"
+ 	"strings"
+@@ -11,7 +12,21 @@ import (
+ )
+ 
+ func main() {
+-	if err := cmd.New().Execute(); err != nil {
++	c := cmd.New()
++	carapace.Gen(c)
++	if os.Getenv("KCL_GEN_SPEC") == "1" {
++		for _, sub := range c.Commands() {
++			if sub.Name() == "_carapace" {
++				for _, sc := range sub.Commands() {
++					if sc.Name() == "spec" {
++						sc.Run(sc, []string{})
++						os.Exit(0)
++					}
++				}
++			}
++		}
++	}
++	if err := c.Execute(); err != nil {
+ 		fmt.Fprintln(os.Stderr, strings.TrimLeft(err.Error(), "\n"))
+ 		os.Exit(1)
+ 	}
