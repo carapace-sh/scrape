@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: procs
+description: A modern replacement for ps
+flags:
+  -a, --and: AND  logic for multi-keyword
+  -c, --color=: Color mode
+  --debug&: Show debug message
+  --gen-completion=: Generate shell completion file
+  --gen-completion-out=: Generate shell completion file and write to stdout
+  --gen-config: Generate configuration sample file
+  --gen-man-page: Generate man page and write to stdout
+  -h, --help: Print help (see more with '--help')
+  -i, --insert=*: Insert column to slot
+  --interval=:
+    description: Interval to calculate throughput
+    default: '100'
+  --json: JSON output
+  -l, --list: Show list of kind
+  --load-config=: Load configuration from file
+  -d, --nand: NAND logic for multi-keyword
+  --no-header: Suppress header
+  -r, --nor: NOR  logic for multi-keyword
+  --only=: Specified column only
+  -o, --or: OR   logic for multi-keyword
+  -p, --pager=: Pager mode
+  --procfs=: Path to procfs
+  --regex: Use regex search mode (single PATTERN)
+  --smart: Use smart mode (auto-detect regex syntax)
+  --sorta=: Sort column by ascending
+  --sortd=: Sort column by descending
+  --text: Use plain text search mode (default)
+  --theme=: Theme mode
+  --thread: Show thread
+  -t, --tree: Tree view
+  --use-config=: Use built-in configuration
+  -V, --version: Print version
+  -w, --watch: Watch mode with default interval (1s)
+  -W, --watch-interval=: Watch mode with custom interval
+completion:
+  flag:
+    color:
+    - auto
+    - always
+    - disable
+    gen-completion:
+    - bash
+    - elvish
+    - fish
+    - powershell
+    - zsh
+    gen-completion-out:
+    - bash
+    - elvish
+    - fish
+    - powershell
+    - zsh
+    load-config:
+    - $files
+    pager:
+    - auto
+    - always
+    - disable
+    procfs:
+    - $files
+    theme:
+    - auto
+    - dark
+    - light
+    use-config:
+    - default
+    - large
+documentation:
+  command: |-
+    A modern replacement for ps
+
+    please see https://github.com/dalance/procs#configuration to configure columns
+  flag:
+    help: Print help (see a summary with '-h')
