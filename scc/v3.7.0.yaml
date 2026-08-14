@@ -1,0 +1,85 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: scc [flags] [files or directories]
+description: scc [files or directories]
+persistentflags:
+    --avg-wage=: average wage value used for basic COCOMO calculation
+    --binary: disable binary file detection
+    --by-file: display output for every file
+    --ci: enable CI output settings where stdout is ASCII
+    --cocomo-project-type=: change COCOMO model type [organic, semi-detached, embedded, "custom,1,1,1,1"]
+    --count-as=: count extension as language [e.g. jsp:htm,chead:"C Header" maps extension jsp to html and chead to C Header]
+    --count-ignore: set to allow .gitignore and .ignore files to be counted
+    --currency-symbol=: set currency symbol
+    --debug: enable debug output
+    --directory-walker-job-workers=: controls the maximum number of workers which will walk the directory tree
+    --eaf=: the effort adjustment factor derived from the cost drivers (1.0 if rated nominal)
+    --exclude-dir*=: directories to exclude
+    --file-gc-count=: number of files to parse before turning the GC on
+    --file-list-queue-size=: the size of the queue of files found and ready to be read into memory
+    --file-process-job-workers=: number of goroutine workers that process files collecting stats
+    --file-summary-job-queue-size=: the size of the queue used to hold processed file statistics before formatting
+    --format-multi=: have multiple format output overriding --format [e.g. tabular:stdout,csv:file.csv,json:file.json]
+    --gen: identify generated files
+    --generated-markers*=: string markers in head of generated files
+    --include-symlinks: if set will count symlink files
+    --large-byte-count=: number of bytes a file can contain before being removed from output
+    --large-line-count=: number of lines a file can contain before being removed from output
+    --min: identify minified files
+    --min-gen-line-length=: number of bytes per average line for file to be considered minified or generated
+    --no-cocomo: remove COCOMO calculation output
+    --no-gen: ignore generated files in output (implies --gen)
+    --no-gitignore: disables .gitignore file logic
+    --no-gitmodule: disables .gitmodules file logic
+    --no-hborder: remove horizontal borders between sections
+    --no-ignore: disables .ignore file logic
+    --no-large: ignore files over certain byte and line size set by large-line-count and large-byte-count
+    --no-min: ignore minified files in output (implies --min)
+    --no-min-gen: ignore minified or generated files in output (implies --min-gen)
+    --no-scc-ignore: disables .sccignore file logic
+    --no-size: remove size calculation output
+    --overhead=: set the overhead multiplier for corporate overhead (facilities, equipment, accounting, etc.)
+    --remap-all=: inspect every file and remap by checking for a string and remapping the language [e.g. "-*- C++ -*-":"C Header"]
+    --remap-unknown=: inspect files of unknown type and remap by checking for a string and remapping the language [e.g. "-*- C++ -*-":"C Header"]
+    --size-unit=: set size unit [si, binary, mixed, xkcd-kb, xkcd-kelly, xkcd-imaginary, xkcd-intel, xkcd-drive, xkcd-bakers]
+    --sloccount-format: print a more SLOCCount like COCOMO calculation
+    --sql-project=: use supplied name as the project identifier for the current run. Only valid with the --format sql or sql-insert option
+    -M, --not-match*=: ignore files and directories matching regular expression
+    -a, --dryness: calculate the DRYness of the project (implies --uloc)
+    -c, --no-complexity: skip calculation of code complexity
+    -d, --no-duplicates: remove duplicate files from stats and output
+    -f, --format=: set output format [tabular, wide, json, json2, csv, csv-stream, cloc-yaml, html, html-table, sql, sql-insert, openmetrics]
+    -i, --include-ext*=: 'limit to file extensions [comma separated list: e.g. go,java,js]'
+    -l, --languages: print supported languages and extensions
+    -m, --character: calculate max and mean characters per line
+    -n, --exclude-file*=: ignore files with matching names
+    -o, --output=: output filename (default stdout)
+    -p, --percent: include percentage values in output
+    -s, --sort=: column to sort by [files, name, lines, blanks, code, comments, complexity]
+    -t, --trace: enable trace output (not recommended when processing multiple files)
+    -u, --uloc: calculate the number of unique lines of code (ULOC) for the project
+    -v, --verbose: verbose output
+    -w, --wide: wider output with additional statistics (implies --complexity)
+    -x, --exclude-ext*=: 'ignore file extensions (overrides include-ext) [comma separated list: e.g. go,java,js]'
+    -z, --min-gen: identify minified or generated files
+commands:
+    - name: completion
+      description: Generate the autocompletion script for the specified shell
+      commands:
+        - name: bash
+          description: Generate the autocompletion script for bash
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: fish
+          description: Generate the autocompletion script for fish
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: powershell
+          description: Generate the autocompletion script for powershell
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: zsh
+          description: Generate the autocompletion script for zsh
+          flags:
+            --no-descriptions: disable completion descriptions
+    - name: help [command]
+      description: Help about any command
