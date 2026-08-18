@@ -1,0 +1,1249 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: circleci
+description: The CircleCI CLI
+persistentflags:
+    --debug: Enable debug logging
+    --insecure-storage&: do not use the system's secure storage for storing tokens
+    --no-color: Disable ANSI color output (same as setting NO_COLOR)
+    --skip-update-check&: skip checking for CLI and extension updates
+    --theme&=: 'Set the color theme (default: auto)'
+    -c, --config=: 'Path to config file (default: ~/.config/circleci/config.yml)'
+    -q, --quiet: Suppress informational output. Data on stdout is unaffected
+commands:
+    - name: api <path>
+      description: Call the CircleCI REST API directly
+      flags:
+        --jq=: Process values from the response using jq syntax
+        -H, --header*=: 'Add a request header: "Key: Value"'
+        -X, --method=: 'HTTP method (default: GET, or POST when -f or -d is used)'
+        -d, --data=: Raw request body sent verbatim; @file reads from a file, @- from stdin
+        -f, --field*=: 'Add a field: key=value (query param for GET/DELETE, JSON body for POST/PUT/PATCH)'
+    - name: artifact <job-id>
+      description: List and download a job's artifact files
+      group: ci
+      flags:
+        --jq=: Process values from the response using jq syntax
+        --json: Output as JSON
+        -o, --output=: Download artifacts into this directory
+    - name: auth <command>
+      description: Log in, sign up and check your CircleCI identity
+      group: user
+      commands:
+        - name: id
+          description: Show the device ID for this CLI installation
+          flags:
+            --json: Output as JSON
+        - name: login
+          description: Log in to a CircleCI account
+          flags:
+            --no-browser: Print the authorize URL instead of opening a browser
+        - name: logout
+          description: Log out of a CircleCI account
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: me
+          description: Display active account information
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: signup
+          description: Sign-up for a new CircleCI account
+          flags:
+            --no-browser: Print the authorize URL instead of opening a browser
+    - name: certificate <command>
+      description: Manage iOS code signing certificates
+      group: management
+      commands:
+        - name: delete <cert-id>
+          aliases:
+            - rm
+          description: Delete an iOS certificate
+          group: Targeted commands
+          flags:
+            -f, --force: skip confirmation prompt
+        - name: list
+          aliases:
+            - ls
+          description: List uploaded iOS certificates
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --org=: Organization slug (e.g. gh/myorg) or UUID; defaults to git remote
+        - name: upload
+          description: Upload a .p12 certificate
+          group: Targeted commands
+          flags:
+            --cert-file=: Path to the .p12 certificate file
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --org=: Organization slug (e.g. gh/myorg) or UUID; defaults to git remote
+            --password=: Password for the .p12 file. Pass - to read from stdin. Prompted if omitted in a terminal.
+    - name: completion <command>
+      description: Install, remove or print shell completions
+      group: user
+      commands:
+        - name: bash
+          description: Generate bash completion script
+          hidden: true
+          flags:
+            -o, --output=: Write the completion script to this file instead of stdout
+        - name: fish
+          description: Generate fish completion script
+          hidden: true
+          flags:
+            -o, --output=: Write the completion script to this file instead of stdout
+        - name: install
+          description: Install shell completion into your shell profile
+        - name: powershell
+          description: Generate powershell completion script
+          hidden: true
+          flags:
+            -o, --output=: Write the completion script to this file instead of stdout
+        - name: uninstall
+          description: Remove shell completion from your shell profile
+        - name: zsh
+          description: Generate zsh completion script
+          hidden: true
+          flags:
+            -o, --output=: Write the completion script to this file instead of stdout
+    - name: component-version <command>
+      description: Manage deploy component versions
+      group: management
+      commands:
+        - name: list <component-id>
+          aliases:
+            - ls
+          description: List versions of a deploy component
+          flags:
+            --environment=: Filter by deploy environment ID
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+    - name: config <command>
+      description: Generate, validate, process and pack config YAML
+      group: ci
+      commands:
+        - name: generate [path]
+          description: Generate .circleci/config.yml from a repository scan
+        - name: pack <path>
+          description: Bundle split config files into a single YAML document
+        - name: process <path>
+          description: Compile and expand a pipeline config file
+          flags:
+            --org=: Organization slug (e.g. gh/myorg) or UUID for private orb resolution; defaults to git remote
+            --pipeline-parameters=: Pipeline parameters as a YAML map or path to a YAML file
+            -n, --next: Enable config next which previews upcoming potentially breaking config changes
+        - name: validate [<path>]
+          description: Validate a pipeline config file
+          flags:
+            --json: Output as JSON
+            --org=: Organization slug (e.g. gh/myorg) or UUID for private orb resolution; defaults to git remote
+            -c, --config=: Path to config file (use "-" for stdin)
+            -n, --next: Enable config next which previews upcoming potentially breaking config changes
+    - name: context <command>
+      description: Manage secret env vars shared across pipelines
+      group: management
+      commands:
+        - name: create <name>
+          description: Create a new context
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --org=: Organization slug (e.g. gh/myorg); defaults to git remote
+        - name: delete <context-id|context-name>
+          aliases:
+            - rm
+          description: Delete a context
+          group: Targeted commands
+          flags:
+            --org=: Organization slug (e.g. gh/myorg); used when resolving name to ID
+            -f, --force: skip confirmation prompt
+        - name: get <context-id|context-name>
+          description: Get details of a context
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --org=: Organization slug (e.g. gh/myorg); used when resolving name to ID
+        - name: list
+          aliases:
+            - ls
+          description: List contexts for an organization
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --name=: Find contexts by name (partial match)
+            --org=: Organization slug (e.g. gh/myorg); defaults to git remote
+        - name: open
+          description: Open the contexts settings page in the browser
+          group: General commands
+          flags:
+            --org=: Organization slug (e.g. gh/myorg); defaults to git remote
+        - name: restriction <command>
+          description: Manage context restrictions
+          group: Subcommands
+          commands:
+            - name: create <context-id|context-name>
+              description: Add a restriction to a context
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --org=: Organization slug (e.g. gh/myorg); used when resolving name to ID
+                --type=: 'Restriction type: project, expression, or group'
+                --value=: Value of the restriction
+            - name: delete <context-id|context-name>
+              aliases:
+                - rm
+              description: Delete a restriction from a context
+              flags:
+                --org=: Organization slug (e.g. gh/myorg); used when resolving name to ID
+                --restriction-id!=: UUID of the restriction to delete
+                -f, --force: Skip confirmation prompt
+        - name: secret <command>
+          description: Manage context environment variables
+          group: Subcommands
+          commands:
+            - name: delete <context-id|context-name>
+              aliases:
+                - rm
+              description: Delete an environment variable from a context
+              flags:
+                --name=: Name of the environment variable to delete
+                --org=: Organization slug (e.g. gh/myorg); used when resolving name to ID
+                -f, --force: skip confirmation prompt
+            - name: list <context-id|context-name>
+              aliases:
+                - ls
+              description: List environment variables in a context
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --org=: Organization slug (e.g. gh/myorg); used when resolving name to ID
+            - name: set <context-id|context-name>
+              description: Set an environment variable in a context
+              flags:
+                --name=: Name of the environment variable
+                --org=: Organization slug (e.g. gh/myorg); used when resolving name to ID
+                --value=: Value of the environment variable (prompted if omitted in a terminal)
+    - name: deploy <command>
+      description: Track released components and versions
+      group: management
+      commands:
+        - name: component <command>
+          description: Manage deploy components
+          group: Component commands
+          commands:
+            - name: get <component-id>
+              description: Get a deploy component
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+            - name: list
+              aliases:
+                - ls
+              description: List deploy components
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: environment <command>
+          description: Manage deploy environments
+          group: Environment commands
+          commands:
+            - name: get <environment-id>
+              description: Get a deploy environment
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+            - name: list
+              aliases:
+                - ls
+              description: List deploy environments
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --org=: Organization slug (e.g. gh/myorg); defaults to git remote
+        - name: init
+          description: Instrument your config for deploy tracking
+          group: General commands
+          flags:
+            --component=: Service/component name (skips prompt)
+            --environment=: Default environment for jobs whose target can't be inferred (skips prompt)
+            --pipeline-config=: Path to CircleCI pipeline config file
+        - name: list
+          aliases:
+            - ls
+          description: List recent deploys
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: open
+          description: Open the deploys page in the browser
+          group: General commands
+          flags:
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: settings
+          description: Get deploy settings for a project
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: version <command>
+          description: Manage deploy component versions
+          group: Component commands
+          commands:
+            - name: list <component-id>
+              aliases:
+                - ls
+              description: List versions of a deploy component
+              flags:
+                --environment=: Filter by deploy environment ID
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+    - name: dlc <command>
+      description: Purge a project's Docker layer cache (DLC)
+      group: management
+      commands:
+        - name: purge
+          description: Purge the Docker Layer Cache for a project
+          flags:
+            --json: Output as JSON
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            -f, --force: Skip confirmation prompt
+    - name: env <command>
+      description: Work with environment variables
+      commands:
+        - name: subst [string]
+          description: Substitute environment variables in a string
+    - name: environment
+      description: Environment variables that can be used with circleci
+      hidden: true
+    - name: envvar <command>
+      description: List, set and delete a project's environment variables
+      group: management
+      commands:
+        - name: delete <name>
+          aliases:
+            - rm
+          description: Delete a project environment variable
+          group: Targeted commands
+          flags:
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            -f, --force: skip confirmation prompt
+        - name: list
+          aliases:
+            - ls
+          description: List project environment variables
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: set <name> <value>
+          description: Set a project environment variable
+          group: Targeted commands
+          flags:
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+    - name: extension <command>
+      description: Manage CLI extensions
+      group: extension
+      commands:
+        - name: install <extension>
+          description: Install an extension
+          group: Targeted commands
+        - name: remove <extension>
+          description: Remove an installed extension
+          group: Targeted commands
+          flags:
+            -f, --force: Skip confirmation prompt
+    - name: formatting
+      description: Formatting options for JSON data exported from circleci
+      hidden: true
+    - name: getting-started
+      description: Install, authenticate, and start using circleci
+      hidden: true
+    - name: help [command]
+      description: Help about any command
+    - name: job <command>
+      description: Inspect a job's details, output and artifacts
+      group: ci
+      commands:
+        - name: artifact <job-id>
+          description: List or download artifacts for a job
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            -o, --output=: Download artifacts into this directory
+        - name: get <job-id>
+          description: Get job details
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: open <job-id>
+          description: Open job in browser
+          group: Targeted commands
+        - name: output <command>
+          description: Work with job step output
+          group: Targeted commands
+          commands:
+            - name: get <job-id>
+              description: Get the output of a job step
+              flags:
+                --condensed: Fetch error-relevant lines only, filtered server-side (experimental)
+                --execution=: Parallel execution index to read output from
+                --step-num=: Step number whose output to fetch (required)
+                --strip-ansi: Force (or with =false, disable) ANSI stripping; defaults to stripping only when not a terminal
+            - name: list <job-id>
+              description: List a job's steps with their output
+              flags:
+                --execution=: Parallel execution index to list output from
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --tail=: Show only the last N lines of each step's output in the rendered view (0 for all)
+        - name: resource-usage <command>
+          description: Work with a job's CPU and memory usage
+          group: Targeted commands
+          commands:
+            - name: get <job-id>
+              description: Chart a job's CPU and memory usage
+              flags:
+                --chart=: 'Plot parallel executions together or apart: auto|combined|separate'
+                --execution=: Parallel execution index to report on (default all)
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+    - name: man
+      description: Generates manpages
+      hidden: true
+      flags:
+        -o, --output=: Write the manpage to this file instead of stdout
+    - name: mcp
+      description: Run the CLI as an MCP server for AI tools
+      group: user
+      commands:
+        - name: claude
+          description: Manage Claude Desktop MCP servers
+          commands:
+            - name: disable
+              description: Remove server from Claude config
+              flags:
+                --config-path=: Path to Claude config file
+                --server-name=: Name of the MCP server to remove
+            - name: enable
+              description: Add server to Claude config
+              flags:
+                --config-path=: Path to Claude config file
+                --log-level=: Log level (debug, info, warn, error)
+                --server-name=: Name for the MCP server
+                -e, --env=: Environment variables (e.g., --env KEY1=value1 --env KEY2=value2)
+            - name: list
+              description: Show Claude MCP servers
+              flags:
+                --config-path=: Path to Claude config file
+        - name: cursor
+          description: Manage Cursor MCP servers
+          commands:
+            - name: disable
+              description: Remove server from Cursor config
+              flags:
+                --config-path=: Path to Cursor config file
+                --server-name=: Name of the MCP server to remove
+                --workspace: Remove from workspace settings (.cursor/mcp.json) instead of user settings
+            - name: enable
+              description: Add server to Cursor config
+              flags:
+                --config-path=: Path to Cursor config file
+                --log-level=: Log level (debug, info, warn, error)
+                --server-name=: Name for the MCP server
+                --workspace: Add to workspace settings (.cursor/mcp.json) instead of user settings
+                -e, --env=: Environment variables (e.g., --env KEY1=value1 --env KEY2=value2)
+            - name: list
+              description: Show Cursor MCP servers
+              flags:
+                --config-path=: Path to Cursor config file
+                --workspace: List from workspace settings (.cursor/mcp.json) instead of user settings
+        - name: start
+          description: Start the MCP server
+          flags:
+            --log-level=: Log level (debug, info, warn, error)
+        - name: stream
+          description: Stream the MCP server over HTTP
+          flags:
+            --host=: host to listen on
+            --log-level=: Log level (debug, info, warn, error)
+            --port=: port number to listen on
+        - name: tools
+          description: Export tools as JSON
+          flags:
+            --log-level=: Log level (debug, info, warn, error)
+        - name: vscode
+          description: Manage VSCode MCP servers
+          commands:
+            - name: disable
+              description: Remove server from VSCode config
+              flags:
+                --config-path=: Path to VSCode config file
+                --server-name=: Name of the MCP server to remove
+                --workspace: Remove from workspace settings (.vscode/mcp.json) instead of user settings
+            - name: enable
+              description: Add server to VSCode config
+              flags:
+                --config-path=: Path to VSCode config file
+                --log-level=: Log level (debug, info, warn, error)
+                --server-name=: Name for the MCP server
+                --workspace: Add to workspace settings (.vscode/mcp.json) instead of user settings
+                -e, --env=: Environment variables (e.g., --env KEY1=value1 --env KEY2=value2)
+            - name: list
+              description: Show VSCode MCP servers
+              flags:
+                --config-path=: Path to VSCode config file
+                --workspace: List from workspace settings (.vscode/mcp.json) instead of user settings
+    - name: my <command>
+      description: Show resources for the authenticated user
+      group: user
+      commands:
+        - name: runs
+          aliases:
+            - run
+          description: List your recent runs grouped by project
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --limit=: 'Maximum number of runs to fetch [default: 20]'
+    - name: namespace <command>
+      description: Manage the org namespace orbs publish under
+      group: management
+      commands:
+        - name: create <name> --org <org>
+          description: Create a namespace
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --org!=: Organization slug (e.g. gh/myorg) or UUID to claim the namespace for (required)
+        - name: delete <name>
+          aliases:
+            - rm
+          description: Delete a namespace and all its orbs
+          group: Targeted commands
+          flags:
+            -f, --force: skip confirmation prompt
+            -n, --dry-run: print what would be deleted without deleting
+        - name: get <name>
+          description: Get details of a namespace
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: rename <name> <new-name>
+          description: Rename a namespace
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+    - name: onboard [path]
+      description: 'Guided onboarding: generate config, sign up, connect project'
+      group: user
+      flags:
+        --no-browser: Print the signup URL instead of opening a browser
+        --repo-id=: Numeric repository ID, if the GitHub App cannot resolve it
+        --scan: 'Skip prompt: set up this repo on CircleCI'
+        --signup: 'Skip prompt: sign up for CircleCI'
+    - name: orb <command>
+      description: Create, publish and inspect orbs (reusable config)
+      group: management
+      persistentflags:
+        --host&=: 'CircleCI host (deprecated: set CIRCLE_HOST)'
+        --token&=: 'CircleCI API token (deprecated: set CIRCLE_TOKEN)'
+      commands:
+        - name: add-to-category <namespace>/<orb> <category>
+          description: Add an orb to a registry category
+          group: Targeted commands
+        - name: create <namespace>/<orb>
+          description: Reserve an orb name in a namespace
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --private: create as a private orb
+        - name: diff <namespace>/<orb> --from <v1> --to <v2>
+          description: Show a unified diff between two orb versions
+          group: Targeted commands
+          flags:
+            --from=: the first version (semver e.g. 1.0.0, or a dev label e.g. dev:my-branch)
+            --to=: the second version, in the same form as --from
+        - name: get <namespace>/<orb>[@<version>]/<orb-id>
+          description: Get orb metadata and statistics
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: init <path>
+          description: Initialize a new orb project
+          group: General commands
+          flags:
+            --branch=: primary git branch to track
+            --org=: Organization slug (e.g. gh/myorg) or UUID to own the orb namespace and publishing context
+            --private: initialize a private orb
+            --remote=: remote git repository URL (required for git setup when non-interactive)
+            --skip-git: skip local git repository setup
+            --template-only: download the template only; skip all setup
+        - name: list [<namespace>]
+          aliases:
+            - ls
+          description: List orbs in the registry
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --private: only list private orbs (requires namespace)
+            --uncertified: include uncertified orbs
+        - name: list-categories
+          description: List orb registry categories
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: pack <path>
+          description: Pack a multi-file orb directory into a single YAML
+          group: General commands
+        - name: process <path>
+          description: Validate and print expanded orb YAML
+          group: General commands
+          flags:
+            --org=: Organization slug (e.g. gh/myorg) or UUID for private orb dependencies
+        - name: publish <command>
+          description: Publish orb versions
+          group: Targeted commands
+          commands:
+            - name: increment <path> <namespace>/<orb> --bump major|minor|patch
+              description: Increment and publish a new orb version
+              flags:
+                --bump=: 'which version segment to increment: major, minor, or patch'
+            - name: promote <namespace>/<orb>@dev:<label> --bump major|minor|patch
+              description: Promote a dev orb version to a stable semver
+              flags:
+                --bump=: 'which version segment to increment: major, minor, or patch'
+        - name: remove-from-category <namespace>/<orb> <category>
+          description: Remove an orb from a registry category
+          group: Targeted commands
+        - name: source <namespace>/<orb>[@<version>]
+          description: Print the YAML source of an orb version
+          group: Targeted commands
+        - name: unlist <namespace>/<orb>
+          description: Hide or restore an orb in the registry
+          group: Targeted commands
+          flags:
+            --restore: restore the orb's visibility instead of hiding it
+        - name: validate <path>
+          description: Validate an orb YAML file
+          group: General commands
+          flags:
+            --org-id&=: 'Organization slug or UUID (deprecated: use --org)'
+            --org-slug&=: 'Organization slug or UUID (deprecated: use --org)'
+            --org=: Organization slug (e.g. gh/myorg) or UUID for private orb dependencies
+    - name: org <command>
+      description: Manage CircleCI organizations
+      group: management
+      commands:
+        - name: list
+          aliases:
+            - ls
+          description: List organizations you belong to
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: setting <command>
+          description: View and update org advanced settings
+          group: Subcommands
+          commands:
+            - name: get <setting>
+              description: Get the current value of an org setting
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --org=: Organization slug (e.g. gh/myorg) or UUID; defaults to git remote
+            - name: list
+              aliases:
+                - ls
+              description: List all advanced settings for an org
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --org=: Organization slug (e.g. gh/myorg) or UUID; defaults to git remote
+            - name: set <setting> <true|false>
+              description: Set an org setting
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --org=: Organization slug (e.g. gh/myorg) or UUID; defaults to git remote
+    - name: pipeline <command>
+      description: Define what will happen in a run
+      group: ci
+      commands:
+        - name: create
+          description: Create a pipeline definition
+          group: General commands
+          flags:
+            --checkout-provider=: 'Checkout source provider (one of: github_app, github_server)'
+            --checkout-repo-id=: Checkout source repo external ID
+            --config-file=: Config file path (e.g. .circleci/config.yml)
+            --config-provider=: 'Config source provider (one of: github_app, github_server, circleci)'
+            --config-repo-id=: Config source repo external ID (required for github_app, github_server)
+            --description=: Pipeline definition description
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --name=: Pipeline definition name (required)
+            --project-id=: Project UUID (overrides --project)
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: list
+          aliases:
+            - ls
+          description: List pipeline definitions for a project
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --project-id=: Project UUID (overrides --project)
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: run
+          description: Trigger a new pipeline run
+          group: Targeted commands
+          flags:
+            --definition-id=: Pipeline definition UUID to run (prompted interactively if omitted)
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --param*=: Pipeline parameter as key=value (repeatable)
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            -b, --branch=: Branch for config fetch and checkout (mutually exclusive with --tag)
+            -t, --tag=: Tag for config fetch and checkout (mutually exclusive with --branch)
+    - name: policy <command>
+      description: Govern config with Rego security policies
+      group: management
+      commands:
+        - name: decide
+          description: Evaluate a config against remote policies
+          group: General commands
+          flags:
+            --input!=: Path to input file (e.g. .circleci/config.yml) (required)
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --meta=: Decision metadata as a JSON string
+            --metafile=: Path to decision metadata file (YAML or JSON)
+            --org!=: Organization slug (e.g. gh/myorg) or UUID (required)
+            --policy-context=: Policy context
+            --strict: Exit non-zero for HARD_FAIL or ERROR decisions
+        - name: diff <path>
+          description: Show diff between local and remote policy bundles
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --org!=: Organization slug (e.g. gh/myorg) or UUID (required)
+            --policy-context=: Policy context
+        - name: eval <policy-path>
+          description: Evaluate a raw OPA query against policies locally
+          group: General commands
+          flags:
+            --context=: Policy context (config compilation only runs when this is "config")
+            --input!=: Path to input file (e.g. .circleci/config.yml) (required)
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --meta=: Decision metadata as a JSON string
+            --metafile=: Path to decision metadata file (YAML or JSON)
+            --no-compile: Evaluate the raw config without compiling it first
+            --org=: Organization slug (e.g. gh/myorg) or UUID for private orb resolution; defaults to git remote
+            --pipeline-parameters=: Pipeline parameters as a YAML map or path to a YAML file
+            --query=: The OPA query to evaluate
+        - name: fetch [policy-name]
+          description: Download the remote policy bundle
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --org!=: Organization slug (e.g. gh/myorg) or UUID (required)
+            --policy-context=: Policy context
+        - name: logs [decision-id]
+          description: Get policy decision logs
+          group: Targeted commands
+          flags:
+            --after=: Return logs created after this time (RFC3339 or YYYY-MM-DD)
+            --before=: Return logs created before this time (RFC3339 or YYYY-MM-DD)
+            --branch=: Filter by branch name
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --org!=: Organization slug (e.g. gh/myorg) or UUID (required)
+            --out=: Write output to this file instead of stdout
+            --policy-bundle: Retrieve the policy bundle snapshot for the given decision ID
+            --policy-context=: Policy context
+            --project-id=: Filter by project ID
+            --status=: Filter by decision status (PASS, SOFT_FAIL, HARD_FAIL, ERROR)
+        - name: push <path>
+          description: Push a policy bundle to CircleCI
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --no-prompt: Skip confirmation prompt
+            --org!=: Organization slug (e.g. gh/myorg) or UUID (required)
+            --policy-context=: Policy context
+        - name: settings <command>
+          description: Manage policy enforcement settings
+          group: Subcommands
+          commands:
+            - name: get
+              description: Get policy enforcement settings
+              group: Targeted commands
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --org!=: Organization slug (e.g. gh/myorg) or UUID (required)
+                --policy-context=: Policy context
+            - name: set
+              description: Update policy enforcement settings
+              group: Targeted commands
+              flags:
+                --enabled!: Enable policy enforcement
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --org!=: Organization slug (e.g. gh/myorg) or UUID (required)
+                --policy-context=: Policy context
+        - name: test <path>
+          description: Run policy tests
+          group: General commands
+          flags:
+            --all: Show all tests, not just failures
+            --explain: Print each test's full evaluation context (implies --all)
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --junit: Output results as JUnit XML
+            --org=: Organization slug (e.g. gh/myorg) or UUID for private orb resolution when a test compiles; defaults to git remote
+            --run=: Only run tests whose name matches this regexp
+    - name: project <command>
+      description: List, follow and configure CircleCI projects
+      group: management
+      commands:
+        - name: create [project-name] --org <vcs/org-slug>
+          description: Create a new project
+          group: General commands
+          flags:
+            --json: Output as JSON
+            --org=: organization slug (e.g. gh/myorg)
+        - name: dlc <command>
+          description: Purge a project's Docker layer cache (DLC)
+          group: Subcommands
+          commands:
+            - name: purge
+              description: Purge the Docker Layer Cache for a project
+              flags:
+                --json: Output as JSON
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+                -f, --force: Skip confirmation prompt
+        - name: envvar <command>
+          description: List, set and delete a project's environment variables
+          group: Subcommands
+          commands:
+            - name: delete <name>
+              aliases:
+                - rm
+              description: Delete a project environment variable
+              flags:
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+                -f, --force: skip confirmation prompt
+            - name: list
+              aliases:
+                - ls
+              description: List project environment variables
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            - name: set <name> <value>
+              description: Set a project environment variable
+              flags:
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: follow
+          description: Follow a project
+          group: Targeted commands
+          flags:
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: get
+          description: Show project details
+          group: Targeted commands
+          flags:
+            --json: Output as JSON
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: link
+          description: Bind this checkout to a CircleCI project
+          group: Targeted commands
+          flags:
+            --project=: Project slug (e.g. gh/org/repo or `circleci/<orgID>/<projectID>`)
+            -f, --force: Overwrite an existing .circleci/info.yml
+        - name: list
+          aliases:
+            - ls
+          description: List followed projects
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: open
+          description: Open the project page in the browser
+          group: General commands
+          flags:
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: setting <command>
+          description: View and update project advanced settings
+          group: Subcommands
+          commands:
+            - name: get <setting>
+              description: Get the current value of a project setting
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            - name: list
+              aliases:
+                - ls
+              description: List all advanced settings for a project
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            - name: set <setting> <true|false>
+              description: Set a project setting
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+        - name: trigger <command>
+          description: Manage project triggers
+          group: Subcommands
+          commands:
+            - name: create
+              description: Create a new project trigger
+              flags:
+                --checkout-ref=: Git ref for checking out code (only needed when checkout repo differs from event source repo)
+                --config-ref=: Git ref for fetching config (only needed when config repo differs from event source repo)
+                --event-preset=: 'Event preset for filtering trigger events (one of: all-pushes, only-tags, default-branch-pushes, only-build-prs, only-open-prs, only-labeled-prs, only-merged-prs, only-ready-for-review-prs, only-branch-delete, only-build-pushes-to-non-draft-prs, only-merged-or-closed-prs, pr-comment-equals-run-ci, non-draft-pr-opened, pushes-to-merge-queues)'
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --pipeline-definition-id=: Pipeline definition ID (required)
+                --project-id=: Project UUID (overrides --project)
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+                --provider=: 'Event source provider (one of: github_app, github_server, github_oauth, webhook, schedule)'
+                --repo-id=: Repository external ID (required for github_app, github_server, github_oauth)
+            - name: list
+              aliases:
+                - ls
+              description: List triggers for a pipeline definition
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --pipeline-definition-id=: Pipeline definition ID (required)
+                --project-id=: Project UUID (overrides --project)
+                --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+    - name: receive-telemetry
+      description: Receive telemetry events and forward them to Segment
+      hidden: true
+    - name: reference
+      description: A comprehensive reference of all circleci commands
+      hidden: true
+    - name: run <command>
+      description: Trigger, watch and cancel CI runs
+      group: ci
+      commands:
+        - name: cancel <run-number-or-id>
+          description: Cancel a run
+          group: Targeted commands
+          flags:
+            --project=: Project slug (e.g. gh/org/repo); used when cancelling by number
+            -f, --force: skip confirmation prompt
+        - name: get [<run-id>]
+          description: Get a run's status
+          group: Targeted commands
+          flags:
+            --failure-report: Print condensed output for every failed step; intended for agent consumption
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --no-interactive: Skip the interactive picker and resolve the latest run directly
+            --project=: Project slug (e.g. gh/org/repo); used for latest-run lookup
+            -b, --branch=: Branch name (defaults to the current branch, or main when --project is set)
+            -m, --mine: Filter to runs owned by you.
+        - name: list
+          aliases:
+            - ls
+          description: List recent runs for a project
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --limit=: 'Maximum number of runs to show [default: 10]'
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            -B, --current-branch: Filter by the currently checked-out branch
+            -b, --branch=: Filter by branch
+        - name: open
+          description: Open the current project's runs page in the browser
+          group: Targeted commands
+          flags:
+            --project=: Project slug (e.g. gh/org/repo); used for latest-run lookup
+            -b, --branch=: Branch name (defaults to current branch)
+        - name: trigger
+          description: Trigger a new run
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --parameter*=: Run parameter as key=value (repeatable)
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            -b, --branch=: Branch to trigger (defaults to current branch)
+        - name: watch [<run-id>]
+          description: Watch a run until it completes
+          group: Targeted commands
+          flags:
+            --failfast: Exit as soon as any job fails, without waiting for the rest of the run
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            --sha=: Watch run for this commit SHA; polls up to 2m if not yet created
+            --timeout=: Maximum time to wait for run completion
+            -b, --branch=: Branch to watch (defaults to current branch)
+    - name: runner <command>
+      description: Manage self-hosted runners
+      group: management
+      commands:
+        - name: config <resource-class>
+          description: Generate a runner agent configuration file
+          group: Targeted commands
+          flags:
+            --nickname=: Nickname for the new token
+            --token=: Use an existing token value instead of creating a new one
+            -o, --output=: Write config to this file instead of stdout
+        - name: instance <command>
+          description: Manage runner instances
+          group: Subcommands
+          commands:
+            - name: list
+              aliases:
+                - ls
+              description: List connected runner instances
+              group: General commands
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --namespace=: Filter by namespace (organization)
+                --org=: Organization slug (e.g. gh/myorg) or UUID; defaults to git remote
+                --resource-class=: Filter by resource class (namespace/name)
+        - name: open
+          description: Open the runners inventory page in the browser
+          group: General commands
+          flags:
+            --org=: Organization slug (e.g. gh/myorg); defaults to git remote
+        - name: resource-class <command>
+          description: Manage runner resource classes
+          group: Subcommands
+          commands:
+            - name: create <namespace>/<name>
+              description: Create a runner resource class
+              group: General commands
+              flags:
+                --description=: Human-readable description of the resource class
+                --generate-token: also create a token for the resource class, nicknamed "default"
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+            - name: delete <namespace>/<name>
+              aliases:
+                - rm
+              description: Delete a runner resource class
+              group: Targeted commands
+              flags:
+                -f, --force: skip confirmation prompt
+            - name: list
+              aliases:
+                - ls
+              description: List runner resource classes
+              group: General commands
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --namespace=: Filter by namespace (organization)
+                --org=: Organization slug (e.g. gh/myorg) or UUID; defaults to git remote
+        - name: token <command>
+          description: Manage runner tokens
+          group: Subcommands
+          commands:
+            - name: create <resource-class>
+              description: Create a token for a resource class
+              group: General commands
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --nickname=: Human-readable nickname for the token
+            - name: delete <token-id>
+              aliases:
+                - rm
+              description: Delete a runner token
+              group: Targeted commands
+              flags:
+                -f, --force: skip confirmation prompt
+            - name: list
+              aliases:
+                - ls
+              description: List tokens for a resource class
+              group: General commands
+              flags:
+                --jq=: Process values from the response using jq syntax
+                --json: Output as JSON
+                --resource-class=: Filter by resource class (namespace/name)
+    - name: setting <command>
+      description: Configure the CLI itself (token, host, defaults)
+      group: user
+      commands:
+        - name: list
+          aliases:
+            - ls
+          description: List current CLI settings
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: set <key> <value>
+          description: Set a CLI setting
+          group: Targeted commands
+        - name: unset <key>
+          description: Remove a stored CLI setting
+          group: Targeted commands
+    - name: setup
+      description: Configure the CLI with a host and token (legacy compatibility)
+      hidden: true
+      flags:
+        --host!=: CircleCI host, e.g. https://circleci.com (required)
+        --no-prompt!: Run without interactive prompts (required)
+        --token!=: CircleCI API token (required)
+    - name: signing-config <command>
+      description: Manage iOS signing configs
+      group: management
+      commands:
+        - name: create
+          description: Create an iOS signing config
+          group: General commands
+          flags:
+            --cert-id=: 'ID of an uploaded certificate (see: circleci certificate list)'
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --name=: Name for the signing config (referenced in pipeline config)
+            --org=: Organization slug (e.g. gh/myorg) or UUID; defaults to git remote
+            --profile*=: Path to a provisioning profile file (repeatable)
+        - name: delete <signing-config-id>
+          aliases:
+            - rm
+          description: Delete an iOS signing config
+          group: Targeted commands
+          flags:
+            -f, --force: skip confirmation prompt
+        - name: list
+          aliases:
+            - ls
+          description: List iOS signing configs
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --org=: Organization slug (e.g. gh/myorg) or UUID; defaults to git remote
+        - name: profile <command>
+          description: Add or remove provisioning profiles on a signing config
+          group: Subcommands
+          commands:
+            - name: add <signing-config-id>
+              description: Add or replace a provisioning profile on a signing config
+              flags:
+                --profile=: Path to a provisioning profile file
+            - name: remove <signing-config-id> <profile-id>
+              aliases:
+                - rm
+              description: Remove a provisioning profile from a signing config
+    - name: step <command>
+      description: Control job step execution
+      hidden: true
+      commands:
+        - name: halt
+          description: Halt the current job and mark it as successful
+    - name: telemetry
+      description: Information about telemetry in circleci
+      hidden: true
+    - name: testresult <command>
+      description: Inspect test results for a job
+      group: ci
+      commands:
+        - name: get <job-id> <name>
+          description: Get a single test result by name
+          group: Targeted commands
+          flags:
+            --filter*=: Disambiguate by classname=`<value>` when a name is shared; repeatable
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --plain: Print only the raw test message, verbatim and unformatted
+        - name: list <job-id>
+          aliases:
+            - ls
+          description: List test results for a job
+          group: General commands
+          flags:
+            --all: Show all results (passing, failed and skipped), not just failures
+            --filter*=: 'Filter by key=value; repeatable. Keys: result (success|failure|skipped, exact), name and classname (case-insensitive substring). Same key repeated is OR, different keys AND. Cannot combine result= with --all'
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --limit=: Maximum number of results to show (0 = no limit)
+            --sort=: Sort by name, classname, result or run_time
+    - name: testsuite
+      description: Extension (circleci-testsuite)
+      group: extension
+    - name: triggers
+      description: Event source providers and event presets for project triggers
+      hidden: true
+    - name: version
+      description: Print version information
+      flags:
+        --json: 'output as JSON (fields: version, commit, modified)'
+    - name: workflow <command>
+      description: Inspect, rerun and cancel workflows (job graphs)
+      group: ci
+      commands:
+        - name: cancel <workflow-id>
+          description: Cancel a running workflow
+          group: Targeted commands
+          flags:
+            -f, --force: skip confirmation prompt
+        - name: get <workflow-id>
+          description: Get workflow details
+          group: Targeted commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+        - name: list [<run-id>]
+          aliases:
+            - ls
+          description: List workflows for a run or recent runs
+          group: General commands
+          flags:
+            --jq=: Process values from the response using jq syntax
+            --json: Output as JSON
+            --limit=: Number of recent runs to show (recent-runs mode)
+            --project=: Project slug (e.g. gh/org/repo); defaults to git remote
+            -b, --branch=: Filter by branch (recent-runs mode)
+        - name: open <workflow-id>
+          description: Open workflow in browser
+          group: Targeted commands
+        - name: rerun <workflow-id>
+          description: Rerun a workflow
+          group: Targeted commands
+          flags:
+            --from-failed: Rerun only failed jobs
+            --json: Output as JSON
