@@ -57,7 +57,7 @@
     "mise": "https://github.com/jdx/mise#v2025.10.21",
     "newrelic": "https://github.com/newrelic/newrelic-cli#v0.113.5",
     "nfpm": "https://github.com/goreleaser/nfpm#v2.47.0",
-    "ollama": "https://github.com/ollama/ollama#v0.32.10",
+    "ollama": "https://github.com/ollama/ollama#v0.32.13",
     "openstack": "https://github.com/openstack/python-openstackclient#10.2.1",
     "pixi": "https://github.com/prefix-dev/pixi#v0.76.2",
     "restic": "https://github.com/restic/restic#v0.19.1",
