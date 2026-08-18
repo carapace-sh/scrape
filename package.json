@@ -10,7 +10,7 @@
     "cargo": "https://github.com/rust-lang/cargo#0.98.0",
     "charm": "https://github.com/charmbracelet/charm#v0.12.6",
     "chezmoi": "https://github.com/twpayne/chezmoi#v2.72.0",
-    "circleci": "https://github.com/CircleCI-Public/circleci-cli#v1.0.48122",
+    "circleci": "https://github.com/CircleCI-Public/circleci-cli#v1.0.48254",
     "csview": "https://github.com/wfxr/csview#v1.3.4",
     "crush": "https://github.com/charmbracelet/crush#v0.89.0",
     "dagger": "https://github.com/dagger/dagger#v0.21.8",
