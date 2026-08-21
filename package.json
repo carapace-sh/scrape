@@ -67,7 +67,7 @@
     "sd": "https://github.com/chmln/sd#v1.1.0",
     "syft": "https://github.com/anchore/syft#v1.51.0",
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
-    "task": "https://github.com/go-task/task#v3.52.0",
+    "task": "https://github.com/go-task/task#v3.53.0",
     "tsh": "https://github.com/gravitational/teleport#v18.10.3",
     "vhs": "https://github.com/charmbracelet/vhs#v0.11.0",
     "vivid": "https://github.com/sharkdp/vivid#v0.11.1",
