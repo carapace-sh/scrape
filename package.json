@@ -19,7 +19,7 @@
     "dive": "https://github.com/wagoodman/dive#v0.13.1",
     "dlv": "https://github.com/go-delve/delve#v1.27.1",
     "docker": "https://github.com/docker/cli#v29.7.2",
-    "docker-compose": "https://github.com/docker/compose#v5.4.0",
+    "docker-compose": "https://github.com/docker/compose#v5.5.0",
     "drift": "https://github.com/aymanbagabas/drift#v0.0.6",
     "eza": "https://github.com/eza-community/eza#v0.23.5",
     "faas-cli": "https://github.com/openfaas/faas-cli#0.18.12",
