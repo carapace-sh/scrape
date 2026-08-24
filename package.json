@@ -38,7 +38,7 @@
     "grype": "https://github.com/anchore/grype#v0.117.0",
     "gum": "https://github.com/charmbracelet/gum#v2.0.0",
     "helm": "https://github.com/helm/helm#v4.2.4",
-    "herdr": "https://github.com/ogulcancelik/herdr#v0.8.0",
+    "herdr": "https://github.com/ogulcancelik/herdr#v0.8.2",
     "hl": "https://github.com/pamburus/hl#v0.36.3",
     "hurl": "https://github.com/Orange-OpenSource/hurl#8.0.1",
     "hyperfine": "https://github.com/sharkdp/hyperfine#v1.20.0",
