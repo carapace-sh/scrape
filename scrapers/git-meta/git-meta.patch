@@ -1,0 +1,28 @@
+diff --git a/crates/git-meta-cli/src/main.rs b/crates/git-meta-cli/src/main.rs
+index c9340e5..23a752a 100644
+--- a/crates/git-meta-cli/src/main.rs
++++ b/crates/git-meta-cli/src/main.rs
+@@ -7,8 +7,11 @@ mod pager;
+ mod style;
+ 
+ use anyhow::Result;
+-use clap::Parser;
++use clap::{CommandFactory, Parser};
+ use cli::{Cli, Commands, ImportAction, RemoteAction};
++use carapace_spec_clap::Spec;
++use clap_complete::generate;
++use std::io;
+ 
+ /// Returns `true` when the user invoked `git meta` in a way that should
+ /// trigger our curated top-level help instead of clap's auto-generated
+@@ -29,6 +32,10 @@ fn should_show_top_level_help() -> bool {
+ }
+ 
+ fn main() -> Result<()> {
++    generate(Spec, &mut Cli::command(), "git-meta", &mut io::stdout());
++    if true {
++        return Ok(());
++    }
+     if should_show_top_level_help() {
+         cli::print_help();
+         return Ok(());
