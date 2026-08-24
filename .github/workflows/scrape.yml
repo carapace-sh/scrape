@@ -39,6 +39,7 @@ jobs:
   glow: {uses: ./.github/workflows/scrape-template.yml, with: {command: glow}}
   golangci-lint: {uses: ./.github/workflows/scrape-template.yml, with: {command: golangci-lint}}
   goreleaser: {uses: ./.github/workflows/scrape-template.yml, with: {command: goreleaser}}
+  git-meta: {uses: ./.github/workflows/scrape-template.yml, with: {command: git-meta}}
   grit: {uses: ./.github/workflows/scrape-template.yml, with: {command: grit}}
   grype: {uses: ./.github/workflows/scrape-template.yml, with: {command: grype}}
   gum: {uses: ./.github/workflows/scrape-template.yml, with: {command: gum}}
