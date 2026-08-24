@@ -36,7 +36,7 @@
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.17.1",
     "grit": "https://github.com/gitbutlerapp/grit#v0.5.0",
     "grype": "https://github.com/anchore/grype#v0.117.0",
-    "gum": "https://github.com/charmbracelet/gum#v0.17.0",
+    "gum": "https://github.com/charmbracelet/gum#v2.0.0",
     "helm": "https://github.com/helm/helm#v4.2.4",
     "herdr": "https://github.com/ogulcancelik/herdr#v0.8.0",
     "hl": "https://github.com/pamburus/hl#v0.36.3",
