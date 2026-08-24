@@ -1,0 +1,85 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: ollama
+description: Large language model runner
+flags:
+    --nowordwrap: Don't wrap words to the next line automatically
+    --verbose: Show timings for response
+    -v, --version: Show version information
+commands:
+    - name: serve
+      aliases:
+        - start
+      description: Start Ollama
+    - name: create MODEL
+      description: Create a model
+      flags:
+        --draft-quantize=: Quantize draft model to this level
+        --experimental: Enable experimental safetensors model creation
+        -f, --file=: Name of the Modelfile (default "Modelfile")
+        -q, --quantize=: Quantize model to this level (e.g. q4_K_M)
+    - name: show MODEL
+      description: Show information for a model
+      flags:
+        --license: Show license of a model
+        --modelfile: Show Modelfile of a model
+        --parameters: Show parameters of a model
+        --system: Show system message of a model
+        --template: Show template of a model
+        -v, --verbose: Show detailed model information
+    - name: run MODEL [PROMPT]
+      description: Run a model
+      flags:
+        --dimensions=: Truncate output embeddings to specified dimension (embedding models only)
+        --format=: Response format (e.g. json)
+        --hidethinking: Hide thinking output (if provided)
+        --insecure: Use an insecure registry
+        --keepalive=: Duration to keep a model loaded (e.g. 5m)
+        --nowordwrap: Don't wrap words to the next line automatically
+        --think?: 'Enable thinking mode: true/false or high/medium/low for supported models'
+        --truncate: 'For embedding models: truncate inputs exceeding context length (default: true). Set --truncate=false to error instead'
+        --verbose: Show timings for response
+    - name: stop MODEL
+      description: Stop a running model
+    - name: pull MODEL
+      description: Pull a model from a registry
+      flags:
+        --insecure: Use an insecure registry
+    - name: push MODEL
+      description: Push a model to a registry
+      flags:
+        --insecure: Use an insecure registry
+    - name: signin
+      description: Sign in to ollama.com
+    - name: login
+      description: Sign in to ollama.com
+      hidden: true
+    - name: signout
+      description: Sign out from ollama.com
+    - name: logout
+      description: Sign out from ollama.com
+      hidden: true
+    - name: list
+      aliases:
+        - ls
+      description: List models
+    - name: ps
+      description: List running models
+    - name: cp SOURCE DESTINATION
+      description: Copy a model
+    - name: rm MODEL [MODEL...]
+      description: Remove a model
+    - name: runner
+      hidden: true
+    - name: gpu-discover
+      hidden: true
+      flags:
+        --lib-dir*=: Ollama runtime library directory
+    - name: launch [INTEGRATION] [-- [EXTRA_ARGS...]]
+      description: Launch the Ollama menu or an integration
+      flags:
+        --config: Configure without launching
+        --model=: Model to use
+        --restore: Restore an integration to its default profile
+        -y, --yes: Automatically answer yes to confirmation prompts
+    - name: help [command]
+      description: Help about any command
