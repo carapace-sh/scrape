@@ -1,0 +1,207 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: git-meta
+description: Structured metadata for Git data
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+commands:
+- name: set
+  description: Set a string metadata value
+  flags:
+    -F, --file=: Read value from file
+    -h, --help: Print help
+    --json: Output as JSON
+    --timestamp=: Override timestamp (milliseconds since epoch, for imports)
+- name: get
+  description: Get string metadata value(s)
+  flags:
+    -h, --help: Print help
+    --json: Output as JSON
+    --with-authorship: Include authorship info (requires --json)
+- name: rm
+  description: Remove a string metadata key
+  flags:
+    -h, --help: Print help
+- name: clear
+  description: Remove all local metadata keys matching a key or namespace
+  flags:
+    -h, --help: Print help
+- name: list:push
+  description: Push a value onto a list
+  flags:
+    -h, --help: Print help
+- name: list:pop
+  description: Pop a value from a list
+  flags:
+    -h, --help: Print help
+- name: list:rm
+  description: Show list entries with IDs, or remove one by index
+  flags:
+    -h, --help: Print help
+- name: set:add
+  description: Add a member to a set
+  flags:
+    -h, --help: Print help
+    --json: Output as JSON
+    --timestamp=: Override timestamp (milliseconds since epoch, for imports)
+- name: set:rm
+  description: Remove a member from a set
+  flags:
+    -h, --help: Print help
+    --json: Output as JSON
+    --timestamp=: Override timestamp (milliseconds since epoch, for imports)
+- name: show
+  description: Show commit details and associated metadata
+  flags:
+    -h, --help: Print help
+- name: inspect
+  description: Browse metadata keys and values
+  flags:
+    -h, --help: Print help
+    --promisor: List only promisor (not-yet-fetched) keys
+    --timeline: Show a weekly timeline graph of entries
+- name: stats
+  description: Show metadata statistics
+  flags:
+    -h, --help: Print help
+- name: log
+  description: Walk commit log and show metadata for each commit
+  flags:
+    -n=:
+      description: 'Number of commits to show (default: 20)'
+      default: '20'
+    -h, --help: Print help
+    --mo: Only show commits that have metadata
+- name: tui
+  description: Browse metadata interactively in a full-screen terminal UI
+  flags:
+    -h, --help: Print help
+- name: serialize
+  description: Serialize metadata to Git ref
+  flags:
+    --force-full: Rebuild serialized refs from the full SQLite state
+    -h, --help: Print help
+    -v, --verbose: Show detailed information about serialization decisions
+- name: materialize
+  description: Materialize remote metadata into local SQLite
+  flags:
+    --dry-run: Show what would be changed without updating SQLite or refs
+    --force-full: Reindex promisor keys from the full remote metadata history
+    -h, --help: Print help
+    -v, --verbose: Show detailed information about merge decisions and tree parsing
+- name: import
+  description: Import metadata from another format
+  hidden: true
+  flags:
+    --dry-run&: Show what would be imported without writing
+    --format&=: 'Legacy source format: "entire" or "git-ai"'
+    -h, --help: Print help
+    --since&=: Only import metadata for commits on or after this date (YYYY-MM-DD)
+  commands:
+  - name: gh
+    description: Import merged pull request metadata from GitHub using gh
+    flags:
+      --dry-run: Show what would be imported without writing
+      --force: Reprocess PRs even when they were previously imported
+      -h, --help: Print help
+      --include-comments: Import PR comments and review bodies
+      --limit=: Maximum number of merged PRs to fetch
+      --no-tags: Skip release tag mapping
+      --repo=: GitHub repository in OWNER/NAME form
+      --since=: Only import PRs merged on or after this date (YYYY-MM-DD)
+- name: blame
+  description: Show file blame grouped by pull request metadata
+  flags:
+    -h, --help: Print help
+    --json: Output compact JSON with line ranges and PR metadata
+    --porcelain: Output machine-readable JSON
+    --rev=: 'Revision to blame from (default: HEAD)'
+- name: setup
+  description: Initialize a metadata remote from a project-local `.git-meta` file
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Initialize a metadata remote from a project-local `.git-meta` file
+
+      Reads the remote URL from `.git-meta` at the repo root and then runs the equivalent of `git meta remote add <url> --init`. The file is YAML with a required `url` key; unknown keys are ignored for forward compatibility.
+    flag:
+      help: Print help (see a summary with '-h')
+- name: remote
+  description: Manage metadata remote sources
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: add
+    description: Add a metadata remote source
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --init: Initialize the remote with a README commit on `refs/{namespace}/main` when no metadata refs exist there yet
+      --name=:
+        description: 'Remote name (default: meta)'
+        default: meta
+      --namespace=: 'Metadata namespace to use (default: from git config or "meta")'
+    documentation:
+      flag:
+        help: Print help (see a summary with '-h')
+        init: |-
+          Initialize the remote with a README commit on `refs/{namespace}/main` when no metadata refs exist there yet.
+
+          On an interactive terminal, you will be prompted instead. Use this flag to skip the prompt (e.g. in CI).
+  - name: remove
+    description: Remove a metadata remote source
+    flags:
+      -h, --help: Print help
+  - name: list
+    description: List configured metadata remotes
+    flags:
+      -h, --help: Print help
+- name: push
+  description: Push local metadata to a remote
+  flags:
+    -h, --help: Print help
+    --readme: Push a README to refs/heads/main on the meta remote (only if it doesn't already exist)
+    -v, --verbose: Show detailed information about push decisions
+- name: pull
+  description: Pull remote metadata and merge into local database
+  flags:
+    -h, --help: Print help
+    -v, --verbose: Show detailed information about pull decisions
+- name: sync
+  description: Pull, merge, rewrite if needed, and push metadata
+  flags:
+    -h, --help: Print help
+    -v, --verbose: Show detailed information about sync decisions
+- name: promisor
+  description: Walk remote history and index keys as promisor entries
+  hidden: true
+  flags:
+    -h, --help: Print help
+- name: config
+  description: Get or set project configuration (meta:* keys)
+  flags:
+    -h, --help: Print help
+    --list: List all config values
+    --unset: Remove a config key
+- name: config:prune
+  description: Interactively configure auto-prune rules
+  hidden: true
+  flags:
+    -h, --help: Print help
+- name: prune
+  description: Prune the serialized git tree, dropping old entries
+  hidden: true
+  flags:
+    --dry-run: Show what would be pruned without committing
+    -h, --help: Print help
+- name: local-prune
+  description: Prune old metadata from the local SQLite database
+  hidden: true
+  flags:
+    --dry-run: Show what would be pruned without deleting anything
+    -h, --help: Print help
+    --skip-date: Ignore the date rule and prune all non-project metadata
+- name: teardown
+  description: Remove the git meta database and all meta refs
+  flags:
+    -h, --help: Print help
