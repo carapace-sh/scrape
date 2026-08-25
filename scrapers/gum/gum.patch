@@ -1,5 +1,5 @@
 diff --git a/gum.go b/gum.go
-index 4191314..7988f18 100644
+index 3b9d1a4..db7e7f7 100644
 --- a/gum.go
 +++ b/gum.go
 @@ -225,4 +225,6 @@ type Gum struct {
@@ -10,18 +10,18 @@ index 4191314..7988f18 100644
 +	kong.Plugins
  }
 diff --git a/main.go b/main.go
-index a61916e..b520012 100644
+index 38b8a62..a5c6b70 100644
 --- a/main.go
 +++ b/main.go
-@@ -8,6 +8,7 @@ import (
- 	"runtime/debug"
- 
+@@ -11,6 +11,7 @@ import (
+ 	"charm.land/gum/v2/internal/exit"
+ 	"charm.land/lipgloss/v2"
  	"github.com/alecthomas/kong"
 +	"github.com/carapace-sh/carapace-spec-kong"
- 	tea "github.com/charmbracelet/bubbletea"
- 	"github.com/charmbracelet/gum/internal/exit"
- 	"github.com/charmbracelet/lipgloss"
-@@ -44,6 +45,7 @@ func main() {
+ )
+ 
+ const shaLen = 7
+@@ -43,6 +44,7 @@ func main() {
  	}
  
  	gum := &Gum{}

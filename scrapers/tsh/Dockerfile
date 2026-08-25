@@ -1,4 +1,4 @@
-FROM golang
+FROM golang:1.25
 ARG VERSION
 
 RUN git clone https://github.com/gravitational/teleport --branch "${VERSION}" --depth 1 /teleport

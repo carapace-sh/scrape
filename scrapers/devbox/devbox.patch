@@ -1,5 +1,5 @@
 diff --git a/internal/boxcli/root.go b/internal/boxcli/root.go
-index 86f2011f..d4246e3f 100644
+index 6e86a11..dd95ad9 100644
 --- a/internal/boxcli/root.go
 +++ b/internal/boxcli/root.go
 @@ -11,6 +11,7 @@
@@ -9,8 +9,8 @@ index 86f2011f..d4246e3f 100644
 +	"github.com/carapace-sh/carapace"
  	"github.com/spf13/cobra"
  
- 	"go.jetify.com/devbox/internal/boxcli/featureflag"
-@@ -100,6 +101,7 @@ func RootCmd() *cobra.Command {
+ 	"go.jetify.com/devbox/internal/boxcli/midcobra"
+@@ -94,6 +95,7 @@ func RootCmd() *cobra.Command {
  	debugMiddleware.AttachToFlag(command.PersistentFlags(), "debug")
  	traceMiddleware.AttachToFlag(command.PersistentFlags(), "trace")
  
