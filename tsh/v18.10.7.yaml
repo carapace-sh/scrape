@@ -1,0 +1,1234 @@
+name: tsh
+description: Teleport Command Line Client.
+persistentflags:
+    --auth=: Specify the name of authentication connector to use.
+    --bind-addr=: Override host:port used when opening a browser for cluster logins.
+    --browser-login=&: Set to 'none' to suppress browser opening on login.
+    --callback=: Override the base URL (host:port) of the link shown when opening a browser for cluster logins. Must be used with --bind-addr.
+    --cert-format=: SSH certificate format.
+    --check-update&: Check for availability of managed update.
+    --compat=&: OpenSSH compatibility flag.
+    --completion-bash&: Output possible completions for the given args.
+    --completion-script-bash&: Generate completion script for bash.
+    --completion-script-fish&: Generate completion script for fish.
+    --completion-script-zsh&: Generate completion script for ZSH.
+    --cpu-profile=&: Write CPU profile to file.
+    --enable-escape-sequences:
+        description: Enable support for SSH escape sequences. Type '~?' during an SSH session to list supported sequences. Default is enabled.
+        default: "true"
+    --fork-kill-fd=&: File descriptor to check parent health on when forked. For internal use only.
+    --fork-signal-fd=&: File descriptor to signal parent on when forked. Overrides --fork-after-authentication. For internal use only.
+    --headless: Use headless login. Shorthand for --auth=headless.
+    --help-long&: Generate long help.
+    --help-man&: Generate a man page.
+    --insecure:
+        description: Do not verify server's certificate and host name. Use only in test environments.
+        default: "false"
+    --mem-profile=&: Write memory profile to file.
+    --mfa-mode=:
+        description: Preferred mode for MFA and Passwordless assertions (auto, cross-platform, platform, otp, sso, browser).
+        default: auto
+    --mlock=:
+        description: Determines whether process memory will be locked and whether failure to do so will be accepted (off, auto, best_effort, strict).
+        default: auto
+    --no-check-update&: Check for availability of managed update.
+    --no-completion-bash&: Output possible completions for the given args.
+    --no-completion-script-bash&: Generate completion script for bash.
+    --no-completion-script-fish&: Generate completion script for fish.
+    --no-completion-script-zsh&: Generate completion script for ZSH.
+    --no-debug&: Verbose logging to stdout.
+    --no-enable-escape-sequences&: Enable support for SSH escape sequences. Type '~?' during an SSH session to list supported sequences. Default is enabled.
+    --no-headless&: Use headless login. Shorthand for --auth=headless.
+    --no-help&: Show context-sensitive help (also try --help-long and --help-man).
+    --no-help-long&: Generate long help.
+    --no-help-man&: Generate a man page.
+    --no-insecure&: Do not verify server's certificate and host name. Use only in test environments.
+    --no-nocache&: Do not cache cluster discovery locally.
+    --no-os-log&: Verbose logging to the unified logging system. This flag implies --debug. Also available through the TELEPORT_OS_LOG env var. More details see https://goteleport.com/docs/connect-your-client/tsh/#debug-logs.
+    --no-skip-version-check&: Skip version checking between server and client.
+    --no-trace&: Capture and export distributed traces.
+    --no-use-local-ssh-agent&: Deprecated in favor of the add-keys-to-agent flag.
+    --nocache&: Do not cache cluster discovery locally.
+    --os-log&: Verbose logging to the unified logging system. This flag implies --debug. Also available through the TELEPORT_OS_LOG env var. More details see https://goteleport.com/docs/connect-your-client/tsh/#debug-logs.
+    --piv-slot=: 'Specify a PIV slot key to use for Hardware Key support instead of the default. Ex: "9d".'
+    --proxy=: Teleport proxy address.
+    --relay=: Teleport relay address, "none" to explicitly disable the use of a relay, or "default" to use the cluster-provided address even if a different address was specified at login time.
+    --skip-version-check: Skip version checking between server and client.
+    --trace&: Capture and export distributed traces.
+    --trace-exporter=&: An OTLP exporter URL to send spans to. Note - only tsh spans will be included.
+    --trace-profile=&: Write trace profile to file.
+    --ttl=: Minutes to live for a session.
+    --use-local-ssh-agent&:
+        description: Deprecated in favor of the add-keys-to-agent flag.
+        default: "true"
+    --user=: Teleport user, defaults to current local user.
+    -J, --jumphost=: SSH jumphost.
+    -d, --debug: Verbose logging to stdout.
+    -h, --help&: Show context-sensitive help (also try --help-long and --help-man).
+    -i, --identity=: Identity file.
+    -k, --add-keys-to-agent=:
+        description: Controls how keys are handled. Valid values are [auto no yes only].
+        default: auto
+    -l, --login=: Remote host login.
+    -o, --option=&: ""
+commands:
+    - name: help
+      description: Show help.
+    - name: version
+      description: Print the tsh client and Proxy server versions for the current context.
+      flags:
+        --client: Show the client version only (no server required).
+        --no-client&: Show the client version only (no server required).
+        -f, --format=:
+            description: Format output (text, json, yaml).
+            default: text
+    - name: ssh
+      description: Run shell or execute a command on a remote SSH node.
+      flags:
+        --disable-access-request: 'Disable automatic resource access requests (DEPRECATED: use --request-mode=off).'
+        --invite=: A comma separated list of people to mark as invited for the session.
+        --local:
+            description: Execute command on localhost after connecting to SSH node.
+            default: "false"
+        --log-dir=: Directory to log separated command output, when executing on multiple nodes. If set, output from each node will also be labeled in the terminal.
+        --no-0482f1a3-ebaf-49f4-89c3-1c28cfae0ba9&: ""
+        --no-a01076d0-f415-4035-9428-4a4f6f629c45&: ""
+        --no-disable-access-request&: 'Disable automatic resource access requests (DEPRECATED: use --request-mode=off).'
+        --no-fork-after-authentication&: Run in background after authentication is complete.
+        --no-forward-agent&: Forward agent to target node.
+        --no-local&: Execute command on localhost after connecting to SSH node.
+        --no-no-remote-exec&: Don't execute remote command, useful for port forwarding.
+        --no-no-resume&: Disable SSH connection resumption.
+        --no-participant-req&: Displays a verbose list of required participants in a moderated session.
+        --no-relogin&: Permit performing an authentication attempt on a failed command.
+        --no-resume: Disable SSH connection resumption.
+        --no-tty&: Allocate TTY.
+        --no-x11-trusted&: Requests trusted (insecure) X11 forwarding for this session. This can make your local machine vulnerable to attacks, use with caution.
+        --no-x11-untrusted&: Requests untrusted (secure) X11 forwarding for this session.
+        --participant-req: Displays a verbose list of required participants in a moderated session.
+        --reason=: The purpose of the session.
+        --relogin:
+            description: Permit performing an authentication attempt on a failed command.
+            default: "true"
+        --request-mode=:
+            description: Type of automatic access request to make (off, resource, role).
+            default: resource
+        --request-reason=: Reason for requesting access.
+        --x11-untrusted-timeout=:
+            description: Sets a timeout for untrusted X11 forwarding, after which the client will reject any forwarding requests from the server.
+            default: 10m
+        -A, --forward-agent: Forward agent to target node.
+        -D, --dynamic-forward=: Forward localhost connections to remote server using SOCKS5.
+        -L, --forward=: Forward localhost connections to remote server.
+        -N, --no-remote-exec: Don't execute remote command, useful for port forwarding.
+        -R, --remote-forward=: Forward remote connections to localhost.
+        -T, --a01076d0-f415-4035-9428-4a4f6f629c45&: ""
+        -V, --0482f1a3-ebaf-49f4-89c3-1c28cfae0ba9&: ""
+        -X, --x11-untrusted: Requests untrusted (secure) X11 forwarding for this session.
+        -Y, --x11-trusted: Requests trusted (insecure) X11 forwarding for this session. This can make your local machine vulnerable to attacks, use with caution.
+        -c, --cluster=: Specify the Teleport cluster to connect.
+        -f, --fork-after-authentication: Run in background after authentication is complete.
+        -o, --option=: OpenSSH options in the format used in the configuration file.
+        -p, --port=: SSH port on a remote host.
+        -t, --tty: Allocate TTY.
+    - name: resolve
+      description: Resolves an SSH host.
+      flags:
+        --no-quiet&: Quiet mode.
+        -f, --format=:
+            description: Format output (text, json, yaml).
+            default: text
+        -q, --quiet: Quiet mode.
+    - name: daemon
+      description: Daemon is the tsh daemon service.
+      hidden: true
+      commands:
+        - name: start
+          description: Starts tsh daemon service.
+          hidden: true
+          flags:
+            --addr=: Addr is the daemon listening address.
+            --agents-dir=: Directory containing agent config files and data directories for Connect My Computer.
+            --certs-dir=: Directory containing certs used to create secure gRPC connection with daemon service.
+            --hardware-key-agent: Serve the hardware key agent as part of the daemon process.
+            --installation-id=: Unique ID identifying a specific Teleport Connect installation.
+            --kubeconfigs-dir=: Directory containing kubeconfig for Kubernetes Access.
+            --no-hardware-key-agent&: Serve the hardware key agent as part of the daemon process.
+            --prehog-addr=: URL where prehog events should be submitted.
+        - name: stop
+          description: Gracefully stops a process on Windows by sending Ctrl-Break to it.
+          hidden: true
+          flags:
+            --pid=: PID to be stopped.
+    - name: aws
+      description: Access AWS API.
+      flags:
+        --app=: Optional Name of the AWS application to use if logged into multiple.
+        --aws-role=: (For AWS CLI access only) Amazon IAM role ARN or role name.
+        --exec=: Execute different commands (e.g. terraform) under Teleport credentials.
+        --no-endpoint-url&: Run local proxy to serve as an AWS endpoint URL. If not specified, local proxy serves as an HTTPS proxy.
+        -e, --endpoint-url&: Run local proxy to serve as an AWS endpoint URL. If not specified, local proxy serves as an HTTPS proxy.
+    - name: aws-profile
+      description: Generate AWS config profiles by syncing with your integrated AWS IAM Identity Center account(s). Other profiles in the config file are left untouched.
+      flags:
+        --aws-sso-region=: AWS region for SSO. Auto-detected from cluster if not specified.
+        --dry-run: Print the configuration that will be applied without modifying the AWS config file.
+        --no-dry-run&: Print the configuration that will be applied without modifying the AWS config file.
+    - name: az
+      description: Access Azure API.
+      flags:
+        --app=: Optional name of the Azure application to use if logged into multiple.
+        --azure-identity=: (For Azure CLI access only) Azure managed identity name.
+    - name: gcloud
+      aliases:
+        - gcp
+      description: Access GCP API with the gcloud command.
+      flags:
+        --app=: Optional name of the GCP application to use if logged into multiple.
+        --gcp-service-account=: (For GCP CLI access only) GCP service account name.
+    - name: gsutil
+      description: Access Google Cloud Storage with the gsutil command.
+      flags:
+        --app=: Optional name of the GCP application to use if logged into multiple.
+        --gcp-service-account=: (For GCP CLI access only) GCP service account name.
+    - name: apps
+      aliases:
+        - app
+      description: View and control proxied applications.
+      flags:
+        -c, --cluster=: Specify the Teleport cluster to connect.
+      commands:
+        - name: ls
+          description: List available applications.
+          flags:
+            --no-all&: List apps from all clusters and proxies.
+            --no-verbose&: Show extra application fields.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --search=: List of comma separated search keywords or phrases enclosed in quotations (e.g. --search=foo,bar,"some phrase").
+            -R, --all: List apps from all clusters and proxies.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+            -v, --verbose: Show extra application fields.
+        - name: login
+          description: Retrieve short-lived certificate for an app.
+          flags:
+            --aws-role=: (For AWS CLI access only) Amazon IAM role ARN or role name.
+            --azure-identity=: (For Azure CLI access only) Azure managed identity name.
+            --env&: (For AWS CLI access only) Obtain credentials as plain text in order to load into environments variables. Required when using per-session MFA.
+            --gcp-service-account=: (For GCP CLI access only) GCP service account name.
+            --no-env&: (For AWS CLI access only) Obtain credentials as plain text in order to load into environments variables. Required when using per-session MFA.
+            --no-interactive&: Prompt for AWS Roles interactively (--aws-role takes precedence).
+            --no-quiet&: Quiet mode.
+            --target-port=: Port to which connections made using this cert should be routed to. Valid only for multi-port TCP apps.
+            -T, --interactive: Prompt for AWS Roles interactively (--aws-role takes precedence).
+            -q, --quiet: Quiet mode.
+        - name: logout
+          description: Remove app certificate.
+        - name: config
+          description: Print app connection information.
+          flags:
+            -f, --format=: 'Optional print format, one of: "uri" to print app address, "ca" to print CA cert path, "cert" to print cert path, "key" print key path, "curl" to print example curl command, "json" or "yaml" to print everything as JSON or YAML.'
+        - name: logins
+          description: List available logins for a Cloud console application.
+          flags:
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+    - name: recordings
+      aliases:
+        - recording
+      description: View and control session recordings.
+      commands:
+        - name: ls
+          description: List recorded sessions.
+          flags:
+            --from-utc=: Start of time range in which recordings are listed. Format 2006-01-02. Defaults to 24 hours ago.
+            --last=: Duration into the past from which session recordings should be listed. Format "5h30m40s".
+            --limit=:
+                description: Maximum number of recordings to show. Default 50.
+                default: "50"
+            --to-utc=: End of time range in which recordings are listed. Format 2006-01-02. Defaults to current time.
+            -f, --format=:
+                description: Format output (text, json, yaml). Defaults to 'text'.
+                default: text
+        - name: export
+          description: Export recorded desktop sessions to video.
+          flags:
+            --encoder=:
+                description: The video encoder to use.
+                default: auto
+            --no-quiet&: Quiet mode.
+            --out=: Override output file name.
+            -q, --quiet: Quiet mode.
+    - name: proxy
+      description: Run local TLS proxy allowing connecting to Teleport in single-port mode.
+      flags:
+        --proxy-log-output=:
+            description: Select where proxy status messages are printed. Defaults to "stderr", but can be used to revert to legacy behavior of send proxy output to stdout. Valid values are "stdout", "stderr", and "none".
+            default: stderr
+      commands:
+        - name: ssh
+          description: Start local TLS proxy for ssh connections when using Teleport in single-port mode.
+          flags:
+            --no-no-resume&: Disable SSH connection resumption.
+            --no-relogin&: Permit performing an authentication attempt on a failed command.
+            --no-resume: Disable SSH connection resumption.
+            --relogin:
+                description: Permit performing an authentication attempt on a failed command.
+                default: "true"
+            -c, --cluster=: Specify the Teleport cluster to connect.
+        - name: db
+          description: Start local TLS proxy for database connections when using Teleport in single-port mode.
+          flags:
+            --disable-access-request: Disable automatic resource access requests.
+            --insecure-listen-anywhere: 'Allows the local proxy to listen on any address without restrictions. WARNING: this will expose unsecured listener to anyone in the network. Only use when network access is otherwise restricted.'
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --listen=: Specifies the source address used by proxy db listener. Mutually exclusive with --port.
+            --no-disable-access-request&: Disable automatic resource access requests.
+            --no-insecure-listen-anywhere&: 'Allows the local proxy to listen on any address without restrictions. WARNING: this will expose unsecured listener to anyone in the network. Only use when network access is otherwise restricted.'
+            --no-tunnel&: Open authenticated tunnel using database's client certificate so clients don't need to authenticate.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --request-reason=: Reason for requesting access.
+            --tunnel: Open authenticated tunnel using database's client certificate so clients don't need to authenticate.
+            -c, --cluster=: Specify the Teleport cluster to connect.
+            -n, --db-name=: Database name to log in to.
+            -p, --port=: Specifies the source port used by proxy db listener.
+            -r, --db-roles=: List of comma separate database roles to use for auto-provisioned user.
+            -u, --db-user=: Database user to log in as.
+        - name: app
+          description: Start local TLS proxy for app connection when using Teleport in single-port mode.
+          flags:
+            --https-tunnel&: Use the teleport-app-https ALPN protocol (HTTPS tunneled over mTLS) for HTTP apps.
+            --no-https-tunnel&: Use the teleport-app-https ALPN protocol (HTTPS tunneled over mTLS) for HTTP apps.
+            -c, --cluster=: Specify the Teleport cluster to connect.
+            -p, --port=: Specifies the listening port used by the proxy app listener. Accepts an optional target port of a multi-port TCP app after a colon, e.g. "1234:5678".
+        - name: mcp
+          description: Start local proxy for MCP access.
+          flags:
+            -c, --cluster=: Specify the Teleport cluster to connect.
+            -p, --port=: Specifies the listening port used by the proxy app listener.
+        - name: aws
+          description: Start local proxy for AWS access.
+          flags:
+            --app=: Optional Name of the AWS application to use if logged into multiple.
+            --no-endpoint-url&: Run local proxy to serve as an AWS endpoint URL. If not specified, local proxy serves as an HTTPS proxy.
+            -e, --endpoint-url&: Run local proxy to serve as an AWS endpoint URL. If not specified, local proxy serves as an HTTPS proxy.
+            -f, --format=:
+                description: 'Optional format to print the commands for setting environment variables, one of: unix, command-prompt, powershell, text. Default is unix. Or specify a service format, one of: athena-odbc, athena-jdbc.'
+                default: unix
+            -p, --port=: Specifies the source port used by the proxy listener.
+        - name: azure
+          aliases:
+            - az
+          description: Start local proxy for Azure access.
+          flags:
+            --app=: Optional Name of the Azure application to use if logged into multiple.
+            -f, --format=:
+                description: 'Optional format to print the commands for setting environment variables, one of: unix, command-prompt, powershell, text. Default is unix.'
+                default: unix
+            -p, --port=: Specifies the source port used by the proxy listener.
+        - name: gcloud
+          aliases:
+            - gcp
+          description: Start local proxy for GCP access.
+          flags:
+            --app=: Optional Name of the GCP application to use if logged into multiple.
+            -f, --format=:
+                description: 'Optional format to print the commands for setting environment variables, one of: unix, command-prompt, powershell, text. Default is unix.'
+                default: unix
+            -p, --port=: Specifies the source port used by the proxy listener.
+        - name: kube
+          description: Start local proxy for Kubernetes access.
+          flags:
+            --as-groups=: Configure custom Kubernetes group impersonation.
+            --as=: Configure custom Kubernetes user impersonation.
+            --exec: Run the proxy in the background and reexec into a new shell with $KUBECONFIG already pointed to our config file.
+            --exec-arg=: Arguments to pass to the executed command (can be specified multiple times).
+            --exec-cmd=: Command to execute when --exec is enabled. If not specified, defaults to $SHELL or /bin/bash. Implicitly enables exec mode.
+            --kube-namespace=&: Configure the default Kubernetes namespace.
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --no-exec&: Run the proxy in the background and reexec into a new shell with $KUBECONFIG already pointed to our config file.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --set-context-name=:
+                description: Define a custom context name or template.
+                default: '{{.ClusterName}}-{{.KubeName}}'
+            -c, --cluster=: Specify the Teleport cluster to connect.
+            -f, --format=:
+                description: 'Optional format to print the commands for setting environment variables, one of: unix, command-prompt, powershell, text. Default is unix.'
+                default: unix
+            -n, --namespace=: Configure the default Kubernetes namespace.
+            -p, --port=: Specifies the source port used by the proxy listener.
+    - name: db
+      description: View and control proxied databases.
+      flags:
+        -c, --cluster=: Specify the Teleport cluster to connect.
+      commands:
+        - name: ls
+          aliases:
+            - |4-
+              Examples:
+                Search databases with keywords:
+                $ tsh db ls --search foo,bar
+
+                Filter databases with labels:
+                $ tsh db ls key1=value1,key2=value2
+
+                List databases from all clusters with extra fields:
+                $ tsh db ls --all -v
+
+                Get database names using "jq":
+                $ tsh db ls --format json  | jq -r '.[].metadata.name'
+          description: List all available databases.
+          flags:
+            --no-all&: List databases from all clusters and proxies.
+            --no-verbose&: Show extra database fields.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --search=: List of comma separated search keywords or phrases enclosed in quotations (e.g. --search=foo,bar,"some phrase").
+            -R, --all: List databases from all clusters and proxies.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+            -v, --verbose: Show extra database fields.
+        - name: login
+          description: Retrieve credentials for a database.
+          flags:
+            --disable-access-request: Disable automatic resource access requests.
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --no-disable-access-request&: Disable automatic resource access requests.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --request-reason=: Reason for requesting access.
+            -n, --db-name=: Database name to configure as default.
+            -r, --db-roles=: List of comma separate database roles to use for auto-provisioned user.
+            -u, --db-user=: Database user to configure as default.
+        - name: logout
+          description: Remove database credentials.
+          flags:
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+        - name: env
+          description: Print environment variables for the configured database.
+          flags:
+            --db=&: Print environment for the specified database.
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+        - name: config
+          description: Print database connection information. Useful when configuring GUI clients.
+          flags:
+            --db=&: Print information for the specified database.
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            -f, --format=: 'Print format: "text" to print in table format (default), "cmd" to print connect command, "json" or "yaml" to print in JSON or YAML.'
+        - name: connect
+          description: Connect to a database.
+          flags:
+            --disable-access-request: Disable automatic resource access requests.
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --no-disable-access-request&: Disable automatic resource access requests.
+            --no-tunnel&: Open authenticated tunnel using database's client certificate so clients don't need to authenticate.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --request-reason=: Reason for requesting access.
+            --tunnel&: Open authenticated tunnel using database's client certificate so clients don't need to authenticate.
+            -n, --db-name=: Database name to log in to.
+            -r, --db-roles=: List of comma separate database roles to use for auto-provisioned user.
+            -u, --db-user=: Database user to log in as.
+        - name: exec
+          aliases:
+            - |4-
+              Examples:
+                Search databases with labels:
+                $ tsh db exec "source my_script.sql" --db-user mysql --labels key1=value1,key2=value2
+
+                Search databases with keywords:
+                $ tsh db exec "select 1" --db-user mysql --db-name mysql --search foo,bar
+
+                Execute a command on specified target databases without confirmation:
+                $ tsh db exec "select @@hostname" --db-user mysql --dbs mydb1,mydb2,mydb3 --no-confirm
+
+                Run commands in parallel, and save outputs to files:
+                $ tsh db exec "select 1" --db-user mysql --labels env=dev --parallel=5 --output-dir=exec-outputs
+          description: Execute database commands on target database services.
+          flags:
+            --confirm:
+                description: Confirm selected database services before executing command.
+                default: "true"
+            --dbs=: List of comma separated target database services. Mutually exclusive with --search or --labels.
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --no-confirm&: Confirm selected database services before executing command.
+            --output-dir=: Directory to store command output per target database service. A summary is saved as "summary.json".
+            --parallel=:
+                description: Run commands on target databases in parallel. Defaults to 1, and maximum allowed is 10.
+                default: "1"
+            --search=: List of comma separated search keywords or phrases enclosed in quotations (e.g. --search=foo,bar,"some phrase").
+            -n, --db-name=: Database name to log in to.
+            -r, --db-roles=: List of comma separate database roles to use for auto-provisioned user.
+            -u, --db-user=: Database user to log in as.
+    - name: join
+      description: Join the active SSH or Kubernetes session.
+      flags:
+        -c, --cluster=: Specify the Teleport cluster to connect.
+        -m, --mode=:
+            description: Mode of joining the session, valid modes are observer, moderator and peer.
+            default: observer
+    - name: play
+      description: Replay the recorded session (SSH, Kubernetes, App, DB).
+      flags:
+        --no-skip-idle-time&: Quickly skip over idle time, applicable when streaming SSH or Kubernetes sessions.
+        --skip-idle-time: Quickly skip over idle time, applicable when streaming SSH or Kubernetes sessions.
+        --speed=:
+            description: Playback speed, applicable when streaming SSH or Kubernetes sessions.
+            default: 1x
+        -c, --cluster=: Specify the Teleport cluster to connect.
+        -f, --format=:
+            description: Format output (pty, json, yaml, text).
+            default: pty
+    - name: scp
+      description: Transfer files to a remote SSH node.
+      flags:
+        --no-no-resume&: Disable SSH connection resumption.
+        --no-preserve&: Preserves access and modification times from the original file.
+        --no-quiet&: Quiet mode.
+        --no-recursive&: Recursive copy of subdirectories.
+        --no-relogin&: Permit performing an authentication attempt on a failed command.
+        --no-resume: Disable SSH connection resumption.
+        --relogin:
+            description: Permit performing an authentication attempt on a failed command.
+            default: "true"
+        -P, --port=: Port to connect to on the remote host.
+        -c, --cluster=: Specify the Teleport cluster to connect.
+        -p, --preserve: Preserves access and modification times from the original file.
+        -q, --quiet: Quiet mode.
+        -r, --recursive: Recursive copy of subdirectories.
+    - name: ls
+      description: List remote SSH nodes.
+      flags:
+        --no-all&: List nodes from all clusters and proxies.
+        --no-verbose&: One-line output (for text format), including node UUIDs.
+        --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+        --search=: List of comma separated search keywords or phrases enclosed in quotations (e.g. --search=foo,bar,"some phrase").
+        -R, --all: List nodes from all clusters and proxies.
+        -c, --cluster=: Specify the Teleport cluster to connect.
+        -f, --format=:
+            description: Format output (text, json, yaml, names).
+            default: text
+        -v, --verbose: One-line output (for text format), including node UUIDs.
+    - name: clusters
+      description: List available Teleport clusters.
+      flags:
+        --no-quiet&: Quiet mode.
+        --no-verbose&: Verbose table output, shows full label output.
+        -f, --format=:
+            description: Format output (text, json, yaml).
+            default: text
+        -q, --quiet: Quiet mode.
+        -v, --verbose: Verbose table output, shows full label output.
+    - name: sessions
+      description: Operate on active sessions.
+      commands:
+        - name: ls
+          description: List active sessions.
+          flags:
+            --kind=:
+                description: Filter by session kind(s).
+                default: ssh,k8s,db,app,desktop
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+    - name: login
+      aliases:
+        - |-
+          NOTES:
+            The proxy address format is host:https_port,ssh_proxy_port
+
+            Passwordless only works in local auth
+            --auth=passwordless flag can be omitted if your cluster configuration set the connector_name: passwordless option.
+
+          EXAMPLES:
+            Use ports 8080 and 8023 for https and SSH proxy:
+            $ tsh --proxy=host.example.com:8080,8023 login
+
+            Use port 8080 and 3023 (default) for SSH proxy:
+            $ tsh --proxy=host.example.com:8080 login
+
+            Login and select cluster "two":
+            $ tsh --proxy=host.example.com login two
+
+            Select cluster "two" using existing credentials and proxy:
+            $ tsh login two
+
+            For passwordless authentication use:
+            $ tsh login --auth=passwordless
+      description: Log in to a cluster and retrieve the session certificate.
+      flags:
+        --browser=: Set to 'none' to suppress browser opening on login.
+        --force: Force re-authentication even if the current session is still valid.
+        --kube-cluster=: Name of the Kubernetes cluster to login to.
+        --no-force&: Force re-authentication even if the current session is still valid.
+        --no-overwrite&: Whether to overwrite the existing identity file.
+        --no-request-nowait&: Finish without waiting for request resolution.
+        --no-verbose&: Show extra status information.
+        --overwrite: Whether to overwrite the existing identity file.
+        --request-id=: Login with the roles requested in the given request.
+        --request-nowait: Finish without waiting for request resolution.
+        --request-reason=: Reason for requesting additional roles.
+        --request-reviewers=: Suggested reviewers for role request.
+        --request-roles=: Request one or more extra roles.
+        --scope=: Scope pins credentials to a given scope. Use "" to explicitly remove scoping.
+        -f, --format=:
+            description: 'Identity format: file, openssh (for OpenSSH compatibility) or kubernetes (for kubeconfig).'
+            default: file
+        -o, --out=: Identity output.
+        -v, --verbose: Show extra status information.
+    - name: logout
+      description: Delete a cluster certificate.
+    - name: latency
+      description: Run latency diagnostics.
+      hidden: true
+      commands:
+        - name: ssh
+          description: Measure latency to a particular SSH host.
+          flags:
+            --no-no-resume&: Disable SSH connection resumption.
+            --no-resume: Disable SSH connection resumption.
+            -c, --cluster=: Specify the Teleport cluster to connect.
+    - name: bench
+      description: Run Teleport benchmark tests.
+      hidden: true
+      flags:
+        --duration=:
+            description: Test duration.
+            default: 1s
+        --export: Export the latency profile.
+        --no-export&: Export the latency profile.
+        --path=:
+            description: Directory to save the latency profile to, default path is the current directory.
+            default: .
+        --rate=:
+            description: Requests per second rate.
+            default: "10"
+        --scale=:
+            description: Value scale in which to scale the recorded values.
+            default: "1.0"
+        --ticks=:
+            description: Ticks per half distance.
+            default: "100"
+        -c, --cluster=: Specify the Teleport cluster to connect.
+      commands:
+        - name: ssh
+          description: Run SSH benchmark tests.
+          hidden: true
+          flags:
+            --no-no-resume&: Disable SSH connection resumption.
+            --no-random&: 'Connect to random hosts for each SSH session. The provided hostname must be all: tsh bench ssh --random <user>@all <command>.'
+            --no-resume: Disable SSH connection resumption.
+            --random: 'Connect to random hosts for each SSH session. The provided hostname must be all: tsh bench ssh --random <user>@all <command>.'
+            -p, --port=: SSH port on a remote host.
+        - name: web
+          description: Run Web benchmark tests.
+          hidden: true
+          commands:
+            - name: ssh
+              description: Run SSH benchmark tests.
+              hidden: true
+              flags:
+                --no-random&: 'Connect to random hosts for each SSH session. The provided hostname must be all: tsh bench ssh --random <user>@all <command>.'
+                --random: 'Connect to random hosts for each SSH session. The provided hostname must be all: tsh bench ssh --random <user>@all <command>.'
+                -p, --port=: SSH port on a remote host.
+            - name: sessions
+              description: Run session benchmark tests.
+              hidden: true
+              flags:
+                --max=: The maximum number of sessions to open. If not specified a single session per node will be opened.
+        - name: kube
+          description: Run Kube benchmark tests.
+          hidden: true
+          flags:
+            --kube-namespace=&:
+                description: Selects the Kubernetes namespace.
+                default: default
+            --namespace=:
+                description: Selects the Kubernetes namespace.
+                default: default
+          commands:
+            - name: ls
+              description: Run a benchmark test to list Pods.
+              hidden: true
+            - name: exec
+              description: Run a benchmark test to exec into the specified Pod.
+              hidden: true
+              flags:
+                --container=: Selects the container to exec into.
+                --interactive: Create interactive Kube session.
+                --no-interactive&: Create interactive Kube session.
+        - name: postgres
+          description: Run PostgreSQL database benchmark tests.
+          hidden: true
+          flags:
+            --db-name=: Database name where benchmark queries will be executed.
+            --db-user=: Database user used to connect to the target database. The user must have enough permissions on the database to execute all the benchmark queries.
+        - name: mysql
+          description: Run MySQL database benchmark tests.
+          hidden: true
+          flags:
+            --db-name=: Database name where benchmark queries will be executed.
+            --db-user=: Database user used to connect to the target database. The user must have enough permissions on the database to execute all the benchmark queries.
+    - name: show
+      description: Read an identity from file and print to stdout.
+      hidden: true
+    - name: status
+      description: Display the list of proxy servers and retrieved certificates.
+      flags:
+        --client: Show client information only (no server required).
+        --no-client&: Show client information only (no server required).
+        --no-verbose&: Show extra status information after successful login.
+        -f, --format=:
+            description: Format output (text, json, yaml).
+            default: text
+        -v, --verbose: Show extra status information after successful login.
+    - name: env
+      description: Print commands to set Teleport session environment variables.
+      flags:
+        --no-unset&: Print commands to clear Teleport session environment variables.
+        --unset: Print commands to clear Teleport session environment variables.
+        -f, --format=:
+            description: Format output (text, json, yaml).
+            default: text
+    - name: delegation
+      description: Manage delegation sessions.
+      commands:
+        - name: create-session
+          description: Create a delegation session, allowing a bot or workload to temporarily act on your behalf.
+          flags:
+            --allow-all: Allow access to all resources, including destructive administrative actions. Mutually exclusive with the other --allow-* flags.
+            --allow-app=: Allow access to an application.
+            --allow-db=: Allow access to a database.
+            --allow-git-server=: Allow access to a Git server.
+            --allow-kube-cluster=: Allow access to a Kubernetes cluster.
+            --allow-node=: Allow access to an SSH node.
+            --allow-windows-desktop=: Allow access to a Windows desktop.
+            --bot=: Name of a bot allowed to use the delegation session. Repeat to allow multiple bots.
+            --no-allow-all&: Allow access to all resources, including destructive administrative actions. Mutually exclusive with the other --allow-* flags.
+            --session-ttl=: How long the delegation session should remain valid.
+    - name: request
+      aliases:
+        - requests
+      description: Manage access requests.
+      commands:
+        - name: ls
+          aliases:
+            - list
+          description: List access requests.
+          flags:
+            --my-requests: Only show requests created by current user.
+            --no-my-requests&: Only show requests created by current user.
+            --no-reviewable&: Only show requests reviewable by current user.
+            --no-suggested&: Only show requests that suggest current user as reviewer.
+            --reviewable: Only show requests reviewable by current user.
+            --suggested: Only show requests that suggest current user as reviewer.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+        - name: show
+          aliases:
+            - details
+          description: Show request details.
+          flags:
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+        - name: create
+          aliases:
+            - new
+          description: Create a new access request.
+          flags:
+            --assume-start-time=: Sets time roles can be assumed by requestor (RFC3339 e.g 2023-12-12T23:20:50.52Z).
+            --max-duration=: How long the access should be granted for.
+            --no-nowait&: Finish without waiting for request resolution.
+            --nowait: Finish without waiting for request resolution.
+            --reason=: Reason for requesting.
+            --request-ttl=: Expiration time for the access request.
+            --resource=: Resource ID to be requested.
+            --reviewers=: Suggested reviewers.
+            --roles=: Roles to be requested.
+            --session-ttl=: Expiration time for the elevated certificate.
+        - name: review
+          description: Review an access request.
+          flags:
+            --approve: Review proposes approval.
+            --assume-start-time=: Sets time roles can be assumed by requestor (RFC3339 e.g 2023-12-12T23:20:50.52Z).
+            --deny: Review proposes denial.
+            --no-approve&: Review proposes approval.
+            --no-deny&: Review proposes denial.
+            --reason=: Review reason message.
+        - name: search
+          description: Search for resources to request access to.
+          flags:
+            --all-kube-namespaces: Search Pods in every namespace.
+            --kind=: Resource kind to search for (node, kube_cluster, kube_resource, db, app, windows_desktop, linux_desktop, user_group, saml_idp_service_provider, aws_ic_account, aws_ic_account_assignment, git_server).  Mutually exclusive with --roles.
+            --kube-api-group=: Kubernetes API group to search for resources.
+            --kube-cluster=: Kubernetes Cluster to search for Pods.
+            --kube-kind=: 'Kubernetes resource kind name (plural) to search for. Required with --kind="kube_resource" Ex: pods, deployments, namespaces, etc.'
+            --kube-namespace=&:
+                description: Kubernetes Namespace to search for Pods.
+                default: default
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --namespace=:
+                description: Kubernetes Namespace to search for Pods.
+                default: default
+            --no-all-kube-namespaces&: Search Pods in every namespace.
+            --no-roles&: List requestable roles instead of searching for resources. Mutually exclusive with --kind.
+            --no-verbose&: Verbose table output, shows full label output.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --roles: List requestable roles instead of searching for resources. Mutually exclusive with --kind.
+            --search=: List of comma separated search keywords or phrases enclosed in quotations (e.g. --search=foo,bar,"some phrase").
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+            -v, --verbose: Verbose table output, shows full label output.
+        - name: drop
+          description: Drop one or more access requests from current identity.
+    - name: headless
+      description: Headless authentication commands.
+      commands:
+        - name: approve
+          description: Approve a headless authentication request.
+          flags:
+            --no-skip-confirm&: Skip confirmation and prompt for MFA immediately.
+            --skip-confirm: Skip confirmation and prompt for MFA immediately.
+    - name: kubectl
+      description: Runs a kubectl command on a Kubernetes cluster.
+    - name: kube
+      description: Manage available Kubernetes clusters.
+      commands:
+        - name: credentials
+          description: Get credentials for kubectl access.
+          hidden: true
+          flags:
+            --kube-cluster=!: Name of the Kubernetes cluster to get credentials for.
+            --teleport-cluster=!: Name of the Teleport cluster to get credentials for.
+        - name: ls
+          description: Get a list of Kubernetes clusters.
+          flags:
+            --no-all&: List Kubernetes clusters from all clusters and proxies.
+            --no-quiet&: Quiet mode.
+            --no-verbose&: Show an untruncated list of labels.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --search=: List of comma separated search keywords or phrases enclosed in quotations (e.g. --search=foo,bar,"some phrase").
+            -R, --all: List Kubernetes clusters from all clusters and proxies.
+            -c, --cluster=: Specify the Teleport cluster to connect.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+            -q, --quiet: Quiet mode.
+            -v, --verbose: Show an untruncated list of labels.
+        - name: login
+          description: Login to a Kubernetes cluster.
+          flags:
+            --all: Generate a kubeconfig with every cluster the user has access to. Mutually exclusive with --labels or --query.
+            --as-groups=: Configure custom Kubernetes group impersonation.
+            --as=: Configure custom Kubernetes user impersonation.
+            --disable-access-request: Disable automatic resource access requests.
+            --kube-namespace=&: Configure the default Kubernetes namespace.
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --no-all&: Generate a kubeconfig with every cluster the user has access to. Mutually exclusive with --labels or --query.
+            --no-disable-access-request&: Disable automatic resource access requests.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --request-reason=: Reason for requesting access.
+            --set-context-name=:
+                description: Define a custom context name. To use it with --all include "{{.KubeName}}".
+                default: '{{.ClusterName}}-{{.KubeName}}'
+            -c, --cluster=: Specify the Teleport cluster to connect.
+            -n, --namespace=: Configure the default Kubernetes namespace.
+        - name: sessions
+          description: 'Get a list of active Kubernetes sessions. (DEPRECATED: use tsh sessions ls --kind=kube instead.)'
+          flags:
+            -c, --cluster=: Specify the Teleport cluster to connect.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+        - name: exec
+          description: Execute a command in a Kubernetes pod.
+          flags:
+            --invite=: A comma separated list of people to mark as invited for the session.
+            --kube-namespace=&: Configure the default Kubernetes namespace.
+            --no-participant-req&: Displays a verbose list of required participants in a moderated session.
+            --no-quiet&: Only print output from the remote session.
+            --no-stdin&: Pass stdin to the container.
+            --no-tty&: Stdin is a TTY.
+            --participant-req: Displays a verbose list of required participants in a moderated session.
+            --reason=: The purpose of the session.
+            -c, --container=: Container name. If omitted, use the kubectl.kubernetes.io/default-container annotation for selecting the container to be attached or the first container in the pod will be chosen.
+            -f, --filename=: To use to exec into the resource.
+            -n, --namespace=: Configure the default Kubernetes namespace.
+            -q, --quiet: Only print output from the remote session.
+            -s, --stdin: Pass stdin to the container.
+            -t, --tty: Stdin is a TTY.
+        - name: join
+          description: Join an active Kubernetes session.
+          flags:
+            -c, --cluster=: Specify the Teleport cluster to connect.
+            -m, --mode=:
+                description: Mode of joining the session.
+                default: observer
+    - name: mfa
+      description: Manage multi-factor authentication (MFA) devices.
+      commands:
+        - name: ls
+          description: Get a list of registered MFA devices.
+          flags:
+            --no-verbose&: Print more information about MFA devices.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+            -v, --verbose: Print more information about MFA devices.
+        - name: add
+          description: Add a new MFA device.
+          flags:
+            --name=: Name of the new MFA device.
+            --type=: Type of the new MFA device (TOTP, WEBAUTHN).
+        - name: rm
+          description: Remove a MFA device.
+    - name: scan
+      description: Scan the local machine for Secrets and report findings to Teleport.
+      commands:
+        - name: keys
+          description: Scan the local machine for SSH private keys and report findings to Teleport.
+          flags:
+            --dirs=: Directories to scan. Defaults to /home/ on Linux, /Users/ on macOS, and C:\Users\ on Windows.
+            --skip-paths=: Paths to directories or files to skip. Supports for matching patterns.
+    - name: scopes
+      aliases:
+        - scoped
+      description: View and manage Teleport scopes.
+      commands:
+        - name: ls
+          description: List scopes at which user has assigned privileges.
+          flags:
+            --no-verbose&: Show table with details of per-scope privileges.
+            -v, --verbose: Show table with details of per-scope privileges.
+    - name: config
+      description: Print OpenSSH configuration details.
+      flags:
+        -p, --port=: SSH port on a remote host.
+    - name: puttyconfig
+      description: Add PuTTY saved session configuration for specified hostname to Windows registry.
+      hidden: true
+      flags:
+        --leaf=: Add a configuration for connecting to a leaf cluster.
+        -p, --port=: SSH port on a remote host.
+    - name: update
+      description: Update client tools (tsh, tctl) to the latest version defined by the cluster configuration.
+      flags:
+        --clear: Removes locally installed client tools updates from the Teleport home directory.
+        --no-clear&: Removes locally installed client tools updates from the Teleport home directory.
+    - name: fido2
+      description: FIDO2 commands.
+      hidden: true
+      commands:
+        - name: diag
+          description: Run FIDO2 diagnostics.
+          hidden: true
+        - name: attobj
+          description: Parse a stored attestation object.
+          hidden: true
+    - name: touchid
+      description: Manage Touch ID credentials.
+      hidden: true
+      commands:
+        - name: diag
+          description: Run Touch ID diagnostics.
+          hidden: true
+    - name: webauthnwin
+      description: Manage Windows WebAuthn.
+      hidden: true
+      commands:
+        - name: diag
+          description: Run windows webauthn diagnostics.
+          hidden: true
+    - name: device
+      description: Manage this device. Requires Teleport Enterprise.
+      commands:
+        - name: enroll
+          description: Enroll this device as a trusted device. Requires Teleport Enterprise.
+          flags:
+            --current-device: Attempts to register and enroll the current device. Requires device admin privileges.
+            --no-current-device&: Attempts to register and enroll the current device. Requires device admin privileges.
+            --token=: Device enrollment token.
+        - name: collect
+          description: Simulate enroll/authn device data collection.
+          hidden: true
+        - name: asset-tag
+          description: Print the detected device asset tag.
+          hidden: true
+        - name: keyget
+          description: Get information about the device key.
+          hidden: true
+        - name: tpm-activate-credential
+          hidden: true
+          flags:
+            --encrypted-credential-secret=!: ""
+            --encrypted-credential=!: ""
+        - name: dmi-read
+          description: Read device DMI information.
+          hidden: true
+    - name: svid
+      description: Manage Teleport Workload Identity SVIDs.
+      hidden: true
+      commands:
+        - name: issue
+          description: Issue a SPIFFE SVID using Teleport Workload Identity and write it to a local directory.
+          flags:
+            --dns-san=: DNS SANs to include in the SVID. By default, none are included.
+            --ip-san=: IP SANs to include in the SVID. By default, none are included.
+            --output=!: Path to the directory to write the SVID into.
+            --svid-ttl=:
+                description: Sets the time to live for the SVID.
+                default: 1h
+            --type=:
+                description: Type of the SVID to issue (x509). Defaults to x509.
+                default: x509
+    - name: workload-identity
+      description: Issue Workload Identity credentials.
+      commands:
+        - name: issue-x509
+          description: Use Teleport Workload Identity to issue an X509 credential and write it to a local directory.
+          flags:
+            --credential-ttl=:
+                description: Sets the time to live for the credential.
+                default: 1h
+            --label-selector=: A label-based selector for which workload identities to issue. Multiple labels can be provided using ','.
+            --name-selector=: The name of the workload identity to issue.
+            --output=!: Path to the directory to write the SVID into.
+        - name: issue-jwt
+          description: Use Teleport Workload Identity to issue a JWT credential and write it to a local directory.
+          flags:
+            --audience=!: The audience to include in the JWT. Can be specified multiple times.
+            --credential-ttl=:
+                description: Sets the time to live for the credential.
+                default: 1h
+            --label-selector=: A label-based selector for which workload identities to issue. Multiple labels can be provided using ','.
+            --name-selector=: The name of the workload identity to issue.
+            --output=!: Path to the directory to write the SVID into.
+    - name: vnet
+      description: Start Teleport VNet, a virtual network for TCP application access.
+      flags:
+        --diag&: Run diagnostics after starting VNet.
+        --no-diag&: Run diagnostics after starting VNet.
+    - name: vnet-ssh-autoconfig
+      description: Automatically include VNet's generated OpenSSH-compatible config file in ~/.ssh/config.
+    - name: vnet-admin-setup
+      description: Start the VNet admin subprocess.
+      hidden: true
+      flags:
+        --socket=!: Client application service unix socket path.
+    - name: vnet-daemon
+      description: Start the VNet D-Bus daemon.
+      hidden: true
+    - name: connect-updater
+      description: Teleport Connect updater commands.
+      hidden: true
+    - name: git
+      description: Git server commands.
+      commands:
+        - name: login
+          description: Opens a browser and retrieves your login from GitHub.
+          flags:
+            --force: Force a login.
+            --github-org=!: GitHub organization.
+            --no-force&: Force a login.
+        - name: ls
+          description: List Git servers.
+          flags:
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --search=: List of comma separated search keywords or phrases enclosed in quotations (e.g. --search=foo,bar,"some phrase").
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+        - name: ssh
+          description: Proxy Git commands using SSH.
+          hidden: true
+          flags:
+            --github-org=!: GitHub organization.
+            -o, --option=: OpenSSH options in the format used in the configuration file.
+        - name: config
+          description: Check Teleport config on the working Git directory. Or provide an action ('update' or 'reset') to configure the Git repo.
+        - name: clone
+          description: Clone a Git repository.
+    - name: beams
+      aliases:
+        - beam
+      description: View, manage and run beams. Beams are ephemeral, sandbox VMs built for agentic workloads.
+      commands:
+        - name: ls
+          aliases:
+            - list
+          description: List beam instances.
+          flags:
+            --all: List all beams. By default, filters to show only beams belonging to the current user.
+            --no-all&: List all beams. By default, filters to show only beams belonging to the current user.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+        - name: add
+          aliases:
+            - |4-
+              Examples:
+                Create a beam and connect via SSH:
+                $ tsh beams add
+
+                Create a beam without connecting and save its ID:
+                $ BEAM_ID=$(tsh beams add -f json | jq -r '.id')
+                $ tsh beams exec $BEAM_ID -- ls examples
+          description: Start a new beam, and optionally connect to it via SSH.
+          flags:
+            --console:
+                description: Connect to the beam via SSH after creation.
+                default: "true"
+            --no-console&: Connect to the beam via SSH after creation.
+            --region=: Region where the beam should live. If not specified, the closest region is selected.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+        - name: rm
+          description: Delete a beam.
+        - name: ssh
+          aliases:
+            - console
+          description: Start an interactive shell in a beam, via SSH.
+        - name: exec
+          description: Run a command in a beam, via SSH.
+        - name: publish
+          description: Publish an HTTP or TCP service running in a beam.
+          flags:
+            --no-tcp&: Publish as a TCP app instead of an HTTP app.
+            --tcp: Publish as a TCP app instead of an HTTP app.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+        - name: unpublish
+          description: Unpublish a previously published service in a beam.
+        - name: scp
+          aliases:
+            - cp
+          description: Copy files between a beam and the local filesystem.
+          flags:
+            --no-quiet&: Quiet mode.
+            --no-recursive&: Recursive copy of subdirectories.
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+            -q, --quiet: Quiet mode.
+            -r, --recursive: Recursive copy of subdirectories.
+    - name: piv
+      description: PIV commands.
+      hidden: true
+      commands:
+        - name: agent
+          description: Start PIV key agent.
+    - name: mcp
+      description: View and control proxied MCP servers.
+      commands:
+        - name: db
+          description: Database access for MCP servers.
+          commands:
+            - name: start
+              description: Start a local MCP server for database access.
+              hidden: true
+            - name: config
+              aliases:
+                - |4
+                  Examples:
+                    Print sample configuration for exposing database as MCP server
+                    $ tsh mcp db config --db-user=mydbuser --db-name=mydbname my-db-resource
+
+                    Add the database configuration to Claude Desktop
+                    $ tsh mcp db config --db-user=mydbuser --db-name=mydbname --client-config=claude my-db-resource
+
+                    Add the database configuration to Cursor
+                    $ tsh mcp db config --db-user=mydbuser --db-name=mydbname --client-config=cursor my-db-resource
+
+                    Generate database configuration for VSCode
+                    $ tsh mcp db config --db-user=mydbuser --db-name=mydbname --format=vscode my-db-resource
+
+                    Add the database configuration to VSCode project
+                    $ tsh mcp db config --db-user=mydbuser --db-name=mydbname --client-config=<path-to-project>/.vscode/.mcp.json my-db-resource
+
+                    Add database configuration to Claude Code project
+                    $ tsh mcp db config --db-user=mydbuser --db-name=mydbname --client-config=<path-to-project>/.mcp.json my-db-resource
+
+                    Add the database configuration to the specified JSON file
+                    $ tsh mcp db config --db-user=mydbuser --db-name=mydbname --client-config=my-config.json my-db-resource
+              description: Print client configuration details.
+              flags:
+                --client-config=: If specified, update the specified client config, assuming its format. "claude" for default Claude Desktop config, "cursor" for global Cursor MCP servers config, or specify a JSON file path. Can also be set with environment variable TELEPORT_MCP_CLIENT_CONFIG.
+                --format=: Format specifies the configuration format (claude, vscode, cursor). If not provided it will assume format from the configuration file, When no configuration file is provided it defaults to "claude".
+                --json-format=:
+                    description: Format the JSON file (pretty, compact, auto, none). auto saves in compact if the file is already compact, otherwise pretty. Can also be set with environment variable TELEPORT_MCP_CONFIG_JSON_FORMAT. Default is auto.
+                    default: auto
+                --no-overwrite&: Overwrites command and environment variable from the config file.
+                --overwrite: Overwrites command and environment variable from the config file.
+                -n, --db-name=: Database name to log in to.
+                -u, --db-user=: Database user to log in as.
+        - name: ls
+          description: List available MCP server applications.
+          flags:
+            --no-verbose&: Show extra MCP server fields.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            --search=: List of comma separated search keywords or phrases enclosed in quotations (e.g. --search=foo,bar,"some phrase").
+            -f, --format=:
+                description: Format output (text, json, yaml).
+                default: text
+            -v, --verbose: Show extra MCP server fields.
+        - name: config
+          aliases:
+            - |4-
+              Examples:
+                Print sample configuration for a MCP server app
+                $ tsh mcp config my-mcp-server-app
+
+                Print sample configuration for a streamable HTTP MCP server with custom headers
+                $ tsh mcp config my-mcp-server-app -H "Header1: value1" -H "Header2: value2"
+
+                Add all MCP servers to Claude Desktop
+                $ tsh mcp config --all --client-config=claude
+
+                Add all MCP servers to Cursor
+                $ tsh mcp config --all --client-config=cursor
+
+                Generate config for all MCP servers for VSCode
+                $ tsh mcp config --all --format=vscode
+
+                Add all MCP servers to VSCode project
+                $ tsh mcp config --all --client-config=<path-to-project>/.vscode/mcp.json
+
+                Add all MCP servers to Claude Code project
+                $ tsh mcp config --all --client-config=<path-to-project>/.mcp.json
+
+                Search MCP servers with labels and add to the specified JSON file
+                $ tsh mcp config --labels env=dev --client-config=my-config.json
+          description: Print client configuration details.
+          flags:
+            --auto-reconnect: Automatically starts a new remote MCP session when the previous remote session is interrupted by network issues or tsh session expirations. Recommended for stateless MCP sessions. Defaults to true.
+            --client-config=: If specified, update the specified client config, assuming its format. "claude" for default Claude Desktop config, "cursor" for global Cursor MCP servers config, or specify a JSON file path. Can also be set with environment variable TELEPORT_MCP_CLIENT_CONFIG.
+            --format=: Format specifies the configuration format (claude, vscode, cursor). If not provided it will assume format from the configuration file, When no configuration file is provided it defaults to "claude".
+            --json-format=:
+                description: Format the JSON file (pretty, compact, auto, none). auto saves in compact if the file is already compact, otherwise pretty. Can also be set with environment variable TELEPORT_MCP_CONFIG_JSON_FORMAT. Default is auto.
+                default: auto
+            --labels=: List of comma separated labels to filter by labels (e.g. key1=value1,key2=value2).
+            --no-all&: Select all MCP servers. Mutually exclusive with --labels or --query.
+            --no-auto-reconnect&: Automatically starts a new remote MCP session when the previous remote session is interrupted by network issues or tsh session expirations. Recommended for stateless MCP sessions. Defaults to true.
+            --query=: Query by predicate language enclosed in single quotes. Supports ==, !=, &&, and || (e.g. --query='labels["key1"] == "value1" && labels["key2"] != "value2"').
+            -H, --header=: Extra custom headers used for streamable HTTP MCP servers.
+            -R, --all: Select all MCP servers. Mutually exclusive with --labels or --query.
+        - name: connect
+          description: Connect to an MCP server.
+          hidden: true
+          flags:
+            --auto-reconnect:
+                description: Automatically starts a new remote MCP session when the previous remote session is interrupted by network issues or tsh session expirations. Recommended for stateless MCP sessions. Defaults to true.
+                default: "true"
+            --no-auto-reconnect&: Automatically starts a new remote MCP session when the previous remote session is interrupted by network issues or tsh session expirations. Recommended for stateless MCP sessions. Defaults to true.
+            -H, --header=: Extra custom headers used for streamable HTTP MCP servers.
