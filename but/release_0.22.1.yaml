@@ -1,0 +1,2032 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: but
+description: A GitButler CLI tool
+flags:
+  -C, --current-dir=:
+    description: Run as if but was started in PATH instead of the current working directory
+    default: .
+  -h, --help: Print help (see more with '--help')
+  --log-file&=: Log to this file instead of stderr
+  -t, --trace&*: Enable tracing for debug and performance information printed to stderr
+  -V, --version: Print version
+persistentflags:
+  --json: Output detailed information as JSON for tool consumption
+  --status-after: Append workspace status when supported by a mutation command
+completion:
+  flag:
+    current-dir:
+    - $files
+    log-file:
+    - $files
+documentation:
+  flag:
+    help: Print help (see a summary with '-h')
+    log-file: |-
+      Log to this file instead of stderr.
+
+      If the file does not exist it will be created. If it does exist it will be truncated.
+    status-after: |-
+      Append workspace status when supported by a mutation command.
+
+      Use when the next step needs IDs or details from the resulting workspace.
+    trace: |-
+      Enable tracing for debug and performance information printed to stderr.
+
+      Repeat up to 4 times for increasingly verbose output.
+commands:
+- name: status
+  description: Overview of the project workspace state
+  flags:
+    -f: Determines whether the committed files should be shown as well
+    --files&: Determines whether the committed files should be shown as well
+    -h, --help: Print help (see more with '--help')
+    --no-hint: Disable hints about available commands at the end of output
+    -r, --refresh-prs: Forces a sync of pull requests from the forge before showing status
+    --short&: ''
+    -u, --upstream: Show detailed list of upstream commits that haven't been integrated yet
+    -v, --verbose: Show verbose output with commit author and timestamp
+  documentation:
+    command: |
+      Overview of the project workspace state.
+
+      This shows uncommitted files, all applied branches (stacked or parallel), commits on each of those branches, upstream commits that are unintegrated, commit status (pushed or local), and base branch information.
+
+      Examples
+
+      Normal usage:
+
+        but status
+
+      Shorthand with listing files modified
+
+        but status -f
+- name: diff
+  description: Displays the diff of changes in the repo
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --no-tui: Disable the interactive TUI diff viewer (overrides but.ui.tui config)
+    --tui: Open an interactive TUI diff viewer
+  documentation:
+    command: |-
+      Displays the diff of changes in the repo.
+
+      Without any arguments, it shows the diff of all uncommitted changes. Optionally, provide one CLI ID to show the diff specific to:
+
+      - an uncommitted file
+      - a branch
+      - an entire stack
+      - a commit
+      - a file change within a commit
+
+      TARGET accepts at most one entity. To show several entities, run this command once per entity.
+- name: show
+  description: Shows detailed information about a commit or branch
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -v, --verbose: Show full commit messages and files changed for each commit
+  documentation:
+    command: |
+      Shows detailed information about a commit or branch.
+
+      When given a commit ID, displays the full commit message, author information, committer information (if different from author), and the list of files modified.
+
+      When given a branch name, displays the branch name and a list of all commits on that branch. Use --verbose to show full commit messages and files changed.
+
+      Examples
+
+      Show commit details by short commit ID:
+
+        but show a1b2c3d
+
+      Show commit details by CLI ID:
+
+        but show c5
+
+      Show branch commits by branch name:
+
+        but show my-feature-branch
+
+      Show branch with full commit details:
+
+        but show my-feature-branch --verbose
+- name: commit
+  description: Create a commit
+  flags:
+    -A, --above=: Place the commit above BRANCH_OR_COMMIT, which must be an applied branch or commit
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    -B, --below=: Place the commit below BRANCH_OR_COMMIT, which must be an applied branch or commit
+    -b, --branch=: Place the commit on the branch BRANCH
+    --empty: Forces the commit to be empty regardless of repository state
+    -h, --help: Print help (see more with '--help')
+    -i, --interactive: Open the TUI to interactively select what to commit
+    -m, --message=*: The message to use for the commit
+    --no-message: Creates the commit without a commit message
+  documentation:
+    command: |-
+      Create a commit.
+
+      By default, all uncommitted changes are included in the commit. This can be controlled with change flags such as --empty and --interactive, or by providing CHANGES as positional arguments.
+
+      If there are no branches applied, a new branch is created for the commit. If there is only one stack of branches applied, the commit is placed at the tip of that stack. Otherwise, the targeting flags --above, --below and --branch control where the commit is placed. Note that only one of the targeting flags can be provided at a time.
+
+      The commit is expected to have a commit message unless --no-message is provided. If neither of --no-message nor --message is provided, the user's preferred editor is opened to input a message.
+
+      For more details about CLI IDs, see but help cli-ids.
+    flag:
+      above: |-
+        Place the commit above BRANCH_OR_COMMIT, which must be an applied branch or commit.
+
+        If BRANCH_OR_COMMIT is a commit, the new commit is placed on the same branch as the targeted commit.
+
+        If BRANCH_OR_COMMIT is a branch, the new commit is placed on a new branch above the targeted branch.
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+      below: |-
+        Place the commit below BRANCH_OR_COMMIT, which must be an applied branch or commit.
+
+        If BRANCH_OR_COMMIT is a commit, the new commit is placed on the same branch as the targeted commit.
+
+        If BRANCH_OR_COMMIT is a branch, the new commit is placed on a new branch below the targeted branch. Branches are treated as buckets, meaning that "below a branch" is treated as below the oldest ancestor on that branch.
+
+        If BRANCH_OR_COMMIT is a linked worktree, the new commit is placed on the tip of the branch that worktree has checked out.
+      branch: |-
+        Place the commit on the branch BRANCH.
+
+        If BRANCH does not exist, it is created as an unstacked branch.
+
+        If BRANCH is omitted, an unstacked branch with a generated name is created.
+
+        If BRANCH is a linked worktree or a branch checked out in one, the commit is placed on the tip of that worktree's branch.
+
+        Attempting to place a commit on a branch that exists but is not applied is an error.
+      message: |-
+        The message to use for the commit.
+
+        Can be supplied any amount of times, each value being appended to the preceding ones with a blank line in between.
+- name: squash
+  description: Squash commits, branches, or changes
+  flags:
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    -h, --help: Print help (see more with '--help')
+    -m, --message=*: The message to use for the new commit
+    --no-message: Creates the commit without a commit message
+    -t, --target=: The target to squash into
+    --use-source-message: Use the message of the source(s)
+    -u, --use-target-message: Use the message of the target
+  documentation:
+    command: |-
+      Squash commits, branches, or changes.
+
+      Squash is flexible in the ways it can move changes around. It can
+
+      - Squash commits into other commits
+      - Squash branches into commits
+      - Move changes between commits
+      - Amend uncommitted changes into a commit
+      - Uncommit commits
+      - Uncommit changes in commits
+      - Uncommit branches
+
+      If no message-related flag is passed when squashing commits or branches, an editor may be opened where the new message can be composed; other squashes keep the target's message.
+
+      For more details about CLI IDs, see but help cli-ids.
+    flag:
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+      message: |-
+        The message to use for the new commit.
+
+        Can be supplied any number of times, each value being appended to the preceding ones with a blank line in between.
+
+        This cannot be used when TARGET is the uncommitted area (zz).
+      no-message: |-
+        Creates the commit without a commit message.
+
+        This cannot be used when TARGET is the uncommitted area (zz).
+      target: |-
+        The target to squash into.
+
+        If TARGET is a commit the sources will be added to the commit.
+
+        If TARGET is a branch the sources will be added to that branch's newest commit (its tip).
+
+        If TARGET is the uncommitted area (zz) the sources will be uncommitted.
+      use-source-message: |-
+        Use the message of the source(s).
+
+        The message of the target will be discarded.
+
+        Cannot be used if <SOURCES> are not committed, if TARGET is the uncommitted area (zz), or if moving committed changes between commits.
+      use-target-message: |-
+        Use the message of the target.
+
+        The message of the source(s) will be discarded.
+
+        This cannot be used when TARGET is the uncommitted area (zz).
+- name: move
+  description: Move commits and changes around
+  flags:
+    -A, --above=: Place <SOURCES> above BRANCH_OR_COMMIT
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    -B, --below=: Place <SOURCES> below BRANCH_OR_COMMIT
+    -b, --branch=: Place <SOURCES> on the branch BRANCH
+    -h, --help: Print help (see more with '--help')
+    --unstack: Unstack <SOURCES> from their current stacks
+  documentation:
+    command: |-
+      Move commits and changes around.
+
+      Move a set of <SOURCES> around relative to a TARGET.
+
+      <SOURCES> is a set of commits, a set of committed files or a single branch. You are not allowed to mix kinds of sources (e.g. commits and committed files) in a single command.
+
+      TARGET is one of --above, --below, --unstack or --branch and defines how <SOURCES> should be moved. Depending on how <SOURCES> and TARGET are combined, a commit and/or branch may be created as part of the move.
+
+      A branch is created when:
+
+      - You move a commit or committed file relative to a branch
+      - You unstack a commit or committed file
+
+      A commit is created when:
+
+      - You move a committed file relative to a commit or branch
+      - You unstack a committed file
+
+      Note the overlap between the above conditions. For example, unstacking a committed file both creates a new commit for the file and a branch for the commit.
+
+      For more details about CLI IDs, see but help cli-ids.
+    flag:
+      above: |-
+        Place <SOURCES> above BRANCH_OR_COMMIT.
+
+        If BRANCH_OR_COMMIT is a commit, <SOURCES> are placed on the same branch as the targeted commit.
+
+        If BRANCH_OR_COMMIT is a branch, the sources are placed on a new branch above the targeted branch.
+
+        This target is applicable for all kinds of <SOURCES>.
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+      below: |-
+        Place <SOURCES> below BRANCH_OR_COMMIT.
+
+        If BRANCH_OR_COMMIT is a commit, the <SOURCES> are placed on the same branch as the targeted commit.
+
+        If BRANCH_OR_COMMIT is a branch, <SOURCES> are placed on a new branch below the targeted branch. Branches are treated as buckets, meaning that "below a branch" is treated as below the oldest ancestor on that branch.
+
+        If BRANCH_OR_COMMIT is a linked worktree, <SOURCES> are placed on the tip of the branch that worktree has checked out.
+
+        This target is only applicable for <SOURCES> that are commits or committed files.
+      branch: |-
+        Place <SOURCES> on the branch BRANCH.
+
+        If BRANCH exists, commits or committed files are moved onto its tip. A branch source is instead stacked on top of BRANCH, equivalent to --above BRANCH.
+
+        If BRANCH does not exist, it is created as an unstacked branch for commit or committed-file sources. Using a branch source with a nonexistent BRANCH is an error.
+
+        If BRANCH is a linked worktree or a branch checked out in one, commit or committed-file sources are moved onto the tip of that worktree's branch.
+
+        If BRANCH is omitted, an unstacked branch with a generated name is created. This is exactly equivalent to --unstack and is allowed for any source kind.
+
+        Attempting to place <SOURCES> on a branch that exists but is not applied is an error.
+      unstack: |-
+        Unstack <SOURCES> from their current stacks.
+
+        --unstack does not take an argument, so --unstack <SOURCES> and <SOURCES> --unstack are equivalent.
+- name: _diff2
+  description: Displays the diff of changes in the repo
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: _reword2
+  description: Edit a commit message or rename a branch
+  hidden: true
+  flags:
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    -f, --fix-formatting: Format the existing commit message to 72-character line wrapping without opening an editor
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: The new commit message or branch name. If omitted, an editor opens
+  documentation:
+    command: |-
+      Edit a commit message or rename a branch.
+
+      If no message is provided, an editor opens. Rewording a commit recreates it and rebases its dependent commits.
+    flag:
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+- name: _expand
+  description: Debug command for expanding a CLI ID into any matching resources
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Debug command for expanding a CLI ID into any matching resources.
+
+      This is not considered a feature of the CLI and should not be relied upon. It is only for testing and debugging.
+- name: branch
+  description: Commands for managing branches
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Commands for managing branches.
+
+      This includes creating, deleting, listing, and showing details about branches.
+
+      By default without a subcommand, it will list the branches.
+
+      To apply or unapply branches, use but apply and but unapply.
+
+      To rename an applied branch, use but reword <branch> -m <new-name>.
+  commands:
+  - name: new
+    description: Create a new branch
+    flags:
+      -A, --above=: Place the branch above BRANCH_OR_COMMIT, which must be an applied branch or commit
+      --allow-merged: Allow targeting branches and commits that are already merged upstream
+      -a, --anchor&=: Deprecated flag that will be removed in a future release. Use --above instead
+      -B, --below=: Place the branch below BRANCH_OR_COMMIT, which must be an applied branch or commit
+      -h, --help: Print help (see more with '--help')
+      -s, --switch: Switch to the newly created branch instead of applying it to the GitButler workspace
+    documentation:
+      command: |-
+        Create a new branch.
+
+        Use --above or --below to created stacked branches. Omitting these create a new unstacked branch.
+
+        For more details about CLI IDs, see but help cli-ids.
+      flag:
+        above: |-
+          Place the branch above BRANCH_OR_COMMIT, which must be an applied branch or commit.
+
+          If BRANCH_OR_COMMIT is a commit, the new branch is created above the commit.
+
+          If BRANCH_OR_COMMIT is a branch, the new branch is created above the targeted branch.
+        allow-merged: |-
+          Allow targeting branches and commits that are already merged upstream.
+
+          By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+        below: |-
+          Place the branch below BRANCH_OR_COMMIT, which must be an applied branch or commit.
+
+          If BRANCH_OR_COMMIT is a commit, the new branch is created below the commit.
+
+          If BRANCH_OR_COMMIT is a branch, the new branch is created below the targeted branch.
+  - name: delete
+    description: Delete branchs from the workspace
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: list
+    description: List the branches in the repository
+    flags:
+      -a, --all: Show all branches (not just active + 20 most recent)
+      --empty: Include branches with no commits on them (hidden by default)
+      -h, --help: Print help (see more with '--help')
+      -l, --local: Show only local branches
+      --no-ahead: Don't calculate and show number of commits ahead of base (faster)
+      --no-check: Don't check if each branch merges cleanly into upstream
+      -r, --remote: Show only remote branches
+      --review: Fetch and display review information (PRs, MRs, etc.)
+    documentation:
+      command: |-
+        List the branches in the repository
+
+        By default, shows the active branch and the 20 most recently updated branches.
+
+        You can use the --all flag to show all branches, --local to show only local branches, or --remote to show only remote branches.
+
+        You can also filter branch names by specifying a substring, such as but branch list feature to show only branches with "feature" in the name.
+
+        If you want to check for review status, you can add --review to fetch and display pull request or merge request information for each branch. This will make the command slower as it needs to query the forge.
+
+        By default, the command checks if each branch merges cleanly into the upstream base target branch (not your workspace). You can disable this check with --no-check to make the command faster.
+
+        By default it also calculates the number of commits each branch is ahead of the base branch. You can disable this with --no-ahead to make the command faster.
+  - name: show
+    description: Show commits ahead of base for a specific branch
+    flags:
+      --ai: Generate AI summary of the branch changes
+      --check: Check if the branch merges cleanly into upstream and identify conflicting commits
+      -f, --files: Show files modified in each commit with line counts
+      -h, --help: Print help (see more with '--help')
+      -r, --review: Fetch and display review information
+    documentation:
+      command: |-
+        Show commits ahead of base for a specific branch
+
+        This shows the list of commits that are on the specified branch but not yet integrated into the base target branch.
+
+        You can also choose to fetch and display review information, show files modified in each commit with line counts, generate an AI summary of the branch changes, and check if the branch merges cleanly into upstream.
+  - name: move
+    description: 'Deprecated: use but move instead'
+    hidden: true
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: update
+    description: Update your local branch with the content of its remote counterpart
+    flags:
+      --dry-run: Preview the resulting branch state without persisting changes
+      -h, --help: Print help (see more with '--help')
+      -i, --interactive: Open the generated integration script in an editor
+      -s, --strategy=:
+        description: Strategy to use for the integration. If no strategy is specified, we default to pull-rebase
+        default: pull-rebase
+      -v, --verbose: Show additional dry-run details like the current divergence
+    completion:
+      flag:
+        strategy:
+        - "pull-rebase\tRebuilds the branch picking first the commits on the remote, and then the commits on the local branch"
+        - "smart-squash\tTries to fold matching remote work into related local commits. This is done through matching Change IDs, and falling back to pull-rebase ordering otherwise"
+        - "merge\tKeeps your local history and merges the remote tip into it"
+        - "pick-remote\tRebuilds the branch picking only the commits on the remote"
+    documentation:
+      command: |-
+        Update your local branch with the content of its remote counterpart.
+
+        This allows you to resolve the divergence between your local branch and its tracked remote in different ways.
+- name: land
+  description: Land a branch directly onto the target branch
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --no-ff: Always create a merge commit, even when the branch can be fast-forwarded
+    --whole-stack: 'Land the entire stack: BRANCH must be the top segment, and the segments below it are published to the target along with it'
+    --yes: Skip the confirmation prompt
+  documentation:
+    command: |
+      Land a branch directly onto the target branch.
+
+      Lands the branch onto the configured target (for example origin/master) without going through a pull request — the "just push to the target" workflow. By default the target is fast-forwarded to the branch tip when possible (no merge commit); otherwise a merge commit is created. For a local (gb-local) target the refs are moved locally; otherwise the result is pushed to the remote. After landing, the remaining applied branches are reconciled onto the moved target, just like but pull.
+
+      Requires an active GitButler workspace. Updating the target is direct and not easily reversible, so a confirmation is required (use --yes to skip it in scripts).
+
+      When NOT to use this: if your project lands changes through pull requests / code review, use but push and open a PR (but pr new) instead — but land deliberately bypasses that process. On a real remote, a branch protected against direct pushes will reject the land.
+
+      Landing a segment with other segments below it is refused unless --whole-stack is passed with the stack's top segment, which lands the entire stack.
+
+      Examples
+
+      Land a branch by its CLI ID:
+
+        but land bu
+
+      Land a branch by name, forcing a merge commit:
+
+        but land my-feature-branch --no-ff
+
+      Land an entire stack by naming its top segment:
+
+        but land top-branch --whole-stack
+- name: discard
+  description: Discard branches, commits, or changes
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Discard branches, commits, or changes.
+
+      Changes may be selected by branch, commit, committed file, uncommitted file, or uncommitted hunk CLI ID. Use zz, or omit <CHANGES>, to discard all uncommitted changes.
+
+      All provided changes must be the same kind. Committed files must come from the same commit.
+
+      The entire operation is recorded as a single oplog entry, so it can be undone with but undo.
+
+      For more details about CLI IDs, see but help cli-ids.
+- name: _comment
+  description: Work with ephemeral comments anchored to lines in diffs
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Work with ephemeral comments anchored to lines in diffs.
+
+      Comments are typically created in the GUI on a line of a diff — of an uncommitted file, or of a commit — and picked up here by agents, which act on them and archive them when done. Anchors follow the diff as it changes; comments whose anchored line disappears from the diff (for example because the change was committed or discarded) are archived automatically.
+  commands:
+  - name: list
+    description: List all comments, with their anchors refreshed against the current diffs
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --timeout=:
+        description: How many seconds --wait blocks before giving up for this invocation
+        default: '60'
+      --wait: Block until a comment exists instead of returning an empty listing
+    documentation:
+      command: |-
+        List all comments, with their anchors refreshed against the current diffs.
+
+        Every listed comment points at a line that exists in the current diff of its file and includes an excerpt of the surrounding diff for context. Comments whose anchor no longer exists are archived automatically and not listed.
+      flag:
+        wait: |-
+          Block until a comment exists instead of returning an empty listing.
+
+          Returns immediately when comments already exist; prints a notice when the timeout elapses without any. Run again to keep waiting.
+  - name: archive
+    description: Archive a comment, hiding it from all future listings
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: add
+    description: Add a comment anchored to a line in a diff
+    flags:
+      --commit=: Anchor to the diff of this commit instead of the uncommitted changes
+      -h, --help: Print help (see more with '--help')
+      -m, --message!=: The comment text
+      --old: Count the line in the old side of the diff (removed lines and context) instead of the new side
+- name: resolve
+  description: Resolve conflicts in a commit or in uncommitted files
+  flags:
+    --ai: Resolve the conflicts with the configured AI model and apply the result
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Resolve conflicts in a commit or in uncommitted files.
+
+      When a commit is in a conflicted state (marked with conflicts during rebase), use this command to enter resolution mode, resolve the conflicts, and finalize. Uncommitted files marked {conflicted} by but status are resolved with but resolve <path>... once they hold the desired content (or were deleted).
+
+      Workflow
+
+      1. Enter resolution mode: but resolve <commit-id>
+      2. Resolve conflicts in your editor (remove conflict markers)
+      3. Check remaining conflicts: but resolve status
+      4. Finalize resolution: but resolve finish Or cancel: but resolve cancel
+
+      Alternatively, resolve with AI in one step: but resolve <commit-id> --ai, or but resolve --ai to resolve all conflicted commits, oldest first.
+
+      When in resolution mode, but status will also show that you're resolving conflicts.
+    flag:
+      ai: |-
+        Resolve the conflicts with the configured AI model and apply the result.
+
+        With a commit ID this resolves only that commit; without one it resolves all conflicted commits in the workspace, oldest first. Undo the result with but undo.
+  commands:
+  - name: conflicts
+    description: List the conflicts of a conflicted commit, without entering resolution mode
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        List the conflicts of a conflicted commit, without entering resolution mode.
+
+        Each conflict is shown with its ours side (the new base the commit was rebased onto), the common ancestor, and its theirs side (the commit's own version), numbered per file for use with but resolve apply.
+  - name: apply
+    description: Resolve conflicts of a conflicted commit, without entering resolution mode
+    flags:
+      --ai: Let the configured AI model merge the targeted conflicts
+      --commit=: A conflicted commit, or a branch (meaning its oldest conflicted commit — branch names stay stable across applies, unlike commit ids). Defaults to the first conflicted branch's oldest conflicted commit
+      -F, --file=: Read the replacement content from this file (otherwise from stdin)
+      -h, --help: Print help (see more with '--help')
+      --ours: 'Take the ours side: the new base the commit was rebased onto'
+      --theirs: 'Take the theirs side: the commit''s own version'
+    completion:
+      flag:
+        file:
+        - $files
+    documentation:
+      command: |-
+        Resolve conflicts of a conflicted commit, without entering resolution mode.
+
+        Targets one conflict (<path>:<N>, numbers from but resolve conflicts) or every conflict in a file (<path> with --ours/--theirs). The replacement content for mixed resolutions is read from --file or stdin. Resolving only some conflicts keeps the commit conflicted with the rest, so conflicts can be worked off incrementally; the commit id changes with every apply. Undo with but undo.
+  - name: status
+    description: Show the status of conflict resolution, listing remaining conflicted files
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: finish
+    description: Finalize conflict resolution and return to workspace mode
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Finalize conflict resolution and return to workspace mode.
+
+        This commits the resolved changes, rebases any commits on top of the resolved commit, and returns to the normal workspace.
+  - name: cancel
+    description: Cancel conflict resolution and return to workspace mode
+    flags:
+      -f, --force: Forcibly remove any changes made
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Cancel conflict resolution and return to workspace mode.
+
+        This discards all changes made during resolution and restores the workspace to its pre-resolution state.
+- name: unapply
+  description: Unapply a branch
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Unapply a branch.
+
+      If you want to unapply an applied branch from your workspace (effectively stashing it) so you can work on other branches, you can run but unapply <branch-name>.
+
+      This will remove the changes in that branch from your working directory and you can re-apply it later when needed. You will then see the branch as unapplied in but branch list.
+
+      The identifier can be:
+
+      - A CLI ID pointing to a stack or branch (e.g., "bu" from but status)
+      - A branch name
+
+      If a branch name (or an identifier pointing to a branch) is provided, the entire stack containing that branch will be unapplied.
+
+      For more details about CLI IDs, see but help cli-ids.
+- name: apply
+  description: Apply a branch
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Apply a branch.
+
+      If you want to apply an unapplied branch to your workspace so you can work on it, you can run but apply <branch-name>.
+
+      This will apply the changes in that branch into your working directory as a parallel applied branch.
+- name: open
+  description: Open the project in GitButler
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --print: Print the link instead of opening it
+  documentation:
+    command: |-
+      Open the project in GitButler.
+
+      With no argument this opens the workspace. Given a branch or a commit, the app opens with that selected, so a link can point at the thing you are talking about rather than at the app.
+
+      Commits are addressed by their change ID where they have one, which survives amending and rebasing — the link keeps working after the commit is rewritten.
+- name: push
+  description: Push changes in a branch to remote
+  flags:
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    -d, --dry-run: Show what would be pushed without actually pushing
+    -a, --hashtag&=*: Add hashtag(s) to change (Gerrit). Can be used multiple times
+    --tag&=*: Add hashtag(s) to change (Gerrit). Can be used multiple times
+    -h, --help: Print help (see more with '--help')
+    --no-hooks: Bypass pre-push hooks
+    --no-verify: Bypass pre-push hooks
+    -p, --private&: Mark change as private (Gerrit)
+    -y, --ready&: Mark change as ready for review (Gerrit). This is the default state
+    -s, --skip-force-push-protection: Skip force push protection checks
+    --tb&: Use branch name as topic (Gerrit)
+    --topic-from-branch&: Use branch name as topic (Gerrit)
+    -t, --topic&=: Add custom topic to change (Gerrit). At most one topic can be set
+    -w, --wip&: Mark change as work-in-progress (Gerrit). Mutually exclusive with --ready
+    -f, --with-force: Force push even if it's not fast-forward
+  documentation:
+    command: |-
+      Push changes in a branch to remote.
+
+      but push will update the remote with the latest commits from the applied branch(es).
+
+      Without a branch ID:
+
+      - Interactive mode: Lists all branches with unpushed commits and prompts for selection
+      - Non-interactive mode: Automatically pushes all branches with unpushed commits
+
+      With a branch ID:
+
+      - but push bu - push the branch with CLI ID "bu"
+      - but push feature-branch - push the branch named "feature-branch"
+    flag:
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+- name: pull
+  description: Updates all applied branches to be up to date with the target branch
+  flags:
+    -c, --check: Only check the status without updating (equivalent to the old but base check)
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Updates all applied branches to be up to date with the target branch.
+
+      This fetches the latest changes from the remote and rebases all applied branches on top of the updated target branch.
+
+      You should run this regularly to keep your branches up to date with the latest changes from the main development line.
+
+      You can run but pull --check first to see if your branches can be cleanly merged into the target branch before running the update.
+- name: pr
+  aliases:
+  - review
+  - mr
+  description: Commands for creating and managing reviews on a forge, e.g. GitHub PRs or GitLab MRs
+  flags:
+    -d, --draft: Whether to create reviews as a draft
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Commands for creating and managing reviews on a forge, e.g. GitHub PRs or GitLab MRs.
+
+      If you are authenticated with a forge using but config forge auth, you can use the but pr or but mr commands to create pull requests (or merge requests) on the remote repository for your branches.
+
+      Running but pr without a subcommand defaults to but pr new, which will prompt you to select a branch to create a PR for.
+  commands:
+  - name: new
+    description: Create a new review for a branch. If no branch is specified, you will be prompted to select one. If there is only one branch without a review, you will be asked to confirm
+    flags:
+      -t, --default: Use the default content for the review title and description, skipping any prompts. If the branch contains only a single commit, the commit message will be used
+      -d, --draft: Whether to create reviews as a draft
+      -F, --file=: Read review title and description from file. The first line is the title, the rest is the description
+      -h, --help: Print help (see more with '--help')
+      -m, --message=: review title and description. The first line is the title, the rest is the description
+      --no-hooks: Bypass pre-push hooks
+      --no-verify: Bypass pre-push hooks
+      -s, --skip-force-push-protection: Skip force push protection checks
+      -f, --with-force: Force push even if it's not fast-forward (defaults to true)
+    completion:
+      flag:
+        file:
+        - $files
+    documentation:
+      command: |-
+        Create a new review for a branch. If no branch is specified, you will be prompted to select one. If there is only one branch without a review, you will be asked to confirm.
+
+        If the branch is part of a stack, GitButler pushes that branch and its ancestors and creates missing reviews from the bottom upward. It also updates stack metadata using native GitHub stacks when enabled and supported, or review descriptions otherwise.
+  - name: auto-merge
+    description: Enable or disable the automatic merging of a review or reviews. If no reviews are specified, you will be prompted to select one or multiple of the review associated with branches in your workspace
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -d, --off: Whether to disable the automatic merging of the review(s)
+  - name: set-draft
+    description: Set an existing review (or set of reviews) as draft. If no reviews are specified, you will be prompted to select one or multiple of the review associated with branches in your workspace
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: set-ready
+    description: Set an existing review (or set of reviews) as ready-to-review. If no reviews are specified, you will be prompted to select one or multiple of the review associated with branches in your workspace
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: template
+    description: Configure the template to use for review descriptions. This will list all available templates found in the repository and allow you to select one
+    flags:
+      -h, --help: Print help (see more with '--help')
+- name: absorb
+  description: Amends changes into the appropriate commits where they belong
+  flags:
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    --dry-run: Show the absorption plan without making any changes
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Amends changes into the appropriate commits where they belong.
+
+      The semantic for finding "the appropriate commit" is as follows:
+
+      - If a change has a dependency to a particular commit, it will be amended into that particular commit
+      - If a change is assigned to a branch in the GitButler app, it will be amended into a commit there
+      - If there are no commits on that branch, a new commit is created there
+      - Changes are amended into the topmost commit of the leftmost (first) branch
+
+      Optionally an identifier to an Uncommitted File may be provided.
+
+      - If an Uncommitted File id is provided, absorb will be performed for just that file
+      - If no source is provided, absorb is performed for all uncommitted changes
+
+      If --dry-run is specified, no changes will be made; instead, the absorption plan (what changes would be absorbed by which commits) will be shown.
+    flag:
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+- name: reword
+  description: Edit the commit message of the specified commit
+  flags:
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    --diff: Always show diff inside the editor
+    -f, --fix-formatting: Format the existing commit message to 72-char line wrapping without opening an editor
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: The new commit message or branch name. If not provided, opens an editor
+    --no-diff: Never show the diff inside the editor
+  documentation:
+    command: |-
+      Edit the commit message of the specified commit.
+
+      You can easily change the commit message of any of your commits by running but reword <commit-id> and providing a new message in the editor.
+
+      This will recreate the commit with the new message and then rebase any dependent commits on top of it.
+
+      You can also use but reword <branch-id> to rename the branch.
+    flag:
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+      diff: |-
+        Always show diff inside the editor.
+
+        By default the diff will be shown unless it's large. The diff will always be shown if --diff is passed, regardless of the size of the diff.
+- name: uncommit
+  description: Uncommit commits, branches, or committed files
+  flags:
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Uncommit commits, branches, or committed files.
+
+      For more details about CLI IDs, see but help cli-ids.
+    flag:
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+- name: amend
+  description: Amend uncommitted changes into a commit or branch
+  flags:
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    -h, --help: Print help (see more with '--help')
+    -t, --target!=: The commit or branch to amend into
+  documentation:
+    command: |-
+      Amend uncommitted changes into a commit or branch.
+
+      Sources must be uncommitted files or hunks. To move changes that are already committed, or to combine commits, use but squash.
+
+      If the target is a branch, the changes are amended into that branch's newest commit (its tip). Name the commit explicitly to amend into anything below the tip.
+
+      For more details about CLI IDs, see but help cli-ids.
+    flag:
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+- name: oplog
+  description: Commands for viewing and managing operation history
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Commands for viewing and managing operation history.
+
+      Displays a list of past operations performed in the repository, including their timestamps and descriptions.
+
+      This allows you to restore to any previous point in the history of the project. All state is preserved in operations, including uncommitted changes.
+
+      You can use but oplog restore <oplog-sha> to restore to a specific state.
+
+      By default, shows the last 20 oplog entries (same as but oplog list).
+  commands:
+  - name: list
+    description: List operation history
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --since=: Start from this oplog SHA instead of the head
+      -s, --snapshot: Show only on-demand snapshot entries
+    documentation:
+      command: |-
+        List operation history.
+
+        Displays a list of past operations performed in the repository, including their timestamps and descriptions.
+
+        This allows you to restore to any previous point in the history of the project. All state is preserved in operations, including uncommitted changes.
+
+        You can use but oplog restore <oplog-sha> to restore to a specific state.
+  - name: snapshot
+    description: Create an on-demand snapshot with optional message
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -m, --message=: Message to include with the snapshot
+    documentation:
+      command: |-
+        Create an on-demand snapshot with optional message.
+
+        This allows you to create a named snapshot of the current state, which can be helpful to always be able to return to a known good state.
+
+        You can provide an optional message to describe the snapshot.
+  - name: restore
+    description: Restore to a specific oplog snapshot
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Restore to a specific oplog snapshot.
+
+        This command allows you to revert the repository to a previous state captured in an oplog snapshot.
+
+        You need to provide the SHA of the oplog entry you want to restore to, which you can find by running but oplog or but oplog list.
+- name: undo
+  description: Undo the last operation
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: redo
+  description: Redo the last undo
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: setup
+  description: Sets up a GitButler project from a git repository in the current directory
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --init: Initialize a new git repository with an empty commit if one doesn't exist
+  documentation:
+    command: |
+      Sets up a GitButler project from a git repository in the current directory.
+
+      This command will:
+
+      - Add the repository to the global GitButler project registry
+      - Switch to the gitbutler/workspace branch (if not already on it)
+      - Set up a default target branch (the remote's HEAD)
+      - Add a gb-local remote if no push remote exists
+
+      If you have an existing Git repository and want to start using GitButler with it, you can run this command to set up the necessary configuration and data structures.
+
+      Examples
+
+      Initialize a new git repository and set up GitButler:
+
+        but setup --init
+    flag:
+      init: |-
+        Initialize a new git repository with an empty commit if one doesn't exist.
+
+        This is useful when running in non-interactive environments (like CI/CD) where you want to ensure a git repository exists before setting up GitButler.
+- name: teardown
+  description: Exit GitButler mode and return to normal Git workflow
+  flags:
+    -c, --checkout-to=: Explicit override for which local branch to checkout to
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |
+      Exit GitButler mode and return to normal Git workflow.
+
+      This command:
+
+      - Creates an oplog snapshot of the current state
+      - Finds the first active branch and checks it out
+        - Alternatively, use --checkout-to <branch> to override this default
+      - Cherry-picks any dangling commits from gitbutler/workspace
+      - Provides instructions on how to return to GitButler mode
+
+      This is useful when you want to temporarily or permanently leave GitButler management and work with standard Git commands.
+
+      Examples
+
+      Exit GitButler mode:
+
+        but teardown
+
+        but teardown --checkout-to my-feature-branch
+- name: gui
+  aliases:
+  - .
+  description: Open the GitButler GUI for the current project
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -n, --new-window: Open the project in a new application window
+  completion:
+    positional:
+    - - $files
+  documentation:
+    command: |-
+      Open the GitButler GUI for the current project.
+
+      Running but gui will launch the GitButler graphical user interface in the current directory's GitButler project.
+
+      This provides a visual way to manage branches, commits, and uncommitted changes, complementing the command-line interface.
+
+      You can also just run but . as a shorthand to open the GUI.
+- name: _open
+  description: Open files in the workspace using any defined program
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -p, --program-id=: The program to use for opening
+- name: tui
+  description: Open a live terminal workspace for branches, commits, changes, and diffs
+  flags:
+    --diff: Automatically show the diff when opening the TUI
+    -h, --help: Print help (see more with '--help')
+    --remember-selection: When the TUI quits save the selection and restore it when re-opening
+  documentation:
+    command: |-
+      Open a live terminal workspace for branches, commits, changes, and diffs.
+
+      The GitButler TUI provides a visual experience similar to the GitButler GUI - right in your terminal. For the full workflow and key bindings, see https://docs.gitbutler.com/gitbutler-tui
+
+      Environment variables:
+
+      BUT_THEME  Sets the theme for but. Options: dark, light. [default: detected from the terminal, falling back to dark]
+    flag:
+      remember-selection: |-
+        When the TUI quits save the selection and restore it when re-opening.
+
+        If the saved selection cannot be restore the TUI launch normally as if --remember-selection wasn't passed.
+- name: clean
+  description: Remove empty branches from the workspace
+  flags:
+    --dry-run: Preview which branches would be removed without actually deleting them
+    -h, --help: Print help (see more with '--help')
+    --include-upstream: Also remove branches that have upstream-only commits but no local commits or changes
+    --pull: Pull latest changes from the remote before cleaning
+  documentation:
+    command: |
+      Remove empty branches from the workspace.
+
+      A branch is considered empty if it has no local commits and (by default) no upstream-only commits. Stacks with uncommitted changes assigned to them in the GitButler app are skipped entirely.
+
+      The entire operation is recorded as a single oplog entry, so it can be undone with but undo.
+
+      Examples
+
+      Remove all empty branches:
+
+        but clean
+
+      Preview which branches would be removed:
+
+        but clean --dry-run
+
+      Pull latest changes first, then clean:
+
+        but clean --pull
+
+      Also remove branches that only have upstream commits:
+
+        but clean --include-upstream
+- name: update
+  description: Manage GitButler CLI and app updates
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Manage GitButler CLI and app updates.
+
+      Check for new versions, install updates, or suppress update notifications.
+  commands:
+  - name: check
+    description: Check if a new version of the GitButler CLI is available
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: suppress
+    description: Suppress update notifications temporarily
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Suppress update notifications temporarily
+
+        Hide update notifications for the specified number of days (1-30). Useful when you want to stay on a specific version temporarily.
+  - name: install
+    description: Install or update the GitButler desktop application
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Install or update the GitButler desktop application.
+
+        By default, auto-detects your current channel (release/nightly) and installs the latest version for that channel.
+
+        macOS: Installs the full GitButler desktop application. The CLI (but) is included with the app and will also be updated.
+
+        Linux: Installs and updates only the CLI itself.
+
+        Note: For other platforms and install forms, see https://gitbutler.com/downloads
+- name: alias
+  description: Manage command aliases
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |
+      Manage command aliases.
+
+      Aliases allow you to create shortcuts for commonly used commands. They are stored in git config under the but.alias.* namespace.
+
+      Examples
+
+      List all configured aliases:
+
+        but alias
+
+      Create a new alias:
+
+        but alias add st status
+        but alias add stv "status --verbose"
+
+      Remove an alias:
+
+        but alias remove st
+  commands:
+  - name: list
+    description: List all configured aliases (default)
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: add
+    description: Add a new alias
+    flags:
+      -g, --global: Store the alias globally (in ~/.gitconfig) instead of locally
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        Add a new alias
+
+        Creates a new alias that expands to the given command.
+
+        Examples
+
+          but alias add st status
+          but alias add stv "status --verbose"
+          but alias add branches "branch list --all"
+  - name: remove
+    aliases:
+    - rm
+    description: Remove an existing alias
+    flags:
+      -g, --global: Remove from global config (in ~/.gitconfig) instead of local
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        Remove an existing alias
+
+        Examples
+
+          but alias remove st
+          but alias remove co --global
+- name: config
+  description: View and manage GitButler configuration
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |
+      View and manage GitButler configuration.
+
+      Without a subcommand, displays an overview of important settings including user information, target branch, forge configuration, and AI setup.
+
+      Examples
+
+      View configuration overview:
+
+        but config
+
+      View/set user configuration:
+
+        but config user
+        but config user set name "John Doe"
+        but config user set email john@example.com
+
+      View/set forge configuration:
+
+        but config forge
+
+      View/set target branch:
+
+        but config target
+        but config push-remote
+
+      View/set metrics:
+
+        but config metrics
+  commands:
+  - name: user
+    description: View and configure user information (name, email, editor)
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        View and configure user information (name, email, editor).
+
+        Without arguments, displays current user.name, user.email, and core.editor. Use subcommands to set or unset configuration values.
+
+        Examples
+
+        View user configuration:
+
+          but config user
+
+        Set user name (locally):
+
+          but config user set name "John Doe"
+
+        Set user email globally:
+
+          but config user set --global email john@example.com
+
+        Unset a local value:
+
+          but config user unset name
+    commands:
+    - name: set
+      description: Set a user configuration value
+      flags:
+        -g, --global: Set the configuration globally instead of locally
+        -h, --help: Print help (see more with '--help')
+      completion:
+        positional:
+        - - "name\tGit user name (user.name)"
+          - "email\tGit user email (user.email)"
+          - "editor\tGit editor (core.editor)"
+      documentation:
+        command: |
+          Set a user configuration value.
+
+          Examples
+
+            but config user set name "John Doe"
+            but config user set --global email john@example.com
+    - name: unset
+      description: Unset (remove) a user configuration value
+      flags:
+        -g, --global: Unset the global configuration instead of local
+        -h, --help: Print help (see more with '--help')
+      completion:
+        positional:
+        - - "name\tGit user name (user.name)"
+          - "email\tGit user email (user.email)"
+          - "editor\tGit editor (core.editor)"
+      documentation:
+        command: |
+          Unset (remove) a user configuration value.
+
+          Examples
+
+            but config user unset name
+            but config user unset --global email
+  - name: forge
+    description: View and manage forge configuration
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        View and manage forge configuration.
+
+        Shows configured forge accounts (GitHub, GitLab, Bitbucket) and authentication status. Use subcommands to manage accounts or native GitHub stacked pull requests.
+
+        Examples
+
+        View configured forge accounts:
+
+          but config forge
+
+        Authenticate with a forge:
+
+          but config forge auth
+
+        List authenticated accounts:
+
+          but config forge list-users
+
+        Forget an account:
+
+          but config forge forget username
+
+        View or configure native GitHub stacked pull requests:
+
+          but config forge github-stacks
+          but config forge github-stacks enable
+    commands:
+    - name: auth
+      description: Authenticate with your forge provider (GitHub, GitLab or Bitbucket)
+      flags:
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |-
+          Authenticate with your forge provider (GitHub, GitLab or Bitbucket).
+
+          This will guide you through the authentication process using either: GitHub
+
+          - Device flow (OAuth)
+          - Personal Access Token (PAT)
+          - GitHub Enterprise
+
+          GitLab
+
+          - Personal Access Token (PAT)
+          - Self-Hosted
+
+          Bitbucket
+
+          - Atlassian API token with scopes (read:user:bitbucket, read:repository:bitbucket, read:pullrequest:bitbucket, write:pullrequest:bitbucket)
+    - name: list-users
+      description: List authenticated forge accounts known to GitButler
+      flags:
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |-
+          List authenticated forge accounts known to GitButler.
+
+          Shows all configured accounts and their authentication status.
+    - name: forget
+      description: Forget a previously authenticated forge account
+      flags:
+        -h, --help: Print help (see more with '--help')
+      documentation:
+        command: |
+          Forget a previously authenticated forge account.
+
+          Examples
+
+          Forget a specific account:
+
+          If there are multiple accounts with the same username, you'll be interactively prompted to select which one(s) to forget.
+
+            but config forge forget username
+
+          Interactively select which account(s) to forget:
+
+            but config forge forget
+    - name: github-stacks
+      description: View or configure native GitHub stacked pull requests for this repository
+      flags:
+        -h, --help: Print help (see more with '--help')
+      completion:
+        positional:
+        - - "auto\tUse native stacks when the repository supports them (the default)"
+          - enable
+          - disable
+      documentation:
+        command: |-
+          View or configure native GitHub stacked pull requests for this repository.
+
+          This is an opt-in GitHub private-preview feature. The setting is stored in the repository-local Git config and shared with the GitButler desktop application.
+  - name: target
+    description: View or set the target branch
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --push-remote=: Remote to push branches to (e.g., "origin" for a fork)
+    documentation:
+      command: |
+        View or set the target branch.
+
+        Without arguments, displays the current target branch. With a branch name, sets the target branch.
+
+        Examples
+
+        View current target:
+
+          but config target
+
+        Set target branch:
+
+          but config target origin/main
+
+        Set a target branch and push branches to a fork:
+
+          but config target upstream/main --push-remote origin
+  - name: push-remote
+    description: View or set the remote used to push branches
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        View or set the remote used to push branches.
+
+        Without arguments, displays the effective push remote. With a remote name, updates the push remote without changing the target branch.
+
+        Examples
+
+        View the current push remote:
+
+          but config push-remote
+
+        Push branches to a fork remote:
+
+          but config push-remote origin
+  - name: metrics
+    description: View or set metrics collection
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      positional:
+      - - enable
+        - disable
+    documentation:
+      command: |
+        View or set metrics collection.
+
+        GitButler uses metrics to help us know what is useful and improve it. Privacy policy: https://gitbutler.com/privacy
+
+        Without arguments, displays the current setting.
+
+        Examples
+
+        View metrics configuration:
+
+          but config metrics
+
+        Enable metrics:
+
+          but config metrics enable
+
+        Disable metrics:
+
+          but config metrics disable
+  - name: feature
+    description: View and configure feature flags
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      positional:
+      - - "unapply-v3-pgm\tUse the V3 unapply compatibility mode"
+        - "single-branch\tEnable single-branch mode"
+      - - enable
+        - disable
+    documentation:
+      command: |
+        View and configure feature flags.
+
+        Without arguments, displays all feature flags that can be changed through the CLI. Specify a flag to view its current value, or add enable or disable to update it.
+
+        Examples
+
+        View all feature flags:
+
+          but config feature
+
+        Enable single-branch mode:
+
+          but config feature single-branch enable
+  - name: ui
+    description: View and configure UI preferences
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        View and configure UI preferences.
+
+        Without arguments, displays current UI settings. Use subcommands to set or unset configuration values.
+
+        Examples
+
+        View UI configuration:
+
+          but config ui
+
+        Enable TUI mode for diff by default:
+
+          but config ui set tui true
+
+        Disable TUI mode:
+
+          but config ui set tui false
+    commands:
+    - name: set
+      description: Set a UI configuration value
+      flags:
+        -g, --global: Set the configuration globally instead of locally
+        -h, --help: Print help (see more with '--help')
+      completion:
+        positional:
+        - - "tui\tUse the interactive TUI for diff by default (but.ui.tui)"
+      documentation:
+        command: |
+          Set a UI configuration value.
+
+          Examples
+
+            but config ui set tui true
+            but config ui set --global tui true
+    - name: unset
+      description: Unset (remove) a UI configuration value
+      flags:
+        -g, --global: Unset the global configuration instead of local
+        -h, --help: Print help (see more with '--help')
+      completion:
+        positional:
+        - - "tui\tUse the interactive TUI for diff by default (but.ui.tui)"
+      documentation:
+        command: |
+          Unset (remove) a UI configuration value.
+
+          Examples
+
+            but config ui unset tui
+  - name: ai
+    description: View and configure AI provider settings
+    flags:
+      --global: Configure global user git config
+      -h, --help: Print help (see more with '--help')
+      --local: Configure local repository git config instead of global user config
+    documentation:
+      command: |
+        View and configure AI provider settings.
+
+        Without subcommands, this starts an interactive setup flow. Use provider subcommands for non-interactive configuration.
+
+        Examples
+
+        Interactive setup:
+
+          but config ai
+
+        View current AI configuration:
+
+          but config ai show
+
+        Configure OpenAI non-interactively:
+
+          but config ai openai --key-option bring-your-own --api-key-env OPENAI_API_KEY --model gpt-5.4-nano
+
+        Configure Ollama locally:
+
+          but config ai --local ollama --endpoint localhost:11434 --model llama3.1
+    commands:
+    - name: show
+      description: Show current AI provider configuration
+      flags:
+        -h, --help: Print help (see more with '--help')
+    - name: openai
+      description: Configure OpenAI as the active AI provider
+      flags:
+        --api-key=: OpenAI API key. Prefer --api-key-env to avoid shell history exposure
+        --api-key-env=: Name of an environment variable holding the OpenAI API key
+        --endpoint=: Optional custom OpenAI-compatible endpoint URL
+        -h, --help: Print help (see more with '--help')
+        --key-option=: Which credential source to use
+        --model=: Preferred model name (for example, gpt-5.4-nano)
+      completion:
+        flag:
+          key-option:
+          - bring-your-own
+          - butler-api
+    - name: anthropic
+      description: Configure Anthropic as the active AI provider
+      flags:
+        --api-key=: Anthropic API key. Prefer --api-key-env to avoid shell history exposure
+        --api-key-env=: Name of an environment variable holding the Anthropic API key
+        -h, --help: Print help (see more with '--help')
+        --key-option=: Which credential source to use
+        --model=: Preferred model name (for example, claude-3-5-haiku-latest)
+      completion:
+        flag:
+          key-option:
+          - bring-your-own
+          - butler-api
+    - name: ollama
+      description: Configure Ollama as the active AI provider
+      flags:
+        --endpoint=: Ollama endpoint in host:port form (for example, localhost:11434)
+        -h, --help: Print help (see more with '--help')
+        --model=: Preferred model name
+    - name: lmstudio
+      description: Configure LM Studio as the active AI provider
+      flags:
+        --endpoint=: LM Studio API base endpoint (for example, http://localhost:1234/v1)
+        -h, --help: Print help (see more with '--help')
+        --model=: Preferred model name
+    - name: openrouter
+      description: Configure OpenRouter as the active AI provider
+      flags:
+        --api-key=: OpenRouter API key. Prefer --api-key-env to avoid shell history exposure
+        --api-key-env=: Name of an environment variable holding the OpenRouter API key
+        -h, --help: Print help (see more with '--help')
+        --model=: Preferred model name (for example, openai/gpt-4.1-mini)
+- name: pick
+  description: Cherry-pick commits into an applied branch
+  flags:
+    -A, --above=: Place the picked commits above BRANCH_OR_COMMIT
+    --allow-merged: Allow targeting branches and commits that are already merged upstream
+    -B, --below=: Place the picked commits below BRANCH_OR_COMMIT
+    -b, --branch=: Place the picked commits on the branch BRANCH
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Cherry-pick commits into an applied branch.
+
+      Each source commit is copied to the target location as a new commit.
+
+      If there are no branches applied, a new branch is created for the picked commits. If there is only one stack of branches applied, the commits are placed at the tip of that stack. Otherwise, the targeting flags --above, --below, and --branch control where the commits are placed. Only one targeting flag can be provided at a time.
+
+      For more details about CLI IDs, see but help cli-ids.
+    flag:
+      above: |-
+        Place the picked commits above BRANCH_OR_COMMIT.
+
+        If BRANCH_OR_COMMIT is a commit, the picked commits are placed on the same branch as the targeted commit.
+
+        If BRANCH_OR_COMMIT is a branch, the picked commits are placed on a new branch above the targeted branch.
+      allow-merged: |-
+        Allow targeting branches and commits that are already merged upstream.
+
+        By default, mutations refuse to touch history that has landed in the target branch, since the results tend to conflict on the next but pull.
+      below: |-
+        Place the picked commits below BRANCH_OR_COMMIT.
+
+        If BRANCH_OR_COMMIT is a commit, the picked commits are placed on the same branch as the targeted commit.
+
+        If BRANCH_OR_COMMIT is a branch, the picked commits are placed on a new branch below the targeted branch. Branches are treated as buckets, meaning that "below a branch" is treated as below the oldest ancestor on that branch.
+      branch: |-
+        Place the picked commits on the branch BRANCH.
+
+        If BRANCH does not exist, it is created as an unstacked branch.
+
+        If BRANCH is omitted, an unstacked branch with a generated name is created.
+
+        Attempting to pick onto a branch that exists but is not applied is an error.
+- name: switch
+  description: Switch to a local branch, workspace branch ID, or the GitButler workspace
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -n, --new: Create a branch at the project target and switch to it
+    -w, --workspace: Switch back to gitbutler/workspace
+  documentation:
+    command: |
+      Switch to a local branch, workspace branch ID, or the GitButler workspace.
+
+      Examples
+
+      Switch to a branch:
+
+        but switch my-feature
+
+      Switch back to the GitButler workspace:
+
+        but switch --workspace
+
+      Create a new branch at the project target and switch to it:
+
+        but switch --new
+
+      Create a named branch at the project target and switch to it:
+
+        but switch --new my-feature
+- name: skill
+  description: Manage AI agent skills for GitButler
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |
+      Manage AI agent skills for GitButler.
+
+      Skills provide enhanced AI capabilities for working with GitButler through Claude Code, Codex, and other AI assistants.
+
+      Use but skill install to install the GitButler skill files. By default, it prompts for scope (repository or global home directory) and then format. When run outside a git repository, local scope is unavailable and the default install location is global (home directory). You can still install to a custom location with --path using an absolute or ~ path.
+
+      Examples
+
+      Install interactively (prompts for scope and format):
+
+        but skill install
+
+      Install the skill globally:
+
+        but skill install --global
+  commands:
+  - name: install
+    description: Install the GitButler CLI skill files for Coding agents
+    flags:
+      -d, --detect: Refresh existing installations in place, updating every GitButler skill found in the current scope (local before global)
+      -g, --global: Install the skill globally instead of in the current repository
+      -h, --help: Print help (see more with '--help')
+      -p, --path=: Custom path where to install the skill (relative to repository root or absolute). Outside a repository, relative paths require --global
+    documentation:
+      command: |
+        Install the GitButler CLI skill files for Coding agents
+
+        By default, the command prompts you to choose installation scope first (current repository or global home directory), then prompts you to select a skill folder format (Agent Skills / .agents, Claude Code, OpenCode, Codex, GitHub Copilot, Cursor, Windsurf, Poolside) unless you specify a custom path with --path. When run outside a git repository, local scope is unavailable and the default install location is global (home directory). You can still install to a custom location with --path using an absolute or ~ path.
+
+        Use --global to install the skill in a global location instead of the current repository.
+
+        In non-interactive mode, a detected agent uses its global skill directory; otherwise specify --path or --detect.
+
+        Examples
+
+        Install interactively (prompts for scope and format):
+
+          but skill install
+
+        Install globally (prompts for format):
+
+          but skill install --global
+
+        Install to a custom path:
+
+          but skill install --path .agents/skills/gitbutler
+
+        Auto-detect installation location (update existing installations):
+
+          but skill install --detect
+  - name: check
+    description: Check if installed GitButler skills are up to date with the CLI version
+    flags:
+      -g, --global: Only check global installations (in home directory)
+      -h, --help: Print help (see more with '--help')
+      -l, --local: Only check local installations (in current repository)
+      -u, --update: Automatically update any outdated skills found
+    documentation:
+      command: |
+        Check if installed GitButler skills are up to date with the CLI version
+
+        Scans for installed skill files and compares their version with the current CLI version. By default, checks both local (repository) and global installations.
+
+        Examples
+
+        Check all installed skills:
+
+          but skill check
+
+        Check and automatically update outdated skills:
+
+          but skill check --update
+
+        Check only global installations:
+
+          but skill check --global
+- name: agent
+  description: Set up GitButler for AI coding agents
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |
+      Set up GitButler for AI coding agents.
+
+      Runs a guided setup wizard for installing GitButler agent skills and writing workflow steering instructions into supported agent instruction files.
+
+      Examples
+
+      Start the interactive setup wizard (but agent setup is equivalent):
+
+        but agent
+
+      Print the default generated steering text:
+
+        but agent setup --print
+  commands:
+  - name: setup
+    description: Configure GitButler skills and workflow instructions for coding agents
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --print: Print the default generated steering text without prompting or modifying files
+    documentation:
+      command: |
+        Configure GitButler skills and workflow instructions for coding agents.
+
+        Starts an interactive wizard that generates GitButler workflow steering, installs selected agent skills, and optionally writes the generated steering into agent instruction files.
+
+        Examples
+
+        Start the setup wizard:
+
+          but agent setup
+
+        Print the default steering text without modifying files:
+
+          but agent setup --print
+- name: edit
+  description: Open a file in the built-in text editor
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |
+      Open a file in the built-in text editor.
+
+      A simple terminal-based text editor for quick edits. This is the same editor used as the fallback when no external editor is configured.
+
+      Examples
+
+      Edit a file:
+
+        but edit README.md
+- name: refresh-remote-data
+  description: Trigger a refresh of remote data fetching from the remote, Pull Requests, and CI status
+  hidden: true
+  flags:
+    --ci: Whether to also refresh CI status from the forge
+    --fetch: Whether to also refresh git fetch from the remote
+    -h, --help: Print help (see more with '--help')
+    --pr: Whether to also refresh Pull Requests from the forge
+    --updates: Whether to also check for application updates
+  documentation:
+    command: |-
+      Trigger a refresh of remote data fetching from the remote, Pull Requests, and CI status.
+
+      This is a hidden command primarily used for background sync operations.
+- name: mcp
+  description: Run GitButler as a Model Context Protocol server
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Run GitButler as a Model Context Protocol server.
+
+      The server exposes workspace and review tools with MCP App views to clients such as Codex, Claude Code, and ChatGPT.
+  commands:
+  - name: serve
+    description: Serve GitButler tools and MCP App resources over standard input/output
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |
+        Serve GitButler tools and MCP App resources over standard input/output.
+
+        Workspace tools prefer filesystem roots supplied by the MCP client. A repository path can also be supplied to individual tool calls when the client does not expose the desired repository as a root.
+
+        Examples
+
+          but mcp serve
+- name: actions
+  description: 'INTERNAL: GitButler Actions are automated tasks (like macros) that can be performed on a repository'
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: handle-changes
+    description: Automatically handles the changes in the repository, creating a commit with the provided context
+    flags:
+      -d, --description!=: A context describing the changes that are currently uncommitted
+      --description!=: A context describing the changes that are currently uncommitted
+      --desc!=&: A context describing the changes that are currently uncommitted
+      --handler=:
+        description: Which handler is to be used for the operation. Different handles would have different behavior
+        default: simple
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        handler:
+        - "simple\tHandles changes in a simple way"
+- name: metrics
+  description: 'INTERNAL: If metrics are permitted, this subcommand handles posthog event creation'
+  hidden: true
+  flags:
+    --command-name!=: ''
+    -h, --help: Print help (see more with '--help')
+    --props!=: ''
+  completion:
+    flag:
+      command-name:
+      - init
+      - absorb
+      - discard
+      - status
+      - tui
+      - stf
+      - uncommit
+      - amend
+      - squash
+      - move
+      - diff
+      - diff2
+      - edit
+      - show
+      - commit
+      - commit-empty
+      - push
+      - reword
+      - oplog-list
+      - oplog-snapshot
+      - restore
+      - undo
+      - redo
+      - gui
+      - open
+      - base-fetch
+      - base-check
+      - pull
+      - branch-new
+      - branch-delete
+      - branch-list
+      - branch-show
+      - branch-unapply
+      - branch-apply
+      - branch-update
+      - branch-move
+      - branch-tear-off
+      - switch
+      - forge-auth
+      - forge-list-users
+      - forge-forget
+      - pr-new
+      - pr-template
+      - disable-auto-merge
+      - enable-auto-merge
+      - set-review-ready
+      - set-review-draft
+      - completions
+      - alias-check
+      - alias-add
+      - alias-remove
+      - refresh-remote-data
+      - resolve
+      - update
+      - update-check
+      - update-suppress
+      - update-install
+      - land
+      - skill-install
+      - skill-check
+      - agent-setup
+      - pick
+      - clean
+      - external
+      - unknown
+- name: completions
+  description: Generate but shell completions
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    positional:
+    - - bash
+      - elvish
+      - fish
+      - powershell
+      - zsh
+  documentation:
+    command: "Generate but shell completions.\n\nExamples\n\n  # bash, put in .bashrc or .bash_profile depending on system setup\n  eval \"$(but completions bash)\"\n  \n  # zsh, put in .zshrc\n  eval \"$(but completions zsh)\"\n  \n  # fish, put in config.fish\n  but completions fish | source\n"
+- name: fetch
+  description: Hidden command that redirects to but pull --check
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: agentlog
+  description: 'AI: capture agent logs into GitMeta'
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: hook
+    description: Capture an agent transcript from hook input
+    flags:
+      --agent=: ''
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        agent:
+        - codex
+        - claude
+  - name: show
+    description: Show a session, or one turn in detail
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --limit=: Maximum turns or turn records to return
+      --turn=: Show detailed records for this turn key
+  - name: skim
+    description: Skim prior agent work
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      positional:
+      - - "branch\tBranch ref target"
+        - "review\tGitButler review target, including pull request / merge request style reviews"
+        - "change\tGitButler change id target"
+  - name: publish
+    description: Share local-only agent sessions for a branch, review, or change
+    flags:
+      --dry-run: Report what would be shared without changing metadata or syncing
+      -h, --help: Print help (see more with '--help')
+  - name: sync
+    description: Sync GitMeta metadata
+    hidden: true
+    flags:
+      -h, --help: Print help (see more with '--help')
+- name: help
+  description: Show help information
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Show help information.
+
+      Without a topic, displays all available commands organized into functional categories such as Inspection, Branching and Committing, Server Interactions, etc.
+
+      With a topic, displays help for that topic, such as but help cli-ids.
+  commands:
+  - name: cli-ids
+    description: Smart IDs to reference commits, branches and more in but
+    flags:
+      -h, --help: Print help (see more with '--help')
+    documentation:
+      command: |-
+        Smart IDs to reference commits, branches and more in but.
+
+        CLI IDs are used by but to reference things such as commits, branches and files. While obvious identifiers like full commit hashes and entire branch names are viable CLI IDs, there are also various shorter identifiers that can be used in place of the full names.
+
+        In general, but status will show all currently available CLI IDs in front of the "thing".
+
+        Typical CLI IDs include:
+
+        - Commit:
+          - The entire commit ID
+          - The entire change ID
+          - Any prefix of the commit ID or change ID that is unique in the current context. but status highlights the shortest possible prefix.
+        - Branch:
+          - The entire branch name
+          - An exact short ID for the branch name, as shown by but status
+        - Uncommitted file: A path-derived ID that is typically 1-3 characters
+        - Uncommitted hunk: <uncommitted_file_cli_id>:<hunk_cli_id>
+          - Run but diff to show all current uncommitted hunks and their IDs
+        - Uncommitted area: Always zz
+        - Committed file: <commit_cli_id>:<file_cli_id>
+          - Run but status -f to show committed files
+
+        Many CLI IDs depend on the context and may change if the context changes, such as when new data is written to files, commits are made or rearranged and branches are created or deleted.
+
+        Some CLI IDs are more stable than others. For example, a commit's change ID is stable even when commits are made and moved around, but the minimum prefix may increase as other IDs are introduced.
+
+        Most but not all commands accept CLI IDs to perform various actions. See the documentation for the individual command (but <command> --help) for details on how to use CLI IDs for that command in particular.
+- name: onboarding
+  description: 'INTERNAL: First-run onboarding that shows metrics info and marks onboarding complete'
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      INTERNAL: First-run onboarding that shows metrics info and marks onboarding complete.
+
+      This command is silent if onboarding has already been completed. It is designed to be called by the installer after installation.
