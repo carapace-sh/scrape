@@ -1,19 +1,19 @@
 diff --git a/crates/but/src/lib.rs b/crates/but/src/lib.rs
-index 26891ef500..c010779fe8 100644
+index 01fe4b9..4a9e389 100644
 --- a/crates/but/src/lib.rs
 +++ b/crates/but/src/lib.rs
-@@ -61,6 +61,10 @@ mod tui;
- 
- const CLI_DATE: CustomFormat = gix::date::time::format::ISO8601;
+@@ -64,6 +64,10 @@ mod retired_syntax;
+ pub mod theme;
+ mod tui;
  
 +use carapace_spec_clap::Spec;
 +use clap_complete::generate;
 +use std::io;
 +
+ const CLI_DATE: CustomFormat = gix::date::time::format::ISO8601;
+ 
  /// The format for help output printed before clap parses arguments.
- fn early_help_format(_args: &[OsString], agent_detected: bool) -> OutputFormat {
-     if let Some(output_format_from_env) = OutputFormat::try_from_env(agent_detected)
-@@ -154,6 +158,11 @@ pub(crate) fn app_settings() -> Result<&'static AppSettings> {
+@@ -203,6 +207,11 @@ pub(crate) fn app_settings() -> Result<&'static AppSettings> {
  
  /// Handle `args` which must be what's passed by `std::env::args_os()`.
  pub async fn handle_args(args: impl Iterator<Item = OsString>) -> Result<()> {
@@ -22,6 +22,6 @@ index 26891ef500..c010779fe8 100644
 +        return Ok(());
 +    }
 +
-     let theme_preset_from_env: anyhow::Result<theme::ThemePreset> =
-         if let Some(theme_name) = std::env::var_os(envs::BUT_THEME) {
-             theme_name.to_string_lossy().parse()
+     let mut args: Vec<_> = args.collect();
+ 
+     // Check if version is requested
