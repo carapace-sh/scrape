@@ -60,7 +60,7 @@
     "nfpm": "https://github.com/goreleaser/nfpm#v2.47.0",
     "ollama": "https://github.com/ollama/ollama#v0.33.0",
     "openstack": "https://github.com/openstack/python-openstackclient#10.2.1",
-    "pixi": "https://github.com/prefix-dev/pixi#v0.77.0",
+    "pixi": "https://github.com/prefix-dev/pixi#v0.77.1",
     "restic": "https://github.com/restic/restic#v0.19.1",
     "ripsecrets": "https://github.com/sirwart/ripsecrets#v0.1.11",
     "rustup": "https://github.com/rust-lang/rustup#1.29.0",
