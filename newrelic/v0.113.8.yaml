@@ -1,0 +1,648 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: newrelic-dev
+description: The New Relic CLI
+persistentflags:
+    --debug: debug level logging
+    --format=: output text format [JSON, Text, YAML]
+    --plain: output compact text
+    --profile=: the authentication profile to use
+    --trace: trace level logging
+    -a, --accountId=: the account ID to use. Can be overridden by setting NEW_RELIC_ACCOUNT_ID
+commands:
+    - name: agent
+      description: Utilities for New Relic Agents
+      commands:
+        - name: config
+          description: Configuration utilities/helpers for New Relic agents
+          commands:
+            - name: migrateV3toV4
+              description: migrate V3 configuration to V4 configuration format
+              flags:
+                --overwrite: 'if set ti true and pathOutput file exists already the old file is removed '
+                -c, --pathConfiguration!=: path configuration
+                -d, --pathDefinition!=: path definition
+                -o, --pathOutput!=: path output
+            - name: obfuscate
+              description: Obfuscate a configuration value using a key
+              flags:
+                -k, --key!=: the key to use when obfuscating the clear-text value
+                -v, --value!=: the value, in clear text, to be obfuscated
+        - name: version
+          description: Show latest agent versions.
+    - name: apiAccess
+      description: Manage New Relic API access keys
+      commands:
+        - name: apiAccessCreateKeys
+          description: Create keys. You can create keys for multiple accounts at once. You can read more about managing keys on [this documentation page](https://docs.newrelic.com/docs/apis/nerdgraph/examples/use-nerdgraph-manage-license-keys-personal-api-keys).
+          flags:
+            --keys=: A list of the configurations for each key you want to create.
+        - name: apiAccessDeleteKeys
+          description: A mutation to delete keys.
+          flags:
+            --keys=: A list of each key `id` that you want to delete. You can read more about managing keys on [this documentation page](https://docs.newrelic.com/docs/apis/nerdgraph/examples/use-nerdgraph-manage-license-keys-personal-api-keys).
+        - name: apiAccessGetKey
+          description: |+
+            Fetch a single key by ID and type.
+
+            ---
+            **NR Internal** | [#help-unified-api](https://newrelic.slack.com/archives/CBHJRSPSA) | visibility(customer)
+
+          flags:
+            --id!=: The `id` of the key. This can be used to identify a key without revealing the key itself (used to update and delete).
+            --keyType!=: The type of key.
+        - name: apiAccessUpdateKeys
+          description: Update keys. You can update keys for multiple accounts at once. You can read more about managing keys on [this documentation page](https://docs.newrelic.com/docs/apis/nerdgraph/examples/use-nerdgraph-manage-license-keys-personal-api-keys).
+          flags:
+            --keys=: The configurations of each key you want to update.
+    - name: apm
+      description: Interact with New Relic APM
+      persistentflags:
+        --applicationId=: A New Relic APM application ID
+      commands:
+        - name: application
+          description: Interact with New Relic APM applications
+          persistentflags:
+            -g, --guid=: search for results matching the given APM application GUID
+          commands:
+            - name: get
+              description: Get a New Relic application
+            - name: search
+              description: Search for a New Relic application
+              flags:
+                -n, --name=: search for results matching the given APM application name
+        - name: deployment
+          description: Manage New Relic APM deployment markers
+          commands:
+            - name: create
+              description: Create a New Relic APM deployment
+              flags:
+                --change-log=: the change log stored with the deployment
+                --description=: the description stored with the deployment
+                --user=: the user creating with the deployment
+                -r, --revision!=: a freeform string representing the revision of the deployment
+            - name: delete
+              description: Delete a New Relic APM deployment
+              flags:
+                -d, --deploymentID!=: the ID of the deployment to be deleted
+            - name: list
+              description: List New Relic APM deployments for an application
+    - name: changeTracking
+      description: Manage change tracking events for New Relic
+      commands:
+        - name: create
+          description: Create a New Relic change tracking event
+          flags:
+            --category!=: category of event, e.g., DEPLOYMENT, CONFIG_CHANGE, etc. category is required.
+            --changelog=: changelog for the deployment
+            --commit=: commit hash for the deployment
+            --customAttributes=: 'custom attributes: use ''-'' for STDIN, ''{...}'' for inline JS object, or provide a file path'
+            --deepLink=: deep link URL for the deployment
+            --description=: a description of the event
+            --entitySearch!=: 'the NRQL entity search query for this event. Example: name = ''MyService'' AND type = ''SERVICE'' (required)'
+            --featureFlagId=: ID of the feature flag
+            --groupId=: string that can be used to correlate two or more events
+            --shortDescription=: short description for the event
+            --type!=: type of event, e.g., BASIC, ROLLBACK, etc. type is required.
+            --user=: username of the actor or bot
+            --validationFlags*=: comma-separated list of validation flags, e.g. ALLOW_CUSTOM_CATEGORY_OR_TYPE,FAIL_ON_FIELD_LENGTH,FAIL_ON_REST_API_FAILURES
+            --version=: version of the deployment
+            -t, --timestamp=: the time of the event, the number of milliseconds since the Unix epoch, defaults to now
+    - name: completion --shell [bash|zsh|fish|powershell]
+      description: Generate completion script
+      flags:
+        --shell!=: Output completion for the specified shell.  (bash, powershell, zsh)
+    - name: config
+      description: Manage the configuration of the New Relic CLI
+      commands:
+        - name: get
+          description: Get a configuration value
+          flags:
+            -k, --key!=: the key to get
+        - name: list
+          aliases:
+            - ls
+          description: List the current configuration values
+        - name: reset
+          aliases:
+            - rm
+            - delete
+          description: Reset a configuration value to its default
+          flags:
+            -k, --key!=: the key to delete
+        - name: set
+          description: Set a configuration value
+          flags:
+            -k, --key!=: the key to set
+            -v, --value!=: the value to set
+    - name: decode
+      description: 'Decodes NR1 URL Strings '
+      commands:
+        - name: entity
+          description: 'Decodes NR1 Entitys '
+          flags:
+            -k, --key!=: the key you require back from an entity
+        - name: url
+          description: 'Decodes NR1 URL Strings '
+          flags:
+            -p, --param!=: the query parameter you want to decode
+            -s, --search!=: the search key you want returned
+    - name: diagnose
+      description: Troubleshoot your New Relic installation
+      commands:
+        - name: lint
+          description: Validate your agent config file
+          flags:
+            --config-file=: Path to the config file to be validated.
+        - name: run
+          description: Troubleshoot your New Relic-instrumented application
+          flags:
+            --attachment-key=: Attachment key for automatic upload to a support ticket (get key from an existing ticket).
+            --list-suites: List the task suites available for the --suites argument.
+            --suites=: The task suite or comma-separated list of suites to run. Use --list-suites for a list of available suites.
+            --verbose: Display verbose logging during task execution.
+        - name: update
+          description: Update the New Relic Diagnostics binary if necessary
+        - name: validate
+          description: Validate your CLI configuration and connectivity
+    - name: documentation
+      description: Generate CLI documentation
+      flags:
+        --format=: Documentation format [markdown, manpage] default 'markdown'
+        -o, --outputDir!=: Output directory for generated documentation
+    - name: edge
+      description: Interact with New Relic Edge
+      commands:
+        - name: trace-observer
+          description: Interact with New Relic Edge trace observers.
+          commands:
+            - name: create
+              description: Create a New Relic Edge trace observer.
+              flags:
+                -n, --name!=: the name of the trace observer
+                -r, --providerRegion!=: the provider region in which to create the trace observer
+            - name: delete
+              description: Delete a New Relic Edge trace observer.
+              flags:
+                -i, --id!=: the ID of the trace observer to delete
+            - name: list
+              description: List the New Relic Edge trace observers for an account.
+    - name: entity
+      description: Interact with New Relic entities
+      commands:
+        - name: deployment
+          description: Manage deployment markers for a New Relic entity
+          commands:
+            - name: create
+              description: Create a New Relic entity deployment marker
+              flags:
+                --changelog=: a URL for the changelog or list of changes if not linkable
+                --commit=: the commit identifier, for example, a Git commit SHA
+                --deepLink=: a link back to the system generating the deployment
+                --deploymentType=: type of deployment, one of BASIC, BLUE_GREEN, CANARY, OTHER, ROLLING or SHADOW
+                --description=: a description of the deployment
+                --groupId=: string that can be used to correlate two or more events
+                -g, --guid!=: the GUID of the entity associated with this deployment. guid is required.
+                -t, --timestamp=: the start time of the deployment, the number of milliseconds since the Unix epoch, defaults to now
+                -u, --user=: username of the deployer or bot
+                -v, --version!=: the version of the deployed software, for example, something like v1.1. version is required.
+        - name: search
+          description: Search for New Relic entities
+          flags:
+            --case-sensitive: Flag to enable case-sensitive search for the entity name
+            --tag=: Search for entities matching the given entity tag
+            --tags*=: Entity tags to include as search parameters in the format tagKey1:tagValue1,tagKey2:tagValue2
+            -d, --domain=: Search for entities matching the given entity domain
+            -f, --fields-filter*=: Filter search results to only return certain fields for each search result
+            -n, --name=: Search for entities matching the given name
+            -r, --reporting=: Search for entities based on whether or not an entity is reporting (true or false)
+            -s, --alert-severity=: Search for entities matching the given alert severity type
+            -t, --type=: Search for entities matching the given type
+        - name: tags
+          description: Manage tags on New Relic entities
+          commands:
+            - name: create
+              description: Create tag:value pairs for the given entity
+              flags:
+                -g, --guid!=: the entity GUID to create tag values on
+                -t, --tag!*=: the tag names to add to the entity
+            - name: delete
+              description: Delete the given tag:value pairs from the given entity
+              flags:
+                -g, --guid!=: the entity GUID to delete tags on
+                -t, --tag!*=: the tag keys to delete from the entity
+            - name: delete-values
+              description: Delete the given tag/value pairs from the given entity
+              flags:
+                -g, --guid!=: the entity GUID to delete tag values on
+                -v, --value!*=: the tag key:value pairs to delete from the entity
+            - name: get
+              description: Get the tags for a given entity
+              flags:
+                -g, --guid=: the entity GUID to retrieve tags for
+            - name: replace
+              description: Replace tag:value pairs for the given entity
+              flags:
+                -g, --guid!=: the entity GUID to replace tag values on
+                -t, --tag!*=: the tag names to replace on the entity
+    - name: events
+      description: Send custom events to New Relic
+      commands:
+        - name: post
+          description: Post a custom event to New Relic
+          flags:
+            -e, --event!=: a JSON-formatted event payload to post
+        - name: postFile
+          description: Post custom events to New Relic using a JSON file
+          flags:
+            -f, --file=: a JSON-formatted events file to post
+    - name: fleetcontrol
+      description: Manage New Relic Fleet Control resources
+      commands:
+        - name: configuration
+          description: Manage fleet configurations
+          commands:
+            - name: create
+              description: Create a fleet configuration
+              flags:
+                --agent-type!=: the agent type (e.g., NRInfra, NRDOT)
+                --configuration-content=: inline configuration content (JSON/YAML) - use only for testing, development, or emergency purposes
+                --configuration-file-path=: path to configuration file (JSON/YAML) - recommended approach for production use
+                --managed-entity-type!=: the type of entities this configuration manages
+                --name!=: the name of the configuration entity
+                --operating-system=: the operating system type for HOST configurations (LINUX or WINDOWS); not applicable for KUBERNETESCLUSTER configurations
+                --organization-id=: the organization ID; if not provided, will be derived from current organization
+            - name: delete
+              description: Delete a fleet configuration
+              flags:
+                --configuration-id!=: the configuration ID to delete
+                --organization-id=: the organization ID; if not provided, will be derived from current organization
+            - name: get
+              description: Get a fleet configuration or version
+              flags:
+                --configuration-id!=: the configuration or version entity GUID
+                --mode=: the entity type to retrieve (ConfigEntity for configuration, ConfigVersionEntity for specific version entity)
+                --organization-id=: the organization ID; if not provided, will be derived from current organization
+                --version=: the version number to retrieve (only applies when mode is ConfigEntity)
+            - name: versions
+              description: Manage configuration versions
+              commands:
+                - name: add
+                  description: Add a new version to an existing fleet configuration
+                  flags:
+                    --configuration-content=: inline configuration content (JSON/YAML) - use only for testing, development, or emergency purposes
+                    --configuration-file-path=: path to configuration file (JSON/YAML) - recommended approach for production use
+                    --configuration-id!=: the ID of the configuration to add a version to
+                    --organization-id=: the organization ID; if not provided, will be derived from current organization
+                - name: delete
+                  description: Delete a specific version of a fleet configuration
+                  flags:
+                    --organization-id=: the organization ID; if not provided, will be derived from current organization
+                    --version-id!=: the configuration version ID to delete
+                - name: list
+                  description: Get all versions of a fleet configuration
+                  flags:
+                    --configuration-id!=: the configuration entity ID
+                    --organization-id=: the organization ID; if not provided, it will be fetched from the API
+        - name: deployment
+          description: Manage fleet deployments
+          commands:
+            - name: create
+              description: Create a new fleet deployment
+              flags:
+                --agent*=: agent specification in format 'AgentType:Version:ConfigVersionID1,ConfigVersionID2' (can be specified multiple times for multiple agents). Mutually exclusive with --agent-type, --agent-version, and --configuration-version-ids
+                --agent-type=: (legacy) the agent type for single agent deployment (e.g., NRInfra, NRDOT). Mutually exclusive with --agent
+                --agent-version=: (legacy) the agent version for single agent deployment (e.g., 1.70.0, 2.0.0). Mutually exclusive with --agent
+                --configuration-version-ids*=: (legacy) the configuration version IDs for single agent deployment (can be specified multiple times). Mutually exclusive with --agent
+                --description=: a description of the deployment
+                --fleet-id!=: the ID of the fleet for this deployment
+                --name!=: the name of the deployment
+                --tags*=: tags in format key:value1,value2 (can be specified multiple times)
+            - name: delete
+              description: Delete a fleet deployment
+              flags:
+                --deployment-id!=: the deployment ID to delete
+            - name: deploy
+              description: Trigger deployment for a fleet deployment
+              flags:
+                --deployment-id!=: the ID of the deployment to trigger
+                --rings-to-deploy!*=: the names of the rings to deploy to (can be specified multiple times)
+            - name: update
+              description: Update a fleet deployment
+              flags:
+                --agent*=: updated agent specifications in format 'AgentType:Version:ConfigVersionID1,ConfigVersionID2' (can be specified multiple times for multiple agents). Mutually exclusive with --configuration-version-ids
+                --configuration-version-ids*=: (legacy) updated configuration version IDs to deploy (can be specified multiple times). Mutually exclusive with --agent
+                --deployment-id!=: the deployment ID to update
+                --description=: a new description of the deployment
+                --name=: the new name of the deployment
+                --tags*=: updated tags in format key:value1,value2 (can be specified multiple times)
+        - name: entities
+          description: Query entities for fleet management
+          commands:
+            - name: get-managed
+              description: Get all managed entities in an account
+              flags:
+                --entity-type=: filter by entity type (e.g., HOST, KUBERNETESCLUSTER)
+                --include-tags: include entity tags in output
+                --limit=: maximum number of entities to return
+            - name: get-unassigned
+              description: Get all unassigned entities available for fleet management
+              flags:
+                --entity-type=: filter by entity type (e.g., HOST, KUBERNETESCLUSTER)
+                --include-tags: include entity tags in output
+                --limit=: maximum number of entities to return
+        - name: fleet
+          description: Manage fleet entities
+          commands:
+            - name: create
+              description: Create a new fleet
+              flags:
+                --description=: a description of the fleet
+                --managed-entity-type!=: the type of entities this fleet manages
+                --name!=: the name of the fleet
+                --operating-system=: the operating system type for HOST fleets (LINUX or WINDOWS); not applicable for KUBERNETESCLUSTER fleets
+                --organization-id=: the organization ID; if not provided, it will be fetched from the API
+                --product=: the product identifier for this fleet (optional)
+                --tags*=: tags in format key:value1,value2 (can be specified multiple times)
+            - name: delete
+              description: Delete one or more fleets
+              flags:
+                --fleet-id=: the fleet ID to delete (use for single fleet deletion)
+                --fleet-ids*=: comma-separated list of fleet IDs to delete (use for bulk deletion)
+            - name: get
+              description: Get details of a fleet by ID
+              flags:
+                --fleet-id!=: the fleet entity ID
+            - name: members
+              description: Manage fleet members
+              commands:
+                - name: add
+                  description: Add managed entities to a fleet ring
+                  flags:
+                    --entity-ids!*=: comma-separated list of entity IDs to add
+                    --fleet-id!=: the fleet ID
+                    --ring!=: the ring name to add entities to
+                - name: list
+                  description: List managed entities in a fleet
+                  flags:
+                    --fleet-id!=: the fleet ID to list members from
+                    --next-cursor=: optional cursor to continue list from
+                    --ring=: optional ring name to filter members by
+                    --show-tags: 'include entity tags in the output (default: false)'
+                - name: remove
+                  description: Remove managed entities from a fleet ring
+                  flags:
+                    --entity-ids!*=: comma-separated list of entity IDs to remove
+                    --fleet-id!=: the fleet ID
+                    --ring!=: the ring name to remove entities from
+            - name: search
+              description: Search for fleet entities by name
+              flags:
+                --name-contains=: search for fleets whose name contains this substring
+                --name-equals=: search for fleets with this exact name
+                --show-tags: 'include tags in the search results (default: false)'
+            - name: update
+              description: Update a fleet
+              flags:
+                --description=: the new description for the fleet
+                --id!=: the fleet ID
+                --name=: the new name for the fleet
+                --tags*=: updated tags in format key:value1,value2 (can be specified multiple times)
+    - name: help [command]
+      description: Help about any command
+    - name: install
+      description: Install New Relic.
+      flags:
+        --localRecipes=: a path to local recipes to load instead of service other fetching
+        --tag*=: 'the tags to add during install, can be multiple. Example: --tag tag1:test,tag2:test'
+        -c, --recipePath*=: the path to a recipe file to install
+        -n, --recipe*=: the name of a recipe to install
+        -y, --assumeYes: use "yes" for all questions during install
+    - name: migrate
+      description: Commands to support migration of New Relic Resources for EOLs and more.
+      commands:
+        - name: nrqldroprules
+          description: NRQL drop rules migration utilities
+          commands:
+            - name: tf-delist
+              description: Delist NRQL drop rules from Terraform state (without destroying)
+              flags:
+                --resourceIdentifiers*=: list of resource identifiers for newrelic_nrql_drop_rule resources
+                --skipResponseToPrompt: skip all user prompts (answers 'N' to all prompts)
+                --tofu: use OpenTofu instead of Terraform
+                --workspacePath=: path to the Terraform workspace
+            - name: tf-importgen
+              description: Generate Terraform import configuration for Pipeline Cloud Rules
+              flags:
+                --fileName=: file name to write the import blocks to (prints to terminal if not specified)
+                --pipelineCloudRuleIDs*=: list of Pipeline Cloud Rule IDs to generate import configuration with
+                --skipResponseToPrompt: skip all user prompts (answers 'N' to all prompts)
+                --tofu: use OpenTofu instead of Terraform
+                --workspacePath=: path to the Terraform workspace
+            - name: tf-importgen-ci
+              description: Generate Terraform import configuration for CI environments
+              flags:
+                --file=: JSON file containing drop rule resource IDs
+                --json=: JSON string containing drop rule resource IDs
+                --tofu: use OpenTofu instead of Terraform
+                --workspacePath=: path to the Terraform workspace (defaults to current directory)
+                -r, --removed&: generate removed blocks configuration
+            - name: tf-update
+              description: Update NRQL drop rules in Terraform workspace
+              flags:
+                --resourceIdentifiers*=: list of resource identifiers for newrelic_nrql_drop_rule resources
+                --skipResponseToPrompt: skip all user prompts (answers 'N' to all prompts)
+                --tofu: use OpenTofu instead of Terraform
+                --workspacePath=: path to the Terraform workspace
+    - name: nerdgraph
+      description: Execute GraphQL requests to the NerdGraph API
+      commands:
+        - name: query
+          description: Execute a raw GraphQL query request to the NerdGraph API
+          flags:
+            --queryFile=: the query to use, represented as a JSON file
+            --variables=: the variables to pass to the GraphQL query, represented as a JSON string (this will overwrite duplicate variables that are set through variablesFile
+            --variablesFile=: the variables to pass to GraphQL query, represented as a JSON file
+    - name: nerdstorage
+      description: Read, write, and delete NerdStorage documents and collections.
+      commands:
+        - name: collection
+          description: Read, write, and delete NerdStorage collections.
+          commands:
+            - name: delete
+              description: Delete a NerdStorage collection.
+              flags:
+                --packageId!=: the external package ID
+                -c, --collection!=: the collection name to delete the document from
+                -e, --entityGuid=: the entity GUID
+                -s, --scope!=: the scope to delete the document from
+            - name: get
+              description: Retrieve a NerdStorage collection.
+              flags:
+                -c, --collection!=: the collection name to get the document from
+                -e, --entityGuid=: the entity GUID
+                -p, --packageId!=: the external package ID
+                -s, --scope!=: the scope to get the document from
+        - name: document
+          description: Read, write, and delete NerdStorage documents.
+          commands:
+            - name: delete
+              description: Delete a NerdStorage document.
+              flags:
+                -c, --collection!=: the collection name to delete the document from
+                -d, --documentId!=: the document ID
+                -e, --entityGuid=: the entity GUID
+                -p, --packageId!=: the external package ID
+                -s, --scope!=: the scope to delete the document from
+            - name: get
+              description: Retrieve a NerdStorage document.
+              flags:
+                -c, --collection!=: the collection name to get the document from
+                -d, --documentId!=: the document ID
+                -e, --entityGuid=: the entity GUID
+                -p, --packageId!=: the external package ID
+                -s, --scope!=: the scope to get the document from
+            - name: write
+              description: Write a NerdStorage document.
+              flags:
+                -c, --collection!=: the collection name to write the document to
+                -d, --documentId!=: the document ID
+                -e, --entityGuid=: the entity GUID
+                -o, --document!=: the document to be written, in JSON format
+                -p, --packageId!=: the external package ID
+                -s, --scope!=: the scope to write the document to
+    - name: nrql
+      description: Commands for interacting with the New Relic Database
+      commands:
+        - name: droprules
+          description: Retrieve NRQL Drop Rules
+          flags:
+            -l, --limit=: Number of NRQL Drop Rules to return
+        - name: history
+          description: Retrieve NRQL query history
+          flags:
+            -l, --limit=: 'history items to return (default: 10, max: 100)'
+        - name: query
+          description: Execute a NRQL query to New Relic
+          flags:
+            -q, --query!=: the NRQL query you want to execute
+    - name: profile
+      aliases:
+        - profiles
+      description: Manage the authentication profiles for this tool
+      commands:
+        - name: add
+          aliases:
+            - configure
+          description: Add a new profile
+          flags:
+            --accountId=: your account ID
+            --apiKey=: your personal API key
+            --licenseKey=: your license key
+            -r, --region=: the US, EU, JP, GOV, or FEDRAMP region
+            -y, --acceptDefaults: suppress prompts and accept default values
+        - name: default
+          description: Set the default profile name
+        - name: delete
+          aliases:
+            - remove
+            - rm
+          description: Delete a profile
+        - name: list
+          aliases:
+            - ls
+          description: List the profiles available
+          flags:
+            -s, --show-keys: list the profiles on your keychain
+    - name: reporting
+      description: Commands for reporting data into New Relic
+      commands:
+        - name: junit
+          description: Send JUnit test run results to New Relic
+          flags:
+            --attributes=: any custom attributes to include in JSON format
+            --dryRun: suppress posting custom events to NRDB
+            -o, --output: output generated custom events to stdout
+            -p, --path!=: the path to a JUnit-formatted test results file
+    - name: synthetics
+      description: Interact with New Relic Synthetics
+      commands:
+        - name: monitor
+          description: Interact with New Relic Synthetics monitors
+          commands:
+            - name: get
+              description: Get a New Relic Synthetics monitor
+              flags:
+                --monitorId=: A New Relic Synthetics monitor ID
+            - name: list
+              description: List New Relic Synthetics monitors
+              flags:
+                -s, --statusFilter=: filter the results on the status field. Possible values ENABLED, DISABLED, MUTED. Comma separated.
+            - name: search
+              description: Search for a New Relic Synthetics Monitor
+              flags:
+                -n, --name=: search for results matching the given Synthetics monitor name
+        - name: run
+          description: Start an automated testing job on a batch of synthetic monitors
+          flags:
+            -b, --batchFile=: Path to the YAML file comprising GUIDs of monitors and associated configuration
+            -g, --guid*=: List of GUIDs of monitors to include in the batch and run automated tests on
+    - name: utils
+      description: Various utility methods
+      commands:
+        - name: jq
+          description: Parse json strings
+        - name: semver
+          description: Work with semantic version strings
+          commands:
+            - name: check
+              description: Check version constraints
+              flags:
+                -c, --constraint!=: the version constraint to check against
+                -v, --version!=: the semver version string to check
+        - name: terraform
+          description: Tools for working with Terraform
+          commands:
+            - name: dashboard
+              description: Generate HCL for the newrelic_one_dashboard resource
+              flags:
+                -f, --file=: a file that contains exported dashboard JSON
+                -l, --label!=: the resource label to use when generating resource HCL
+                -o, --out=: the file to send the generated HCL to
+                -w, --shiftWidth=: the indentation shift with of the output
+        - name: yq
+          description: Parse yaml strings
+    - name: version
+      description: Show the version of the New Relic CLI
+    - name: workload
+      description: Interact with New Relic One workloads
+      commands:
+        - name: create
+          description: Create a New Relic One workload.
+          flags:
+            -e, --entityGuid*=: the list of entity Guids composing the workload
+            -n, --name!=: the name of the workload
+            -q, --entitySearchQuery*=: a list of search queries, combined using an OR operator
+            -s, --scopeAccountIds*=: accounts that will be used to get entities from
+        - name: delete
+          description: Delete a New Relic One workload.
+          flags:
+            -g, --guid!=: the GUID of the workload to delete
+        - name: duplicate
+          description: Duplicate a New Relic One workload.
+          flags:
+            -g, --guid!=: the GUID of the workload you want to duplicate
+            -n, --name=: the name of the workload to duplicate
+        - name: get
+          description: Get a New Relic One workload.
+          flags:
+            -g, --guid!=: the GUID of the workload
+        - name: list
+          description: List the New Relic One workloads for an account.
+        - name: update
+          description: Update a New Relic One workload.
+          flags:
+            -e, --entityGuid*=: the list of entity Guids composing the workload
+            -g, --guid!=: the GUID of the workload you want to update
+            -n, --name=: the name of the workload
+            -q, --entitySearchQuery*=: a list of search queries, combined using an OR operator
+            -s, --scopeAccountIds*=: accounts that will be used to get entities from
