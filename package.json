@@ -32,7 +32,7 @@
     "gh-stack": "https://github.com/github/gh-stack#v0.1.0",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.112.0",
     "glow": "https://github.com/charmbracelet/glow#v3.0.0",
-    "golangci-lint": "https://github.com/golangci/golangci-lint#v2.13.1",
+    "golangci-lint": "https://github.com/golangci/golangci-lint#v2.13.2",
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.18.0",
     "git-meta": "https://github.com/git-meta/git-meta#d5ad47dcd2935f0ca1836cef0cbab03ca1431190",
     "grit": "https://github.com/gitbutlerapp/grit#v0.5.0",
