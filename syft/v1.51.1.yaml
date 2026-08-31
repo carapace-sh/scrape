@@ -1,0 +1,120 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: syft [SOURCE]
+description: Generate an SBOM
+flags:
+    --base-path=: base directory for scanning, no links will be followed above this directory, and all paths will be reported relative to this directory
+    --catalogers&*=: enable one or more package catalogers
+    --enrich*=: 'enable package data enrichment from local and online sources (options: all, golang, java, javascript, python, vcpkg)'
+    --exclude*=: exclude paths from being scanned using a glob expression
+    --file=: file to write the default report output to (default is STDOUT)
+    --from*=: specify the source behavior to use (e.g. docker, registry, oci-dir, ...)
+    --override-default-catalogers*=: set the base set of catalogers to use (defaults to 'image' or 'directory' depending on the scan source)
+    --parallelism=: number of cataloger workers to run in parallel
+    --platform=: an optional platform specifier for container image sources (e.g. 'linux/arm64', 'linux/arm64/v8', 'arm64', 'linux')
+    --select-catalogers*=: add, remove, and filter the catalogers to be used
+    --source-name=: set the name of the target being analyzed
+    --source-supplier=: the organization that supplied the component, which often may be the manufacturer, distributor, or repackager
+    --source-version=: set the version of the target being analyzed
+    -o, --output*=: report output format (<format>=<file> to output to a file), formats=[cyclonedx-json cyclonedx-xml github-json purls spdx-json spdx-tag-value syft-json syft-table syft-text template]
+    -s, --scope=: selection of layers to catalog, options=[squashed all-layers deep-squashed]
+    -t, --template=: specify the path to a Go template file
+persistentflags:
+    --profile*=: configuration profiles to use
+    -c, --config*=: syft configuration file(s) to use
+    -q, --quiet: suppress all logging output
+    -v, --verbose*: increase verbosity (-v = info, -vv = debug)
+commands:
+    - name: attest --output [FORMAT] <IMAGE>
+      description: Generate an SBOM as an attestation for the given [SOURCE] container image
+      flags:
+        --base-path=: base directory for scanning, no links will be followed above this directory, and all paths will be reported relative to this directory
+        --catalogers&*=: enable one or more package catalogers
+        --enrich*=: 'enable package data enrichment from local and online sources (options: all, golang, java, javascript, python, vcpkg)'
+        --exclude*=: exclude paths from being scanned using a glob expression
+        --from*=: specify the source behavior to use (e.g. docker, registry, oci-dir, ...)
+        --override-default-catalogers*=: set the base set of catalogers to use (defaults to 'image' or 'directory' depending on the scan source)
+        --parallelism=: number of cataloger workers to run in parallel
+        --platform=: an optional platform specifier for container image sources (e.g. 'linux/arm64', 'linux/arm64/v8', 'arm64', 'linux')
+        --select-catalogers*=: add, remove, and filter the catalogers to be used
+        --source-name=: set the name of the target being analyzed
+        --source-supplier=: the organization that supplied the component, which often may be the manufacturer, distributor, or repackager
+        --source-version=: set the version of the target being analyzed
+        -k, --key=: the key to use for the attestation
+        -o, --output*=: report output format (<format>=<file> to output to a file), formats=[cyclonedx-json cyclonedx-xml github-json purls spdx-json spdx-tag-value syft-json syft-table syft-text template]
+        -s, --scope=: selection of layers to catalog, options=[squashed all-layers deep-squashed]
+    - name: cataloger
+      description: Show available catalogers and configuration
+      commands:
+        - name: list [OPTIONS]
+          description: List available catalogers
+          flags:
+            --catalogers&*=: enable one or more package catalogers
+            --override-default-catalogers*=: set the base set of catalogers to use (defaults to 'image' or 'directory' depending on the scan source)
+            --select-catalogers*=: add, remove, and filter the catalogers to be used
+            -o, --output=: 'format to output the cataloger list (available: table, json)'
+            -s, --show-hidden: show catalogers that have been de-selected
+    - name: completion
+      description: Generate the autocompletion script for the specified shell
+      commands:
+        - name: bash
+          description: Generate the autocompletion script for bash
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: fish
+          description: Generate the autocompletion script for fish
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: powershell
+          description: Generate the autocompletion script for powershell
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: zsh
+          description: Generate the autocompletion script for zsh
+          flags:
+            --no-descriptions: disable completion descriptions
+    - name: config
+      description: show the syft configuration
+      flags:
+        --load: load and validate the syft configuration
+      commands:
+        - name: locations
+          description: shows all locations and the order in which syft will look for a configuration file
+          flags:
+            --all: include every file extension supported
+    - name: convert [SOURCE-SBOM] -o [FORMAT]
+      description: Convert between SBOM formats
+      flags:
+        --file=: file to write the default report output to (default is STDOUT)
+        -o, --output*=: report output format (<format>=<file> to output to a file), formats=[cyclonedx-json cyclonedx-xml github-json purls spdx-json spdx-tag-value syft-json syft-table syft-text template]
+        -t, --template=: specify the path to a Go template file
+    - name: help [command]
+      description: Help about any command
+    - name: login [OPTIONS] [SERVER]
+      description: Log in to a registry
+      flags:
+        --password-stdin: Take the password from stdin
+        -p, --password=: Password
+        -u, --username=: Username
+    - name: scan [SOURCE]
+      description: Generate an SBOM
+      flags:
+        --base-path=: base directory for scanning, no links will be followed above this directory, and all paths will be reported relative to this directory
+        --catalogers&*=: enable one or more package catalogers
+        --enrich*=: 'enable package data enrichment from local and online sources (options: all, golang, java, javascript, python, vcpkg)'
+        --exclude*=: exclude paths from being scanned using a glob expression
+        --file=: file to write the default report output to (default is STDOUT)
+        --from*=: specify the source behavior to use (e.g. docker, registry, oci-dir, ...)
+        --override-default-catalogers*=: set the base set of catalogers to use (defaults to 'image' or 'directory' depending on the scan source)
+        --parallelism=: number of cataloger workers to run in parallel
+        --platform=: an optional platform specifier for container image sources (e.g. 'linux/arm64', 'linux/arm64/v8', 'arm64', 'linux')
+        --select-catalogers*=: add, remove, and filter the catalogers to be used
+        --source-name=: set the name of the target being analyzed
+        --source-supplier=: the organization that supplied the component, which often may be the manufacturer, distributor, or repackager
+        --source-version=: set the version of the target being analyzed
+        -o, --output*=: report output format (<format>=<file> to output to a file), formats=[cyclonedx-json cyclonedx-xml github-json purls spdx-json spdx-tag-value syft-json syft-table syft-text template]
+        -s, --scope=: selection of layers to catalog, options=[squashed all-layers deep-squashed]
+        -t, --template=: specify the path to a Go template file
+    - name: version
+      description: show version information
+      flags:
+        -o, --output=: 'the format to show the results (allowable: [text json])'
