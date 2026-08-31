@@ -66,7 +66,7 @@
     "rustup": "https://github.com/rust-lang/rustup#1.29.0",
     "scc": "https://github.com/boyter/scc#v4.0.0",
     "sd": "https://github.com/chmln/sd#v1.1.0",
-    "syft": "https://github.com/anchore/syft#v1.51.0",
+    "syft": "https://github.com/anchore/syft#v1.51.1",
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
     "task": "https://github.com/go-task/task#v3.53.1",
     "tsh": "https://github.com/gravitational/teleport#v18.10.7",
