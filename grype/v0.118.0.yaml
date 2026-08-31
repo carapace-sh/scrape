@@ -1,0 +1,108 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: grype [IMAGE]
+description: A vulnerability scanner for container images, filesystems, and SBOMs
+flags:
+    --add-cpes-if-none: generate CPEs for packages with no CPE data
+    --by-cve: orient results by CVE instead of the original vulnerability ID when possible
+    --distro=: 'distro to match against in the format: <distro>[-:@]<version>'
+    --exclude*=: exclude paths from being scanned using a glob expression
+    --file=: file to write the default report output to (default is STDOUT)
+    --from*=: specify the source behavior to use (e.g. docker, registry, podman, oci-dir, ...)
+    --ignore-states=: ignore matches for vulnerabilities with specified comma separated fix states, options=[fixed not-fixed unknown wont-fix]
+    --name=: set the name of the target being analyzed
+    --only-fixed: ignore matches for vulnerabilities that are not fixed
+    --only-notfixed: ignore matches for vulnerabilities that are fixed
+    --platform=: an optional platform specifier for container image sources (e.g. 'linux/arm64', 'linux/arm64/v8', 'arm64', 'linux')
+    --show-suppressed: show suppressed/ignored vulnerabilities in the output (only supported with table output format)
+    --sort-by=: sort the match results with the given strategy, options=[package severity epss risk kev vulnerability]
+    --vex*=: a list of VEX documents to consider when producing scanning results
+    -f, --fail-on=: set the return code to 2 if a vulnerability is found with a severity >= the given severity, options=[negligible low medium high critical]
+    -o, --output*=: report output formatter, formats=[json table cyclonedx cyclonedx-json sarif template], deprecated formats=[embedded-cyclonedx-vex-json embedded-cyclonedx-vex-xml]
+    -s, --scope=: selection of layers to analyze, options=[squashed all-layers deep-squashed]
+    -t, --template=: specify the path to a Go template file (requires 'template' output to be selected)
+persistentflags:
+    --profile*=: configuration profiles to use
+    -c, --config*=: grype configuration file(s) to use
+    -q, --quiet: suppress all logging output
+    -v, --verbose*: increase verbosity (-v = info, -vv = debug)
+commands:
+    - name: completion [bash|zsh|fish]
+      description: Generate a shell completion for Grype (listing local docker images)
+    - name: config
+      description: show the grype configuration
+      flags:
+        --load: load and validate the grype configuration
+      commands:
+        - name: locations
+          description: shows all locations and the order in which grype will look for a configuration file
+          flags:
+            --all: include every file extension supported
+    - name: db
+      description: vulnerability database operations
+      commands:
+        - name: check
+          description: Check to see if there is a database update available
+          flags:
+            -o, --output=: format to display results (available=[text, json])
+        - name: delete
+          description: Delete the vulnerability database
+        - name: diff [flags] old_db_url_or_path [new_db_url_or_path]
+          description: Diff two databases, showing packages with added, removed, and modified vulnerability matches
+          flags:
+            --packages: only include packages
+            --vulns: only include vulnerabilities
+            -o, --output=: format to display results (available=[text, json])
+        - name: import FILE | URL
+          description: Import a vulnerability database or archive from a local file or URL
+        - name: list
+          description: List all DBs available according to the listing URL
+          flags:
+            -o, --output=: format to display results (available=[text, raw, json])
+        - name: providers
+          description: List vulnerability providers that are in the database
+          flags:
+            -o, --output=: format to display results (available=[table, json])
+        - name: search
+          description: Search the DB for vulnerabilities or affected packages
+          flags:
+            --broad-cpe-matching: allow for specific package CPE attributes to match with '*' values on the vulnerability
+            --distro*=: 'refine to results with the given operating system (format: ''name'', ''name[-:@]version'', ''name[-:@]maj.min'', ''name[-:@]codename'')'
+            --ecosystem=: ecosystem of the package to search within
+            --fixed-state*=: only show vulnerabilities with the given fix state (fixed, not-fixed, unknown, wont-fix)
+            --limit=: limit the number of results returned, use 0 for no limit
+            --modified-after=: 'only show vulnerabilities originally published or modified since the given date (format: YYYY-MM-DD)'
+            --pkg*=: package name/CPE/PURL to search for
+            --provider*=: only show vulnerabilities from the given provider
+            --published-after=: 'only show vulnerabilities originally published after the given date (format: YYYY-MM-DD)'
+            --vuln*=: only show results for the given vulnerability ID
+            -o, --output=: format to display results (available=[table, json])
+          commands:
+            - name: vuln ID...
+              aliases:
+                - vulnerability
+                - vulnerabilities
+                - vulns
+              description: Search for vulnerabilities within the DB (supports DB schema v6+ only)
+              flags:
+                --fixed-state*=: only show vulnerabilities with the given fix state (fixed, not-fixed, unknown, wont-fix)
+                --limit=: limit the number of results returned, use 0 for no limit
+                --modified-after=: 'only show vulnerabilities originally published or modified since the given date (format: YYYY-MM-DD)'
+                --provider*=: only show vulnerabilities from the given provider
+                --published-after=: 'only show vulnerabilities originally published after the given date (format: YYYY-MM-DD)'
+                -o, --output=: format to display results (available=[table, json])
+        - name: status
+          description: Display database status and metadata
+          flags:
+            -o, --output=: format to display results (available=[text, json])
+        - name: update
+          description: Download and install the latest vulnerability database
+    - name: explain --id [VULNERABILITY ID]
+      description: Ask grype to explain a set of findings
+      flags:
+        --id*=: CVE IDs to explain
+    - name: help [command]
+      description: Help about any command
+    - name: version
+      description: show version information
+      flags:
+        -o, --output=: 'the format to show the results (allowable: [text json])'
