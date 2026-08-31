@@ -12,7 +12,7 @@
     "chezmoi": "https://github.com/twpayne/chezmoi#v2.72.0",
     "circleci": "https://github.com/CircleCI-Public/circleci-cli#v1.0.48692",
     "csview": "https://github.com/wfxr/csview#v1.3.4",
-    "crush": "https://github.com/charmbracelet/crush#v0.91.0",
+    "crush": "https://github.com/charmbracelet/crush#v0.91.2",
     "dagger": "https://github.com/dagger/dagger#v0.21.8",
     "delta": "https://github.com/dandavison/delta#0.19.2",
     "devbox": "https://github.com/jetify-com/devbox#0.18.0",
