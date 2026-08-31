@@ -69,7 +69,7 @@
     "syft": "https://github.com/anchore/syft#v1.51.0",
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
     "task": "https://github.com/go-task/task#v3.53.1",
-    "tsh": "https://github.com/gravitational/teleport#v18.10.7",
+    "tsh": "https://github.com/gravitational/teleport#v18.11.0",
     "vhs": "https://github.com/charmbracelet/vhs#v0.11.0",
     "vivid": "https://github.com/sharkdp/vivid#v0.11.1",
     "watchexec": "https://github.com/watchexec/watchexec#v2.7.0",
