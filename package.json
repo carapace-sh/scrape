@@ -49,7 +49,7 @@
     "k3d": "https://github.com/k3d-io/k3d#v5.9.0",
     "kak-lsp": "https://github.com/kak-lsp/kak-lsp#v21.0.2",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.37.0",
-    "kubectl": "https://github.com/kubernetes/kubernetes#v1.36.4",
+    "kubectl": "https://github.com/kubernetes/kubernetes#v1.37.0",
     "procs": "https://github.com/dalance/procs#v0.14.12",
     "qmk": "https://github.com/qmk/qmk_cli#1.2.0",
     "lore": "https://github.com/EpicGames/lore#v0.8.6",
