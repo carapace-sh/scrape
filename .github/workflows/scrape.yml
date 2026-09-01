@@ -66,6 +66,7 @@ jobs:
   ollama: {uses: ./.github/workflows/scrape-template.yml, with: {command: ollama}}
   openstack: {uses: ./.github/workflows/scrape-template.yml, with: {command: openstack}}
   pixi: {uses: ./.github/workflows/scrape-template.yml, with: {command: pixi}}
+  pnpm: {uses: ./.github/workflows/scrape-template.yml, with: {command: pnpm}}
   restic: {uses: ./.github/workflows/scrape-template.yml, with: {command: restic}}
   ripsecrets: {uses: ./.github/workflows/scrape-template.yml, with: {command: ripsecrets}}
   rustup: {uses: ./.github/workflows/scrape-template.yml, with: {command: rustup}}
