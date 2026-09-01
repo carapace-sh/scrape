@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "agg": "https://github.com/asciinema/agg#v1.9.0",
-    "atuin": "https://github.com/atuinsh/atuin#v18.19.0",
+    "atuin": "https://github.com/atuinsh/atuin#v18.20.1",
     "bat": "https://github.com/sharkdp/bat#v0.26.1",
     "bazel": "https://github.com/bazelbuild/bazel#9.2.0",
     "black": "https://github.com/psf/black#26.5.1",
