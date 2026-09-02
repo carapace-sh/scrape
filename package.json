@@ -6,7 +6,7 @@
     "bazel": "https://github.com/bazelbuild/bazel#9.2.0",
     "black": "https://github.com/psf/black#26.5.1",
     "buildctl": "https://github.com/moby/buildkit#v0.32.2",
-    "but": "https://github.com/gitbutlerapp/gitbutler#release/0.22.2",
+    "but": "https://github.com/gitbutlerapp/gitbutler#release/0.22.3",
     "cargo": "https://github.com/rust-lang/cargo#0.99.0",
     "charm": "https://github.com/charmbracelet/charm#v0.12.6",
     "chezmoi": "https://github.com/twpayne/chezmoi#v2.72.0",
