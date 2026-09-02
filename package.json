@@ -45,7 +45,7 @@
     "hyperfine": "https://github.com/sharkdp/hyperfine#v1.20.0",
     "jj": "https://github.com/jj-vcs/jj#v0.44.0",
     "just": "https://github.com/casey/just#1.58.0",
-    "kcl": "https://github.com/kcl-lang/cli#v0.12.8",
+    "kcl": "https://github.com/kcl-lang/cli#v0.12.9",
     "k3d": "https://github.com/k3d-io/k3d#v5.9.0",
     "kak-lsp": "https://github.com/kak-lsp/kak-lsp#v21.0.2",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.37.0",
