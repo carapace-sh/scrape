@@ -1,0 +1,193 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: kcl
+description: The KCL Command Line Interface (CLI).
+commands:
+    - name: clean
+      description: KCL clean tool
+      flags:
+        -y, --yes: Automatically say yes to prompts
+    - name: doc
+      aliases:
+        - d
+      description: KCL document tool
+      commands:
+        - name: generate
+          aliases:
+            - gen
+            - g
+          description: Generates documents from code and examples
+          flags:
+            --escape-html: Whether to escape html symbols when the output format is markdown. Always scape when the output format is html. Default to false.
+            --file-path=: |-
+                Relative or absolute path to the KCL package root when running kcl-doc command from
+                outside of the KCL package root directory.
+                If not specified, the current work directory will be used as the KCL package root.
+            --format=: 'The document format to generate. Supported values: markdown, html, openapi.'
+            --ignore-deprecated: Do not generate documentation for deprecated schemas.
+            --target=: If not specified, the current work directory will be used. A docs/ folder will be created under the target directory.
+            --template=: The template directory based on the KCL package root. If not specified, the built-in templates will be used.
+    - name: fmt
+      description: KCL format tool
+      flags:
+        --dry-run: Report files requiring formatting without modifying them.
+    - name: import
+      description: KCL import tool
+      flags:
+        -f, --force: Force overwrite output file
+        -i, --identifier=: Assign the imported data to this top-level KCL name (e.g. 'myData = { ... }'). Only applies to data modes (json, yaml, toml).
+        -m, --mode=: Specify the import mode. Default is mode
+        -o, --output=: Specify the output file path
+        -p, --package=: The package to save the models. Default is models
+        -s, --skip-validation: Skips validation of spec prior to generation
+    - name: lint
+      description: Lint KCL codes.
+      flags:
+        --format=: Specify the output format (yaml, json, toml, xml)
+        --git=: Specify the KCL module git url
+        --no_style: Set to prohibit output of command line waiting styles, including colors, etc.
+        --oci=: Specify the KCL module oci url
+        -D, --argument*=: Specify the top-level argument
+        -E, --external*=: Specify the mapping of package name and path where the package is located
+        -H, --show_hidden: Display hidden attributes
+        -O, --overrides*=: Specify the configuration override path and value
+        -S, --path_selector*=: Specify the path selectors
+        -V, --vendor: Run in vendor mode
+        -Y, --setting*=: Specify the command line setting files
+        -b, --branch=: Specify the branch for the Git artifact
+        -c, --commit=: Specify the commit for the Git artifact
+        -d, --debug: Run in debug mode
+        -k, --sort_keys: Sort output result keys
+        -n, --disable_none: Disable dumping None values
+        -o, --output=: Specify the YAML/JSON output file path
+        -q, --quiet: Set the quiet mode (no output)
+        -r, --strict_range_check: Do perform strict numeric range checks
+        -t, --tag=: Specify the tag for the OCI or Git artifact
+    - name: mod
+      description: KCL module management
+      persistentflags:
+        -q, --quiet: Set the quiet mode (no output)
+      commands:
+        - name: add
+          description: add new dependency
+          flags:
+            --branch=: git repository branch
+            --commit=: git repository commit
+            --git=: git repository url
+            --insecure-skip-tls-verify: skip tls certificate checks for the KCL module download
+            --no_sum_check: do not check the checksum of the package and update kcl.mod.lock
+            --oci=: oci repository url
+            --path=: filesystem path to local dependency to add
+            --rename=: rename the dependency
+            --tag=: git or oci repository tag
+        - name: graph
+          description: prints dependencies
+          flags:
+            --insecure-skip-tls-verify: skip tls certificate checks for the KCL module download
+        - name: init
+          description: initialize new module in current directory
+          flags:
+            --version=: init module version
+        - name: metadata
+          description: output the resolved dependencies of a package
+          flags:
+            --insecure-skip-tls-verify: skip tls certificate checks for the KCL module download
+            --update: 'check the local package and update and download the local package. (default: false)'
+            --vendor: 'run in vendor mode (default: false)'
+        - name: pkg
+          description: package a kcl package into tar
+          flags:
+            --target=: packaged target path
+            --vendor: 'package in vendor mode (default: false)'
+        - name: pull
+          description: pull kcl package from the registry
+          flags:
+            --branch=: git repository branch
+            --commit=: git repository commit
+            --git=: git repository url
+            --insecure-skip-tls-verify: skip tls certificate checks for the KCL module download
+            --oci=: oci repository url
+            --tag=: git or oci repository tag
+        - name: push
+          description: push kcl package to the registry
+          flags:
+            --force: force push the package to the registry
+            --insecure-skip-tls-verify: skip tls certificate checks for the KCL module download
+            --tar_path=: packaged target path that will be pushed
+            --vendor: 'run in vendor mode (default: false)'
+        - name: update
+          description: updates dependencies
+          flags:
+            --insecure-skip-tls-verify: skip tls certificate checks for the KCL module download
+            --no_sum_check: do not check the checksum of the package and update kcl.mod.lock
+    - name: registry
+      aliases:
+        - reg
+        - r
+      description: KCL registry management
+      persistentflags:
+        -q, --quiet: Set the quiet mode (no output)
+      commands:
+        - name: login
+          description: login to a registry
+          flags:
+            --insecure-skip-tls-verify: skip tls verification
+            --password-stdin: password from stdin
+            -p, --password=: registry password or identity token
+            -u, --username=: registry username
+        - name: logout
+          description: logout from a registry
+    - name: run
+      aliases:
+        - r
+      description: Run KCL codes.
+      flags:
+        --format=: Specify the output format (yaml, json, toml, xml)
+        --git=: Specify the KCL module git url
+        --no_style: Set to prohibit output of command line waiting styles, including colors, etc.
+        --oci=: Specify the KCL module oci url
+        -D, --argument*=: Specify the top-level argument
+        -E, --external*=: Specify the mapping of package name and path where the package is located
+        -H, --show_hidden: Display hidden attributes
+        -O, --overrides*=: Specify the configuration override path and value
+        -S, --path_selector*=: Specify the path selectors
+        -V, --vendor: Run in vendor mode
+        -Y, --setting*=: Specify the command line setting files
+        -b, --branch=: Specify the branch for the Git artifact
+        -c, --commit=: Specify the commit for the Git artifact
+        -d, --debug: Run in debug mode
+        -k, --sort_keys: Sort output result keys
+        -n, --disable_none: Disable dumping None values
+        -o, --output=: Specify the YAML/JSON output file path
+        -q, --quiet: Set the quiet mode (no output)
+        -r, --strict_range_check: Do perform strict numeric range checks
+        -t, --tag=: Specify the tag for the OCI or Git artifact
+    - name: server
+      description: Run a KCL server
+      flags:
+        --http=: set listen address
+        -n, --proc=: set max process count
+    - name: test
+      aliases:
+        - t
+      description: KCL test tool
+      flags:
+        --fail-fast: Exist when meet the first fail test case in the test process.
+        --no_style: Set to prohibit output of command line waiting styles, including colors, etc.
+        --run=: If specified, only run tests containing this string in their names.
+        -D, --argument*=: Specify the top-level argument
+        -E, --external*=: Specify the mapping of package name and path where the package is located
+        -O, --overrides*=: Specify the configuration override path and value
+        -V, --vendor: Run in vendor mode
+        -Y, --setting*=: Specify the command line setting files
+        -q, --quiet: Set the quiet mode (no output)
+        -r, --strict_range_check: Do perform strict numeric range checks
+    - name: version
+      description: Show version of the KCL CLI
+    - name: vet
+      description: KCL validation tool
+      flags:
+        --format=: Specify the validate data format. e.g., yaml, json. Default is json
+        --output=: Specify the output format. e.g., text, json. Default is text
+        -E, --external*=: Specify the mapping of package name and path where the package is located, e.g. my_pkg=./vendor/my_pkg
+        -a, --attribute_name=: Specify the validate config attribute name.
+        -s, --schema=: Specify the validate schema.
