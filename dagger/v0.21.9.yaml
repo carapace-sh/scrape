@@ -1,0 +1,312 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: dagger [options] [subcommand | file...]
+description: A tool to run composable workflows in containers
+flags:
+    --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+    --eager-runtime: load module runtime eagerly
+    --model=: LLM model to use (e.g., 'claude-sonnet-4-5', 'gpt-4.1')
+    -M, --no-mod: Don't automatically load a module (mutually exclusive with --mod)
+    -c, --command=: Execute a dagger shell command
+    -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+persistentflags:
+    --cloud&: Run in a Dagger Cloud Engine
+    --dot-focus-field&=: In dot output, filter out vertices that aren't this field or descendents of this field
+    --dot-output&=: If set, write the calls made during execution to a dot file at the given path before exiting
+    --dot-show-internal&: In dot output, if true then include calls and spans marked as internal
+    --interactive-command=: Change the default command for interactive mode
+    --lock=: Lock lookup mode (disabled, live, pinned, frozen). Defaults to disabled.
+    --progress=: Progress output format (auto, plain, tty, dots, logs)
+    --scale-out&: Enable scale-out to cloud engines for each check executed
+    --workdir&=: Set the working directory
+    --x-release=: Run an experimental release from a Dagger git ref
+    -E, --no-exit: Leave the TUI running after completion
+    -d, --debug: Show debug logs and full verbosity
+    -h, --help&: Print usage
+    -i, --interactive: Spawn a terminal on container exec failure
+    -q, --quiet*: Reduce verbosity (show progress, but clean up at the end)
+    -s, --silent: Do not show progress at all
+    -v, --verbose*: Increase verbosity (use -vv or -vvv for more)
+    -w, --web: Open trace URL in a web browser
+    -y, --auto-apply: Automatically apply changes when a changeset is returned
+commands:
+    - name: call [options]
+      description: Call one or more functions, interconnected into a pipeline
+      group: module
+      persistentflags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --eager-runtime: load module runtime eagerly
+        -M, --no-mod: Don't automatically load a module (mutually exclusive with --mod)
+        -j, --json: Present result as JSON
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+        -o, --output=: Save the result to a local file or directory
+    - name: check [options] [pattern...]
+      aliases:
+        - checks
+      description: Check the state of your project by running tests, linters, etc.
+      hidden: true
+      flags:
+        --failfast: Cancel remaining checks on first failure
+        --generate: Only run generate-as-checks, skip annotated check functions
+        --no-generate: Only run annotated check functions, skip generate-as-checks
+        -l, --list: List available checks
+      persistentflags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --eager-runtime: load module runtime eagerly
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: client
+      description: Access Dagger client subcommands
+      hidden: true
+      commands:
+        - name: install [options] generator [path]
+          aliases:
+            - use
+          description: Generate a new Dagger client from the Dagger module
+        - name: list
+          description: List all Dagger clients installed in the current module
+          flags:
+            --json: Output the list of available clients in JSON format
+        - name: uninstall [path]
+          description: Remove a Dagger client from the module
+        - name: update [<client>...]
+          description: Update one or more dagger clients in the current module
+    - name: completion
+      description: Generate the autocompletion script for the specified shell
+      commands:
+        - name: bash
+          description: Generate the autocompletion script for bash
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: fish
+          description: Generate the autocompletion script for fish
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: powershell
+          description: Generate the autocompletion script for powershell
+          flags:
+            --no-descriptions: disable completion descriptions
+        - name: zsh
+          description: Generate the autocompletion script for zsh
+          flags:
+            --no-descriptions: disable completion descriptions
+    - name: config [options]
+      description: Get or set module configuration
+      group: module
+      persistentflags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --eager-runtime: load module runtime eagerly
+        --json: output in JSON format
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: core [options]
+      description: Call a core function
+      group: module
+      persistentflags:
+        -j, --json: Present result as JSON
+        -o, --output=: Save the result to a local file or directory
+    - name: develop [options]
+      description: Prepare a local module for development
+      group: module
+      flags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --compat?: Engine API version to target
+        --eager-runtime: load module runtime eagerly
+        --license=: License identifier to generate. See https://spdx.org/licenses/
+        --sdk=: Install the given Dagger SDK. Can be builtin (go, python, typescript) or a module address
+        --source=: Source directory used by the installed SDK. Defaults to module root
+        --with-self-calls: Enable self-calls capability for the module (experimental)
+        --without-self-calls: Disable self-calls capability for the module
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+        -r, --recursive: Develop recursively into local dependencies
+    - name: functions [options] [function]...
+      description: List available functions
+      group: module
+      persistentflags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --eager-runtime: load module runtime eagerly
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: gen [options] <file>
+      description: Generate CLI reference documentation
+      hidden: true
+      flags:
+        --frontmatter=: Prepend content to beginning of generated file
+        --include-experimental: Show experimental commands in the generated documentation
+        -o, --output=: Save to file
+    - name: generate [options] [pattern...]
+      description: Generate assets of your project
+      hidden: true
+      flags:
+        -l, --list: List available generators
+    - name: help [command]
+      description: Help about any command
+    - name: init [options] [path]
+      description: Initialize a new module
+      group: module
+      flags:
+        --blueprint=: Reference another module as blueprint
+        --include*=: Paths to include when loading the module. Only needed when extra paths are required to build the module. They are expected to be relative to the directory containing the module's dagger.json file (the module source root).
+        --license=: License identifier to generate. See https://spdx.org/licenses/
+        --name=: Name of the new module (defaults to parent directory name)
+        --sdk=: Optionally install a Dagger SDK
+        --source=: Source directory used by the installed SDK. Defaults to module root
+        --with-self-calls: Enable self-calls capability for the module (experimental)
+    - name: install [options] <module>
+      aliases:
+        - use
+      description: Install a dependency
+      group: module
+      flags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --compat=: Engine API version to target
+        --eager-runtime: load module runtime eagerly
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+        -n, --name=: Name to use for the dependency in the module. Defaults to the name of the module being installed.
+    - name: listen [options]
+      aliases:
+        - l
+      description: Starts the engine server
+      hidden: true
+      flags:
+        --allow-cors: allow Cross-Origin Resource Sharing (CORS) requests
+        --disable-host-read-write: disable host read/write access
+        --listen=: Listen on network address ADDR
+      persistentflags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --eager-runtime: load module runtime eagerly
+        -M, --no-mod: Don't automatically load a module (mutually exclusive with --mod)
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: lock
+      description: Manage workspace lockfiles
+      commands:
+        - name: update
+          description: Refresh workspace lock entries
+    - name: login [options] [org]
+      description: Log in to Dagger Cloud
+      group: cloud
+    - name: logout
+      description: Log out from Dagger Cloud
+      group: cloud
+    - name: mcp [options]
+      description: Expose a dagger module as an MCP server
+      hidden: true
+      persistentflags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --eager-runtime: load module runtime eagerly
+        --env-privileged: Expose the core API as tools
+        --sse-addr=: Address of the MCP SSE server (no SSE server if empty)
+        --stdio: Use standard input/output for communicating with the MCP server
+        -M, --no-mod: Don't automatically load a module (mutually exclusive with --mod)
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: publish [options]
+      description: Publish a Dagger module to the Daggerverse
+      group: module
+      hidden: true
+      flags:
+        -f, --force: Force publish even if the git repository is not clean
+        -m, --mod=: Module reference to publish, remote git repo (defaults to current directory)
+    - name: query [options] [operation]
+      aliases:
+        - q
+      description: Send API queries to a dagger engine
+      group: exec
+      flags:
+        --doc=: Read query from file (defaults to reading from stdin)
+        --var*=: List of query variables, in key=value format
+        --var-json=: Query variables in JSON format (overrides --var)
+      persistentflags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --eager-runtime: load module runtime eagerly
+        -M, --no-mod: Don't automatically load a module (mutually exclusive with --mod)
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: run [options] <command>...
+      aliases:
+        - r
+      description: Run a command in a Dagger session
+      group: exec
+      flags:
+        --cleanup-timeout=: max duration to wait between SIGTERM and SIGKILL on interrupt
+        --focus: Only show output for focused commands.
+        --load-workspace-modules&: load workspace modules
+    - name: session [options]
+      hidden: true
+      flags:
+        --label=: label that identifies the source of this session (e.g, --label 'dagger.io/sdk.name:python' --label 'dagger.io/sdk.version:0.5.2' --label 'dagger.io/sdk.async:true')
+        --load-workspace-modules: load workspace modules
+        --skip-workspace-modules: skip loading workspace modules
+        --version=: ""
+        -W, --workspace=: select the workspace to load
+    - name: shell [options] [file...]
+      description: Run an interactive dagger shell
+      hidden: true
+      flags:
+        --model=: LLM model to use (e.g., 'claude-sonnet-4-5', 'gpt-4.1')
+        -c, --command=: Execute a dagger shell command
+      persistentflags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --eager-runtime: load module runtime eagerly
+        -M, --no-mod: Don't automatically load a module (mutually exclusive with --mod)
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: toolchain
+      description: Manage toolchains
+      commands:
+        - name: install [options] <module>
+          description: Install a toolchain to the current module
+          flags:
+            --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+            --compat=: Engine API version to target
+            --eager-runtime: load module runtime eagerly
+            -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+            -n, --name=: Name to use for the toolchain in the module. Defaults to the name of the toolchain being installed.
+        - name: list [options]
+          description: List all toolchains
+          flags:
+            --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+            --eager-runtime: load module runtime eagerly
+            -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+        - name: uninstall [options] <toolchain>
+          description: Uninstall a toolchain
+          flags:
+            --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+            --compat=: Engine API version to target
+            --eager-runtime: load module runtime eagerly
+            -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+        - name: update [options] [<toolchain>...]
+          description: Update toolchains
+          flags:
+            --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+            --compat=: Engine API version to target
+            --eager-runtime: load module runtime eagerly
+            -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: trace [trace ID]
+      aliases:
+        - t
+      description: View a Dagger trace from Dagger Cloud.
+      group: cloud
+      hidden: true
+      flags:
+        --org=: Dagger Cloud org name (defaults to current org)
+    - name: uninstall [options] <module>
+      description: Uninstall a dependency
+      group: module
+      flags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --compat=: Engine API version to target
+        --eager-runtime: load module runtime eagerly
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: up [options] [pattern...]
+      description: Start services defined by the module and expose them on the host
+      hidden: true
+      flags:
+        -l, --list: List available services
+    - name: update [options] [<DEPENDENCY>...]
+      aliases:
+        - use
+      description: Update a module's dependencies
+      group: module
+      flags:
+        --allow-llm*=: List of URLs of remote modules allowed to access LLM APIs, or 'all' to bypass restrictions for the entire session
+        --compat=: Engine API version to target
+        --eager-runtime: load module runtime eagerly
+        -m, --mod=: Module reference to load, either a local path or a remote git repo (defaults to current directory)
+    - name: version
+      description: Print dagger version
+      flags:
+        --check: Check for updates
