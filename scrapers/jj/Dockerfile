@@ -7,7 +7,6 @@ ADD jj.patch /
 
 WORKDIR /jj
 RUN git apply ../jj.patch
-RUN cargo add --package jj-cli carapace_spec_clap
-RUN cargo install --path cli --root /usr
+RUN cargo install --locked --path cli --root /usr
 
 ENTRYPOINT ["jj"]

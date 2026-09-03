@@ -1,18 +1,42 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 2e60f27..d7817e9 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -31,6 +31,7 @@ assert_matches = "1.5.0"
+ async-trait = "0.1.89"
+ blake2 = "0.10.6"
+ bstr = { version = "1.12.1", features = ["serde"] }
++carapace_spec_clap = "1.2.3"
+ chrono = { version = "0.4.44", default-features = false, features = [
+     "std",
+     "clock",
+diff --git a/cli/Cargo.toml b/cli/Cargo.toml
+index a825b4f..46e1b15 100644
+--- a/cli/Cargo.toml
++++ b/cli/Cargo.toml
+@@ -65,6 +65,7 @@ harness = false
+ [dependencies]
+ ansi-to-tui = { workspace = true }
+ bstr = { workspace = true }
++carapace_spec_clap = { workspace = true }
+ chrono = { workspace = true }
+ clap = { workspace = true }
+ clap-markdown = { workspace = true }
 diff --git a/cli/src/commands/mod.rs b/cli/src/commands/mod.rs
-index 022577e60..1a7bbd4ea 100644
+index e2a55b8..79a81ea 100644
 --- a/cli/src/commands/mod.rs
 +++ b/cli/src/commands/mod.rs
-@@ -79,6 +79,9 @@ use crate::cli_util::CommandHelper;
- use crate::command_error::CommandError;
- use crate::complete;
- use crate::ui::Ui;
+@@ -77,6 +77,9 @@ use tracing::instrument;
+ 
+ use crate::cli_util::Args;
+ use crate::cli_util::CommandHelper;
 +use carapace_spec_clap::Spec;
 +use clap_complete::generate;
 +use std::io;
- 
- const STYLES: Styles = Styles::styled()
-     .header(AnsiColor::Yellow.on_default().bold())
-@@ -168,6 +171,11 @@ pub fn default_app() -> clap::Command {
+ use crate::command_error::CommandError;
+ use crate::complete;
+ use crate::ui::Ui;
+@@ -173,6 +176,10 @@ pub fn default_app() -> clap::Command {
  
  #[instrument(skip_all)]
  pub async fn run_command(ui: &mut Ui, command_helper: &CommandHelper) -> Result<(), CommandError> {
@@ -20,7 +44,6 @@ index 022577e60..1a7bbd4ea 100644
 +    if true {
 +        return Ok(());
 +    }
-+
      let subcommand = Command::from_arg_matches(command_helper.matches()).unwrap();
      match &subcommand {
          Command::Abandon(args) => abandon::cmd_abandon(ui, command_helper, args).await,
