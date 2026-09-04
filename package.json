@@ -52,7 +52,7 @@
     "kubectl": "https://github.com/kubernetes/kubernetes#v1.37.0",
     "procs": "https://github.com/dalance/procs#v0.14.12",
     "qmk": "https://github.com/qmk/qmk_cli#1.2.0",
-    "lore": "https://github.com/EpicGames/lore#v0.8.6",
+    "lore": "https://github.com/EpicGames/lore#v0.9.0",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.4",
     "minikube": "https://github.com/kubernetes/minikube#v1.38.1",
     "mise": "https://github.com/jdx/mise#v2025.10.21",
