@@ -64,7 +64,7 @@
     "pnpm": "https://github.com/pnpm/pnpm#v12.2.0",
     "restic": "https://github.com/restic/restic#v0.19.1",
     "ripsecrets": "https://github.com/sirwart/ripsecrets#v0.1.11",
-    "rustup": "https://github.com/rust-lang/rustup#1.29.0",
+    "rustup": "https://github.com/rust-lang/rustup#1.29.1",
     "scc": "https://github.com/boyter/scc#v4.0.0",
     "sd": "https://github.com/chmln/sd#v1.1.0",
     "syft": "https://github.com/anchore/syft#v1.51.1",
