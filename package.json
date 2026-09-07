@@ -18,7 +18,7 @@
     "devbox": "https://github.com/jetify-com/devbox#0.18.0",
     "dive": "https://github.com/wagoodman/dive#v0.13.1",
     "dlv": "https://github.com/go-delve/delve#v1.27.1",
-    "docker": "https://github.com/docker/cli#v29.7.2",
+    "docker": "https://github.com/docker/cli#v29.8.0",
     "docker-compose": "https://github.com/docker/compose#v5.5.0",
     "drift": "https://github.com/aymanbagabas/drift#v0.0.8",
     "eza": "https://github.com/eza-community/eza#v0.23.5",
