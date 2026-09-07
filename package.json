@@ -54,7 +54,7 @@
     "qmk": "https://github.com/qmk/qmk_cli#1.2.0",
     "lore": "https://github.com/EpicGames/lore#v0.9.0",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.4",
-    "minikube": "https://github.com/kubernetes/minikube#v1.38.1",
+    "minikube": "https://github.com/kubernetes/minikube#v1.39.0",
     "mise": "https://github.com/jdx/mise#v2025.10.21",
     "newrelic": "https://github.com/newrelic/newrelic-cli#v0.113.9",
     "nfpm": "https://github.com/goreleaser/nfpm#v2.47.0",
