@@ -1,0 +1,384 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: stack <command>
+description: Manage stacked branches and pull requests
+commands:
+  - name: add [branch]
+    description: Add a new branch on top of the current stack
+    group: stack
+    flags:
+      -A, --all: Stage all changes including untracked files
+      -m, --message=: Create a commit with this message
+      -u, --update: Stage changes to tracked files only
+    documentation:
+      command: |-
+        Add a new branch on top of the current stack.
+
+        When -m is omitted but -A or -u is used, your editor opens for the
+        commit message. When -m is provided without an explicit branch name,
+        the branch name is auto-generated from the commit message.
+  - name: alias [name]
+    description: Create a shell alias for gh stack
+    group: utils
+    flags:
+      --remove: Remove a previously created alias
+    documentation:
+      command: |-
+        Create a short command alias so you can run "gs [command]" instead of "gh stack [command]".
+
+        This installs a small wrapper script into ~/.local/bin/ that forwards all
+        arguments to "gh stack". The default alias name is "gs", but you can choose
+        any name by passing it as an argument.
+  - name: bottom
+    description: Check out the bottom branch of the stack (closest to the trunk)
+    group: nav
+    documentation:
+      command: |-
+        Check out the bottom branch of the stack (closest to the trunk).
+        Merged branches are automatically skipped.
+  - name: checkout [<stack-number> | <pr-number> | <pr-url> | <branch>]
+    description: Checkout a stack by stack number, PR number, PR URL, or branch name
+    group: stack
+    documentation:
+      command: |-
+        Check out a stack by stack number, pull request number, PR URL, or branch name.
+
+        A bare number is interpreted first as a stack number (the identifier shown in
+        the GitHub stack UI). If no stack has that number, it is then tried as a
+        locally tracked PR number, then a PR number whose stack is discovered from
+        GitHub, and finally a branch name.
+
+        When a PR number or PR URL is provided (e.g. 123 or
+        https://github.com/owner/repo/pull/123), the command first checks
+        local tracking. If the PR is not tracked locally, it queries the
+        GitHub API to discover the stack, fetches the branches, and sets up
+        the stack locally. If the stack already exists locally and matches,
+        it simply switches to the branch.
+
+        When a branch name is provided, the command first checks locally tracked
+        stacks. If the branch is not tracked locally, it looks for the branch on
+        remote stacks and pulls down the matching stack.
+
+        When run without arguments, first checks whether the current branch belongs
+        to a stack on remote that is not tracked locally, and offers to check
+        it out. Otherwise, it opens an interactive picker listing every stack available
+        to you — both the stacks tracked locally and the stacks that exist only on
+        GitHub — so you can search, filter, and check one out. Fully merged stacks are
+        omitted.
+  - name: down [n]
+    description: Check out a branch further down in the stack (closer to the trunk)
+    group: nav
+    documentation:
+      command: |-
+        Check out a branch further down in the stack (closer to the trunk).
+        Merged branches are automatically skipped.
+  - name: feedback [title]
+    description: Submit feedback for gh-stack
+    group: utils
+    documentation:
+      command: Opens a GitHub Discussion in the gh-stack repository to submit feedback. Optionally provide a title for the discussion post.
+  - name: init [branches...]
+    description: Initialize a new stack
+    group: stack
+    flags:
+      -a, --adopt&: 'Deprecated: existing branches are now adopted automatically'
+      -b, --base=: Trunk branch for stack (defaults to default branch)
+    documentation:
+      command: |-
+        Initialize a new stack of branches in the current repository.
+
+        You can pass multiple branch names to create a multi-layer stack in one
+        command. Existing branches are adopted automatically; missing branches are
+        created. By default, the first branch is based on the default branch, and
+        each subsequent branch is based on the previous one.
+
+        Use --base to specify a different trunk branch.
+  - name: link <stack-number | branch-or-pr> <branch-or-pr> [<branch-or-pr>...]
+    description: Link PRs into a stack on GitHub without local tracking
+    group: remote
+    flags:
+      --base=: Base branch for the bottom of the stack (defaults to the repository default branch)
+      --open: Mark new and existing PRs as ready for review
+      --remote=: Remote to push to (defaults to auto-detected remote)
+    documentation:
+      command: |-
+        Create or update a stack on GitHub from branch names, PR numbers, or PR URLs.
+
+        This command does not rely on gh-stack local tracking state. It is
+        designed for users who manage branches with external tools (e.g. jj,
+        Sapling, ghstack, git-town, etc...) and want to use GitHub stacked
+        PRs without adopting local stack tracking.
+
+        Arguments are provided in stack order (bottom to top). Each argument
+        can be a branch name, a PR number, or a PR URL (e.g.
+        https://github.com/owner/repo/pull/123). For numeric arguments, the
+        command first checks if a PR with that number exists; if not, it
+        treats the argument as a branch name. PR URLs are always resolved
+        as pull requests (never as branch names).
+
+        Branch arguments are automatically pushed to the remote before
+        creating or looking up PRs. For branches that already have open PRs,
+        those PRs are used. For branches without PRs, new PRs are created
+        automatically with the correct base branch chaining.
+
+        If the PRs are not yet in a stack, a new stack is created. If some of
+        the PRs are already in a stack, the existing stack is updated to include
+        the new PRs (existing PRs are never removed).
+
+        As a shortcut for growing an existing stack, pass a stack number as the
+        first argument (the number shown in the GitHub stack UI). The remaining
+        arguments are appended to the top of that stack, so you don't have to
+        re-list its current PRs. Arguments already in the stack are skipped;
+        arguments that belong to a different stack are rejected. Because stack and
+        PR numbers never overlap, a numeric first argument is treated as a stack
+        only when it matches an existing stack.
+  - name: merge [<stack-number> | <pr-number>]
+    description: Merge a stack of pull requests
+    group: remote
+    flags:
+      --merge: Merge with a merge commit
+      --merge-method=: 'Merge method to use: merge, squash, or rebase'
+      --rebase: Rebase and merge
+      --squash: Squash and merge
+      -y, --yes: Merge without prompting for confirmation
+    documentation:
+      command: |-
+        Merge some or all of a stack of pull requests using GitHub's atomic stack
+        merge. All members of the stack up to and including your chosen pull request are
+        merged into the base branch in a single, all-or-nothing operation: if any PR
+        cannot be merged, none are.
+
+        With no argument, the stack for the current branch is used. Pass a stack number
+        to merge a stack you don't have checked out, or a pull request number to merge
+        directly up to that PR. A bare number is treated first as a stack number, then
+        as a pull request number.
+
+        In an interactive terminal, a short wizard lets you choose how far up the stack
+        to merge (everything below your selection is always included), pick the merge
+        method, and confirm, then shows live progress. In a non-interactive terminal, or
+        with --yes, the whole stack (or everything up to the given PR) is merged without
+        prompting, using your last-used merge method unless one is specified.
+
+        Only basic pull request state is checked before merging (open and not a draft);
+        GitHub evaluates branch protection and repository rules when the merge runs, so
+        any such failure is reported back to you. Bypassing merge requirements is not
+        supported for stacks.
+
+        If the base branch uses a merge queue, the stack is added to the queue and merges
+        once the queue processes it; otherwise it is merged directly.
+  - name: modify
+    description: Interactively restructure a stack
+    group: stack
+    flags:
+      --abort: Abort the modify session and restore the stack to its pre-modify state
+      --continue: Continue after resolving conflicts
+    documentation:
+      command: |-
+        Open an interactive TUI to restructure the current stack.
+
+        Operations available:
+          • Drop branches from the stack
+          • Fold branches into adjacent branches
+          • Insert new branches into the stack
+          • Reorder branches
+          • Rename branches
+
+        All changes are staged in the TUI and applied together when you press Ctrl+S.
+        If your changes affect branches with pull requests, run 'gh stack submit'
+        afterward to push changes, update PRs, and recreate the stack on GitHub.
+  - name: push
+    description: Push active branches in the current stack to the remote
+    group: remote
+    flags:
+      --remote=: Remote to push to (defaults to auto-detected remote)
+    documentation:
+      command: |-
+        Push active branches in the current stack to the remote.
+
+        Uses explicit per-branch --force-with-lease checks. Updates are not atomic: a
+        branch may update even if another branch is rejected. Fix the rejected branch
+        and run the command again; branches already updated will be unchanged.
+        Merged and queued branches are automatically skipped.
+  - name: rebase [branch]
+    description: Rebase a stack of branches
+    group: remote
+    flags:
+      --abort: Abort rebase and restore all branches
+      --committer-date-is-author-date: Set the committer date to the author date during rebase
+      --continue: Continue rebase after resolving conflicts
+      --downstack: Only rebase branches from trunk to current branch
+      --no-trunk: Skip trunk — only rebase stack branches onto each other
+      --preserve-dates: Alias for --committer-date-is-author-date
+      --remote=: Remote to fetch from (defaults to auto-detected remote)
+      --upstack: Only rebase branches from current branch to top
+    documentation:
+      command: |-
+        Pull from remote and do a cascading rebase across the stack.
+
+        Ensures that each branch in the stack has the tip of the previous
+        layer in its commit history, rebasing if necessary.
+
+        Use --no-trunk to skip fetching and rebasing with the trunk branch.
+        Only the inter-branch rebases are performed (branch 2 onto branch 1,
+        branch 3 onto branch 2, etc.).
+  - name: submit
+    description: Create a stack of PRs on GitHub
+    group: remote
+    flags:
+      --auto: Use auto-generated PR titles without prompting
+      --open: Mark new and existing PRs as ready for review
+      --remote=: Remote to push to (defaults to auto-detected remote)
+    documentation:
+      command: |-
+        Push all branches and create or update a stack of PRs on GitHub.
+
+        In an interactive terminal, a single-screen editor opens. Every branch without a
+        PR is included by default; deselect any you don't want with the checkbox or ^x,
+        and draft each PR's title, description, and draft state, then submit them all at
+        once with Ctrl+S. Pass --auto (or run in a non-interactive terminal) to skip the
+        editor and use auto-generated titles.
+
+        If your branches already have open PRs but no stack on GitHub yet (for example,
+        after deleting the stack) and you deselect every new PR, press Ctrl+B (or click
+        the "STACK N PRs" button) to link the existing open PRs into a stack.
+
+        This command performs several steps:
+          1. Pushes all branches to the remote
+          2. Creates new PRs for the included branches
+          3. Updates base branches for existing PRs
+          4. Creates or updates the stack on GitHub
+
+        In the editor, new PRs default to ready for review; switch any to draft with the
+        "CREATE AS" toggle. With --auto, new PRs are created as drafts unless you pass
+        --open.
+  - name: switch
+    description: Interactively switch to another branch in the stack
+    group: nav
+    documentation:
+      command: |-
+        Show an interactive picker listing all branches in the current stack
+        and switch to the selected one.
+
+        Branches are displayed from top (furthest from trunk) to bottom (closest to
+        trunk) with their position number. Use the down/up arrow keys or j/k to
+        navigate and Enter to select.
+
+        To move one branch down or up without an interactive picker, use
+        'gh stack down' or 'gh stack up' instead.
+  - name: sync
+    description: Sync the current stack with the remote
+    group: remote
+    flags:
+      --prune: Delete local branches for merged PRs
+      --remote=: Remote to fetch from and push to (defaults to auto-detected remote)
+    documentation:
+      command: |-
+        Fetch, rebase, push, and sync PR state for the current stack.
+
+        This command performs a safe synchronization:
+
+          1. Fetches the latest changes from the remote
+          2. Reconciles the stack on GitHub with your local stack: pulls down
+             branches for any PRs added to the stack on GitHub, or prompts you to
+             resolve a divergence in an interactive terminal
+          3. Fast-forwards the trunk branch to match the remote
+          4. Cascade-rebases stack branches onto their updated parents
+          5. Pushes all branches atomically (using --force-with-lease --atomic)
+          6. Syncs PR state from GitHub
+          7. Links the stack's open PRs into a stack on GitHub (creating or updating
+             the remote stack object) when two or more PRs exist
+
+        If PRs have been added to the stack on GitHub, their branches are pulled
+        down and appended to your local stack so it mirrors the remote. A clean
+        "remote is ahead" update happens automatically without prompting. If the
+        local and remote stacks have diverged, sync prompts (in an interactive
+        terminal) to use the remote as the source of truth, delete the stack on
+        GitHub and recreate it later with sync/submit, or cancel. Cancelling — or a
+        divergence in a non-interactive terminal — aborts the sync without pushing
+        branches or updating PRs.
+
+        If a rebase conflict is detected, all branches are restored to their
+        original state and you are advised to run "gh stack rebase" to resolve
+        conflicts interactively.
+
+        Sync never opens pull requests — use "gh stack submit" for that. It only
+        links PRs that already exist. The final message reflects what happened:
+        "Stack synced" means the stack object on GitHub now matches your local
+        stack, while "Branches synced" means the branches were rebased and pushed
+        but no remote stack object was created or updated (for example, when fewer
+        than two PRs exist yet).
+
+        Use --prune to delete local branches for merged PRs. Stack metadata is
+        preserved so that rebase and display logic continue to work correctly.
+        If you are on a branch that would be pruned, your checkout is moved to
+        the first active branch in the stack, or the trunk if all are merged.
+  - name: top
+    description: Check out the top branch of the stack (furthest from the trunk)
+    group: nav
+    documentation:
+      command: |-
+        Check out the top branch of the stack (furthest from the trunk).
+        Merged branches are automatically skipped.
+  - name: trunk
+    description: Check out the trunk branch of the stack
+    group: nav
+    documentation:
+      command: |-
+        Check out the trunk branch of the current stack.
+
+        The trunk is the base branch that the stack is built on (e.g., main or develop).
+        You must be on a branch that is part of a stack.
+  - name: unstack [<stack-number>]
+    aliases:
+      - delete
+    description: Remove a stack locally and on GitHub
+    group: stack
+    flags:
+      --local: Only delete the stack locally
+    documentation:
+      command: |-
+        Remove a stack from local tracking and unstack it on GitHub.
+
+        With no argument, the active stack (the one containing the currently checked out
+        branch) is unstacked on GitHub and removed from local tracking.
+
+        Provide a stack number (the identifier shown in the GitHub stack UI) to
+        unstack a specific stack on GitHub. This works from anywhere in the repository,
+        whether or not the stack is checked out locally — the number is unstacked
+        directly through the GitHub API. If the stack is also available locally, its
+        local tracking is removed as well.
+
+        Use --local to only remove local tracking without touching remote (GitHub).
+
+        GitHub decides which pull requests can be unstacked: PRs that are queued for
+        merge or have auto-merge enabled are left stacked. When some pull requests
+        remain stacked, the stack is kept (and local tracking, if any, is unchanged).
+  - name: up [n]
+    description: Check out a branch further up in the stack (further from the trunk)
+    group: nav
+    documentation:
+      command: |-
+        Check out a branch further up in the stack (further from the trunk).
+        Merged branches are automatically skipped.
+  - name: view
+    description: View the current stack
+    group: stack
+    flags:
+      --json: Output stack data as JSON
+      -s, --short: Show compact output
+    documentation:
+      command: |-
+        View the current stack as a list showing branches and PR status.
+
+        Status icons:
+          ✓  PR merged
+          ◎  PR queued
+          ○  PR open
+          ⚠  Needs rebase
+
+        The current branch is highlighted. Use --short for a compact one-line-per-branch
+        view, or --json for machine-readable output.
+documentation:
+  command: |-
+    Stacked PRs let you break a large change into a chain of pull requests
+    that build on each other. Use `gh stack` to create and manage your stack
+    locally, then push to GitHub to create your stack of PRs.
