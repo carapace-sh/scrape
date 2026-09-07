@@ -1,0 +1,4389 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: pnpm
+description: Experimental package manager for node.js
+flags:
+  -h, --help: Print help (see more with '--help')
+  --if-present&: Don't fail when the named script is undefined
+  -v, --version: Print the pnpm version
+persistentflags:
+  --aggregate-output: Hold each script's streamed output until the script exits, then print it as one block
+  --bail&: Stop a recursive command after the first failure
+  --changed-files-ignore-pattern=*: Glob patterns of changed files that the `[since]` `--filter` selector should ignore
+  --color?: Force colored output
+  -C, --dir=:
+    description: Set working directory. Accepted anywhere on the command line, before or after the subcommand, like every other rc-option
+    default: .
+  --prefix=&:
+    description: Set working directory. Accepted anywhere on the command line, before or after the subcommand, like every other rc-option
+    default: .
+  --fail-if-no-match: Exit with code 1 when the `--filter` / `--filter-prod` selectors match no workspace project
+  -F, --filter=*: Select which workspace projects to run on. Repeat to add more. Each selector can be a name pattern (`@scope/*`), a path (`./pkg`), a dependency query (`foo...`), an exclusion (`!bar`), a directory (`{dir}`), or a changed-since query (`[since]`)
+  --filter-prod=*: Like `--filter`, but follow only production dependencies when selecting projects
+  --http-proxy=: Proxy for HTTP registry and tarball requests
+  --https-proxy=: Proxy for HTTPS registry and tarball requests
+  --ignore-workspace: Run as if the project were standalone, ignoring any `pnpm-workspace.yaml` above it
+  --include-workspace-root: Also run a recursive command on the root workspace project, which `run` / `exec` / `add` / `test` otherwise leave out
+  --loglevel=: 'What level of logs to print. Mirrors pnpm''s universal `--loglevel` option: `silent` selects the silent reporter over any `--reporter` choice; the other levels cap the default reporter''s output'
+  --no-bail&: 'Recursive only: keep going after a project fails'
+  --no-color&: Disable colored output
+  --no-include-workspace-root: 'Leave the root workspace project out of a recursive command, overriding an `includeWorkspaceRoot: true` setting'
+  --no-proxy=: Hosts that bypass configured proxies
+  --no-reporter-hide-prefix&: 'Prefix the streamed output of running scripts with the project it came from, overriding a `reporterHidePrefix: true` setting'
+  --no-reverse&: Process recursive workspace projects in their normal order
+  --no-sort: Run recursive workspace projects in workspace order
+  --npmrc-auth-file=: Path to an `.npmrc` to read auth settings from, overriding the default `~/.npmrc`
+  --userconfig=: Path to an `.npmrc` to read auth settings from, overriding the default `~/.npmrc`
+  --parallel: Run scripts in every selected workspace project concurrently, disregarding topological sorting
+  -r, --recursive: Run the command for every project in the workspace instead of only the project in `--dir`
+  --registry=: 'Base URL of the npm registry to resolve and fetch packages from. Universal rc-option: accepted on every command and layered onto the config like `--config.registry=<url>`. Commands that expose their own `--registry` still read the same value'
+  --report-summary&: 'Recursive only: write a `pnpm-exec-summary.json` execution report'
+  --reporter=:
+    description: Reporter output format
+    default: default
+  --reporter-hide-prefix&: Omit the project prefix from the streamed output of running scripts. A `run` / `exec` option pnpm accepts anywhere on the command line, like the recursive-run flags above
+  --resume-from&=: 'Recursive only: resume execution from the given package'
+  --reverse: Process recursive workspace projects in reverse order
+  --sort: Keep recursive workspace projects sorted topologically
+  --state-dir=: Directory in which pnpm persists machine-local state
+  --store-dir=: Directory in which the package store is created. Relative paths are resolved from the workspace root, or from `--dir` outside a workspace
+  --store=&: Directory in which the package store is created. Relative paths are resolved from the workspace root, or from `--dir` outside a workspace
+  --stream: Stream a recursive command's script output as it arrives, one prefixed line at a time
+  --test-pattern=*: Glob patterns naming test files, used by the `[since]` `--filter` selector to decide which changes count
+  --use-stderr: Divert the reporter's output to stderr, leaving stdout for the command's own result
+  --workspace-concurrency=: Maximum number of workspace projects to process in parallel
+  --workspace-packages=*: Glob patterns selecting the workspace's projects, overriding the `packages` field of `pnpm-workspace.yaml`. Repeat to add more
+  -w, --workspace-root: Run the command on the root workspace project
+  -y, --yes: Automatically answer yes to prompts
+completion:
+  flag:
+    dir:
+    - $files
+    prefix:
+    - $files
+    loglevel:
+    - silent
+    - error
+    - warn
+    - info
+    - debug
+    npmrc-auth-file:
+    - $files
+    userconfig:
+    - $files
+    reporter:
+    - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+    - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+    - "ndjson\tNewline-delimited JSON on stderr"
+    - "silent\tNo progress output"
+    state-dir:
+    - $files
+    store-dir:
+    - $files
+    store:
+    - $files
+documentation:
+  flag:
+    help: Print help (see a summary with '-h')
+commands:
+- name: access
+  description: Manage package access and visibility on the registry
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --json: Output results in JSON format
+    --otp=: One-time password for registries that require two-factor authentication
+    --registry=: The base URL of the npm registry
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: init
+  description: Initialize a package.json
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --init-package-manager: Pin the latest pnpm version in package.json, through "devEngines.packageManager" and "packageManager", and auto-download pnpm when it is missing
+    --init-type=: Set the module system for the package. Defaults to "module"
+    --no-init-package-manager: Scaffold the manifest without a pnpm version pin
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      init-type:
+      - commonjs
+      - module
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: recursive
+  aliases:
+  - multi
+  - m
+  description: Concurrently runs a command in all subdirectory projects
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: add
+  description: Add a package
+  flags:
+    --allow-build=*: Package names allowed to run lifecycle (build) scripts during this install, appended to `allowBuilds`. May be repeated
+    --config: Add the package as a configuration dependency
+    --cpu=*:
+      description: CPU architectures whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    --force: 'Reinstall every package the lockfile names: relink packages an earlier install already materialized, and install optional dependencies whose `cpu` / `os` / `libc` / `engines` don''t match the host instead of skipping them'
+    -g, --global: Install the package globally, linking its bins into the global bin directory
+    -h, --help: Print help (see more with '--help')
+    --ignore-pnpmfile: Disable pnpm hooks defined in `.pnpmfile.cjs`, including the pnpmfiles of config dependencies
+    --ignore-scripts: Don't run lifecycle scripts of the added package or its dependencies
+    --ignore-workspace-root-check: Permit adding dependencies to a multi-package workspace root without `-w`
+    --libc=*:
+      description: libc families whose platform-specific optional dependencies should be installed (`glibc`, `musl`). Repeat or comma-separate for multiple values
+      nargs: -1
+    --lockfile-dir=: The directory in which `pnpm-lock.yaml` is created. Several projects may share a single lockfile
+    --lockfile-only: Dependencies are not downloaded. Only `pnpm-lock.yaml` is updated
+    --no-ignore-scripts: Force-enable lifecycle scripts for this invocation
+    --no-ignore-workspace-root-check&: Keep the workspace-root safety check enabled
+    --no-optional: Exclude optionalDependencies while materializing the updated project
+    --no-save-peer: 'Don''t add the packages to peerDependencies, overriding a `savePeer: true` setting'
+    --optional: Include optionalDependencies while materializing the updated project
+    --os=*:
+      description: Operating systems whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    --save-catalog: Save the new dependency to the default catalog. Shorthand for `--save-catalog-name=default`
+    --save-catalog-name=: Save the new dependency to the named catalog `<name>`
+    -D, --save-dev: Install the specified packages as devDependencies
+    -E, --save-exact: Saved dependencies will be configured with an exact version rather than using the default semver range operator
+    -O, --save-optional: Install the specified packages as optionalDependencies
+    --save-peer: Using --save-peer will add one or more packages to peerDependencies and install them as dev dependencies
+    --save-prefix=: 'The prefix of the saved version range: `^` (default), `~`, `=` for an explicit exact pin, or empty for a bare exact version'
+    -P, --save-prod: Install the specified packages as regular dependencies
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      lockfile-dir:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: install
+  aliases:
+  - i
+  description: Install packages
+  flags:
+    --cpu=*:
+      description: CPU architectures whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    -D, --dev: Install only devDependencies. Regular dependencies are skipped, and removed if already installed, regardless of `NODE_ENV`
+    --dry-run: Show what an install would change without writing anything to disk
+    --fetch-min-speed-ki-bps=: Warn when a tarball download's average speed is below this many KiB/s
+    --fetch-timeout=: Per-request network timeout, in milliseconds
+    --fetch-warn-timeout-ms=: Warn when a registry metadata request takes longer than this many milliseconds
+    --fix-lockfile: Repair broken lockfile entries by re-resolving their metadata while preserving compatible locked versions
+    --force: 'Reinstall every package the lockfile names: relink packages an earlier install already materialized, and install optional dependencies whose `cpu` / `os` / `libc` / `engines` don''t match the host instead of skipping them'
+    --frozen-lockfile: Don't generate a lockfile, and fail if an update to it is needed. This setting is enabled by default in CI when a lockfile is present
+    --frozen-store: Open the store read-only and skip all store writes. For installing against a store on a read-only filesystem (e.g. a Nix store); pair with `--offline --frozen-lockfile`
+    -h, --help: Print help (see more with '--help')
+    --ignore-manifest-check: Skip the check that `pnpm-lock.yaml` is up to date with `package.json` under `--frozen-lockfile`. For callers that just wrote the lockfile themselves and know the manifest is about to catch up
+    --ignore-pnpmfile: Disable pnpm hooks defined in `.pnpmfile.cjs`, including the pnpmfiles of config dependencies
+    --ignore-scripts: Don't run lifecycle scripts of the project or its dependencies. Packages are still installed; only their build scripts are skipped, and the install won't fail because of it
+    --libc=*:
+      description: libc families whose platform-specific optional dependencies should be installed (`glibc`, `musl`). Repeat or comma-separate for multiple values
+      nargs: -1
+    --lockfile-dir=: The directory in which `pnpm-lock.yaml` is created. Several projects may share a single lockfile
+    --lockfile-only: Only update `pnpm-lock.yaml`. Don't download packages or write `node_modules`
+    --merge-git-branch-lockfiles: Fold every per-branch lockfile (`pnpm-lock.<branch>.yaml`, written under the `gitBranchLockfile` setting) into `pnpm-lock.yaml` and delete them
+    --merge-git-branch-lockfiles-branch-pattern=*: Glob patterns naming the branches that merge the per-branch lockfiles, so a mainline branch does not have to pass `--merge-git-branch-lockfiles` by hand
+    --network-concurrency=: Maximum number of concurrent network requests during install
+    --no-frozen-lockfile: 'Allow the lockfile to be updated, overriding a `frozenLockfile: true` setting'
+    --no-frozen-store: Allow store writes even when the configuration enables the read-only store
+    --no-ignore-scripts: Run lifecycle scripts even when the configuration disables them
+    --no-offline: Allow network fetches even when the configuration enables offline mode
+    --no-optional: Don't install optionalDependencies
+    --no-prefer-frozen-lockfile: Always re-resolve against the registry instead of preferring the existing lockfile
+    --no-prefer-offline: Don't prefer cached packages even when the configuration enables it
+    --no-runtime: Don't install runtime dependencies (`node`, `deno`, `bun`). Their archives aren't fetched and their bins aren't linked; the rest of the install proceeds normally
+    --no-trust-lockfile: Verify the lockfile against supply-chain policies even when the configuration trusts it
+    --node-linker=: 'Which node linker to use: `isolated` (the default, a symlinked store), `hoisted` (a flat `node_modules`), or `pnp` (Plug''n''Play). Overrides the configured value'
+    --offline: Fail on a cache miss instead of fetching from the registry, using only packages already in the store
+    --optional: Include optionalDependencies even when the configured default excludes them
+    --os=*:
+      description: Operating systems whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    --pnpr-server=: URL of a pnpr server to offload resolution and file fetching to. `node_modules` is still linked locally from the server-produced lockfile
+    --prefer-frozen-lockfile: Prefer the existing lockfile over re-resolving, even when the manifest may have changed
+    --prefer-offline: Prefer packages already in the cache over the network, even past their freshness window
+    -P, --prod: Install only production dependencies. devDependencies are skipped, and removed if already installed. Takes precedence over `NODE_ENV`
+    --production: Install only production dependencies. devDependencies are skipped, and removed if already installed. Takes precedence over `NODE_ENV`
+    --trust-lockfile: Skip verifying the lockfile against supply-chain policies
+    --update-checksums: Refresh the integrity checksums in `pnpm-lock.yaml` from the registry. Cannot be combined with `--frozen-lockfile`
+    --user-agent=: '`User-Agent` header to send on registry requests'
+    --verify-deps-before-run-install&: Run the install already requested by `verifyDepsBeforeRun` without independently short-circuiting it as up to date
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      lockfile-dir:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      node-linker:
+      - isolated
+      - hoisted
+      - pnp
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: install-test
+  aliases:
+  - it
+  description: Runs a `pnpm install` followed immediately by a `pnpm test`. It takes exactly the same arguments as `pnpm install`
+  flags:
+    --cpu=*:
+      description: CPU architectures whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    -D, --dev: Install only devDependencies. Regular dependencies are skipped, and removed if already installed, regardless of `NODE_ENV`
+    --dry-run: Show what an install would change without writing anything to disk
+    --fetch-min-speed-ki-bps=: Warn when a tarball download's average speed is below this many KiB/s
+    --fetch-timeout=: Per-request network timeout, in milliseconds
+    --fetch-warn-timeout-ms=: Warn when a registry metadata request takes longer than this many milliseconds
+    --fix-lockfile: Repair broken lockfile entries by re-resolving their metadata while preserving compatible locked versions
+    --force: 'Reinstall every package the lockfile names: relink packages an earlier install already materialized, and install optional dependencies whose `cpu` / `os` / `libc` / `engines` don''t match the host instead of skipping them'
+    --frozen-lockfile: Don't generate a lockfile, and fail if an update to it is needed. This setting is enabled by default in CI when a lockfile is present
+    --frozen-store: Open the store read-only and skip all store writes. For installing against a store on a read-only filesystem (e.g. a Nix store); pair with `--offline --frozen-lockfile`
+    -h, --help: Print help (see more with '--help')
+    --ignore-manifest-check: Skip the check that `pnpm-lock.yaml` is up to date with `package.json` under `--frozen-lockfile`. For callers that just wrote the lockfile themselves and know the manifest is about to catch up
+    --ignore-pnpmfile: Disable pnpm hooks defined in `.pnpmfile.cjs`, including the pnpmfiles of config dependencies
+    --ignore-scripts: Don't run lifecycle scripts of the project or its dependencies. Packages are still installed; only their build scripts are skipped, and the install won't fail because of it
+    --libc=*:
+      description: libc families whose platform-specific optional dependencies should be installed (`glibc`, `musl`). Repeat or comma-separate for multiple values
+      nargs: -1
+    --lockfile-dir=: The directory in which `pnpm-lock.yaml` is created. Several projects may share a single lockfile
+    --lockfile-only: Only update `pnpm-lock.yaml`. Don't download packages or write `node_modules`
+    --merge-git-branch-lockfiles: Fold every per-branch lockfile (`pnpm-lock.<branch>.yaml`, written under the `gitBranchLockfile` setting) into `pnpm-lock.yaml` and delete them
+    --merge-git-branch-lockfiles-branch-pattern=*: Glob patterns naming the branches that merge the per-branch lockfiles, so a mainline branch does not have to pass `--merge-git-branch-lockfiles` by hand
+    --network-concurrency=: Maximum number of concurrent network requests during install
+    --no-frozen-lockfile: 'Allow the lockfile to be updated, overriding a `frozenLockfile: true` setting'
+    --no-frozen-store: Allow store writes even when the configuration enables the read-only store
+    --no-ignore-scripts: Run lifecycle scripts even when the configuration disables them
+    --no-offline: Allow network fetches even when the configuration enables offline mode
+    --no-optional: Don't install optionalDependencies
+    --no-prefer-frozen-lockfile: Always re-resolve against the registry instead of preferring the existing lockfile
+    --no-prefer-offline: Don't prefer cached packages even when the configuration enables it
+    --no-runtime: Don't install runtime dependencies (`node`, `deno`, `bun`). Their archives aren't fetched and their bins aren't linked; the rest of the install proceeds normally
+    --no-trust-lockfile: Verify the lockfile against supply-chain policies even when the configuration trusts it
+    --node-linker=: 'Which node linker to use: `isolated` (the default, a symlinked store), `hoisted` (a flat `node_modules`), or `pnp` (Plug''n''Play). Overrides the configured value'
+    --offline: Fail on a cache miss instead of fetching from the registry, using only packages already in the store
+    --optional: Include optionalDependencies even when the configured default excludes them
+    --os=*:
+      description: Operating systems whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    --pnpr-server=: URL of a pnpr server to offload resolution and file fetching to. `node_modules` is still linked locally from the server-produced lockfile
+    --prefer-frozen-lockfile: Prefer the existing lockfile over re-resolving, even when the manifest may have changed
+    --prefer-offline: Prefer packages already in the cache over the network, even past their freshness window
+    -P, --prod: Install only production dependencies. devDependencies are skipped, and removed if already installed. Takes precedence over `NODE_ENV`
+    --production: Install only production dependencies. devDependencies are skipped, and removed if already installed. Takes precedence over `NODE_ENV`
+    --trust-lockfile: Skip verifying the lockfile against supply-chain policies
+    --update-checksums: Refresh the integrity checksums in `pnpm-lock.yaml` from the registry. Cannot be combined with `--frozen-lockfile`
+    --user-agent=: '`User-Agent` header to send on registry requests'
+    --verify-deps-before-run-install&: Run the install already requested by `verifyDepsBeforeRun` without independently short-circuiting it as up to date
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      lockfile-dir:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      node-linker:
+      - isolated
+      - hoisted
+      - pnp
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: update
+  aliases:
+  - up
+  - upgrade
+  description: Update packages to their newest version based on the specified range
+  flags:
+    --changeset: Generate a changeset file declaring a patch bump for every workspace package whose production dependencies were changed by the update
+    --cpu=*:
+      description: CPU architectures whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    --depth=: How deep to inspect dependencies. `0` means top-level dependencies only. Defaults to unlimited
+    -D, --dev: Update packages only in "devDependencies"
+    -g, --global: Update globally installed packages
+    -h, --help: Print help (see more with '--help')
+    --ignore-pnpmfile: Disable pnpm hooks defined in `.pnpmfile.cjs`, including the pnpmfiles of config dependencies
+    --include-github-actions: Also update GitHub Actions dependencies in workflow and action files
+    -i, --interactive: Show outdated dependencies and select which ones to update
+    -L, --latest: 'Ignore version ranges in package.json: bump the matched packages to their latest version and rewrite the manifest ranges'
+    --libc=*:
+      description: libc families whose platform-specific optional dependencies should be installed (`glibc`, `musl`). Repeat or comma-separate for multiple values
+      nargs: -1
+    --lockfile-dir=: The directory in which `pnpm-lock.yaml` is created. Several projects may share a single lockfile
+    --lockfile-only: Dependencies are not downloaded; only `pnpm-lock.yaml` is updated
+    --no-changeset: Do not generate a changeset, even when `updateConfig.changeset` enables changeset generation by default
+    --no-optional: Don't update packages in "optionalDependencies"
+    --no-save: Do not write the updated ranges back to package.json. The lockfile is still updated (the `--no-save` flag)
+    --optional: Update packages only in "optionalDependencies"
+    --os=*:
+      description: Operating systems whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    --patches: Refresh registry revisions without changing package versions
+    --pnpr-server=: URL of a pnpr server to offload revision refresh resolution to
+    -P, --prod: Update packages only in "dependencies" and "optionalDependencies"
+    --production: Update packages only in "dependencies" and "optionalDependencies"
+    -E, --save-exact: Write the resolved version without a range operator when rewriting the manifest under `--latest`
+    --workspace: Tries to link all packages from the workspace, updating versions to match the workspace packages
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      lockfile-dir:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: outdated
+  description: Check for outdated package and GitHub Actions dependencies
+  flags:
+    --compatible: Print only versions that satisfy the ranges in package.json
+    -D, --dev: Check only "devDependencies"
+    --format=:
+      description: Output format
+      default: table
+    -g, --global: Check globally installed packages
+    -h, --help: Print help (see more with '--help')
+    --include-github-actions: Also check GitHub Actions dependencies in workflow and action files
+    --json: Shorthand for `--format json`
+    --long: Print details about the outdated packages (homepage, deprecation notice)
+    --no-optional: Don't check "optionalDependencies"
+    --no-table: Shorthand for `--format list`. Good for small consoles
+    --optional: Include "optionalDependencies"
+    -P, --prod: Check only "dependencies" and "optionalDependencies"
+    --production: Check only "dependencies" and "optionalDependencies"
+    --sort-by=: Sorting method. Currently only `name` is supported; the default sorts by the size of the version change, then by name
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      format:
+      - table
+      - list
+      - json
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      sort-by:
+      - name
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: audit
+  description: Checks for known security issues with the installed packages
+  flags:
+    --audit-level=: Only print advisories with severity greater than or equal to this level
+    -D, --dev: Only audit "devDependencies"
+    --fix=: 'Fix the audited vulnerabilities using the specified method: "override" or "update". "override" adds overrides to `pnpm-workspace.yaml` to force non-vulnerable versions; "update" re-resolves the lockfile to non-vulnerable versions. Defaults to "override" when no method is given'
+    -h, --help: Print help (see more with '--help')
+    --ignore=*: Ignore a vulnerability by its GitHub advisory ID (e.g. GHSA-xxxx-xxxx-xxxx). May be repeated
+    --ignore-registry-errors: Use exit code 0 if the registry responds with an error
+    --ignore-unfixable: Ignore all vulnerabilities for which no fix exists
+    -i, --interactive: Show vulnerabilities and select which ones to fix interactively
+    --json: Output audit report in JSON format
+    --no-optional: Don't audit "optionalDependencies"
+    --optional: Include "optionalDependencies"
+    -P, --prod: Only audit "dependencies" and "optionalDependencies"
+    --production: Only audit "dependencies" and "optionalDependencies"
+  completion:
+    flag:
+      audit-level:
+      - info
+      - low
+      - moderate
+      - high
+      - critical
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: change
+  description: 'Record a change intent: which packages a change affects, the bump type for each, and a summary that becomes the changelog entry'
+  flags:
+    --bump=: 'Bump type for the named packages: none, patch, minor, major. "none" records an explicit decline — the change needs no release'
+    -h, --help: Print help (see more with '--help')
+    --summary=: The summary for the changelog entry. Runs non-interactively when given together with package names
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: version
+  description: Apply the pending change intents (`pnpm version -r`)
+  flags:
+    --allow-same-version: Allow bumping to the same version
+    --dry-run: Print what the command would do without changing anything
+    -h, --help: Print help (see more with '--help')
+    --json: Show information in JSON format
+    --message=: Commit message. "%s" is replaced with the new version. Default is "%s"
+    --no-commit-hooks: Skip running git commit hooks when committing the version bump
+    --no-git-checks: Don't check if the working tree is clean
+    --no-git-tag-version: Don't create a commit or tag for the version bump. Git commits and tags are always skipped in recursive mode
+    --preid=: Sets the prerelease identifier (e.g. alpha, beta, rc)
+    --sign-git-tag: Sign the generated git tag with GPG
+    --tag-version-prefix=:
+      description: Sets the tag prefix. Default is "v". Set to empty string to remove the prefix
+      default: v
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: lane
+  description: Manage per-package release lanes
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: bugs
+  aliases:
+  - issues
+  description: Opens the bug tracker URL of a package in the default browser
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --registry=: ''
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: list
+  aliases:
+  - ls
+  description: List installed packages
+  flags:
+    --depth=:
+      description: Max display depth of the dependency tree. `0` lists direct dependencies only; `-1` lists projects only
+      default: '0'
+    -D, --dev: Display only the dependency graph for packages in `devDependencies`
+    --exclude-peers: Exclude peer dependencies
+    --find-by=*: Search by a finder function declared in `.pnpmfile.cjs`
+    -g, --global: ''
+    -h, --help: Print help (see more with '--help')
+    --json: Show information in JSON format
+    --lockfile-only: List packages from the lockfile only, without checking `node_modules`
+    --long: Show extended information
+    --no-optional: Don't display packages from `optionalDependencies`
+    --only-projects: Display only dependencies that are also projects within the workspace
+    --optional: Include packages from `optionalDependencies`
+    --parseable: Show parseable output instead of tree view
+    -P, --prod: Display only the dependency graph for packages in `dependencies` and `optionalDependencies`
+    --production: Display only the dependency graph for packages in `dependencies` and `optionalDependencies`
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: ll
+  aliases:
+  - la
+  description: List installed packages in long format
+  flags:
+    --depth=:
+      description: Max display depth of the dependency tree. `0` lists direct dependencies only; `-1` lists projects only
+      default: '0'
+    -D, --dev: Display only the dependency graph for packages in `devDependencies`
+    --exclude-peers: Exclude peer dependencies
+    --find-by=*: Search by a finder function declared in `.pnpmfile.cjs`
+    -g, --global: ''
+    -h, --help: Print help (see more with '--help')
+    --json: Show information in JSON format
+    --lockfile-only: List packages from the lockfile only, without checking `node_modules`
+    --long: Show extended information
+    --no-optional: Don't display packages from `optionalDependencies`
+    --only-projects: Display only dependencies that are also projects within the workspace
+    --optional: Include packages from `optionalDependencies`
+    --parseable: Show parseable output instead of tree view
+    -P, --prod: Display only the dependency graph for packages in `dependencies` and `optionalDependencies`
+    --production: Display only the dependency graph for packages in `dependencies` and `optionalDependencies`
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: licenses
+  aliases:
+  - licences
+  description: Check the licenses of the installed packages
+  flags:
+    -D, --dev: Only dependencies in "devDependencies"
+    -h, --help: Print help (see more with '--help')
+    --json: Output the information in JSON format
+    --long: Show more details (such as a link to the repo)
+    --no-optional: Don't check "optionalDependencies"
+    -O, --optional: Only dependencies in "optionalDependencies"
+    -P, --prod: Only dependencies in "dependencies"
+    --production: Only dependencies in "dependencies"
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: why
+  description: Shows the packages that depend on `pkg`
+  flags:
+    --depth=: Max display depth of the reverse dependency tree
+    -D, --dev: Display only the dependency graph for packages in `devDependencies`
+    --exclude-peers: Exclude peer dependencies
+    --find-by=*: Search by a finder function declared in `.pnpmfile.cjs`
+    -h, --help: Print help (see more with '--help')
+    --json: Show information in JSON format
+    --long: Show extended information
+    --no-optional: Don't display packages from `optionalDependencies`
+    --optional: Include packages from `optionalDependencies`
+    --parseable: Show parseable output instead of tree view
+    -P, --prod: Display only the dependency graph for packages in `dependencies` and `optionalDependencies`
+    --production: Display only the dependency graph for packages in `dependencies` and `optionalDependencies`
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+  documentation:
+    flag:
+      exclude-peers: |-
+        Exclude peer dependencies.
+
+        Accepted but not applied, matching the TypeScript CLI: its `why` command declares the flag without forwarding it to the dependents-tree builder.
+- name: view
+  aliases:
+  - info
+  - show
+  - v
+  description: View registry information about a package
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --json: Show information in JSON format
+    --registry=: The base URL of the npm registry
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: sbom
+  description: Generate a Software Bill of Materials (SBOM)
+  flags:
+    -D, --dev: Only include dev dependencies
+    --exclude-peers: Exclude peer dependencies
+    -h, --help: Print help (see more with '--help')
+    --lockfile-only: Only use lockfile data (skip reading from the store)
+    --no-optional: Exclude optional dependencies
+    --optional: Include optional dependencies
+    --out=: Write SBOM to a file instead of stdout. Use `%s` for the package name and `%v` for the version
+    -P, --prod: Only include production dependencies
+    --production: Only include production dependencies
+    --sbom-authors=: Comma-separated list of SBOM authors (`CycloneDX` `metadata.authors`)
+    --sbom-format!=: The SBOM output format (required)
+    --sbom-spec-version=: 'The `CycloneDX` specification version (`1.5`, `1.6`, or `1.7`; default: `1.7`). Only valid with `--sbom-format cyclonedx`'
+    --sbom-supplier=: SBOM supplier name (`CycloneDX` `metadata.supplier`)
+    --sbom-type=:
+      description: 'The component type for the root package (default: library)'
+      default: library
+    --split: Generate a separate SBOM for each matched workspace package
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      sbom-format:
+      - cyclonedx
+      - spdx
+      sbom-type:
+      - library
+      - application
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: whoami
+  description: Displays your pnpm username
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: deprecate
+  description: Deprecates a version of a package in the registry
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --otp=: One-time password for registries that require two-factor authentication
+    --registry=: The base URL of the npm registry
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: undeprecate
+  description: Removes deprecation from a version of a package in the registry. Only works on already deprecated versions
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --otp=: One-time password for registries that require two-factor authentication
+    --registry=: The base URL of the npm registry
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: unpublish
+  description: Removes a package from the registry
+  flags:
+    --force: Removes the package from the registry regardless of what version is currently published. Without this flag, pnpm refuses to unpublish an entire package
+    -h, --help: Print help (see more with '--help')
+    --otp=: One-time password for registries that require two-factor authentication
+    --registry=: The base URL of the npm registry
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: star
+  description: Marks a package as a favorite
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: unstar
+  description: Unmarks a package as a favorite
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: stars
+  description: Lists all packages starred by a specific user
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: dist-tag
+  aliases:
+  - dist-tags
+  description: Manage a package's distribution tags
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --otp=: One-time password for registries that require two-factor authentication
+    --registry=: The base URL of the npm registry
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: ping
+  description: Test connectivity to the configured registry
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --registry=: Test a specific registry URL
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: doctor
+  description: Run diagnostics on the pnpm installation and environment
+  flags:
+    --benchmark: Also time filesystem and install operations
+    -h, --help: Print help (see more with '--help')
+    --json: Report the results as JSON
+    --offline: Skip checks that need network access
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: search
+  aliases:
+  - s
+  - se
+  - find
+  description: Search for packages in the registry
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --json: Show search results in JSON format
+    --registry=: Registry URL to search in
+    --search-limit=: 'Maximum number of results to show (default: 20)'
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: rebuild
+  aliases:
+  - rb
+  description: Rebuild a package
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --no-pending&: Rebuild all matching packages, including those without pending builds
+    --pending: Rebuild packages that were not built during installation, such as under `--ignore-scripts`
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: pack
+  description: Create a tarball from a package
+  flags:
+    --dry-run: Do everything `pack` would do except writing the tarball to disk
+    -h, --help: Print help (see more with '--help')
+    --json: Print the packed tarball and its contents in JSON
+    --no-skip-manifest-obfuscation&: Apply pnpm's normal packed-manifest filtering
+    --out=: Customize the output path. `%s` expands to the package name and `%v` to the version, e.g. `%s.tgz` or `some-dir/%s-%v.tgz`
+    --pack-destination=: Directory in which to save the tarball. Defaults to the current working directory
+    --pack-gzip-level=: gzip compression level (`0`–`9`) for the tarball
+    --skip-manifest-obfuscation: Keep the original `packageManager` field and publish-lifecycle scripts in the packed manifest instead of stripping them
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: publish
+  description: Publish a package to the registry
+  flags:
+    --access=: Publish the package as `public` or `restricted`
+    --batch: Send all workspace packages in a single request (requires `--recursive`)
+    --dry-run: Do everything `publish` would do except uploading to the registry
+    --embed-readme: Embed the README contents in the published manifest
+    --force: Publish even if the version is already in the registry
+    -h, --help: Print help (see more with '--help')
+    --ignore-scripts: Don't run publish-related lifecycle scripts
+    --json: Print the per-package publish summary in JSON
+    --no-embed-readme&: Do not embed README contents in the published manifest
+    --no-git-checks: Skip the git working-tree / branch / remote checks
+    --no-skip-manifest-obfuscation&: Apply pnpm's normal published-manifest filtering
+    --otp=: One-time password for two-factor-authenticated registries
+    --provenance: Generate a provenance attestation for the published package
+    --publish-branch=: The branch publishing is allowed from. Defaults to `master` / `main`
+    --report-summary: 'Recursive only: write a `pnpm-publish-summary.json` report listing the packages that were published'
+    --skip-manifest-obfuscation: Keep the original `packageManager` field and publish-lifecycle scripts in the published manifest instead of stripping them
+    --tag=: Register the published package under this tag instead of `latest`
+  completion:
+    flag:
+      access:
+      - public
+      - restricted
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: stage
+  description: Stage packages for publishing, deferring proof-of-presence (2FA) to a later point in time
+  flags:
+    --access=: Publish the package as `public` or `restricted`
+    --batch: Send all workspace packages in a single request (requires `--recursive`)
+    --dry-run: Do everything `publish` would do except uploading to the registry
+    --embed-readme: Embed the README contents in the published manifest
+    --force: Publish even if the version is already in the registry
+    -h, --help: Print help (see more with '--help')
+    --ignore-scripts: Don't run publish-related lifecycle scripts
+    --json: Print the per-package publish summary in JSON
+    --no-embed-readme&: Do not embed README contents in the published manifest
+    --no-git-checks: Skip the git working-tree / branch / remote checks
+    --no-skip-manifest-obfuscation&: Apply pnpm's normal published-manifest filtering
+    --otp=: One-time password for two-factor-authenticated registries
+    --provenance: Generate a provenance attestation for the published package
+    --publish-branch=: The branch publishing is allowed from. Defaults to `master` / `main`
+    --registry=: The base URL of the npm registry
+    --report-summary: 'Recursive only: write a `pnpm-publish-summary.json` report listing the packages that were published'
+    --skip-manifest-obfuscation: Keep the original `packageManager` field and publish-lifecycle scripts in the published manifest instead of stripping them
+    --tag=: Register the published package under this tag instead of `latest`
+  completion:
+    flag:
+      access:
+      - public
+      - restricted
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: remove
+  aliases:
+  - uninstall
+  - rm
+  - un
+  - uni
+  description: Removes packages from `node_modules` and from the project's `package.json`
+  flags:
+    -g, --global: Remove the package from the global packages directory and unlink its bins
+    -h, --help: Print help (see more with '--help')
+    --lockfile-dir=: The directory in which `pnpm-lock.yaml` is created. Several projects may share a single lockfile
+    --lockfile-only: Dependencies are not removed from `node_modules`. Only the manifest and `pnpm-lock.yaml` are updated
+    -D, --save-dev: Remove the dependency only from "devDependencies"
+    -O, --save-optional: Remove the dependency only from "optionalDependencies"
+    -P, --save-prod: Remove the dependency only from "dependencies"
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      lockfile-dir:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: patch
+  description: Prepare a package for patching
+  flags:
+    -d, --edit-dir=: The package that needs to be modified will be extracted to this directory
+    -h, --help: Print help (see more with '--help')
+    --ignore-existing: Ignore existing patch files when patching
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      edit-dir:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: patch-commit
+  description: Generate a patch out of a directory
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --patches-dir=: The generated patch file will be saved to this directory
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+    positional:
+    - - $files
+- name: patch-remove
+  description: Remove existing patch files
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: peers
+  description: Checks for unmet or missing peer dependency issues
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --json: ''
+    --lockfile-only: ''
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: set-script
+  aliases:
+  - ss
+  description: Set a script in package.json
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: test
+  description: Runs a package's "test" script, if one was provided
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: run
+  description: Runs a defined package script
+  flags:
+    --dry-run: Print the task graph a recursive run would execute, without running anything. Only meaningful together with the global `-r` / `--recursive` flag
+    -h, --help: Print help (see more with '--help')
+    --if-present: Avoid exiting with a non-zero exit code when the script is undefined
+    --json: With `--dry-run`, print the tasks and their resolved dependency edges as JSON
+    -s, --sequential: Run the specified scripts one by one
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: exec
+  description: Run a shell command in the context of a project
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -c, --shell-mode: Run the command inside of a shell. Uses `/bin/sh` on UNIX and `cmd.exe` on Windows
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: dlx
+  description: Run a package in a temporary environment
+  flags:
+    --allow-build=*: Package names allowed to run lifecycle (build) scripts during the dlx install. May be repeated
+    --cpu=*: CPU architectures whose platform-tagged optional dependencies the dlx install should keep. Repeat or comma-separate for multiple
+    -h, --help: Print help (see more with '--help')
+    --libc=*: libc families (`glibc`, `musl`) whose platform-tagged optional dependencies the dlx install should keep
+    --os=*: Operating systems whose platform-tagged optional dependencies the dlx install should keep
+    --package=*: The package to install before running the command. May be repeated. When omitted, the command name is the package
+    -c, --shell-mode: Run the command inside of a shell. Uses `/bin/sh` on UNIX and `cmd.exe` on Windows
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: create
+  description: Creates a project from a `create-*` starter kit
+  flags:
+    --allow-build=*: Package names allowed to run lifecycle (build) scripts during the install. May be repeated
+    --cpu=*: CPU architectures whose platform-tagged optional dependencies the install should keep. Repeat or comma-separate for multiple
+    -h, --help: Print help (see more with '--help')
+    --libc=*: libc families (`glibc`, `musl`) whose platform-tagged optional dependencies the install should keep
+    --os=*: Operating systems whose platform-tagged optional dependencies the install should keep
+    -c, --shell-mode: Run the command inside of a shell. Uses `/bin/sh` on UNIX and `cmd.exe` on Windows
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: completion
+  description: Print shell completion code to stdout
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: completion-server
+  description: Dynamic completion endpoint used by generated shell scripts
+  hidden: true
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: start
+  description: Runs an arbitrary command specified in the package's start property of its scripts object
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: stop
+  description: Runs a package's "stop" script, if one was provided
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: restart
+  description: Restarts a package. Runs "stop", "restart", and "start" scripts, and associated pre- and post- scripts
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --if-present: Avoid exiting with a non-zero exit code when a script is undefined
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: find-hash
+  description: Lists the packages that include the file with the specified hash
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: runtime
+  aliases:
+  - rt
+  description: Manage runtimes
+  flags:
+    -g, --global: Install the runtime globally
+    -h, --help: Print help (see more with '--help')
+    -D, --save-dev: Save the runtime to `devEngines.runtime`. This is the default
+    -P, --save-prod: Save the runtime to `engines.runtime`
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: env
+  description: Manage Node.js versions. Deprecated in favour of `pnpm runtime`
+  flags:
+    -g, --global: Manage Node.js versions globally
+    -h, --help: Print help (see more with '--help')
+    --remote&: Accepted for surface parity with pnpm, which declares the option but never reads it
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: shim
+  description: Manage context-aware shims for packages that are not installed globally, so a project decides which version runs
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: bin
+  description: Print the directory where pnpm will install executables
+  flags:
+    -g, --global: Print the global executables directory
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: clean
+  description: Safely remove `node_modules` directories from the current project (or every workspace project) without following NTFS junctions into their targets. A `clean` script in `package.json` overrides the built-in command
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -l, --lockfile: Also remove `pnpm-lock.yaml` files
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: purge
+  description: 'Alias of `clean`: same behavior, except a `purge` script (not a `clean` script) overrides it when present'
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -l, --lockfile: Also remove `pnpm-lock.yaml` files
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: ci
+  aliases:
+  - clean-install
+  - ic
+  - install-clean
+  description: Runs clean then install with a frozen lockfile
+  flags:
+    --cpu=*:
+      description: CPU architectures whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    -D, --dev: Install only devDependencies. Regular dependencies are skipped, and removed if already installed, regardless of `NODE_ENV`
+    --dry-run: Show what an install would change without writing anything to disk
+    --fetch-min-speed-ki-bps=: Warn when a tarball download's average speed is below this many KiB/s
+    --fetch-timeout=: Per-request network timeout, in milliseconds
+    --fetch-warn-timeout-ms=: Warn when a registry metadata request takes longer than this many milliseconds
+    --fix-lockfile: Repair broken lockfile entries by re-resolving their metadata while preserving compatible locked versions
+    --force: 'Reinstall every package the lockfile names: relink packages an earlier install already materialized, and install optional dependencies whose `cpu` / `os` / `libc` / `engines` don''t match the host instead of skipping them'
+    --frozen-lockfile: Don't generate a lockfile, and fail if an update to it is needed. This setting is enabled by default in CI when a lockfile is present
+    --frozen-store: Open the store read-only and skip all store writes. For installing against a store on a read-only filesystem (e.g. a Nix store); pair with `--offline --frozen-lockfile`
+    -h, --help: Print help (see more with '--help')
+    --ignore-manifest-check: Skip the check that `pnpm-lock.yaml` is up to date with `package.json` under `--frozen-lockfile`. For callers that just wrote the lockfile themselves and know the manifest is about to catch up
+    --ignore-pnpmfile: Disable pnpm hooks defined in `.pnpmfile.cjs`, including the pnpmfiles of config dependencies
+    --ignore-scripts: Don't run lifecycle scripts of the project or its dependencies. Packages are still installed; only their build scripts are skipped, and the install won't fail because of it
+    --libc=*:
+      description: libc families whose platform-specific optional dependencies should be installed (`glibc`, `musl`). Repeat or comma-separate for multiple values
+      nargs: -1
+    -l, --lockfile: Also remove `pnpm-lock.yaml` files
+    --lockfile-dir=: The directory in which `pnpm-lock.yaml` is created. Several projects may share a single lockfile
+    --lockfile-only: Only update `pnpm-lock.yaml`. Don't download packages or write `node_modules`
+    --merge-git-branch-lockfiles: Fold every per-branch lockfile (`pnpm-lock.<branch>.yaml`, written under the `gitBranchLockfile` setting) into `pnpm-lock.yaml` and delete them
+    --merge-git-branch-lockfiles-branch-pattern=*: Glob patterns naming the branches that merge the per-branch lockfiles, so a mainline branch does not have to pass `--merge-git-branch-lockfiles` by hand
+    --network-concurrency=: Maximum number of concurrent network requests during install
+    --no-frozen-lockfile: 'Allow the lockfile to be updated, overriding a `frozenLockfile: true` setting'
+    --no-frozen-store: Allow store writes even when the configuration enables the read-only store
+    --no-ignore-scripts: Run lifecycle scripts even when the configuration disables them
+    --no-offline: Allow network fetches even when the configuration enables offline mode
+    --no-optional: Don't install optionalDependencies
+    --no-prefer-frozen-lockfile: Always re-resolve against the registry instead of preferring the existing lockfile
+    --no-prefer-offline: Don't prefer cached packages even when the configuration enables it
+    --no-runtime: Don't install runtime dependencies (`node`, `deno`, `bun`). Their archives aren't fetched and their bins aren't linked; the rest of the install proceeds normally
+    --no-trust-lockfile: Verify the lockfile against supply-chain policies even when the configuration trusts it
+    --node-linker=: 'Which node linker to use: `isolated` (the default, a symlinked store), `hoisted` (a flat `node_modules`), or `pnp` (Plug''n''Play). Overrides the configured value'
+    --offline: Fail on a cache miss instead of fetching from the registry, using only packages already in the store
+    --optional: Include optionalDependencies even when the configured default excludes them
+    --os=*:
+      description: Operating systems whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    --pnpr-server=: URL of a pnpr server to offload resolution and file fetching to. `node_modules` is still linked locally from the server-produced lockfile
+    --prefer-frozen-lockfile: Prefer the existing lockfile over re-resolving, even when the manifest may have changed
+    --prefer-offline: Prefer packages already in the cache over the network, even past their freshness window
+    -P, --prod: Install only production dependencies. devDependencies are skipped, and removed if already installed. Takes precedence over `NODE_ENV`
+    --production: Install only production dependencies. devDependencies are skipped, and removed if already installed. Takes precedence over `NODE_ENV`
+    --trust-lockfile: Skip verifying the lockfile against supply-chain policies
+    --update-checksums: Refresh the integrity checksums in `pnpm-lock.yaml` from the registry. Cannot be combined with `--frozen-lockfile`
+    --user-agent=: '`User-Agent` header to send on registry requests'
+    --verify-deps-before-run-install&: Run the install already requested by `verifyDepsBeforeRun` without independently short-circuiting it as up to date
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      lockfile-dir:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      node-linker:
+      - isolated
+      - hoisted
+      - pnp
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: root
+  description: Print the effective `node_modules` directory
+  flags:
+    -g, --global: Print the global packages directory
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: prefix
+  description: Print the current package prefix
+  flags:
+    -g, --global: Print the global prefix
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: config
+  aliases:
+  - c
+  description: Manage the pnpm configuration files
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+  commands:
+  - name: set
+    description: Set the config key to the value provided
+    flags:
+      -h, --help: Print help (see more with '--help')
+    persistentflags:
+      -g, --global: Operate on the global config file
+      --json: Show all types of values in JSON format (not just objects and arrays)
+      --location=: 'Which config to read or write: `project` for the project''s config, `global` for the global config'
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        location:
+        - project
+        - global
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: get
+    description: Print the config value for the provided key
+    flags:
+      -h, --help: Print help (see more with '--help')
+    persistentflags:
+      -g, --global: Operate on the global config file
+      --json: Show all types of values in JSON format (not just objects and arrays)
+      --location=: 'Which config to read or write: `project` for the project''s config, `global` for the global config'
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        location:
+        - project
+        - global
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: delete
+    description: Remove the config key from the config file
+    flags:
+      -h, --help: Print help (see more with '--help')
+    persistentflags:
+      -g, --global: Operate on the global config file
+      --json: Show all types of values in JSON format (not just objects and arrays)
+      --location=: 'Which config to read or write: `project` for the project''s config, `global` for the global config'
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        location:
+        - project
+        - global
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: list
+    description: Show all the config settings
+    flags:
+      -h, --help: Print help (see more with '--help')
+    persistentflags:
+      -g, --global: Operate on the global config file
+      --json: Show all types of values in JSON format (not just objects and arrays)
+      --location=: 'Which config to read or write: `project` for the project''s config, `global` for the global config'
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        location:
+        - project
+        - global
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: set
+      description: Set the config key to the value provided
+    - name: get
+      description: Print the config value for the provided key
+    - name: delete
+      description: Remove the config key from the config file
+    - name: list
+      description: Show all the config settings
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: get
+  description: Print the config value for the provided key. Shorthand for `pnpm config get`
+  flags:
+    -h, --help: Print help (see more with '--help')
+  persistentflags:
+    -g, --global: Operate on the global config file
+    --json: Show all types of values in JSON format (not just objects and arrays)
+    --location=: 'Which config to read or write: `project` for the project''s config, `global` for the global config'
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      location:
+      - project
+      - global
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: set
+  description: Set the config key to the value provided. Shorthand for `pnpm config set`
+  flags:
+    -h, --help: Print help (see more with '--help')
+  persistentflags:
+    -g, --global: Operate on the global config file
+    --json: Show all types of values in JSON format (not just objects and arrays)
+    --location=: 'Which config to read or write: `project` for the project''s config, `global` for the global config'
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      location:
+      - project
+      - global
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: pkg
+  description: Manages your package.json
+  flags:
+    -h, --help: Print help (see more with '--help')
+  persistentflags:
+    --json: When setting, parse the value as JSON. When getting a single key, return its JSON-encoded form instead of the raw value
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+  commands:
+  - name: get
+    description: Retrieves a value from package.json
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: set
+    description: Sets a value in package.json
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: delete
+    description: Deletes a key from package.json
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: fix
+    description: Auto corrects common errors in package.json
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: get
+      description: Retrieves a value from package.json
+    - name: set
+      description: Sets a value in package.json
+    - name: delete
+      description: Deletes a key from package.json
+    - name: fix
+      description: Auto corrects common errors in package.json
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: pack-app
+  description: Pack a `CommonJS` entry file into a standalone executable for one or more target platforms
+  flags:
+    --entry=: Path to the CJS entry file to embed in the executable
+    -h, --help: Print help (see more with '--help')
+    -o, --output-dir=: Output directory for the built executables. Defaults to `dist-app`
+    --output-name=: Name for the output executable (without extension). Defaults to the unscoped package name
+    --runtime=: Runtime to embed, as a `<name>@<version>` spec (e.g. `node@25`, `node@25.5.0`). Only `node` is supported, and the version must be >= v25.5. Defaults to the minimum SEA-capable version (v25.5.0)
+    -t, --target=*: 'Target to build for. May be specified multiple times. Supported: linux-x64, linux-x64-musl, linux-arm64, linux-arm64-musl, darwin-x64, darwin-arm64, win32-x64, win32-arm64'
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: store
+  description: Managing the package store
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+  commands:
+  - name: status
+    description: Checks for modified packages in the store. Returns exit code 0 if the content of the package is the same as it was at the time of unpacking
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: add
+    description: Functionally equivalent to pnpm add, except this adds new packages to the store directly without modifying any projects or files outside of the store
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: prune
+    description: Removes unreferenced packages from the store. Unreferenced packages are packages that are not used by any projects on the system. Packages can become unreferenced after most installation operations, for instance when dependencies are made redundant
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: path
+    description: Returns the path to the active store directory
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: status
+      description: Checks for modified packages in the store. Returns exit code 0 if the content of the package is the same as it was at the time of unpacking
+    - name: add
+      description: Functionally equivalent to pnpm add, except this adds new packages to the store directly without modifying any projects or files outside of the store
+    - name: prune
+      description: Removes unreferenced packages from the store. Unreferenced packages are packages that are not used by any projects on the system. Packages can become unreferenced after most installation operations, for instance when dependencies are made redundant
+    - name: path
+      description: Returns the path to the active store directory
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: cache
+  description: Inspect and manage the metadata cache
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+  commands:
+  - name: list
+    description: Lists the available packages metadata cache. Supports filtering by glob
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: list-registries
+    description: Lists all registries that have their metadata cache locally
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: path
+    description: Prints the path to the cache directory
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: view
+    description: Views information from the specified package's cache
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: delete
+    description: Deletes metadata cache for the specified package(s). Supports patterns
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      flag:
+        dir:
+        - $files
+        prefix:
+        - $files
+        loglevel:
+        - silent
+        - error
+        - warn
+        - info
+        - debug
+        npmrc-auth-file:
+        - $files
+        userconfig:
+        - $files
+        reporter:
+        - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+        - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+        - "ndjson\tNewline-delimited JSON on stderr"
+        - "silent\tNo progress output"
+        state-dir:
+        - $files
+        store-dir:
+        - $files
+        store:
+        - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: Lists the available packages metadata cache. Supports filtering by glob
+    - name: list-registries
+      description: Lists all registries that have their metadata cache locally
+    - name: path
+      description: Prints the path to the cache directory
+    - name: view
+      description: Views information from the specified package's cache
+    - name: delete
+      description: Deletes metadata cache for the specified package(s). Supports patterns
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: cat-file
+  description: Prints the contents of a file based on the hash value stored in the index file
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: cat-index
+  description: Prints the index file of a specific package from the store
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: ignored-builds
+  description: Print the list of packages with blocked build scripts
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: approve-builds
+  description: Approve dependencies for running scripts during installation
+  flags:
+    --all: Approve all pending dependencies without interactive prompts
+    -g, --global: Approve builds for globally installed packages
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: link
+  aliases:
+  - ln
+  description: Links a local package as a dependency
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: import
+  description: Generates a pnpm-lock.yaml from an external lockfile
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --pnpr-server=: URL of a pnpr server to offload lockfile resolution to
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: dedupe
+  description: Deduplicate packages in the lockfile
+  flags:
+    --check: Check if running dedupe would result in changes without installing packages or editing the lockfile. Exits with a non-zero status code if changes are possible
+    -h, --help: Print help (see more with '--help')
+    --ignore-pnpmfile: Disable pnpm hooks defined in `.pnpmfile.cjs`, including the pnpmfiles of config dependencies
+    --ignore-scripts: Don't run lifecycle scripts of the project or its dependencies. Packages are still installed; only their build scripts are skipped, and the install won't fail because of it
+    --lockfile-only: Only update `pnpm-lock.yaml`. Don't download packages or write `node_modules`
+    --no-ignore-scripts: Run lifecycle scripts even when the configuration disables them
+    --no-offline: Allow network fetches even when the configuration enables offline mode
+    --no-prefer-offline: Don't prefer cached packages even when the configuration enables it
+    --offline: Fail on a cache miss instead of fetching from the registry, using only packages already in the store
+    --prefer-offline: Prefer packages already in the cache over the network, even past their freshness window
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: deploy
+  description: Deploy a package from a workspace
+  flags:
+    --cpu=*:
+      description: CPU architectures whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    -D, --dev: Install only devDependencies. Regular dependencies are skipped, and removed if already installed, regardless of `NODE_ENV`
+    --dry-run: Show what an install would change without writing anything to disk
+    --fetch-min-speed-ki-bps=: Warn when a tarball download's average speed is below this many KiB/s
+    --fetch-timeout=: Per-request network timeout, in milliseconds
+    --fetch-warn-timeout-ms=: Warn when a registry metadata request takes longer than this many milliseconds
+    --fix-lockfile: Repair broken lockfile entries by re-resolving their metadata while preserving compatible locked versions
+    --force: 'Reinstall every package the lockfile names: relink packages an earlier install already materialized, and install optional dependencies whose `cpu` / `os` / `libc` / `engines` don''t match the host instead of skipping them'
+    --frozen-lockfile: Don't generate a lockfile, and fail if an update to it is needed. This setting is enabled by default in CI when a lockfile is present
+    --frozen-store: Open the store read-only and skip all store writes. For installing against a store on a read-only filesystem (e.g. a Nix store); pair with `--offline --frozen-lockfile`
+    -h, --help: Print help (see more with '--help')
+    --ignore-manifest-check: Skip the check that `pnpm-lock.yaml` is up to date with `package.json` under `--frozen-lockfile`. For callers that just wrote the lockfile themselves and know the manifest is about to catch up
+    --ignore-pnpmfile: Disable pnpm hooks defined in `.pnpmfile.cjs`, including the pnpmfiles of config dependencies
+    --ignore-scripts: Don't run lifecycle scripts of the project or its dependencies. Packages are still installed; only their build scripts are skipped, and the install won't fail because of it
+    --legacy: Use the legacy deploy implementation
+    --libc=*:
+      description: libc families whose platform-specific optional dependencies should be installed (`glibc`, `musl`). Repeat or comma-separate for multiple values
+      nargs: -1
+    --lockfile-dir=: The directory in which `pnpm-lock.yaml` is created. Several projects may share a single lockfile
+    --lockfile-only: Only update `pnpm-lock.yaml`. Don't download packages or write `node_modules`
+    --merge-git-branch-lockfiles: Fold every per-branch lockfile (`pnpm-lock.<branch>.yaml`, written under the `gitBranchLockfile` setting) into `pnpm-lock.yaml` and delete them
+    --merge-git-branch-lockfiles-branch-pattern=*: Glob patterns naming the branches that merge the per-branch lockfiles, so a mainline branch does not have to pass `--merge-git-branch-lockfiles` by hand
+    --network-concurrency=: Maximum number of concurrent network requests during install
+    --no-frozen-lockfile: 'Allow the lockfile to be updated, overriding a `frozenLockfile: true` setting'
+    --no-frozen-store: Allow store writes even when the configuration enables the read-only store
+    --no-ignore-scripts: Run lifecycle scripts even when the configuration disables them
+    --no-offline: Allow network fetches even when the configuration enables offline mode
+    --no-optional: Don't install optionalDependencies
+    --no-prefer-frozen-lockfile: Always re-resolve against the registry instead of preferring the existing lockfile
+    --no-prefer-offline: Don't prefer cached packages even when the configuration enables it
+    --no-runtime: Don't install runtime dependencies (`node`, `deno`, `bun`). Their archives aren't fetched and their bins aren't linked; the rest of the install proceeds normally
+    --no-trust-lockfile: Verify the lockfile against supply-chain policies even when the configuration trusts it
+    --node-linker=: 'Which node linker to use: `isolated` (the default, a symlinked store), `hoisted` (a flat `node_modules`), or `pnp` (Plug''n''Play). Overrides the configured value'
+    --offline: Fail on a cache miss instead of fetching from the registry, using only packages already in the store
+    --optional: Include optionalDependencies even when the configured default excludes them
+    --os=*:
+      description: Operating systems whose platform-specific optional dependencies should be installed. Repeat or comma-separate for multiple values
+      nargs: -1
+    --pnpr-server=: URL of a pnpr server to offload resolution and file fetching to. `node_modules` is still linked locally from the server-produced lockfile
+    --prefer-frozen-lockfile: Prefer the existing lockfile over re-resolving, even when the manifest may have changed
+    --prefer-offline: Prefer packages already in the cache over the network, even past their freshness window
+    -P, --prod: Install only production dependencies. devDependencies are skipped, and removed if already installed. Takes precedence over `NODE_ENV`
+    --production: Install only production dependencies. devDependencies are skipped, and removed if already installed. Takes precedence over `NODE_ENV`
+    --trust-lockfile: Skip verifying the lockfile against supply-chain policies
+    --update-checksums: Refresh the integrity checksums in `pnpm-lock.yaml` from the registry. Cannot be combined with `--frozen-lockfile`
+    --user-agent=: '`User-Agent` header to send on registry requests'
+    --verify-deps-before-run-install&: Run the install already requested by `verifyDepsBeforeRun` without independently short-circuiting it as up to date
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      lockfile-dir:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      node-linker:
+      - isolated
+      - hoisted
+      - pnp
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+    positionalany:
+    - $files
+- name: prune
+  description: Remove extraneous packages
+  flags:
+    -D, --dev: ''
+    -h, --help: Print help (see more with '--help')
+    --ignore-scripts: ''
+    --no-ignore-scripts: Run lifecycle scripts even if scripts are disabled by configuration
+    --no-optional: ''
+    --optional: ''
+    -P, --prod: ''
+    --production: ''
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: fetch
+  description: Fetch packages from the lockfile into the virtual store
+  flags:
+    -D, --dev: ''
+    -h, --help: Print help (see more with '--help')
+    --ignore-pnpmfile: Disable pnpm hooks defined in `.pnpmfile.cjs`, including the pnpmfiles of config dependencies
+    -P, --prod: ''
+    --production: ''
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: unlink
+  aliases:
+  - dislink
+  description: Removes links to a local package and reinstalls it
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --ignore-pnpmfile: Disable pnpm hooks defined in `.pnpmfile.cjs`, including the pnpmfiles of config dependencies
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: docs
+  aliases:
+  - home
+  description: Opens the documentation of a package in the browser
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: repo
+  description: Opens the URL of the package's repository in a browser
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: self-update
+  description: Updates pnpm to the latest version (or the one specified)
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: setup
+  description: Sets up pnpm
+  flags:
+    -f, --force: Override the PNPM_HOME env variable in case it already exists
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: login
+  aliases:
+  - adduser
+  description: Log in to an npm registry
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --registry=: The registry to log in to
+    --scope=: Associate the login token with a package scope and record the scope-to-registry mapping
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: team
+  description: Manage organization teams and team memberships
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --json: Output results as JSON
+    --otp=: One-time password for registries that require two-factor authentication
+    --parseable: Output parseable results (tab-separated)
+    --registry=: The base URL of the npm registry
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: owner
+  aliases:
+  - owners
+  description: Manage package owners on the registry
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --otp=: One-time password for registries that require two-factor authentication
+    --registry=: The base URL of the npm registry
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: logout
+  description: Log out of an npm registry
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --registry=: The registry to log out of
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: with
+  description: Runs pnpm at a specific version (or the currently running one) for a single invocation, ignoring the "packageManager" and "devEngines.packageManager" fields of the project's manifest
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: edit
+  description: Not implemented in pnpm. Use the npm CLI directly
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: profile
+  description: Not implemented in pnpm. Use the npm CLI directly
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: token
+  description: Not implemented in pnpm. Use the npm CLI directly
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: xmas
+  description: Not implemented in pnpm. Use the npm CLI directly
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    flag:
+      dir:
+      - $files
+      prefix:
+      - $files
+      loglevel:
+      - silent
+      - error
+      - warn
+      - info
+      - debug
+      npmrc-auth-file:
+      - $files
+      userconfig:
+      - $files
+      reporter:
+      - "default\tRich visual output: a progress line, a packages diff, lifecycle output, and a `Done in ...` summary. The default; renders in place on a terminal and falls back to `append-only` output when stdout is not a terminal"
+      - "append-only\tLike `default` but forces the append-only rendering even on a TTY — one line per update, no cursor movement"
+      - "ndjson\tNewline-delimited JSON on stderr"
+      - "silent\tNo progress output"
+      state-dir:
+      - $files
+      store-dir:
+      - $files
+      store:
+      - $files
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: access
+    description: Manage package access and visibility on the registry
+  - name: init
+    description: Initialize a package.json
+  - name: recursive
+    description: Concurrently runs a command in all subdirectory projects
+  - name: add
+    description: Add a package
+  - name: install
+    description: Install packages
+  - name: install-test
+    description: Runs a `pnpm install` followed immediately by a `pnpm test`. It takes exactly the same arguments as `pnpm install`
+  - name: update
+    description: Update packages to their newest version based on the specified range
+  - name: outdated
+    description: Check for outdated package and GitHub Actions dependencies
+  - name: audit
+    description: Checks for known security issues with the installed packages
+  - name: change
+    description: 'Record a change intent: which packages a change affects, the bump type for each, and a summary that becomes the changelog entry'
+  - name: version
+    description: Apply the pending change intents (`pnpm version -r`)
+  - name: lane
+    description: Manage per-package release lanes
+  - name: bugs
+    description: Opens the bug tracker URL of a package in the default browser
+  - name: list
+    description: List installed packages
+  - name: ll
+    description: List installed packages in long format
+  - name: licenses
+    description: Check the licenses of the installed packages
+  - name: why
+    description: Shows the packages that depend on `pkg`
+  - name: view
+    description: View registry information about a package
+  - name: sbom
+    description: Generate a Software Bill of Materials (SBOM)
+  - name: whoami
+    description: Displays your pnpm username
+  - name: deprecate
+    description: Deprecates a version of a package in the registry
+  - name: undeprecate
+    description: Removes deprecation from a version of a package in the registry. Only works on already deprecated versions
+  - name: unpublish
+    description: Removes a package from the registry
+  - name: star
+    description: Marks a package as a favorite
+  - name: unstar
+    description: Unmarks a package as a favorite
+  - name: stars
+    description: Lists all packages starred by a specific user
+  - name: dist-tag
+    description: Manage a package's distribution tags
+  - name: ping
+    description: Test connectivity to the configured registry
+  - name: doctor
+    description: Run diagnostics on the pnpm installation and environment
+  - name: search
+    description: Search for packages in the registry
+  - name: rebuild
+    description: Rebuild a package
+  - name: pack
+    description: Create a tarball from a package
+  - name: publish
+    description: Publish a package to the registry
+  - name: stage
+    description: Stage packages for publishing, deferring proof-of-presence (2FA) to a later point in time
+  - name: remove
+    description: Removes packages from `node_modules` and from the project's `package.json`
+  - name: patch
+    description: Prepare a package for patching
+  - name: patch-commit
+    description: Generate a patch out of a directory
+  - name: patch-remove
+    description: Remove existing patch files
+  - name: peers
+    description: Checks for unmet or missing peer dependency issues
+  - name: set-script
+    description: Set a script in package.json
+  - name: test
+    description: Runs a package's "test" script, if one was provided
+  - name: run
+    description: Runs a defined package script
+  - name: exec
+    description: Run a shell command in the context of a project
+  - name: dlx
+    description: Run a package in a temporary environment
+  - name: create
+    description: Creates a project from a `create-*` starter kit
+  - name: completion
+    description: Print shell completion code to stdout
+  - name: completion-server
+    description: Dynamic completion endpoint used by generated shell scripts
+    hidden: true
+  - name: start
+    description: Runs an arbitrary command specified in the package's start property of its scripts object
+  - name: stop
+    description: Runs a package's "stop" script, if one was provided
+  - name: restart
+    description: Restarts a package. Runs "stop", "restart", and "start" scripts, and associated pre- and post- scripts
+  - name: find-hash
+    description: Lists the packages that include the file with the specified hash
+  - name: runtime
+    description: Manage runtimes
+  - name: env
+    description: Manage Node.js versions. Deprecated in favour of `pnpm runtime`
+  - name: shim
+    description: Manage context-aware shims for packages that are not installed globally, so a project decides which version runs
+  - name: bin
+    description: Print the directory where pnpm will install executables
+  - name: clean
+    description: Safely remove `node_modules` directories from the current project (or every workspace project) without following NTFS junctions into their targets. A `clean` script in `package.json` overrides the built-in command
+  - name: purge
+    description: 'Alias of `clean`: same behavior, except a `purge` script (not a `clean` script) overrides it when present'
+  - name: ci
+    description: Runs clean then install with a frozen lockfile
+  - name: root
+    description: Print the effective `node_modules` directory
+  - name: prefix
+    description: Print the current package prefix
+  - name: config
+    description: Manage the pnpm configuration files
+    commands:
+    - name: set
+      description: Set the config key to the value provided
+    - name: get
+      description: Print the config value for the provided key
+    - name: delete
+      description: Remove the config key from the config file
+    - name: list
+      description: Show all the config settings
+  - name: get
+    description: Print the config value for the provided key. Shorthand for `pnpm config get`
+  - name: set
+    description: Set the config key to the value provided. Shorthand for `pnpm config set`
+  - name: pkg
+    description: Manages your package.json
+    commands:
+    - name: get
+      description: Retrieves a value from package.json
+    - name: set
+      description: Sets a value in package.json
+    - name: delete
+      description: Deletes a key from package.json
+    - name: fix
+      description: Auto corrects common errors in package.json
+  - name: pack-app
+    description: Pack a `CommonJS` entry file into a standalone executable for one or more target platforms
+  - name: store
+    description: Managing the package store
+    commands:
+    - name: status
+      description: Checks for modified packages in the store. Returns exit code 0 if the content of the package is the same as it was at the time of unpacking
+    - name: add
+      description: Functionally equivalent to pnpm add, except this adds new packages to the store directly without modifying any projects or files outside of the store
+    - name: prune
+      description: Removes unreferenced packages from the store. Unreferenced packages are packages that are not used by any projects on the system. Packages can become unreferenced after most installation operations, for instance when dependencies are made redundant
+    - name: path
+      description: Returns the path to the active store directory
+  - name: cache
+    description: Inspect and manage the metadata cache
+    commands:
+    - name: list
+      description: Lists the available packages metadata cache. Supports filtering by glob
+    - name: list-registries
+      description: Lists all registries that have their metadata cache locally
+    - name: path
+      description: Prints the path to the cache directory
+    - name: view
+      description: Views information from the specified package's cache
+    - name: delete
+      description: Deletes metadata cache for the specified package(s). Supports patterns
+  - name: cat-file
+    description: Prints the contents of a file based on the hash value stored in the index file
+  - name: cat-index
+    description: Prints the index file of a specific package from the store
+  - name: ignored-builds
+    description: Print the list of packages with blocked build scripts
+  - name: approve-builds
+    description: Approve dependencies for running scripts during installation
+  - name: link
+    description: Links a local package as a dependency
+  - name: import
+    description: Generates a pnpm-lock.yaml from an external lockfile
+  - name: dedupe
+    description: Deduplicate packages in the lockfile
+  - name: deploy
+    description: Deploy a package from a workspace
+  - name: prune
+    description: Remove extraneous packages
+  - name: fetch
+    description: Fetch packages from the lockfile into the virtual store
+  - name: unlink
+    description: Removes links to a local package and reinstalls it
+  - name: docs
+    description: Opens the documentation of a package in the browser
+  - name: repo
+    description: Opens the URL of the package's repository in a browser
+  - name: self-update
+    description: Updates pnpm to the latest version (or the one specified)
+  - name: setup
+    description: Sets up pnpm
+  - name: login
+    description: Log in to an npm registry
+  - name: team
+    description: Manage organization teams and team memberships
+  - name: owner
+    description: Manage package owners on the registry
+  - name: logout
+    description: Log out of an npm registry
+  - name: with
+    description: Runs pnpm at a specific version (or the currently running one) for a single invocation, ignoring the "packageManager" and "devEngines.packageManager" fields of the project's manifest
+  - name: edit
+    description: Not implemented in pnpm. Use the npm CLI directly
+  - name: profile
+    description: Not implemented in pnpm. Use the npm CLI directly
+  - name: token
+    description: Not implemented in pnpm. Use the npm CLI directly
+  - name: xmas
+    description: Not implemented in pnpm. Use the npm CLI directly
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
