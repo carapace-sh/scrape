@@ -1,0 +1,1774 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: eopkg
+commands:
+    - name: ""
+      description: eopkg is the package management system of Solus Operating System
+    - name: '?'
+      description: 'Prints help for given commands Usage: help [ <command1> <command2> ... <commandn> ] If run without parameters, it prints the general help.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: add-repo
+      description: 'Add a repository Usage: add-repo <repo> <indexuri> <repo>: name of repository to add <indexuri>: URI of index file NB: We support only local files (e.g., /a/b/c) and http:// URIs at the moment'
+      flags:
+        --at=: Add repository at given position (0 is first)
+        --ignore-check: Ignore repository distribution check
+        --no-fetch: Does not fetch repository index and does not check distribution match
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            at: Add repository at given position (0 is first)
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            ignore-check: Ignore repository distribution check
+            no-color: Suppresses all coloring of eopkg's output
+            no-fetch: Does not fetch repository index and does not check distribution match
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: ar
+      description: 'Add a repository Usage: add-repo <repo> <indexuri> <repo>: name of repository to add <indexuri>: URI of index file NB: We support only local files (e.g., /a/b/c) and http:// URIs at the moment'
+      flags:
+        --at=: Add repository at given position (0 is first)
+        --ignore-check: Ignore repository distribution check
+        --no-fetch: Does not fetch repository index and does not check distribution match
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            at: Add repository at given position (0 is first)
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            ignore-check: Ignore repository distribution check
+            no-color: Suppresses all coloring of eopkg's output
+            no-fetch: Does not fetch repository index and does not check distribution match
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: autoremove
+      description: 'Remove eopkg packages Usage: autoremove <package1> <package2> ... <packagen> Remove package(s) from your system.'
+      flags:
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        --purge: Removes everything including changed config files of the package
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            purge: Removes everything including changed config files of the package
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: bi
+      description: 'Build eopkg packages Usage: build [<pspec.xml> | <sourcename>] ...'
+      flags:
+        --build: Break build after running compile step
+        --check: Break build after running check step
+        --create-static: Create a static package with ar files
+        --fetch: Break build after fetching the source archive
+        --ignore-action-errors: Bypass errors from ActionsAPI
+        --ignore-check: Bypass testing step
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        --ignore-sandbox: Do not constrain build process inside the build folder
+        --install: Break build after running install step
+        --package: Create eopkg package
+        --setup: Break build after running configure step
+        --unpack: Break build after unpacking the source archive, checking sha1sum and applying patches
+        --use-quilt: Use quilt patch management system instead of GNU patch
+        -D, --destdir=: Change the system root for eopkg commands
+        -F, --package-format=: Create the binary package using the given format.
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -O, --output-dir=: Output directory for produced packages
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -q, --quiet: Run pisi build operation without printing extra debug information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            build: Break build after running compile step
+            check: Break build after running check step
+            create-static: Create a static package with ar files
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            fetch: Break build after fetching the source archive
+            ignore-action-errors: Bypass errors from ActionsAPI
+            ignore-check: Bypass testing step
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            ignore-sandbox: Do not constrain build process inside the build folder
+            install: Break build after running install step
+            no-color: Suppresses all coloring of eopkg's output
+            output-dir: Output directory for produced packages
+            package: Create eopkg package
+            package-format: Create the binary package using the given format. Use '-F help' to see a list of supported formats.
+            quiet: Run pisi build operation without printing extra debug information
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            setup: Break build after running configure step
+            unpack: Break build after unpacking the source archive, checking sha1sum and applying patches
+            use-quilt: Use quilt patch management system instead of GNU patch
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: bl
+      description: 'Information about the package owner and release Usage: blame <package> ... <package>'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -a, --all: Blame for all of the releases
+        -d, --debug: Show debugging information
+        -r, --release=: Blame for the given release
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            all: Blame for all of the releases
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            release: Blame for the given release
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: blame
+      description: 'Information about the package owner and release Usage: blame <package> ... <package>'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -a, --all: Blame for all of the releases
+        -d, --debug: Show debugging information
+        -r, --release=: Blame for the given release
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            all: Blame for all of the releases
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            release: Blame for the given release
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: build
+      description: 'Build eopkg packages Usage: build [<pspec.xml> | <sourcename>] ...'
+      flags:
+        --build: Break build after running compile step
+        --check: Break build after running check step
+        --create-static: Create a static package with ar files
+        --fetch: Break build after fetching the source archive
+        --ignore-action-errors: Bypass errors from ActionsAPI
+        --ignore-check: Bypass testing step
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        --ignore-sandbox: Do not constrain build process inside the build folder
+        --install: Break build after running install step
+        --package: Create eopkg package
+        --setup: Break build after running configure step
+        --unpack: Break build after unpacking the source archive, checking sha1sum and applying patches
+        --use-quilt: Use quilt patch management system instead of GNU patch
+        -D, --destdir=: Change the system root for eopkg commands
+        -F, --package-format=: Create the binary package using the given format.
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -O, --output-dir=: Output directory for produced packages
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -q, --quiet: Run pisi build operation without printing extra debug information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            build: Break build after running compile step
+            check: Break build after running check step
+            create-static: Create a static package with ar files
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            fetch: Break build after fetching the source archive
+            ignore-action-errors: Bypass errors from ActionsAPI
+            ignore-check: Bypass testing step
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            ignore-sandbox: Do not constrain build process inside the build folder
+            install: Break build after running install step
+            no-color: Suppresses all coloring of eopkg's output
+            output-dir: Output directory for produced packages
+            package: Create eopkg package
+            package-format: Create the binary package using the given format. Use '-F help' to see a list of supported formats.
+            quiet: Run pisi build operation without printing extra debug information
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            setup: Break build after running configure step
+            unpack: Break build after unpacking the source archive, checking sha1sum and applying patches
+            use-quilt: Use quilt patch management system instead of GNU patch
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: check
+      description: 'Verify installation Usage: check [<package1> <package2> ... <packagen>] check -c <component> <packagei>: package name A cryptographic checksum is stored for each installed file.'
+      flags:
+        --config: Checks only changed config files of the packages
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -c, --component=: Check installed packages under given component
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: Check installed packages under given component
+            config: Checks only changed config files of the packages
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: clean
+      description: 'Clean stale locks Usage: clean eopkg uses filesystem locks for managing database access.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: configure-pending
+      description: Configure pending packages If COMAR configuration of some packages were not done at installation time, they are added to a list of packages waiting to be configured.
+      flags:
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: cp
+      description: Configure pending packages If COMAR configuration of some packages were not done at installation time, they are added to a list of packages waiting to be configured.
+      flags:
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: dc
+      description: 'Delete cache files Usage: delete-cache Sources, packages and temporary files are stored under /var directory.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: delete-cache
+      description: 'Delete cache files Usage: delete-cache Sources, packages and temporary files are stored under /var directory.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: delta
+      description: 'Creates delta packages Usages: delta oldpackage1 oldpackage2 ... newpackage delta -t newpackage oldpackage1 oldpackage2 ...'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -F, --package-format=: Create the binary package using the given format.
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -O, --output-dir=: Output directory for produced packages.
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -t, --newest-package=: Use arg as the new package and treat other arguments as old packages.
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            newest-package: Use arg as the new package and treat other arguments as old packages.
+            no-color: Suppresses all coloring of eopkg's output
+            output-dir: Output directory for produced packages.
+            package-format: Create the binary package using the given format. Use '-F help' to see a list of supported formats.
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: disable-repo
+      description: 'Disable repository Usage: disable-repo [<repo1> <repo2> ... <repon>] <repoi>: repository name Disabled repositories are not taken into account in operations'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: dr
+      description: 'Disable repository Usage: disable-repo [<repo1> <repo2> ... <repon>] <repoi>: repository name Disabled repositories are not taken into account in operations'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: dt
+      description: 'Creates delta packages Usages: delta oldpackage1 oldpackage2 ... newpackage delta -t newpackage oldpackage1 oldpackage2 ...'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -F, --package-format=: Create the binary package using the given format.
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -O, --output-dir=: Output directory for produced packages.
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -t, --newest-package=: Use arg as the new package and treat other arguments as old packages.
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            newest-package: Use arg as the new package and treat other arguments as old packages.
+            no-color: Suppresses all coloring of eopkg's output
+            output-dir: Output directory for produced packages.
+            package-format: Create the binary package using the given format. Use '-F help' to see a list of supported formats.
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: enable-repo
+      description: 'Enable repository Usage: enable-repo [<repo1> <repo2> ... <repon>] <repoi>: repository name Disabled repositories are not taken into account in operations'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: er
+      description: 'Enable repository Usage: enable-repo [<repo1> <repo2> ... <repon>] <repoi>: repository name Disabled repositories are not taken into account in operations'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: fc
+      description: 'Fetch a package Usage: fetch [<package1> <package2> ... <packagen>] <packagei>: package name Downloads the given pisi packages to working directory'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -o, --output-dir=: Output directory for the fetched packages
+        -r, --repo=: Fetch packages from a specified repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            output-dir: Output directory for the fetched packages
+            repo: Fetch packages from a specified repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: fetch
+      description: 'Fetch a package Usage: fetch [<package1> <package2> ... <packagen>] <packagei>: package name Downloads the given pisi packages to working directory'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -o, --output-dir=: Output directory for the fetched packages
+        -r, --repo=: Fetch packages from a specified repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            output-dir: Output directory for the fetched packages
+            repo: Fetch packages from a specified repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: help
+      description: 'Prints help for given commands Usage: help [ <command1> <command2> ... <commandn> ] If run without parameters, it prints the general help.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: history
+      description: 'History of pisi operations Usage: history Lists previous operations.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -l, --last=: Output only the last n operations
+        -s, --snapshot: Take snapshot of the current system
+        -t, --takeback=: Takeback to the state after the given operation finished
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            last: Output only the last n operations
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            snapshot: Take snapshot of the current system
+            takeback: Takeback to the state after the given operation finished
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: hs
+      description: 'History of pisi operations Usage: history Lists previous operations.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -l, --last=: Output only the last n operations
+        -s, --snapshot: Take snapshot of the current system
+        -t, --takeback=: Takeback to the state after the given operation finished
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            last: Output only the last n operations
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            snapshot: Take snapshot of the current system
+            takeback: Takeback to the state after the given operation finished
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: index
+      description: 'Index eopkg files in a given directory Usage: index <directory> ...'
+      flags:
+        --compression-types=: Comma-separated compression types for index file.
+        --skip-signing: Do not sign index.
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -a, --absolute-urls: Store absolute links for indexed files.
+        -d, --debug: Show debugging information
+        -o, --output=: Index output file
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            absolute-urls: Store absolute links for indexed files.
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            compression-types: Comma-separated compression types for index file. Valid options are "xz" and "bz2". Defaults to "xz".
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            output: Index output file
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            skip-signing: Do not sign index.
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: info
+      description: 'Display package information Usage: info <package1> <package2> ... <packagen> <packagei> is either a package name or a .pisi file,'
+      flags:
+        --sort-by=: Sort files by name (path), size or type.
+        --xml: Output in xml format
+        -D, --destdir=: Change the system root for eopkg commands
+        -F, --files-path: Show only paths.
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -c, --component=: Info about the given component
+        -d, --debug: Show debugging information
+        -f, --files: Show a list of package files.
+        -r, --repo=: Resolve package against specified repository
+        -s, --short: Do not show details
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: Info about the given component
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            files: Show a list of package files.
+            files-path: Show only paths.
+            no-color: Suppresses all coloring of eopkg's output
+            repo: Resolve package against specified repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            short: Do not show details
+            sort-by: Sort files by name (path), size or type.
+            verbose: Detailed output
+            xml: Output in xml format
+            yes-all: Assume yes in all yes/no queries
+    - name: install
+      description: 'Install eopkg packages Usage: install <package1> <package2> ... <packagen> You may use filenames, URI''s or package names for packages.'
+      flags:
+        --exclude-from=: When installing packages, ignore packages and components whose basenames match any pattern contained in file.
+        --ignore-check: Skip distribution release and architecture check
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-file-conflicts: Ignore file conflicts
+        --ignore-package-conflicts: Ignore package conflicts
+        --ignore-revdeps-of-deps-check: Don't check for updates in reverse dependencies of runtime dependencies when updates are available
+        --ignore-safety: Bypass safety switch
+        --reinstall: Reinstall already installed packages
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -c, --component=: Install component's and recursive components' packages
+        -d, --debug: Show debugging information
+        -f, --fetch-only: Fetch upgrades but do not install.
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -r, --repository=: Name of the component's repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -x, --exclude=: When installing packages, ignore packages and components whose basenames match pattern.
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: Install component's and recursive components' packages
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            exclude: When installing packages, ignore packages and components whose basenames match pattern.
+            exclude-from: When installing packages, ignore packages and components whose basenames match any pattern contained in file.
+            fetch-only: Fetch upgrades but do not install.
+            ignore-check: Skip distribution release and architecture check
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-file-conflicts: Ignore file conflicts
+            ignore-package-conflicts: Ignore package conflicts
+            ignore-revdeps-of-deps-check: Don't check for updates in reverse dependencies of runtime dependencies when updates are available
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            reinstall: Reinstall already installed packages
+            repository: Name of the component's repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: it
+      description: 'Install eopkg packages Usage: install <package1> <package2> ... <packagen> You may use filenames, URI''s or package names for packages.'
+      flags:
+        --exclude-from=: When installing packages, ignore packages and components whose basenames match any pattern contained in file.
+        --ignore-check: Skip distribution release and architecture check
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-file-conflicts: Ignore file conflicts
+        --ignore-package-conflicts: Ignore package conflicts
+        --ignore-revdeps-of-deps-check: Don't check for updates in reverse dependencies of runtime dependencies when updates are available
+        --ignore-safety: Bypass safety switch
+        --reinstall: Reinstall already installed packages
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -c, --component=: Install component's and recursive components' packages
+        -d, --debug: Show debugging information
+        -f, --fetch-only: Fetch upgrades but do not install.
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -r, --repository=: Name of the component's repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -x, --exclude=: When installing packages, ignore packages and components whose basenames match pattern.
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: Install component's and recursive components' packages
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            exclude: When installing packages, ignore packages and components whose basenames match pattern.
+            exclude-from: When installing packages, ignore packages and components whose basenames match any pattern contained in file.
+            fetch-only: Fetch upgrades but do not install.
+            ignore-check: Skip distribution release and architecture check
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-file-conflicts: Ignore file conflicts
+            ignore-package-conflicts: Ignore package conflicts
+            ignore-revdeps-of-deps-check: Don't check for updates in reverse dependencies of runtime dependencies when updates are available
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            reinstall: Reinstall already installed packages
+            repository: Name of the component's repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: ix
+      description: 'Index eopkg files in a given directory Usage: index <directory> ...'
+      flags:
+        --compression-types=: Comma-separated compression types for index file.
+        --skip-signing: Do not sign index.
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -a, --absolute-urls: Store absolute links for indexed files.
+        -d, --debug: Show debugging information
+        -o, --output=: Index output file
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            absolute-urls: Store absolute links for indexed files.
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            compression-types: Comma-separated compression types for index file. Valid options are "xz" and "bz2". Defaults to "xz".
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            output: Index output file
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            skip-signing: Do not sign index.
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: la
+      description: 'List available packages in the repositories Usage: list-available [ <repo1> <repo2> ... repon ] Gives a brief list of eopkg packages published in the specified repositories.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -U, --uninstalled: Show uninstalled packages only
+        -c, --component=: List available packages under given component
+        -d, --debug: Show debugging information
+        -l, --long: Show in long format
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: List available packages under given component
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            uninstalled: Show uninstalled packages only
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: lc
+      description: 'List available components Usage: list-components Gives a brief list of eopkg components published in the repositories.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -l, --long: Show in long format
+        -r, --repository=: Name of the source or package repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            repository: Name of the source or package repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: li
+      description: 'Print the list of all installed packages Usage: list-installed'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -a, --automatic: Show automatically installed packages and the parent dependency
+        -b, --with-build-host=: Only list the installed packages built by the given host
+        -c, --component=: List installed packages under given component
+        -d, --debug: Show debugging information
+        -e, --explicit: Show installed packages that were installed by a user
+        -i, --install-info: Show detailed install info
+        -l, --long: Show in long format
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            automatic: Show automatically installed packages and the parent dependency
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: List installed packages under given component
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            explicit: Show installed packages that were installed by a user
+            install-info: Show detailed install info
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            with-build-host: Only list the installed packages built by the given host
+            yes-all: Assume yes in all yes/no queries
+    - name: list-available
+      description: 'List available packages in the repositories Usage: list-available [ <repo1> <repo2> ... repon ] Gives a brief list of eopkg packages published in the specified repositories.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -U, --uninstalled: Show uninstalled packages only
+        -c, --component=: List available packages under given component
+        -d, --debug: Show debugging information
+        -l, --long: Show in long format
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: List available packages under given component
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            uninstalled: Show uninstalled packages only
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: list-components
+      description: 'List available components Usage: list-components Gives a brief list of eopkg components published in the repositories.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -l, --long: Show in long format
+        -r, --repository=: Name of the source or package repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            repository: Name of the source or package repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: list-installed
+      description: 'Print the list of all installed packages Usage: list-installed'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -a, --automatic: Show automatically installed packages and the parent dependency
+        -b, --with-build-host=: Only list the installed packages built by the given host
+        -c, --component=: List installed packages under given component
+        -d, --debug: Show debugging information
+        -e, --explicit: Show installed packages that were installed by a user
+        -i, --install-info: Show detailed install info
+        -l, --long: Show in long format
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            automatic: Show automatically installed packages and the parent dependency
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: List installed packages under given component
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            explicit: Show installed packages that were installed by a user
+            install-info: Show detailed install info
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            with-build-host: Only list the installed packages built by the given host
+            yes-all: Assume yes in all yes/no queries
+    - name: list-newest
+      description: 'List newest packages in the repositories Usage: list-newest [ <repo1> <repo2> ... repon ] Gives a list of eopkg newly published packages in the specified repositories.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -l, --last=: List new packages added to repository after last nth previous repository update
+        -s, --since=: List new packages added to repository after this given date formatted as yyyy-mm-dd
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            last: List new packages added to repository after last nth previous repository update
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            since: List new packages added to repository after this given date formatted as yyyy-mm-dd
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: list-pending
+      description: List pending packages Lists packages waiting to be configured.
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: list-repo
+      description: 'List repositories Usage: list-repo Lists currently tracked repositories.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: list-upgrades
+      description: 'List packages to be upgraded Usage: list-upgrades Lists the packages that will be upgraded.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -c, --component=: List upgradable packages under given component
+        -d, --debug: Show debugging information
+        -i, --install-info: Show detailed install info
+        -l, --long: Show in long format
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: List upgradable packages under given component
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            install-info: Show detailed install info
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: ln
+      description: 'List newest packages in the repositories Usage: list-newest [ <repo1> <repo2> ... repon ] Gives a list of eopkg newly published packages in the specified repositories.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -l, --last=: List new packages added to repository after last nth previous repository update
+        -s, --since=: List new packages added to repository after this given date formatted as yyyy-mm-dd
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            last: List new packages added to repository after last nth previous repository update
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            since: List new packages added to repository after this given date formatted as yyyy-mm-dd
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: lp
+      description: List pending packages Lists packages waiting to be configured.
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: lr
+      description: 'List repositories Usage: list-repo Lists currently tracked repositories.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: lu
+      description: 'List packages to be upgraded Usage: list-upgrades Lists the packages that will be upgraded.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -c, --component=: List upgradable packages under given component
+        -d, --debug: Show debugging information
+        -i, --install-info: Show detailed install info
+        -l, --long: Show in long format
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: List upgradable packages under given component
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            install-info: Show detailed install info
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: rdb
+      description: 'Rebuild Databases Usage: rebuilddb [ <package1> <package2> ... <packagen> ] Rebuilds the eopkg databases If package specs are given, they should be the names of package dirs under /var/lib/eopkg'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -f, --files: Rebuild files database
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            files: Rebuild files database
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: rebuild-db
+      description: 'Rebuild Databases Usage: rebuilddb [ <package1> <package2> ... <packagen> ] Rebuilds the eopkg databases If package specs are given, they should be the names of package dirs under /var/lib/eopkg'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -f, --files: Rebuild files database
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            files: Rebuild files database
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: remove
+      description: 'Remove eopkg packages Usage: remove <package1> <package2> ... <packagen> Remove package(s) from your system.'
+      flags:
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        --purge: Removes everything including changed config files of the package
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -c, --component=: Remove component's and recursive components' packages
+        -d, --debug: Show debugging information
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: Remove component's and recursive components' packages
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            purge: Removes everything including changed config files of the package
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: remove-orphans
+      description: 'Remove orphaned packages Usage: remove-orphans Remove any unused orphan packages from the system that were automatically installed as a dependency of another package.'
+      flags:
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        --purge: Removes everything including changed config files of the package
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            purge: Removes everything including changed config files of the package
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: remove-repo
+      description: 'Remove repositories Usage: remove-repo <repo1> <repo2> ... <repon> Remove all repository information from the system.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: repo-priority
+      description: 'Set a repository''s priority Usage: repo-priority <repo> <priority> <repo>: Name of repository to adjust priority <priority>: Set the repository''s priority at given position (0 is first)'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: rm
+      description: 'Remove eopkg packages Usage: remove <package1> <package2> ... <packagen> Remove package(s) from your system.'
+      flags:
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        --purge: Removes everything including changed config files of the package
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -c, --component=: Remove component's and recursive components' packages
+        -d, --debug: Show debugging information
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            component: Remove component's and recursive components' packages
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            purge: Removes everything including changed config files of the package
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: rmf
+      description: 'Remove eopkg packages Usage: autoremove <package1> <package2> ... <packagen> Remove package(s) from your system.'
+      flags:
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        --purge: Removes everything including changed config files of the package
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            purge: Removes everything including changed config files of the package
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: rmo
+      description: 'Remove orphaned packages Usage: remove-orphans Remove any unused orphan packages from the system that were automatically installed as a dependency of another package.'
+      flags:
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-safety: Bypass safety switch
+        --purge: Removes everything including changed config files of the package
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            purge: Removes everything including changed config files of the package
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: rp
+      description: 'Set a repository''s priority Usage: repo-priority <repo> <priority> <repo>: Name of repository to adjust priority <priority>: Set the repository''s priority at given position (0 is first)'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: rr
+      description: 'Remove repositories Usage: remove-repo <repo1> <repo2> ... <repon> Remove all repository information from the system.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: search
+      description: 'Search packages Usage: search <term1> <term2> ... <termn> Finds a package containing specified search terms in summary, description, and package name fields.'
+      flags:
+        --description: Search in the package description
+        --name: Search in the package name
+        --summary: Search in the package summary
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -i, --installdb: Search in installdb
+        -l, --language=: Summary and description language
+        -r, --repository=: Name of the source or package repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            description: Search in the package description
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            installdb: Search in installdb
+            language: Summary and description language
+            name: Search in the package name
+            no-color: Suppresses all coloring of eopkg's output
+            repository: Name of the source or package repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            summary: Search in the package summary
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: search-file
+      description: 'Search for a file Usage: search-file <path1> <path2> ... <pathn> Finds the installed package which contains the specified file.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -l, --long: Show in long format
+        -q, --quiet: Show only package name
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            quiet: Show only package name
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: sf
+      description: 'Search for a file Usage: search-file <path1> <path2> ... <pathn> Finds the installed package which contains the specified file.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -l, --long: Show in long format
+        -q, --quiet: Show only package name
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            long: Show in long format
+            no-color: Suppresses all coloring of eopkg's output
+            quiet: Show only package name
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: sr
+      description: 'Search packages Usage: search <term1> <term2> ... <termn> Finds a package containing specified search terms in summary, description, and package name fields.'
+      flags:
+        --description: Search in the package description
+        --name: Search in the package name
+        --summary: Search in the package summary
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -i, --installdb: Search in installdb
+        -l, --language=: Summary and description language
+        -r, --repository=: Name of the source or package repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            description: Search in the package description
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            installdb: Search in installdb
+            language: Summary and description language
+            name: Search in the package name
+            no-color: Suppresses all coloring of eopkg's output
+            repository: Name of the source or package repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            summary: Search in the package summary
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: up
+      description: 'Upgrade eopkg packages Usage: Upgrade [<package1> <package2> ... <packagen>] <packagei>: package name Upgrades the entire system if no package names are given You may use only package names to specify packages because the package upgrade operation is defined only with respect to repositories.'
+      flags:
+        --exclude-from=: When upgrading system, ignore packages and components whose basenames match any pattern contained in file.
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-file-conflicts: Ignore file conflicts
+        --ignore-package-conflicts: Ignore package conflicts
+        --ignore-safety: Bypass safety switch
+        --security-only: Security related package upgrades only
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -b, --bypass-update-repo: Do not update repositories
+        -c, --component=: Upgrade component's and recursive components' packages
+        -d, --debug: Show debugging information
+        -f, --fetch-only: Fetch upgrades but do not install.
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -r, --repository=: Name of the to be upgraded packages' repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -x, --exclude=: When upgrading system, ignore packages and components whose basenames match pattern.
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            bypass-update-repo: Do not update repositories
+            component: Upgrade component's and recursive components' packages
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            exclude: When upgrading system, ignore packages and components whose basenames match pattern.
+            exclude-from: When upgrading system, ignore packages and components whose basenames match any pattern contained in file.
+            fetch-only: Fetch upgrades but do not install.
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-file-conflicts: Ignore file conflicts
+            ignore-package-conflicts: Ignore package conflicts
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            repository: Name of the to be upgraded packages' repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            security-only: Security related package upgrades only
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: update-repo
+      description: 'Update repository databases Usage: update-repo [<repo1> <repo2> ... <repon>] <repoi>: repository name Synchronizes the eopkg databases with the current repository.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -f, --force: Update database in any case
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            force: Update database in any case
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: upgrade
+      description: 'Upgrade eopkg packages Usage: Upgrade [<package1> <package2> ... <packagen>] <packagei>: package name Upgrades the entire system if no package names are given You may use only package names to specify packages because the package upgrade operation is defined only with respect to repositories.'
+      flags:
+        --exclude-from=: When upgrading system, ignore packages and components whose basenames match any pattern contained in file.
+        --ignore-comar: Bypass comar configuration agent
+        --ignore-dependency: Do not take dependency information into account
+        --ignore-file-conflicts: Ignore file conflicts
+        --ignore-package-conflicts: Ignore package conflicts
+        --ignore-safety: Bypass safety switch
+        --security-only: Security related package upgrades only
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -b, --bypass-update-repo: Do not update repositories
+        -c, --component=: Upgrade component's and recursive components' packages
+        -d, --debug: Show debugging information
+        -f, --fetch-only: Fetch upgrades but do not install.
+        -n, --dry-run: Do not perform any action, just show what would be done
+        -r, --repository=: Name of the to be upgraded packages' repository
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -x, --exclude=: When upgrading system, ignore packages and components whose basenames match pattern.
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            bypass-update-repo: Do not update repositories
+            component: Upgrade component's and recursive components' packages
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            dry-run: Do not perform any action, just show what would be done
+            exclude: When upgrading system, ignore packages and components whose basenames match pattern.
+            exclude-from: When upgrading system, ignore packages and components whose basenames match any pattern contained in file.
+            fetch-only: Fetch upgrades but do not install.
+            ignore-comar: Bypass comar configuration agent
+            ignore-dependency: Do not take dependency information into account
+            ignore-file-conflicts: Ignore file conflicts
+            ignore-package-conflicts: Ignore package conflicts
+            ignore-safety: Bypass safety switch
+            no-color: Suppresses all coloring of eopkg's output
+            repository: Name of the to be upgraded packages' repository
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            security-only: Security related package upgrades only
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
+    - name: ur
+      description: 'Update repository databases Usage: update-repo [<repo1> <repo2> ... <repon>] <repoi>: repository name Synchronizes the eopkg databases with the current repository.'
+      flags:
+        -D, --destdir=: Change the system root for eopkg commands
+        -L, --bandwidth-limit=: Keep bandwidth usage under specified KB's
+        -N, --no-color: Suppresses all coloring of eopkg's output
+        -R, --retry-attempts=: Set the max number of retry attempts in case of connection timeouts
+        -d, --debug: Show debugging information
+        -f, --force: Update database in any case
+        -v, --verbose: Detailed output
+        -w, --download-workers=: Set the max number of concurrent download workers
+        -y, --yes-all: Assume yes in all yes/no queries
+      documentation:
+        flag:
+            bandwidth-limit: Keep bandwidth usage under specified KB's
+            debug: Show debugging information
+            destdir: Change the system root for eopkg commands
+            download-workers: Set the max number of concurrent download workers
+            force: Update database in any case
+            no-color: Suppresses all coloring of eopkg's output
+            retry-attempts: Set the max number of retry attempts in case of connection timeouts
+            verbose: Detailed output
+            yes-all: Assume yes in all yes/no queries
