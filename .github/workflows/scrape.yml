@@ -26,6 +26,7 @@ jobs:
   docker: {uses: ./.github/workflows/scrape-template.yml, with: {command: docker}}
   docker-compose: {uses: ./.github/workflows/scrape-template.yml, with: {command: docker-compose}}
   drift: {uses: ./.github/workflows/scrape-template.yml, with: {command: drift}}
+  eopkg: {uses: ./.github/workflows/scrape-template.yml, with: {command: eopkg}}
   eza: {uses: ./.github/workflows/scrape-template.yml, with: {command: eza}}
   faas-cli: {uses: ./.github/workflows/scrape-template.yml, with: {command: faas-cli}}
   fd: {uses: ./.github/workflows/scrape-template.yml, with: {command: fd}}
