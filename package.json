@@ -17,7 +17,7 @@
     "delta": "https://github.com/dandavison/delta#0.19.2",
     "devbox": "https://github.com/jetify-com/devbox#0.18.0",
     "dive": "https://github.com/wagoodman/dive#v0.13.1",
-    "dlv": "https://github.com/go-delve/delve#v1.27.1",
+    "dlv": "https://github.com/go-delve/delve#v1.27.2",
     "docker": "https://github.com/docker/cli#v29.8.0",
     "docker-compose": "https://github.com/docker/compose#v5.5.1",
     "drift": "https://github.com/aymanbagabas/drift#v0.0.8",
