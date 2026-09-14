@@ -1,0 +1,343 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: dlv
+description: Delve is a debugger for the Go programming language.
+persistentflags:
+  --accept-multiclient: Allows a headless server to accept multiple client connections via JSON-RPC or DAP.
+  --allow-non-terminal-interactive: Allows interactive sessions of Delve that don't have a terminal as stdin, stdout and stderr
+  --api-version=:
+    description: Selects JSON-RPC API version when headless. The only valid value is 2. Can be reset via RPCServer.SetApiVersion. See Documentation/api/json-rpc/README.md.
+    default: "2"
+  --backend=:
+    description: Backend selection (see 'dlv help backend').
+    default: default
+  --build-flags=: 'Build flags, to be passed to the compiler. For example: --build-flags="-tags=integration -mod=vendor -cover -v"'
+  --check-go-version:
+    description: Exits if the version of Go in use is not compatible (too old or too new) with the version of Delve.
+    default: "true"
+  --disable-aslr: Disables address space randomization
+  --headless: Run debug server only, in headless mode. Server will accept both JSON-RPC or DAP client connections.
+  --init=: Init file, executed by the terminal client.
+  --log: Enable debugging server logging.
+  --log-dest=: Writes logs to the specified file or file descriptor (see 'dlv help log').
+  --log-output=: Comma separated list of components that should produce debug output (see 'dlv help log')
+  --only-same-user:
+    description: Only connections from the same user that started this instance of Delve are allowed to connect.
+    default: "true"
+  --wd=: Working directory for running the program.
+  -l, --listen=:
+    description: Debugging server listen address. Prefix with 'unix:' to use a unix domain socket.
+    default: 127.0.0.1:0
+  -r, --redirect=*: Specifies redirect rules for target process (see 'dlv help redirect')
+commands:
+  - name: attach pid [executable]
+    description: Attach to running process and begin debugging.
+    flags:
+      --continue: Continue the debugged process on start.
+      --waitfor-duration=: Total time to wait for a process
+      --waitfor-interval=:
+        description: Interval between checks of the process list, in millisecond
+        default: "1"
+      --waitfor=: Wait for a process with a name beginning with this prefix
+    documentation:
+      command: |
+        Attach to an already running process and begin debugging it.
+
+        This command will cause Delve to take control of an already running process, and
+        begin a new debug session.  When exiting the debug session you will have the
+        option to let the process continue or kill it.
+  - name: backend
+    description: Help about the --backend flag.
+    documentation:
+      command: |
+        The --backend flag specifies which backend should be used, possible values
+        are:
+
+        	default		Uses lldb on macOS, native everywhere else.
+        	native		Native backend.
+        	lldb		Uses lldb-server or debugserver.
+        	rr		Uses mozilla rr (https://github.com/mozilla/rr).
+
+        Some backends can be configured using environment variables:
+
+        * DELVE_DEBUGSERVER_PATH specifies the path of the debugserver executable for the lldb backend
+        * DELVE_RR_RECORD_FLAGS specifies additional flags used when calling 'rr record'
+        * DELVE_RR_REPLAY_FLAGS specifies additional flags used when calling 'rr replay'
+  - name: completion
+    description: Generate the autocompletion script for the specified shell
+    commands:
+      - name: bash
+        description: Generate the autocompletion script for bash
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the bash shell.
+
+            This script depends on the 'bash-completion' package.
+            If it is not installed already, you can install it via your OS's package manager.
+
+            To load completions in your current shell session:
+
+            	source <(dlv completion bash)
+
+            To load completions for every new session, execute once:
+
+            #### Linux:
+
+            	dlv completion bash > /etc/bash_completion.d/dlv
+
+            #### macOS:
+
+            	dlv completion bash > $(brew --prefix)/etc/bash_completion.d/dlv
+
+            You will need to start a new shell for this setup to take effect.
+      - name: fish
+        description: Generate the autocompletion script for fish
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the fish shell.
+
+            To load completions in your current shell session:
+
+            	dlv completion fish | source
+
+            To load completions for every new session, execute once:
+
+            	dlv completion fish > ~/.config/fish/completions/dlv.fish
+
+            You will need to start a new shell for this setup to take effect.
+      - name: powershell
+        description: Generate the autocompletion script for powershell
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for powershell.
+
+            To load completions in your current shell session:
+
+            	dlv completion powershell | Out-String | Invoke-Expression
+
+            To load completions for every new session, add the output of the above command
+            to your powershell profile.
+      - name: zsh
+        description: Generate the autocompletion script for zsh
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the zsh shell.
+
+            If shell completion is not already enabled in your environment you will need
+            to enable it.  You can execute the following once:
+
+            	echo "autoload -U compinit; compinit" >> ~/.zshrc
+
+            To load completions in your current shell session:
+
+            	source <(dlv completion zsh)
+
+            To load completions for every new session, execute once:
+
+            #### Linux:
+
+            	dlv completion zsh > "${fpath[1]}/_dlv"
+
+            #### macOS:
+
+            	dlv completion zsh > $(brew --prefix)/share/zsh/site-functions/_dlv
+
+            You will need to start a new shell for this setup to take effect.
+    documentation:
+      command: |
+        Generate the autocompletion script for dlv for the specified shell.
+        See each sub-command's help for details on how to use the generated script.
+  - name: connect addr
+    description: Connect to a headless debug server with a terminal client.
+    documentation:
+      command: Connect to a running headless debug server with a terminal client. Prefix with 'unix:' to use a unix domain socket.
+  - name: core <executable> <core>
+    description: Examine a core dump.
+    flags:
+      -c, --core&: ""
+    documentation:
+      command: |-
+        Examine a core dump (only supports linux and windows core dumps).
+
+        The core command will open the specified core file and the associated
+        executable and let you examine the state of the process when the
+        core dump was taken.
+
+        Currently supports linux/amd64 and linux/arm64 core files, windows/amd64 minidumps and core files generated by Delve's 'dump' command.
+  - name: dap
+    description: Starts a headless TCP server communicating via Debug Adaptor Protocol (DAP).
+    flags:
+      --client-addr=: Address where the DAP client is waiting for the DAP server to dial in. Prefix with 'unix:' to use a unix domain socket.
+    documentation:
+      command: |-
+        Starts a headless TCP server communicating via Debug Adaptor Protocol (DAP).
+
+        The server is always headless and requires a DAP client like VS Code to connect and request a binary
+        to be launched or a process to be attached to. The following modes can be specified via the client's launch config:
+        - launch + exec   (executes precompiled binary, like 'dlv exec')
+        - launch + debug  (builds and launches, like 'dlv debug')
+        - launch + test   (builds and tests, like 'dlv test')
+        - launch + replay (replays an rr trace, like 'dlv replay')
+        - launch + core   (replays a core dump file, like 'dlv core')
+        - attach + local  (attaches to a running process, like 'dlv attach')
+
+        Program and output binary paths will be interpreted relative to dlv's working directory.
+
+        This server does not accept multiple client connections (--accept-multiclient).
+        Use 'dlv [command] --headless' instead and a DAP client with attach + remote config.
+        While --continue is not supported, stopOnEntry launch/attach attribute can be used to control if
+        execution is resumed at the start of the debug session.
+
+        The --client-addr flag is a special flag that makes the server initiate a debug session
+        by dialing in to the host:port where a DAP client is waiting. This server process
+        will exit when the debug session ends.
+  - name: debug [package]
+    description: Compile and begin debugging main package in current directory, or the package specified.
+    flags:
+      --continue: Continue the debugged process on start.
+      --output=: Output path for the binary.
+      --rr-cleanup:
+        description: Delete directory containing debug recording on detach.
+        default: "true"
+      --tty=: TTY to use for the target program
+    documentation:
+      command: |-
+        Compiles your program with optimizations disabled, starts and attaches to it.
+
+        By default, with no arguments, Delve will compile the 'main' package in the
+        current directory, and begin to debug it. Alternatively you can specify a
+        package name and Delve will compile that package instead, and begin a new debug
+        session.
+  - name: exec <path/to/binary>
+    description: Execute a precompiled binary, and begin a debug session.
+    flags:
+      --continue: Continue the debugged process on start.
+      --rr-cleanup:
+        description: Delete directory containing debug recording on detach.
+        default: "true"
+      --tty=: TTY to use for the target program
+    documentation:
+      command: |-
+        Execute a precompiled binary and begin a debug session.
+
+        This command will cause Delve to exec the binary and immediately attach to it to
+        begin a new debug session. Please note that if the binary was not compiled with
+        optimizations disabled, it may be difficult to properly debug it. Please
+        consider compiling debugging binaries with -gcflags="all=-N -l" on Go 1.10
+        or later, -gcflags="-N -l" on earlier versions of Go.
+  - name: help [command]
+    description: Help about any command
+    documentation:
+      command: |-
+        Help provides help for any command in the application.
+        Simply type dlv help [path to command] for full details.
+  - name: log
+    description: Help about logging flags.
+    documentation:
+      command: |+
+        Logging can be enabled by specifying the --log flag and using the
+        --log-output flag to select which components should produce logs.
+
+        The argument of --log-output must be a comma separated list of component
+        names selected from this list:
+
+
+        	debugger	Log debugger commands
+        	gdbwire		Log connection to gdbserial backend
+        	lldbout		Copy output from debugserver/lldb to standard output
+        	debuglineerr	Log recoverable errors reading .debug_line
+        	rpc		Log all RPC messages
+        	dap		Log all DAP messages
+        	fncall		Log function call protocol
+        	minidump	Log minidump loading
+        	stack           Log stacktracer
+
+        Additionally --log-dest can be used to specify where the logs should be
+        written.
+        If the argument is a number it will be interpreted as a file descriptor,
+        otherwise as a file path.
+        This option will also redirect the "server listening at" message in headless
+        and dap modes.
+
+  - name: redirect
+    description: Help about file redirection.
+    documentation:
+      command: |
+        The standard file descriptors of the target process can be controlled using the '-r' and '--tty' arguments.
+
+        The --tty argument allows redirecting all standard descriptors to a terminal, specified as an argument to --tty.
+
+        The syntax for '-r' argument is:
+
+        		-r [source:]destination
+
+        Where source is one of 'stdin', 'stdout' or 'stderr' and destination is the path to a file. If the source is omitted stdin is used implicitly.
+
+        File redirects can also be changed using the 'restart' command.
+  - name: run
+    description: Deprecated command. Use 'debug' instead.
+    hidden: true
+  - name: substitute-path-guess-helper
+    hidden: true
+  - name: test [package]
+    description: Compile test binary and begin debugging program.
+    flags:
+      --output=: Output path for the binary.
+    documentation:
+      command: |-
+        Compiles a test binary with optimizations disabled and begins a new debug session.
+
+        The test command allows you to begin a new debug session in the context of your
+        unit tests. By default Delve will debug the tests in the current directory.
+        Alternatively you can specify a package name, and Delve will debug the tests in
+        that package instead. Double-dashes `--` can be used to pass arguments to the test program:
+
+        dlv test [package] -- -test.run TestSomething -test.v -other-argument
+
+        See also: 'go help testflag'.
+  - name: trace [package] regexp
+    description: Compile and begin tracing program.
+    flags:
+      --ebpf: Trace using eBPF (experimental).
+      --follow-calls=: Trace all children of the function to the required depth. Trace also supports defer functions and cases where functions are dynamically returned and passed as parameters.
+      --output=: Output path for the binary.
+      --timestamp: Show timestamp in the output
+      -e, --exec=: Binary file to exec and trace.
+      -p, --pid=: Pid to attach to.
+      -s, --stack=: Show stack trace with given depth. (Ignored with --ebpf)
+      -t, --test: Trace a test binary.
+      -v, --verbose=: 'Parameter verbosity: 0=values, 1=types, 2=inline, 3=expanded, 4=full (default 0)'
+    documentation:
+      command: |-
+        Trace program execution.
+
+        The trace sub command will set a tracepoint on every function matching the
+        provided regular expression and output information when tracepoint is hit.  This
+        is useful if you do not want to begin an entire debug session, but merely want
+        to know what functions your process is executing.
+
+        The output of the trace sub command is printed to stderr, so if you would like to
+        only see the output of the trace operations you can redirect stdout.
+  - name: version
+    description: Prints version.
+    flags:
+      -v, --verbose: print verbose version info
+documentation:
+  command: |-
+    Delve is a source level debugger for Go programs.
+
+    Delve enables you to interact with your program by controlling the execution of the process,
+    evaluating variables, and providing information of thread / goroutine state, CPU register state and more.
+
+    The goal of this tool is to provide a simple yet powerful interface for debugging Go programs.
+
+    Pass flags to the program you are debugging using `--`, for example:
+
+    `dlv exec ./hello -- server --config conf/config.toml`
