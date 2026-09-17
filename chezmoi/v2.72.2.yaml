@@ -1,0 +1,984 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: chezmoi
+description: Manage your dotfiles across multiple diverse machines, securely
+persistentflags:
+  --age-recipient-file=: Override age recipient
+  --age-recipient=: Override age recipient
+  --cache=:
+    description: Set cache directory
+    default: /root/.cache/chezmoi
+  --color=:
+    description: Colorize output
+    default: auto
+  --config-format=: Set config file format
+  --debug: Include debug information in output
+  --error-on-conflict: Error on conflict
+  --force: Make all changes without prompting
+  --interactive: Prompt for all changes
+  --less-interactive: Prompt for changed or pre-existing targets
+  --mode=:
+    description: Mode
+    default: file
+  --no-pager: Do not use the pager
+  --no-tty: Do not attempt to get a TTY for prompts
+  --override-data-file=: Override data with file
+  --override-data=: Override data
+  --persistent-state=: Set persistent state file
+  --progress=:
+    description: Display progress bars
+    default: auto
+  --safe&:
+    description: Safely replace files and symlinks
+    default: "true"
+  --skip-secrets: Skip all templates containing secrets
+  --source-path: Specify targets by source path
+  --use-builtin-age=:
+    description: Use builtin age
+    default: auto
+  --use-builtin-diff: Use builtin diff
+  --use-builtin-git=:
+    description: Use builtin git
+    default: auto
+  -D, --destination=:
+    description: Set destination directory
+    default: /root
+  -R, --refresh-externals?:
+    description: Refresh external cache
+    default: auto
+  -S, --source=:
+    description: Set source directory
+    default: /root/.local/share/chezmoi
+  -W, --working-tree=: Set working tree directory
+  -c, --config=: Set config file
+  -k, --keep-going: Keep going as far as possible after an error
+  -n, --dry-run: Do not make any modifications to the destination directory
+  -o, --output=: Write output to path instead of stdout
+  -v, --verbose: Make output more verbose
+commands:
+  - name: add targets...
+    aliases:
+      - manage
+    description: Add an existing file, directory, or symlink to the source state
+    group: daily
+    flags:
+      --create: Add files that should exist, irrespective of their contents
+      --encrypt: Encrypt files
+      --exact: Add directories exactly
+      --new: Create new file if target does not exist
+      --secrets=:
+        description: Scan for secrets when adding unencrypted files
+        default: warning
+      --template-symlinks: Add symlinks with target in source or home dirs as templates
+      -T, --template: Add files as templates
+      -a, --autotemplate: Generate the template when adding files as templates
+      -f, --follow: Add symlink targets instead of symlinks
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -p, --prompt: Prompt before adding each entry
+      -q, --quiet: Suppress warnings
+      -r, --recursive:
+        description: Recurse into subdirectories
+        default: "true"
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Add targets to the source state. If any target is already in the source
+          state, then its source state is replaced with its current state in the
+          destination directory.
+  - name: age
+    description: Interact with age
+    group: encryption
+    commands:
+      - name: decrypt [file...]
+        description: Decrypt file or standard input
+        flags:
+          -p, --passphrase: Decrypt with a passphrase
+      - name: encrypt [file...]
+        description: Encrypt file or standard input
+        flags:
+          -p, --passphrase: Encrypt with a passphrase
+  - name: age-keygen
+    description: Generate an age identity or convert an age identity to an age recipient
+    group: encryption
+    flags:
+      --pq: generate a post-quantum key pair
+      -y, --convert: convert identities to recipients
+    documentation:
+      command: |-
+        Description
+          Generate an age identity or convert an age identity to an age recipient.
+  - name: apply [target]...
+    description: Update the destination directory to match the target state
+    group: daily
+    flags:
+      --init: Recreate config file from template
+      -P, --parent-dirs: Apply all parent directories
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -r, --recursive:
+        description: Recurse into subdirectories
+        default: "true"
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Ensure that target... are in the target state, updating them if necessary.
+          If no targets are specified, the state of all targets are ensured. If a
+          target has been modified since chezmoi last wrote it then the user will be
+          prompted if they want to overwrite the file.
+  - name: archive [target]...
+    description: Generate a tar archive of the target state
+    group: migration
+    flags:
+      --init: Recreate config file from template
+      -P, --parent-dirs: Archive parent directories
+      -f, --format=:
+        description: Set archive format
+        default: tar.gz
+      -i, --include=:
+        description: Include entry types
+        default: none
+      -r, --recursive:
+        description: Recurse into subdirectories
+        default: "true"
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+      -z, --gzip: Compress output with gzip
+    documentation:
+      command: |-
+        Description
+          Generate an archive of the target state, or only the targets specified. This
+          can be piped into tar to inspect the target state.
+  - name: cat target...
+    description: Print the target contents of a file, script, or symlink
+    group: template
+    documentation:
+      command: |-
+        Description
+          Write the target contents of targets to stdout. targets must be files,
+          scripts, or symlinks. For files, the target file contents are written. For
+          scripts, the script's contents are written. For symlinks, the target is
+          written.
+  - name: cat-config
+    description: Print the configuration file
+    group: internal
+    documentation:
+      command: |-
+        Description
+          Print the configuration file.
+  - name: cd [path]
+    description: Launch a shell in the source directory
+    group: advanced
+    documentation:
+      command: |-
+        Description
+          Launch a shell in the working tree (typically the source directory). chezmoi
+          will launch the command set by the cd.command configuration variable with
+          any extra arguments specified by cd.args. If this is not set, chezmoi will
+          attempt to detect your shell and finally fall back to an OS-specific default.
+
+          If the optional argument path is present, the shell will be launched in the
+          source directory corresponding to path.
+
+          The shell will have various CHEZMOI* environment variables set, as for
+          scripts.
+  - name: chattr attributes target...
+    description: Change the attributes of a target in the source state
+    group: daily
+    flags:
+      -r, --recursive: Recurse into subdirectories
+    documentation:
+      command: |-
+        Description
+          Change the attributes and/or type of targets. modifier specifies what to
+          modify.
+
+          See attributes for a description of each attribute.
+
+          Add attributes by specifying them or their abbreviations directly,
+          optionally prefixed with a plus sign (+). Remove attributes by prefixing
+          them or their attributes with the string no or a minus sign (-). The
+          available attribute modifiers and their abbreviations are:
+
+           Attribute modifier                  | Abbreviation
+          -------------------------------------|------------------------------------
+           after                               | a
+           before                              | b
+           empty                               | e
+           encrypted                           | none
+           exact                               | none
+           executable                          | x
+           external                            | none
+           once                                | o
+           onchange                            | none
+           private                             | p
+           readonly                            | r
+           remove                              | none
+           template                            | t
+
+          The type of a target can be changed using a type modifier:
+
+           Type modifier
+          --------------------------------------------------------------------------
+           create
+           modify
+           script
+           symlink
+
+          The negative form of type modifiers, e.g. nocreate, changes the target to be
+          a regular file if it is of that type, otherwise the type is left unchanged.
+
+          Multiple modifications may be specified by separating them with a comma (,).
+          If you use the -modifier form then you must put modifier after a -- to
+          prevent
+          chezmoi from interpreting -modifier as an option.
+  - name: completion shell
+    description: Generate shell completion code
+    group: internal
+    documentation:
+      command: |-
+        Description
+          Generate shell completion code for the specified shell (bash, fish,
+          powershell, or zsh).
+  - name: data
+    description: Print the template data
+    group: template
+    flags:
+      -f, --format=: Output format
+    documentation:
+      command: |-
+        Description
+          Write the computed template data to stdout.
+  - name: decrypt [file...]
+    description: Decrypt file or standard input
+    group: encryption
+    documentation:
+      command: |-
+        Description
+          Decrypt files using chezmoi's configured encryption. If no files are given,
+          decrypt the standard input. The decrypted result is written to the standard
+          output or a file if the --output flag is set.
+  - name: destroy target...
+    description: Permanently delete an entry from the source state, the destination directory, and the state
+    group: migration
+    flags:
+      -r, --recursive: Recurse into subdirectories
+    documentation:
+      command: |-
+        Description
+          Remove target from the source state, the destination directory, and the
+          state.
+  - name: diff [target]...
+    description: Print the diff between the target state and the destination state
+    group: daily
+    flags:
+      --init: Recreate config file from template
+      --pager=:
+        description: Set pager
+        default: "\0"
+      --reverse: Reverse the direction of the diff
+      --script-contents:
+        description: Show script contents
+        default: "true"
+      -P, --parent-dirs: Print the diff of all parent directories
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -r, --recursive: Recurse into subdirectories
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Print the difference between the target state and the destination state for
+          targets. If no targets are specified, print the differences for all targets.
+
+          If a diff.pager command is set in the configuration file then the output
+          will be piped into it.
+
+          If diff.command is set then it will be invoked to show individual file
+          differences with diff.args passed as arguments. Each element of diff.args is
+          interpreted as a template with the variables .Destination and .Target
+          available corresponding to the path of the file in the source and target
+          state respectively. The default value of diff.args is ["{{ .Destination }}",
+          "{{ .Target }}"]. If diff.args does not contain any template arguments then
+          {{ .Destination }} and {{ .Target }} will be appended automatically.
+  - name: docker
+    aliases:
+      - podman
+    description: Use your dotfiles in a Docker container
+    group: remote
+    commands:
+      - name: exec container-id [args...]
+        description: Install your dotfiles in an existing Docker container and execute a shell
+        flags:
+          -i, --interactive:
+            description: Run interactively
+            default: "true"
+          -p, --package-manager=: Package manager
+          -s, --shell:
+            description: Execute shell afterwards
+            default: "true"
+      - name: run image-id [args...]
+        description: Create a new Docker container with your dotfiles and execute a shell
+        flags:
+          -p, --package-manager=: Package manager
+  - name: doctor
+    description: Check your system for potential problems
+    group: documentation
+    flags:
+      --no-network: do not use network connection
+    documentation:
+      command: |-
+        Description
+          Check for potential problems.
+  - name: dump [target]...
+    description: Generate a dump of the target state
+    group: internal
+    flags:
+      --init: Recreate config file from template
+      -P, --parent-dirs: Dump all parent directories
+      -f, --format=: Output format
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -r, --recursive:
+        description: Recurse into subdirectories
+        default: "true"
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Dump the target state of targets. If no targets are specified, then the
+          entire target state.
+  - name: dump-config
+    description: Dump the configuration values
+    group: internal
+    flags:
+      -f, --format=: Output format
+    documentation:
+      command: |-
+        Description
+          Dump the configuration.
+  - name: edit targets...
+    description: Edit the source state of a target
+    group: daily
+    flags:
+      --hardlink:
+        description: Invoke editor with a hardlink to the source file
+        default: "true"
+      --init: Recreate config file from template
+      --watch: Apply on save
+      -a, --apply: Apply after editing
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Edit the source state of targets, which must be files or symlinks. If no
+          targets are given then the working tree of the source directory is opened.
+
+          Encrypted files are decrypted to a private temporary directory and the
+          editor is invoked with the decrypted file. When the editor exits the edited
+          decrypted file is re-encrypted and replaces the original file in the source
+          state.
+
+          If the operating system supports hard links, then the edit command invokes
+          the editor with filenames which match the target filename, unless the
+          edit.hardlink configuration variable is set to false or the --hardlink=false
+          command line flag is set. Templates preserve their .tmpl extension so
+          editors can highlight them as templates.
+  - name: edit-config
+    description: Edit the configuration file
+    group: advanced
+    documentation:
+      command: |-
+        Description
+          Edit the configuration file.
+  - name: edit-config-template
+    description: Edit the configuration file template
+    group: advanced
+    documentation:
+      command: |-
+        Description
+          Edit the configuration file template. If no configuration file template
+          exists, then a new one is created with the contents of the current config
+          file.
+  - name: edit-encrypted filename...
+    description: Edit an encrypted file
+    group: encryption
+    documentation:
+      command: |-
+        Description
+          Edit the encrypted files filenames.
+
+          Each filename is decrypted to a temporary directory, the editor is invoked
+          on the decrypted files. After the editor returns, each the decrypted file is
+          re-encrypted.
+  - name: encrypt [file...]
+    description: Encrypt file or standard input
+    group: encryption
+    documentation:
+      command: |-
+        Description
+          Encrypt files using chezmoi's configured encryption. If no files are given,
+          encrypt the standard input. The encrypted result is written to the standard
+          output or a file if the --output flag is set.
+  - name: execute-template [template]...
+    description: Execute the given template(s)
+    group: template
+    flags:
+      --left-delimiter=: Set left template delimiter
+      --promptBool=: Simulate promptBool
+      --promptChoice=: Simulate promptChoice
+      --promptInt=: Simulate promptInt
+      --promptMultichoice=: Simulate promptMultichoice
+      --right-delimiter=: Set right template delimiter
+      --stdinisatty:
+        description: Simulate stdinIsATTY
+        default: "true"
+      --with-stdin: Set .chezmoi.stdin to the contents of the standard input
+      -f, --file: Treat arguments as filenames
+      -i, --init: Simulate chezmoi init
+      -p, --promptString=: Simulate promptString
+    documentation:
+      command: |-
+        Description
+          Execute templates. This is useful for testing templates or for calling
+          chezmoi from other scripts. templates are interpreted as literal templates,
+          with no whitespace added to the output between arguments. If no templates
+          are specified, the template is read from stdin.
+  - name: forget target...
+    aliases:
+      - unmanage
+    description: Remove a target from the source state
+    group: daily
+    documentation:
+      command: |-
+        Description
+          Remove targets from the source state, i.e. stop managing them. targets must
+          have entries in the source state. They cannot be externals.
+  - name: generate file
+    description: Generate a file for use with chezmoi
+    group: advanced
+    commands:
+      - name: git-commit-message
+        description: Generate a git commit message
+      - name: install-init-shell.sh
+        description: Generate an install script that also executes a shell
+        flags:
+          -i, --interactive:
+            description: Set interactive
+            default: "true"
+          -p, --package-manager=: Package manager
+          -s, --shell:
+            description: Set shell
+            default: "true"
+      - name: install.sh
+        description: Generate an install script
+    documentation:
+      command: |-
+        Description
+          Generates output for use with chezmoi. The currently supported outputs are:
+
+           Output                | Description
+          -----------------------|--------------------------------------------------
+           git-commit-message    | A git commit message, describing the changes to
+                                 | the source directory.
+           install.sh            | An install script, suitable for use with GitHub
+                                 | Codespaces
+           install-init-shell.sh | A script which installs chezmoi, runs chezmoi
+                                 | init, and executes your shell
+  - name: git [arg]...
+    description: Run git in the source directory
+    group: advanced
+    documentation:
+      command: |-
+        Description
+          Run git args in the working tree (typically the source directory).
+  - name: help [command]
+    description: Print help about a command
+    group: documentation
+    documentation:
+      command: |-
+        Description
+          Print the help associated with command, or general help if no command is
+          given.
+  - name: ignored
+    description: Print ignored targets
+    group: advanced
+    flags:
+      -0, --nul-path-separator: Use the NUL character as a path separator
+      -t, --tree: Print paths as a tree
+    documentation:
+      command: |-
+        Description
+          Print the list of entries ignored by chezmoi.
+  - name: import archive
+    description: Import an archive into the source state
+    group: migration
+    flags:
+      --exact: Set exact_ attribute on imported directories
+      --strip-components=: Strip leading path components
+      -d, --destination=:
+        description: Set destination prefix
+        default: /root
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -r, --remove-destination: Remove destination before import
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Import the source state from an archive file in to a directory in the source
+          state. This is primarily used to make subdirectories of your home directory
+          exactly match the contents of a downloaded archive. You will generally
+          always want to set the --destination, --exact, and --remove-destination
+          flags.
+
+          The supported archive formats are rar, tar, tar.gz, tgz, tar.bz2, tbz2, txz,
+          tar.zst, and zip.
+  - name: init [repo]
+    description: Setup the source directory and update the destination directory to match the target state
+    group: daily
+    flags:
+      --branch=: Set initial branch to checkout
+      --data:
+        description: Include existing template data
+        default: "true"
+      --git-lfs: Run git pull lfs after cloning
+      --one-shot: Run in one-shot mode
+      --prompt: Force prompt*Once template functions to prompt
+      --promptBool=: Populate promptBool
+      --promptChoice=: Populate promptChoice
+      --promptDefaults: Make prompt functions return default values
+      --promptInt=: Populate promptInt
+      --promptMultichoice=: Populate promptMultichoice
+      --promptString=: Populate promptString
+      --recurse-submodules:
+        description: Checkout submodules recursively
+        default: "true"
+      --revision=: Set initial revision to checkout
+      --ssh: Use ssh instead of https when guessing repo URL
+      --tag=: Set initial tag to checkout
+      -C, --config-path=: Path to write generated config file
+      -P, --purge-binary: Purge chezmoi binary after running
+      -a, --apply: Update destination directory
+      -d, --depth=: Create a shallow clone
+      -g, --guess-repo-url:
+        description: Guess the repo URL
+        default: "true"
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -p, --purge: Purge config and source directories after running
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Setup the source directory, generate the config file, and optionally update
+          the destination directory to match the target state. This is done in the
+          following order:
+
+          1. The source directory is initialized. If chezmoi does not detect a Git
+          repository in the source directory, chezmoi will clone the provided repo
+          into the source directory. If no repo is provided, chezmoi will initialize
+          a new Git repository.
+          2. If the initialized source directory contains a .chezmoi.$FORMAT.tmpl file,
+          a new configuration file will be created using that file as a template.
+          3. If the --apply flag is provided, chezmoi apply is run.
+          4. If the --purge flag is provided, chezmoi will remove the source, config,
+          and cache directories.
+          5. If the --purge-binary is passed, chezmoi will attempt to remove its own
+          binary.
+
+          By default, if repo is given, chezmoi will guess the full git repo URL,
+          using HTTPS by default, or SSH if the --ssh option is specified, according
+          to
+          the following patterns:
+
+           Pattern          | HTTPS Repo                | SSH repo
+          ------------------|---------------------------|---------------------------
+           user             | https://user@github.com/u | git@github.com:user/dotfi
+                            | ser/dotfiles.git          | les.git
+           user/repo        | https://user@github.com/u | git@github.com:user/repo.
+                            | ser/repo.git              | git
+           site/user/repo   | https://user@site/user/re | git@site:user/repo.git
+                            | po.git                    |
+           sr.ht/~user      | https://user@git.sr.ht/~u | git@git.sr.ht:~user/dotfi
+                            | ser/dotfiles              | les.git
+           sr.ht/~user/repo | https://user@git.sr.ht/~u | git@git.sr.ht:~user/repo.
+                            | ser/repo                  | git
+
+          To disable git repo URL guessing, pass the --guess-repo-url=false option.
+  - name: internal-test
+    description: Expose functionality for testing
+    hidden: true
+    commands:
+      - name: prompt-bool prompt [default]
+        description: Run promptBool
+      - name: prompt-choice prompt choices [default]
+        description: Run promptChoice
+      - name: prompt-int prompt [default]
+        description: Run promptInt
+      - name: prompt-multichoice prompt choices [defaults]
+        description: Run promptMultichoice
+      - name: prompt-string prompt [default]
+        description: Run promptString
+      - name: read-password
+        description: Read a password
+  - name: license
+    description: Print license
+    group: documentation
+    documentation:
+      command: |-
+        Description
+          Print chezmoi's license.
+  - name: managed [path]...
+    aliases:
+      - list
+    description: List the managed entries in the destination directory
+    group: advanced
+    flags:
+      -0, --nul-path-separator: Use the NUL character as a path separator
+      -f, --format=:
+        description: Format
+        default: json
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -p, --path-style=:
+        description: Path style
+        default: relative
+      -t, --tree: Print paths as a tree
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          List all managed entries in the destination directory under all paths in
+          alphabetical order. When no paths are supplied, list all managed entries in
+          the destination directory in alphabetical order.
+  - name: merge target...
+    description: Perform a three-way merge between the destination state, the source state, and the target state
+    group: daily
+    documentation:
+      command: |-
+        Description
+          Perform a three-way merge between the destination state, the target state,
+          and the source state for each target. The merge tool is defined by the
+          merge.command configuration variable, and defaults to vimdiff. If multiple
+          targets are specified the merge tool is invoked separately and sequentially
+          for each target. If the target state cannot be computed (for example if
+          source is a template containing errors or an encrypted file that cannot be
+          decrypted) a two-way merge is performed instead.
+
+          The order of arguments to merge.command is set by merge.args. Each argument
+          is interpreted as a template with the variables .Destination, .Source, and
+          .Target available corresponding to the path of the file in the destination
+          state, the source state, and the target state respectively. The default
+          value of merge.args is ["{{ .Destination }}", "{{ .Source }}", "{{ .Target
+          }}"]. If merge.args does not contain any template arguments then {{
+          .Destination }}, {{ .Source }}, and {{ .Target }} will be appended
+          automatically.
+  - name: merge-all
+    description: Perform a three-way merge for each modified file
+    group: daily
+    flags:
+      --init: Recreate config file from template
+      -r, --recursive:
+        description: Recurse into subdirectories
+        default: "true"
+    documentation:
+      command: |-
+        Description
+          Perform a three-way merge for file whose actual state does not match its
+          target state. The merge is performed with chezmoi merge.
+  - name: purge
+    description: Purge chezmoi's configuration and data
+    group: migration
+    flags:
+      -P, --binary: Purge chezmoi binary
+    documentation:
+      command: |-
+        Description
+          Remove chezmoi's configuration, state, and source directory, but leave the
+          target state intact.
+  - name: re-add
+    description: Re-add modified files
+    group: daily
+    flags:
+      --re-encrypt: Re-encrypt encrypted files
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -r, --recursive:
+        description: Recurse into subdirectories
+        default: "true"
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Re-add modified files in the target state, preserving any encrypted_
+          attributes. chezmoi will not overwrite templates, and all entries that are
+          not files are ignored. Directories are recursed into by default.
+
+          If no targets are specified then all modified files are re-added. If one or
+          more targets are given then only those targets are re-added.
+  - name: secret
+    description: Interact with a secret manager
+    group: internal
+    commands:
+      - name: keyring
+        description: Interact with keyring
+        commands:
+          - name: delete
+            description: Delete a value from keyring
+            flags:
+              --service=!: service
+              --user=!: user
+          - name: get
+            description: Get a value from keyring
+            flags:
+              --service=!: service
+              --user=!: user
+          - name: set
+            description: Set a value in keyring
+            flags:
+              --service=!: service
+              --user=!: user
+              --value=: value
+    documentation:
+      command: |-
+        Description
+          Verify chezmoi's integration with the system's keyring.
+  - name: source-path [target]...
+    description: Print the source path of a target
+    group: internal
+    documentation:
+      command: |-
+        Description
+          Print the path to each target's source state. If no targets are specified
+          then print the source directory.
+  - name: ssh host
+    description: SSH to a host and initialize dotfiles
+    group: remote
+    flags:
+      -p, --package-manager=: Package manager
+      -s, --shell:
+        description: Execute shell afterwards
+        default: "true"
+    documentation:
+      command: |-
+        Description
+          SSH to host, install chezmoi, run chezmoi init --apply *init-args*, and
+          executes your shell.
+  - name: state
+    description: Manipulate the persistent state
+    group: internal
+    commands:
+      - name: data
+        description: Print the raw data in the persistent state
+        flags:
+          -f, --format=:
+            description: Output format
+            default: json
+      - name: delete
+        description: Delete a value from the persistent state
+        flags:
+          --bucket=: Bucket
+          --key=: Key
+      - name: delete-bucket
+        description: Delete a bucket from the persistent state
+        flags:
+          --bucket=: Bucket
+      - name: dump
+        description: Generate a dump of the persistent state
+        flags:
+          -f, --format=:
+            description: Output format
+            default: json
+      - name: get
+        description: Get a value from the persistent state
+        flags:
+          --bucket=: Bucket
+          --key=: Key
+      - name: get-bucket
+        description: Get a bucket from the persistent state
+        flags:
+          --bucket=: bucket
+          -f, --format=:
+            description: Output format
+            default: json
+      - name: reset
+        description: Reset the persistent state
+      - name: set
+        description: Set a value from the persistent state
+        flags:
+          --bucket=: Bucket
+          --key=: Key
+          --value=: Value
+    documentation:
+      command: |-
+        Description
+          Manipulate the persistent state.
+  - name: status [target]...
+    description: Show the status of targets
+    group: daily
+    flags:
+      --init: Recreate config file from template
+      -P, --parent-dirs: Show status of all parent directories
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -p, --path-style=:
+        description: Path style
+        default: relative
+      -r, --recursive:
+        description: Recurse into subdirectories
+        default: "true"
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Print the status of the files and scripts managed by chezmoi in a format
+          similar to git status.
+
+          The first column of output indicates the difference between the last state
+          written by chezmoi and the actual state. The second column indicates the
+          difference between the actual state and the target state, and what effect
+          running chezmoi apply will have.
+
+           Character    | Meaning     | First column       | Second column
+          --------------|-------------|--------------------|------------------------
+           Space        | No change   | No change          | No change
+           A            | Added       | Entry was created  | Entry will be created
+           D            | Deleted     | Entry was deleted  | Entry will be deleted
+           M            | Modified    | Entry was modified | Entry will be modified
+           R            | Run         | Not applicable     | Script will be run
+  - name: target-path [source-path]...
+    description: Print the target path of a source path
+    group: internal
+    documentation:
+      command: |-
+        Description
+          Print the target path of each source path. If no source paths are specified
+          then print the target directory.
+  - name: unmanaged [path]...
+    description: List the unmanaged files in the destination directory
+    group: advanced
+    flags:
+      -0, --nul-path-separator: Use the NUL character as a path separator
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -p, --path-style=:
+        description: Path style
+        default: relative
+      -t, --tree: Print paths as a tree
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          List all unmanaged files in paths. When no paths are supplied, list all
+          unmanaged files in the destination directory.
+
+          It is an error to supply paths that are not found on the file system.
+  - name: update
+    description: Pull and apply any changes
+    group: daily
+    flags:
+      --init: Recreate config file from template
+      --recurse-submodules:
+        description: Recursively update submodules
+        default: "true"
+      -P, --parent-dirs: Update all parent directories
+      -a, --apply:
+        description: Apply after pulling
+        default: "true"
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -r, --recursive:
+        description: Recurse into subdirectories
+        default: "true"
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Pull changes from the source repo and apply any changes.
+
+          If update.command is set then chezmoi will run update.command with
+          update.args in the working tree. Otherwise, chezmoi will run git pull --
+          autostash --rebase [--recurse-submodules] , using chezmoi's builtin git if
+          useBuiltinGit is true or if git.command cannot be found in $PATH.
+  - name: upgrade
+    description: Upgrade chezmoi to the latest released version
+    group: migration
+    flags:
+      --executable=: Set executable to replace
+      --method=: Set upgrade method
+    documentation:
+      command: |-
+        Description
+          Upgrade chezmoi by downloading and installing the latest released version.
+          This will call the GitHub API to determine if there is a new version of
+          chezmoi available, and if so, download and attempt to install it in the same
+          way as chezmoi was previously installed.
+
+          If the any of the $CHEZMOI_GITHUB_ACCESS_TOKEN, $CHEZMOI_GITHUB_TOKEN,
+          $GITHUB_ACCESS_TOKEN, or $GITHUB_TOKEN environment variables are set, then
+          the first value found will be used to authenticate requests to the GitHub
+          API, otherwise unauthenticated requests are used which are subject to
+          stricter rate limiting. Unauthenticated requests should be sufficient for
+          most cases.
+  - name: verify [target]...
+    description: Exit with success if the destination state matches the target state, fail otherwise
+    group: advanced
+    flags:
+      --init: Recreate config file from template
+      -P, --parent-dirs: Verify all parent directories
+      -i, --include=:
+        description: Include entry types
+        default: all
+      -r, --recursive:
+        description: Recurse into subdirectories
+        default: "true"
+      -x, --exclude=:
+        description: Exclude entry types
+        default: none
+    documentation:
+      command: |-
+        Description
+          Verify that all targets match their target state. chezmoi exits with code 0
+          (success) if all targets match their target state, or 1 (failure) otherwise.
+          If no targets are specified then all targets are checked.
