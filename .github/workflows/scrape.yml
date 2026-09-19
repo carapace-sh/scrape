@@ -44,6 +44,7 @@ jobs:
   grit: {uses: ./.github/workflows/scrape-template.yml, with: {command: grit}}
   grype: {uses: ./.github/workflows/scrape-template.yml, with: {command: grype}}
   gum: {uses: ./.github/workflows/scrape-template.yml, with: {command: gum}}
+  hg: {uses: ./.github/workflows/scrape-template.yml, with: {command: hg}}
   helm: {uses: ./.github/workflows/scrape-template.yml, with: {command: helm}}
   herdr: {uses: ./.github/workflows/scrape-template.yml, with: {command: herdr}}
   hl: {uses: ./.github/workflows/scrape-template.yml, with: {command: hl}}
