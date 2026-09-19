@@ -1,0 +1,2262 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: hg
+flags:
+    --color=: when to colorize (boolean, always, auto, never, or debug)
+    --config-file=:
+        description: load config file to set/override config options
+        nargs: -1
+    --config=:
+        description: set/override config option (use 'section.name=value')
+        nargs: -1
+    --cwd=: change working directory
+    --debug: enable debugging output
+    --debugger: start debugger
+    --encoding=: set the charset encoding
+    --encodingmode=: set the charset encoding mode
+    --hidden: consider hidden changesets
+    --pager=: when to paginate (boolean, always, auto, or never)
+    --profile: print command execution profile
+    --time: time how long the command takes
+    --traceback: always print a traceback on exception
+    --version: output version information and exit
+    -R, --repository=: repository root directory or name of overlay bundle file
+    -h, --help: display help and exit
+    -q, --quiet: suppress output
+    -v, --verbose: enable additional output
+    -y, --noninteractive: do not prompt, automatically pick the first choice for all prompts
+commands:
+    - name: ""
+      description: Mercurial distributed SCM
+      flags:
+        --color=: when to colorize (boolean, always, auto, never, or debug)
+        --config-file=:
+            description: load config file to set/override config options
+            nargs: -1
+        --config=:
+            description: set/override config option (use 'section.name=value')
+            nargs: -1
+        --cwd=: change working directory
+        --debug: enable debugging output
+        --debugger: start debugger
+        --encoding=: set the charset encoding
+        --encodingmode=: set the charset encoding mode
+        --hidden: consider hidden changesets
+        --pager=: when to paginate (boolean, always, auto, or never)
+        --profile: print command execution profile
+        --time: time how long the command takes
+        --traceback: always print a traceback on exception
+        --version: output version information and exit
+        -R, --repository=: repository root directory or name of overlay bundle file
+        -h, --help: display help and exit
+        -q, --quiet: suppress output
+        -v, --verbose: enable additional output
+        -y, --noninteractive: do not prompt, automatically pick the first choice for all prompts
+      documentation:
+        flag:
+            color: when to colorize (boolean, always, auto, never, or debug)
+            config: set/override config option (use 'section.name=value')
+            config-file: load config file to set/override config options
+            cwd: change working directory
+            debug: enable debugging output
+            debugger: start debugger
+            encoding: set the charset encoding
+            encodingmode: set the charset encoding mode
+            help: display help and exit
+            hidden: consider hidden changesets
+            noninteractive: do not prompt, automatically pick the first choice for all prompts
+            pager: when to paginate (boolean, always, auto, or never)
+            profile: print command execution profile
+            quiet: suppress output
+            repository: repository root directory or name of overlay bundle file
+            time: time how long the command takes
+            traceback: always print a traceback on exception
+            verbose: enable additional output
+            version: output version information and exit
+    - name: abort
+      description: abort an unfinished operation (EXPERIMENTAL)
+      flags:
+        -n, --dry-run: do not perform actions, just print output
+      documentation:
+        flag:
+            dry-run: do not perform actions, just print output
+    - name: add
+      description: add the specified files on the next commit
+      flags:
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -S, --subrepos: recurse into subrepositories
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -n, --dry-run: do not perform actions, just print output
+      documentation:
+        flag:
+            dry-run: do not perform actions, just print output
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            subrepos: recurse into subrepositories
+    - name: addremove
+      description: add all new files, delete all missing files
+      flags:
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -S, --subrepos: recurse into subrepositories
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -n, --dry-run: do not perform actions, just print output
+        -s, --similarity=: guess renamed files by similarity (0<=s<=100)
+      documentation:
+        flag:
+            dry-run: do not perform actions, just print output
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            similarity: guess renamed files by similarity (0<=s<=100)
+            subrepos: recurse into subrepositories
+    - name: annotate
+      description: show changeset information by line for each file
+      flags:
+        --follow: follow copies/renames and list the filename (DEPRECATED)
+        --no-follow: don't follow copies and renames
+        --skip=:
+            description: revset to not display (EXPERIMENTAL)
+            nargs: -1
+        -B, --ignore-blank-lines: ignore changes whose lines are all blank
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -L, --line-range=:
+            description: follow line range of specified file (EXPERIMENTAL)
+            nargs: -1
+        -T, --template=: display with template
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -Z, --ignore-space-at-eol: ignore changes in whitespace at EOL
+        -a, --text: treat all files as text
+        -b, --ignore-space-change: ignore changes in the amount of white space
+        -c, --changeset: list the changeset
+        -d, --date: list the date (short with -q)
+        -f, --file: list the filename
+        -l, --line-number: show line number at the first appearance
+        -n, --number: list the revision number (default)
+        -r, --rev=: annotate the specified revision
+        -u, --user: list the author (long with -v)
+        -w, --ignore-all-space: ignore white space when comparing lines
+      documentation:
+        flag:
+            changeset: list the changeset
+            date: list the date (short with -q)
+            exclude: exclude names matching the given patterns
+            file: list the filename
+            follow: follow copies/renames and list the filename (DEPRECATED)
+            ignore-all-space: ignore white space when comparing lines
+            ignore-blank-lines: ignore changes whose lines are all blank
+            ignore-space-at-eol: ignore changes in whitespace at EOL
+            ignore-space-change: ignore changes in the amount of white space
+            include: include names matching the given patterns
+            line-number: show line number at the first appearance
+            line-range: follow line range of specified file (EXPERIMENTAL)
+            no-follow: don't follow copies and renames
+            number: list the revision number (default)
+            rev: annotate the specified revision
+            skip: revset to not display (EXPERIMENTAL)
+            template: display with template
+            text: treat all files as text
+            user: list the author (long with -v)
+    - name: archive
+      description: create an unversioned archive of a repository revision
+      flags:
+        --no-decode: do not pass files through decoders
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -S, --subrepos: recurse into subrepositories
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -p, --prefix=: directory prefix for files in archive
+        -r, --rev=: revision to distribute
+        -t, --type=: type of distribution to create
+      documentation:
+        flag:
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            no-decode: do not pass files through decoders
+            prefix: directory prefix for files in archive
+            rev: revision to distribute
+            subrepos: recurse into subrepositories
+            type: type of distribution to create
+    - name: backout
+      description: reverse effect of earlier changeset
+      flags:
+        --commit: commit if no conflicts were encountered (DEPRECATED)
+        --merge: merge with old dirstate parent after backout
+        --no-commit: do not commit
+        --parent=: parent to choose when backing out merge (DEPRECATED)
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -d, --date=: record the specified date as commit date
+        -e, --edit: invoke editor on commit messages
+        -l, --logfile=: read commit message from file
+        -m, --message=: use text as commit message
+        -r, --rev=: revision to backout
+        -t, --tool=: specify merge tool
+        -u, --user=: record the specified user as committer
+      documentation:
+        flag:
+            commit: commit if no conflicts were encountered (DEPRECATED)
+            date: record the specified date as commit date
+            edit: invoke editor on commit messages
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            logfile: read commit message from file
+            merge: merge with old dirstate parent after backout
+            message: use text as commit message
+            no-commit: do not commit
+            parent: parent to choose when backing out merge (DEPRECATED)
+            rev: revision to backout
+            tool: specify merge tool
+            user: record the specified user as committer
+    - name: bisect
+      description: subdivision search of changesets
+      flags:
+        -U, --noupdate: do not update to target
+        -b, --bad: mark changeset bad
+        -c, --command=: use command to check changeset state
+        -e, --extend: extend the bisect range
+        -g, --good: mark changeset good
+        -r, --reset: reset bisect state
+        -s, --skip: skip testing changeset
+      documentation:
+        flag:
+            bad: mark changeset bad
+            command: use command to check changeset state
+            extend: extend the bisect range
+            good: mark changeset good
+            noupdate: do not update to target
+            reset: reset bisect state
+            skip: skip testing changeset
+    - name: bookmarks
+      description: hg bookmarks [OPTIONS]... [NAME]...
+      flags:
+        -T, --template=: display with template
+        -d, --delete: delete a given bookmark
+        -f, --force: force
+        -i, --inactive: mark a bookmark inactive
+        -l, --list: list existing bookmarks
+        -m, --rename=: rename a given bookmark
+        -r, --rev=: revision for bookmark action
+      documentation:
+        flag:
+            delete: delete a given bookmark
+            force: force
+            inactive: mark a bookmark inactive
+            list: list existing bookmarks
+            rename: rename a given bookmark
+            rev: revision for bookmark action
+            template: display with template
+    - name: branch
+      description: set or show the current branch name
+      flags:
+        -C, --clean: reset branch name to parent branch name
+        -f, --force: set branch name even if it shadows an existing branch
+        -r, --rev=:
+            description: change branches of the given revs (EXPERIMENTAL)
+            nargs: -1
+      documentation:
+        flag:
+            clean: reset branch name to parent branch name
+            force: set branch name even if it shadows an existing branch
+            rev: change branches of the given revs (EXPERIMENTAL)
+    - name: branches
+      description: list repository named branches
+      flags:
+        -T, --template=: display with template
+        -a, --active: show only branches that have unmerged heads (DEPRECATED)
+        -c, --closed: show normal and closed branches
+        -r, --rev=:
+            description: show branch name(s) of the given rev
+            nargs: -1
+      documentation:
+        flag:
+            active: show only branches that have unmerged heads (DEPRECATED)
+            closed: show normal and closed branches
+            rev: show branch name(s) of the given rev
+            template: display with template
+    - name: bundle
+      description: create a bundle file
+      flags:
+        --base=:
+            description: a base changeset assumed to be available at the destination
+            nargs: -1
+        --exact: compute the base from the revision specified
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --remotecmd=: specify hg command to run on the remote side
+        -a, --all: bundle all changesets in the repository
+        -b, --branch=:
+            description: a specific branch you would like to bundle
+            nargs: -1
+        -e, --ssh=: specify ssh command to use
+        -f, --force: run even when the destination is unrelated
+        -r, --rev=:
+            description: a changeset intended to be added to the destination
+            nargs: -1
+        -t, --type=: bundle compression type to use
+      documentation:
+        flag:
+            all: bundle all changesets in the repository
+            base: a base changeset assumed to be available at the destination
+            branch: a specific branch you would like to bundle
+            exact: compute the base from the revision specified
+            force: run even when the destination is unrelated
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            remotecmd: specify hg command to run on the remote side
+            rev: a changeset intended to be added to the destination
+            ssh: specify ssh command to use
+            type: bundle compression type to use
+    - name: cat
+      description: output the current or given revision of files
+      flags:
+        --decode: apply any matching decode filter
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -T, --template=: display with template
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -o, --output=: print output to file with formatted name
+        -r, --rev=: print the given revision
+      documentation:
+        flag:
+            decode: apply any matching decode filter
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            output: print output to file with formatted name
+            rev: print the given revision
+            template: display with template
+    - name: clone
+      description: make a copy of an existing repository
+      flags:
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --pull: use pull protocol to copy metadata
+        --remotecmd=: specify hg command to run on the remote side
+        --stream: clone with minimal data processing
+        --uncompressed: an alias to --stream (DEPRECATED)
+        -U, --noupdate: the clone will include an empty working directory (only a repository)
+        -b, --branch=:
+            description: do not clone everything, but include this branch's changesets and their ancestors
+            nargs: -1
+        -e, --ssh=: specify ssh command to use
+        -r, --rev=:
+            description: do not clone everything, but include this changeset and its ancestors
+            nargs: -1
+        -u, --updaterev=: revision, tag, or branch to check out
+      documentation:
+        flag:
+            branch: do not clone everything, but include this branch's changesets and their ancestors
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            noupdate: the clone will include an empty working directory (only a repository)
+            pull: use pull protocol to copy metadata
+            remotecmd: specify hg command to run on the remote side
+            rev: do not clone everything, but include this changeset and its ancestors
+            ssh: specify ssh command to use
+            stream: clone with minimal data processing
+            uncompressed: an alias to --stream (DEPRECATED)
+            updaterev: revision, tag, or branch to check out
+    - name: commit
+      description: commit the specified files or all outstanding changes
+      flags:
+        --amend: amend the parent of the working directory
+        --close-branch: mark a branch head as closed
+        --draft: use the draft phase for committing
+        --force-close-branch: forcibly close branch from a non-head changeset (ADVANCED)
+        -A, --addremove: mark new/missing files as added/removed before committing
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -S, --subrepos: recurse into subrepositories
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -d, --date=: record the specified date as commit date
+        -e, --edit: invoke editor on commit messages
+        -i, --interactive: use interactive mode
+        -l, --logfile=: read commit message from file
+        -m, --message=: use text as commit message
+        -s, --secret: use the secret phase for committing
+        -u, --user=: record the specified user as committer
+      documentation:
+        flag:
+            addremove: mark new/missing files as added/removed before committing
+            amend: amend the parent of the working directory
+            close-branch: mark a branch head as closed
+            date: record the specified date as commit date
+            draft: use the draft phase for committing
+            edit: invoke editor on commit messages
+            exclude: exclude names matching the given patterns
+            force-close-branch: forcibly close branch from a non-head changeset (ADVANCED)
+            include: include names matching the given patterns
+            interactive: use interactive mode
+            logfile: read commit message from file
+            message: use text as commit message
+            secret: use the secret phase for committing
+            subrepos: recurse into subrepositories
+            user: record the specified user as committer
+    - name: config
+      description: show combined config settings from all hgrc files
+      flags:
+        --exp-all-known: show all known config option (EXPERIMENTAL)
+        --non-shared: edit non shared config
+        --shared: edit shared source repository config
+        --source: show source of configuration value
+        -T, --template=: display with template
+        -e, --edit: edit user config
+        -g, --global: edit global config
+        -l, --local: edit repository config
+        -u, --untrusted: show untrusted configuration options
+      documentation:
+        flag:
+            edit: edit user config
+            exp-all-known: show all known config option (EXPERIMENTAL)
+            global: edit global config
+            local: edit repository config
+            non-shared: edit non shared config
+            shared: edit shared source repository config
+            source: show source of configuration value
+            template: display with template
+            untrusted: show untrusted configuration options
+    - name: continue
+      description: resumes an interrupted operation (EXPERIMENTAL)
+      flags:
+        -n, --dry-run: do not perform actions, just print output
+      documentation:
+        flag:
+            dry-run: do not perform actions, just print output
+    - name: copy
+      description: mark files as copied for the next commit
+      flags:
+        --at-rev=: (un)mark copies in the given revision (EXPERIMENTAL)
+        --forget: unmark a destination file as copied
+        -A, --after: record a copy that has already occurred
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -f, --force: forcibly copy over an existing managed file
+        -n, --dry-run: do not perform actions, just print output
+      documentation:
+        flag:
+            after: record a copy that has already occurred
+            at-rev: (un)mark copies in the given revision (EXPERIMENTAL)
+            dry-run: do not perform actions, just print output
+            exclude: exclude names matching the given patterns
+            force: forcibly copy over an existing managed file
+            forget: unmark a destination file as copied
+            include: include names matching the given patterns
+    - name: debug-delta-find
+      description: -c|-m|FILE REV
+      flags:
+        --dir=: open directory manifest
+        --source=: input data feed to the process (full, storage, p1, p2, prev)
+        -T, --template=: display with template
+        -c, --changelog: open changelog
+        -m, --manifest: open manifest
+      documentation:
+        flag:
+            changelog: open changelog
+            dir: open directory manifest
+            manifest: open manifest
+            source: input data feed to the process (full, storage, p1, p2, prev)
+            template: display with template
+    - name: debug-repair-issue6528
+      description: find affected revisions and repair them.
+      flags:
+        --from-report=: repair revisions listed in this report file
+        --paranoid: check that both detection methods do the same thing
+        --to-report=: build a report of affected revisions to this file
+        -n, --dry-run: do not perform actions, just print output
+      documentation:
+        flag:
+            dry-run: do not perform actions, just print output
+            from-report: repair revisions listed in this report file
+            paranoid: check that both detection methods do the same thing
+            to-report: build a report of affected revisions to this file
+    - name: debug-revlog-index
+      description: -c|-m|FILE
+      flags:
+        --dir=: open directory manifest
+        -T, --template=: display with template
+        -c, --changelog: open changelog
+        -m, --manifest: open manifest
+      documentation:
+        flag:
+            changelog: open changelog
+            dir: open directory manifest
+            manifest: open manifest
+            template: display with template
+    - name: debug-revlog-stats
+      description: display statistics about revlogs in the store
+      flags:
+        -T, --template=: display with template
+        -c, --changelog: Display changelog statistics
+        -f, --filelogs: Display filelogs statistics
+        -m, --manifest: Display manifest statistics
+      documentation:
+        flag:
+            changelog: Display changelog statistics
+            filelogs: Display filelogs statistics
+            manifest: Display manifest statistics
+            template: display with template
+    - name: debug::clonebundle-manifest
+      description: REPO
+      flags:
+        --raw: show the raw manifest instead of parsing and filtering it
+        --stream: disply stream bundle only
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+      documentation:
+        flag:
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            raw: show the raw manifest instead of parsing and filtering it
+            stream: disply stream bundle only
+    - name: debug::fast-upgrade
+    - name: debug::file-index
+      description: inspect or manipulate the file index
+      flags:
+        --docket: dump docket file
+        --gc: run garbage collection
+        --tree: dump tree file
+        --vacuum: vacuum the tree file
+        -T, --template=: template for --docket
+        -p, --path=: look up path
+        -t, --token=: look up token
+      documentation:
+        flag:
+            docket: dump docket file
+            gc: run garbage collection
+            path: look up path
+            template: template for --docket
+            token: look up token
+            tree: dump tree file
+            vacuum: vacuum the tree file
+    - name: debug::revlog-reencoded-delta-info
+      description: -c|-m|FILE
+      flags:
+        --delete: delete the result
+        --dir=: open directory manifest
+        --report: report statistic about the result
+        --reuse-stored-delta: reuse stored delta when using the same base
+        --start-rev=: start at rev
+        --stop-rev=: stop at rev
+        -c, --changelog: open changelog
+        -m, --manifest: open manifest
+      documentation:
+        flag:
+            changelog: open changelog
+            delete: delete the result
+            dir: open directory manifest
+            manifest: open manifest
+            report: report statistic about the result
+            reuse-stored-delta: reuse stored delta when using the same base
+            start-rev: start at rev
+            stop-rev: stop at rev
+    - name: debug::stable-tail-sort
+      description: REV
+      flags:
+        -T, --template=: display with template
+      documentation:
+        flag:
+            template: display with template
+    - name: debug::stable-tail-sort-leaps
+      description: REV
+      flags:
+        -T, --template=: display with template
+        -s, --specific: restrict to specific leaps
+      documentation:
+        flag:
+            specific: restrict to specific leaps
+            template: display with template
+    - name: debug::unbundle
+      description: FILE...
+    - name: debugancestor
+      description: find the ancestor revision of two revisions in a given index
+    - name: debugantivirusrunning
+      description: attempt to trigger an antivirus scanner to see if one is active
+    - name: debugapplystreamclonebundle
+      description: FILE
+    - name: debugbackupbundle
+      description: hg debugbackupbundle [--recover HASH]
+      flags:
+        --recover=: brings the specified changeset back into the repository
+        --stat: output diffstat-style summary of changes
+        --style=: display using template map file (DEPRECATED)
+        -G, --graph: show the revision DAG
+        -M, --no-merges: do not show merges
+        -T, --template=: display with template
+        -g, --git: use git extended diff format
+        -l, --limit=: limit number of changes displayed
+        -p, --patch: show patch
+      documentation:
+        flag:
+            git: use git extended diff format
+            graph: show the revision DAG
+            limit: limit number of changes displayed
+            no-merges: do not show merges
+            patch: show patch
+            recover: brings the specified changeset back into the repository
+            stat: output diffstat-style summary of changes
+            style: display using template map file (DEPRECATED)
+            template: display with template
+    - name: debugbuilddag
+      description: builds a repo with a given DAG from scratch in the current empty repo
+      flags:
+        --from-existing: continue from a non-empty repository
+        -m, --mergeable-file: add single file mergeable changes
+        -n, --new-file: add new file at each rev
+        -o, --overwritten-file: add single file all revs overwrite
+      documentation:
+        flag:
+            from-existing: continue from a non-empty repository
+            mergeable-file: add single file mergeable changes
+            new-file: add new file at each rev
+            overwritten-file: add single file all revs overwrite
+    - name: debugbundle
+      description: FILE
+      flags:
+        --part-type=:
+            description: show only the named part type
+            nargs: -1
+        --spec: print the bundlespec of the bundle
+        -a, --all: show all details
+      documentation:
+        flag:
+            all: show all details
+            part-type: show only the named part type
+            spec: print the bundlespec of the bundle
+    - name: debugcapabilities
+      description: PATH
+      flags:
+        --bundle2-cap=:
+            description: only display the matching capabilities
+            nargs: -1
+      documentation:
+        flag:
+            bundle2-cap: only display the matching capabilities
+    - name: debugchangedfiles
+      description: REV
+      flags:
+        --compute: compute information instead of reading it from storage
+      documentation:
+        flag:
+            compute: compute information instead of reading it from storage
+    - name: debugcheckstate
+      description: validate the correctness of the current dirstate
+    - name: debugcolor
+      description: hg debugcolor
+      flags:
+        --style: show all configured styles
+      documentation:
+        flag:
+            style: show all configured styles
+    - name: debugcommands
+      description: list all available commands and options
+    - name: debugcomplete
+      description: returns the completion list associated with the given command
+      flags:
+        -o, --options: show the command options
+      documentation:
+        flag:
+            options: show the command options
+    - name: debugcreatestreamclonebundle
+      description: FILE
+    - name: debugdag
+      description: format the changelog or an index DAG as a concise textual description
+      flags:
+        --dots: use dots for runs
+        -b, --branches: annotate with branch names
+        -s, --spaces: separate elements by spaces
+        -t, --tags: use tags as labels
+      documentation:
+        flag:
+            branches: annotate with branch names
+            dots: use dots for runs
+            spaces: separate elements by spaces
+            tags: use tags as labels
+    - name: debugdata
+      description: -c|-m|FILE REV
+      flags:
+        --dir=: open directory manifest
+        -c, --changelog: open changelog
+        -m, --manifest: open manifest
+      documentation:
+        flag:
+            changelog: open changelog
+            dir: open directory manifest
+            manifest: open manifest
+    - name: debugdate
+      description: parse and display a date
+      flags:
+        -e, --extended: try extended date formats
+      documentation:
+        flag:
+            extended: try extended date formats
+    - name: debugdeltachain
+      description: -c|-m|FILE
+      flags:
+        --all-info: compute all information unless specified otherwise
+        --dir=: open directory manifest
+        --dist-info: compute information related to base distance
+        --size-info: compute information related to deltas size
+        --sparse-info: compute information related to sparse read
+        -T, --template=: display with template
+        -c, --changelog: open changelog
+        -m, --manifest: open manifest
+        -r, --rev=:
+            description: restrict processing to these revlog revisions
+            nargs: -1
+      documentation:
+        flag:
+            all-info: compute all information unless specified otherwise
+            changelog: open changelog
+            dir: open directory manifest
+            dist-info: compute information related to base distance
+            manifest: open manifest
+            rev: restrict processing to these revlog revisions
+            size-info: compute information related to deltas size
+            sparse-info: compute information related to sparse read
+            template: display with template
+    - name: debugdirstate
+      description: show the contents of the current dirstate
+      flags:
+        --all: display dirstate-v2 tree nodes that would not exist in v1
+        --dates: display the saved mtime
+        --datesort: sort by saved mtime
+        --docket: display the docket (metadata file) instead
+        --nodates: do not display the saved mtime (DEPRECATED)
+      documentation:
+        flag:
+            all: display dirstate-v2 tree nodes that would not exist in v1
+            dates: display the saved mtime
+            datesort: sort by saved mtime
+            docket: display the docket (metadata file) instead
+            nodates: do not display the saved mtime (DEPRECATED)
+    - name: debugdirstateignorepatternshash
+      description: show the hash of ignore patterns stored in dirstate if v2,
+    - name: debugdiscovery
+      description: runs the changeset discovery protocol in isolation
+      flags:
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --local-as-revs=: treat local has having these revisions only
+        --nonheads: use old-style discovery with non-heads included
+        --old: use old-style discovery
+        --remote-as-revs=: use local as remote, with only these revisions
+        --remotecmd=: specify hg command to run on the remote side
+        --rev=:
+            description: restrict discovery to this set of revs
+            nargs: -1
+        --seed=: specify the random seed use for discovery
+        -T, --template=: display with template
+        -e, --ssh=: specify ssh command to use
+      documentation:
+        flag:
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            local-as-revs: treat local has having these revisions only
+            nonheads: use old-style discovery with non-heads included
+            old: use old-style discovery
+            remote-as-revs: use local as remote, with only these revisions
+            remotecmd: specify hg command to run on the remote side
+            rev: restrict discovery to this set of revs
+            seed: specify the random seed use for discovery
+            ssh: specify ssh command to use
+            template: display with template
+    - name: debugdownload
+      description: download a resource using Mercurial logic and config
+      flags:
+        -o, --output=: path
+      documentation:
+        flag:
+            output: path
+    - name: debugextensions
+      description: show information about active extensions
+      flags:
+        -T, --template=: display with template
+      documentation:
+        flag:
+            template: display with template
+    - name: debugfileset
+      description: parse and apply a fileset specification
+      flags:
+        --all-files: test files from all revisions and working directory
+        -p, --show-stage=:
+            description: print parsed tree at the given stage
+            nargs: -1
+        -r, --rev=: apply the filespec on this revision
+        -s, --show-matcher: print internal representation of matcher
+      documentation:
+        flag:
+            all-files: test files from all revisions and working directory
+            rev: apply the filespec on this revision
+            show-matcher: print internal representation of matcher
+            show-stage: print parsed tree at the given stage
+    - name: debugformat
+      description: display format information about the current repository
+      flags:
+        -T, --template=: display with template
+      documentation:
+        flag:
+            template: display with template
+    - name: debugfsinfo
+      description: show information detected about current filesystem
+    - name: debuggetbundle
+      description: REPO FILE [-H|-C ID]...
+      flags:
+        -C, --common=:
+            description: id of common node
+            nargs: -1
+        -H, --head=:
+            description: id of head node
+            nargs: -1
+        -t, --type=: bundle compression type to use
+      documentation:
+        flag:
+            common: id of common node
+            head: id of head node
+            type: bundle compression type to use
+    - name: debugignore
+      description: display the combined ignore pattern and information about ignored files
+    - name: debugindexdot
+      description: -c|-m|FILE
+      flags:
+        --common: also show common ancestors
+        --dir=: open directory manifest
+        -T, --template=: label template
+        -c, --changelog: open changelog
+        -i, --include=:
+            description: arbitrary graphviz statement to include
+            nargs: -1
+        -m, --manifest: open manifest
+        -r, --rev=:
+            description: only show these revisions
+            nargs: -1
+      documentation:
+        flag:
+            changelog: open changelog
+            common: also show common ancestors
+            dir: open directory manifest
+            include: arbitrary graphviz statement to include
+            manifest: open manifest
+            rev: only show these revisions
+            template: label template
+    - name: debugindexstats
+      description: show stats related to the changelog index
+    - name: debuginstall
+      description: test Mercurial installation
+      flags:
+        -T, --template=: display with template
+      documentation:
+        flag:
+            template: display with template
+    - name: debugknown
+      description: REPO ID...
+    - name: debuglabelcomplete
+      description: LABEL...
+    - name: debuglocks
+      description: show or modify state of locks
+      flags:
+        -L, --force-free-lock: free the store lock (DANGEROUS)
+        -S, --set-wlock: set the working state lock until stopped
+        -W, --force-free-wlock: free the working state lock (DANGEROUS)
+        -s, --set-lock: set the store lock until stopped
+      documentation:
+        flag:
+            force-free-lock: free the store lock (DANGEROUS)
+            force-free-wlock: free the working state lock (DANGEROUS)
+            set-lock: set the store lock until stopped
+            set-wlock: set the working state lock until stopped
+    - name: debugmanifestfulltextcache
+      description: show, clear or amend the contents of the manifest fulltext cache
+      flags:
+        --clear: clear the cache
+        -a, --add=:
+            description: add the given manifest nodes to the cache
+            nargs: -1
+      documentation:
+        flag:
+            add: add the given manifest nodes to the cache
+            clear: clear the cache
+    - name: debugmergestate
+      description: print merge state
+      flags:
+        --style=: display using template map file (DEPRECATED)
+        -T, --template=: display with template
+      documentation:
+        flag:
+            style: display using template map file (DEPRECATED)
+            template: display with template
+    - name: debugnamecomplete
+      description: NAME...
+    - name: debugnodemap
+      description: -c|-m|FILE
+      flags:
+        --check: check that the data on disk data are correct.
+        --dir=: open directory manifest
+        --dump-disk: dump on-disk data on stdout
+        --dump-new: write a (new) persistent binary nodemap on stdout
+        --metadata: display the on disk meta data for the nodemap
+        -c, --changelog: open changelog
+        -m, --manifest: open manifest
+      documentation:
+        flag:
+            changelog: open changelog
+            check: check that the data on disk data are correct.
+            dir: open directory manifest
+            dump-disk: dump on-disk data on stdout
+            dump-new: write a (new) persistent binary nodemap on stdout
+            manifest: open manifest
+            metadata: display the on disk meta data for the nodemap
+    - name: debugobsolete
+      description: create arbitrary obsolete marker
+      flags:
+        --delete=:
+            description: delete markers specified by indices
+            nargs: -1
+        --exclusive: restrict display to markers only relevant to REV
+        --flags=: markers flag
+        --index: display index of the marker
+        --record-parents: record parent information for the precursor
+        -T, --template=: display with template
+        -d, --date=: record the specified date as commit date
+        -r, --rev=:
+            description: display markers relevant to REV
+            nargs: -1
+        -u, --user=: record the specified user as committer
+      documentation:
+        flag:
+            date: record the specified date as commit date
+            delete: delete markers specified by indices
+            exclusive: restrict display to markers only relevant to REV
+            flags: markers flag
+            index: display index of the marker
+            record-parents: record parent information for the precursor
+            rev: display markers relevant to REV
+            template: display with template
+            user: record the specified user as committer
+    - name: debugp1copies
+      description: dump copy information compared to p1
+      flags:
+        -r, --rev=: revision to debug
+      documentation:
+        flag:
+            rev: revision to debug
+    - name: debugp2copies
+      description: dump copy information compared to p2
+      flags:
+        -r, --rev=: revision to debug
+      documentation:
+        flag:
+            rev: revision to debug
+    - name: debugpathcomplete
+      description: FILESPEC...
+      flags:
+        -a, --added: show only added files
+        -f, --full: complete an entire path
+        -n, --normal: show only normal files
+        -r, --removed: show only removed files
+      documentation:
+        flag:
+            added: show only added files
+            full: complete an entire path
+            normal: show only normal files
+            removed: show only removed files
+    - name: debugpathcopies
+      description: hg debugpathcopies REV1 REV2 [FILE]
+      flags:
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+      documentation:
+        flag:
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+    - name: debugpeer
+      description: PATH
+    - name: debugpickmergetool
+      description: examine which merge tool is chosen for specified file
+      flags:
+        --changedelete: emulate merging change and delete
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -r, --rev=: check for files in this revision
+        -t, --tool=: specify merge tool
+      documentation:
+        flag:
+            changedelete: emulate merging change and delete
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            rev: check for files in this revision
+            tool: specify merge tool
+    - name: debugpushkey
+      description: REPO NAMESPACE [KEY OLD NEW]
+    - name: debugpvec
+      description: A B
+    - name: debugrebuilddirstate
+      description: rebuild the dirstate as it would look like for the given revision
+      flags:
+        --minimal: only rebuild files that are inconsistent with the working copy parent
+        -r, --rev=: revision to rebuild to
+      documentation:
+        flag:
+            minimal: only rebuild files that are inconsistent with the working copy parent
+            rev: revision to rebuild to
+    - name: debugrebuildfncache
+      description: rebuild the fncache file
+      flags:
+        --only-data: only look for wrong .d files (much faster)
+      documentation:
+        flag:
+            only-data: only look for wrong .d files (much faster)
+    - name: debugrename
+      description: dump rename information
+      flags:
+        -r, --rev=: revision to debug
+      documentation:
+        flag:
+            rev: revision to debug
+    - name: debugrequires
+      description: print the current repo requirements
+    - name: debugrevlog
+      description: -c|-m|FILE
+      flags:
+        --dir=: open directory manifest
+        -c, --changelog: open changelog
+        -d, --dump: dump index data
+        -m, --manifest: open manifest
+      documentation:
+        flag:
+            changelog: open changelog
+            dir: open directory manifest
+            dump: dump index data
+            manifest: open manifest
+    - name: debugrevlogindex
+      description: dump the contents of a revlog index
+      flags:
+        --dir=: open directory manifest
+        -c, --changelog: open changelog
+        -f, --format=: revlog format
+        -m, --manifest: open manifest
+      documentation:
+        flag:
+            changelog: open changelog
+            dir: open directory manifest
+            format: revlog format
+            manifest: open manifest
+    - name: debugrevspec
+      description: REVSPEC
+      flags:
+        --no-optimized: evaluate tree without optimization
+        --optimize: print parsed tree after optimizing (DEPRECATED)
+        --show-revs: print list of result revisions (default)
+        --verify-optimized: verify optimized result
+        -p, --show-stage=:
+            description: print parsed tree at the given stage
+            nargs: -1
+        -s, --show-set: print internal representation of result set
+      documentation:
+        flag:
+            no-optimized: evaluate tree without optimization
+            optimize: print parsed tree after optimizing (DEPRECATED)
+            show-revs: print list of result revisions (default)
+            show-set: print internal representation of result set
+            show-stage: print parsed tree at the given stage
+            verify-optimized: verify optimized result
+    - name: debugserve
+      description: run a server with advanced settings
+      flags:
+        --logiofd=: file descriptor to log server I/O to
+        --logiofile=: file to log server I/O to
+        --sshstdio: run an SSH server bound to process handles
+      documentation:
+        flag:
+            logiofd: file descriptor to log server I/O to
+            logiofile: file to log server I/O to
+            sshstdio: run an SSH server bound to process handles
+    - name: debugsetparents
+      description: REV1 [REV2]
+    - name: debugshell
+      description: run an interactive Python interpreter
+      flags:
+        -c, --command=: program passed in as a string
+      documentation:
+        flag:
+            command: program passed in as a string
+    - name: debugsidedata
+      description: -c|-m|FILE REV
+      flags:
+        --dir=: open directory manifest
+        -c, --changelog: open changelog
+        -m, --manifest: open manifest
+      documentation:
+        flag:
+            changelog: open changelog
+            dir: open directory manifest
+            manifest: open manifest
+    - name: debugssl
+      description: test a secure connection to a server
+    - name: debugsub
+      description: '[-r REV] [REV]'
+      flags:
+        -r, --rev=: revision to check
+      documentation:
+        flag:
+            rev: revision to check
+    - name: debugsuccessorssets
+      description: show set of successors for revision
+      flags:
+        --closest: return closest successors sets only
+      documentation:
+        flag:
+            closest: return closest successors sets only
+    - name: debugtagscache
+      description: display the contents of .hg/cache/hgtagsfnodes1
+    - name: debugtemplate
+      description: parse and apply a template
+      flags:
+        -D, --define=:
+            description: define template keyword
+            nargs: -1
+        -r, --rev=:
+            description: apply template on changesets
+            nargs: -1
+      documentation:
+        flag:
+            define: define template keyword
+            rev: apply template on changesets
+    - name: debuguigetpass
+      description: show prompt to type password
+      flags:
+        -p, --prompt=: prompt text
+      documentation:
+        flag:
+            prompt: prompt text
+    - name: debuguiprompt
+      description: show plain prompt
+      flags:
+        -p, --prompt=: prompt text
+      documentation:
+        flag:
+            prompt: prompt text
+    - name: debugupdatecaches
+      description: warm all known caches in the repository
+    - name: debugupgraderepo
+      description: upgrade a repository to use different features
+      flags:
+        --backup: keep the old repository content around
+        --changelog: select the changelog for upgrade
+        --filelogs: select all filelogs for upgrade
+        --manifest: select the manifest for upgrade
+        --run: performs an upgrade
+        -o, --optimize=:
+            description: extra optimization to perform
+            nargs: -1
+      documentation:
+        flag:
+            backup: keep the old repository content around
+            changelog: select the changelog for upgrade
+            filelogs: select all filelogs for upgrade
+            manifest: select the manifest for upgrade
+            optimize: extra optimization to perform
+            run: performs an upgrade
+    - name: debugwalk
+      description: show how files match on given patterns
+      flags:
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+      documentation:
+        flag:
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+    - name: debugwhyunstable
+      description: REV
+    - name: debugwireargs
+      description: REPO [OPTIONS]... [ONE [TWO]]
+      flags:
+        --five=: five
+        --four=: four
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --remotecmd=: specify hg command to run on the remote side
+        --three=: three
+        -e, --ssh=: specify ssh command to use
+      documentation:
+        flag:
+            five: five
+            four: four
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            remotecmd: specify hg command to run on the remote side
+            ssh: specify ssh command to use
+            three: three
+    - name: debugwireproto
+      description: send wire protocol commands to a server
+      flags:
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --localssh: start an SSH server for this repo
+        --nologhandshake: do not log I/O related to the peer handshake
+        --noreadstderr: do not read from stderr of the remote
+        --peer=: construct a specific version of the peer
+        --remotecmd=: specify hg command to run on the remote side
+        -e, --ssh=: specify ssh command to use
+      documentation:
+        flag:
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            localssh: start an SSH server for this repo
+            nologhandshake: do not log I/O related to the peer handshake
+            noreadstderr: do not read from stderr of the remote
+            peer: construct a specific version of the peer
+            remotecmd: specify hg command to run on the remote side
+            ssh: specify ssh command to use
+    - name: diff
+      description: diff repository (or selected files)
+      flags:
+        --binary: generate binary diffs in git mode (default)
+        --from=: revision to diff from
+        --ignore-changes-from-ancestors: only compare the change made by the selected revision (EXPERIMENTAL)
+        --nodates: omit dates from diff headers
+        --noprefix: omit a/ and b/ prefixes from filenames
+        --reverse: produce a diff that undoes the changes
+        --root=: produce diffs relative to subdirectory
+        --stat: output diffstat-style summary of changes
+        --to=: revision to diff to
+        -B, --ignore-blank-lines: ignore changes whose lines are all blank
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -S, --subrepos: recurse into subrepositories
+        -U, --unified=: number of lines of context to show
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -Z, --ignore-space-at-eol: ignore changes in whitespace at EOL
+        -a, --text: treat all files as text
+        -b, --ignore-space-change: ignore changes in the amount of white space
+        -c, --change=: change made by revision
+        -g, --git: 'use git extended diff format (DEFAULT: diff.git)'
+        -p, --show-function: 'show which function each change is in (DEFAULT: diff.showfunc)'
+        -r, --rev=:
+            description: revision (DEPRECATED)
+            nargs: -1
+        -w, --ignore-all-space: ignore white space when comparing lines
+      documentation:
+        flag:
+            binary: generate binary diffs in git mode (default)
+            change: change made by revision
+            exclude: exclude names matching the given patterns
+            from: revision to diff from
+            git: 'use git extended diff format (DEFAULT: diff.git)'
+            ignore-all-space: ignore white space when comparing lines
+            ignore-blank-lines: ignore changes whose lines are all blank
+            ignore-changes-from-ancestors: only compare the change made by the selected revision (EXPERIMENTAL)
+            ignore-space-at-eol: ignore changes in whitespace at EOL
+            ignore-space-change: ignore changes in the amount of white space
+            include: include names matching the given patterns
+            nodates: omit dates from diff headers
+            noprefix: omit a/ and b/ prefixes from filenames
+            rev: revision (DEPRECATED)
+            reverse: produce a diff that undoes the changes
+            root: produce diffs relative to subdirectory
+            show-function: 'show which function each change is in (DEFAULT: diff.showfunc)'
+            stat: output diffstat-style summary of changes
+            subrepos: recurse into subrepositories
+            text: treat all files as text
+            to: revision to diff to
+            unified: number of lines of context to show
+    - name: export
+      description: dump the header and diffs for one or more changesets
+      flags:
+        --binary: generate binary diffs in git mode (default)
+        --nodates: omit dates from diff headers
+        --switch-parent: diff against the second parent
+        -B, --bookmark=: export changes only reachable by given bookmark
+        -T, --template=: display with template
+        -a, --text: treat all files as text
+        -g, --git: 'use git extended diff format (DEFAULT: diff.git)'
+        -o, --output=: print output to file with formatted name
+        -r, --rev=:
+            description: revisions to export
+            nargs: -1
+      documentation:
+        flag:
+            binary: generate binary diffs in git mode (default)
+            bookmark: export changes only reachable by given bookmark
+            git: 'use git extended diff format (DEFAULT: diff.git)'
+            nodates: omit dates from diff headers
+            output: print output to file with formatted name
+            rev: revisions to export
+            switch-parent: diff against the second parent
+            template: display with template
+            text: treat all files as text
+    - name: files
+      description: list tracked files
+      flags:
+        -0, --print0: end filenames with NUL, for use with xargs
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -S, --subrepos: recurse into subrepositories
+        -T, --template=: display with template
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -r, --rev=: search the repository as it is in REV
+      documentation:
+        flag:
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            print0: end filenames with NUL, for use with xargs
+            rev: search the repository as it is in REV
+            subrepos: recurse into subrepositories
+            template: display with template
+    - name: forget
+      description: forget the specified files on the next commit
+      flags:
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -i, --interactive: use interactive mode
+        -n, --dry-run: do not perform actions, just print output
+      documentation:
+        flag:
+            dry-run: do not perform actions, just print output
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            interactive: use interactive mode
+    - name: graft
+      description: copy changes from other branches onto the current branch
+      flags:
+        --abort: abort interrupted graft
+        --base=: base revision when doing the graft merge (ADVANCED)
+        --log: append graft info to log message
+        --no-commit: don't commit, just apply the changes in working directory
+        --stop: stop interrupted graft
+        --to=: graft to this destination, in-memory (EXPERIMENTAL)
+        -D, --currentdate: record the current date as commit date
+        -U, --currentuser: record the current user as committer
+        -c, --continue: resume interrupted graft
+        -d, --date=: record the specified date as commit date
+        -e, --edit: invoke editor on commit messages
+        -f, --force: force graft
+        -n, --dry-run: do not perform actions, just print output
+        -r, --rev=:
+            description: revisions to graft
+            nargs: -1
+        -t, --tool=: specify merge tool
+        -u, --user=: record the specified user as committer
+      documentation:
+        flag:
+            abort: abort interrupted graft
+            base: base revision when doing the graft merge (ADVANCED)
+            continue: resume interrupted graft
+            currentdate: record the current date as commit date
+            currentuser: record the current user as committer
+            date: record the specified date as commit date
+            dry-run: do not perform actions, just print output
+            edit: invoke editor on commit messages
+            force: force graft
+            log: append graft info to log message
+            no-commit: don't commit, just apply the changes in working directory
+            rev: revisions to graft
+            stop: stop interrupted graft
+            to: graft to this destination, in-memory (EXPERIMENTAL)
+            tool: specify merge tool
+            user: record the specified user as committer
+    - name: grep
+      description: search for a pattern in specified files
+      flags:
+        --all: an alias to --diff (DEPRECATED)
+        --all-files: include all files in the changeset while grepping (DEPRECATED)
+        --diff: search revision differences for when the pattern was added or removed
+        -0, --print0: end fields with NUL
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -T, --template=: display with template
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -a, --text: treat all files as text
+        -d, --date: list the date (short with -q)
+        -f, --follow: follow changeset history, or file history across copies and renames
+        -i, --ignore-case: ignore case when matching
+        -l, --files-with-matches: print only filenames and revisions that match
+        -n, --line-number: print matching line numbers
+        -r, --rev=:
+            description: search files changed within revision range
+            nargs: -1
+        -u, --user: list the author (long with -v)
+      documentation:
+        flag:
+            all: an alias to --diff (DEPRECATED)
+            all-files: include all files in the changeset while grepping (DEPRECATED)
+            date: list the date (short with -q)
+            diff: search revision differences for when the pattern was added or removed
+            exclude: exclude names matching the given patterns
+            files-with-matches: print only filenames and revisions that match
+            follow: follow changeset history, or file history across copies and renames
+            ignore-case: ignore case when matching
+            include: include names matching the given patterns
+            line-number: print matching line numbers
+            print0: end fields with NUL
+            rev: search files changed within revision range
+            template: display with template
+            text: treat all files as text
+            user: list the author (long with -v)
+    - name: heads
+      description: show branch heads
+      flags:
+        --style=: display using template map file (DEPRECATED)
+        -T, --template=: display with template
+        -a, --active: show active branchheads only (DEPRECATED)
+        -c, --closed: show normal and closed branch heads
+        -r, --rev=: show only heads which are descendants of STARTREV
+        -t, --topo: show topological heads only
+      documentation:
+        flag:
+            active: show active branchheads only (DEPRECATED)
+            closed: show normal and closed branch heads
+            rev: show only heads which are descendants of STARTREV
+            style: display using template map file (DEPRECATED)
+            template: display with template
+            topo: show topological heads only
+    - name: help
+      description: show help for a given topic or a help overview
+      flags:
+        -c, --command: show only help for commands
+        -e, --extension: show only help for extensions
+        -k, --keyword: show topics matching keyword
+        -s, --system=:
+            description: show help for specific platform(s)
+            nargs: -1
+      documentation:
+        flag:
+            command: show only help for commands
+            extension: show only help for extensions
+            keyword: show topics matching keyword
+            system: show help for specific platform(s)
+    - name: identify
+      description: identify the working directory or specified revision
+      flags:
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --remotecmd=: specify hg command to run on the remote side
+        -B, --bookmarks: show bookmarks
+        -T, --template=: display with template
+        -b, --branch: show branch
+        -e, --ssh=: specify ssh command to use
+        -i, --id: show global revision id
+        -n, --num: show local revision number
+        -r, --rev=: identify the specified revision
+        -t, --tags: show tags
+      documentation:
+        flag:
+            bookmarks: show bookmarks
+            branch: show branch
+            id: show global revision id
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            num: show local revision number
+            remotecmd: specify hg command to run on the remote side
+            rev: identify the specified revision
+            ssh: specify ssh command to use
+            tags: show tags
+            template: display with template
+    - name: import
+      description: import an ordered set of patches
+      flags:
+        --bypass: apply patch without touching the working directory
+        --exact: abort if patch would apply lossily
+        --import-branch: use any branch information in patch (implied by --exact)
+        --no-commit: don't commit, just update the working directory
+        --partial: commit even if some hunks fail
+        --prefix=: apply patch to subdirectory
+        --secret: use the secret phase for committing
+        -b, --base=: base path (DEPRECATED)
+        -d, --date=: record the specified date as commit date
+        -e, --edit: invoke editor on commit messages
+        -f, --force: skip check for outstanding uncommitted changes (DEPRECATED)
+        -l, --logfile=: read commit message from file
+        -m, --message=: use text as commit message
+        -p, --strip=: directory strip option for patch.
+        -s, --similarity=: guess renamed files by similarity (0<=s<=100)
+        -u, --user=: record the specified user as committer
+      documentation:
+        flag:
+            base: base path (DEPRECATED)
+            bypass: apply patch without touching the working directory
+            date: record the specified date as commit date
+            edit: invoke editor on commit messages
+            exact: abort if patch would apply lossily
+            force: skip check for outstanding uncommitted changes (DEPRECATED)
+            import-branch: use any branch information in patch (implied by --exact)
+            logfile: read commit message from file
+            message: use text as commit message
+            no-commit: don't commit, just update the working directory
+            partial: commit even if some hunks fail
+            prefix: apply patch to subdirectory
+            secret: use the secret phase for committing
+            similarity: guess renamed files by similarity (0<=s<=100)
+            strip: directory strip option for patch. This has the same meaning as the corresponding patch option
+            user: record the specified user as committer
+    - name: incoming
+      description: show new changesets found in source
+      flags:
+        --bundle=: file to store the bundles into
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --remote-hidden: include changesets hidden on the remote (EXPERIMENTAL)
+        --remotecmd=: specify hg command to run on the remote side
+        --stat: output diffstat-style summary of changes
+        --style=: display using template map file (DEPRECATED)
+        -B, --bookmarks: compare bookmarks
+        -G, --graph: show the revision DAG
+        -M, --no-merges: do not show merges
+        -S, --subrepos: recurse into subrepositories
+        -T, --template=: display with template
+        -b, --branch=:
+            description: a specific branch you would like to pull
+            nargs: -1
+        -e, --ssh=: specify ssh command to use
+        -f, --force: run even if remote repository is unrelated
+        -g, --git: use git extended diff format
+        -l, --limit=: limit number of changes displayed
+        -n, --newest-first: show newest record first
+        -p, --patch: show patch
+        -r, --rev=:
+            description: a remote changeset intended to be added
+            nargs: -1
+      documentation:
+        flag:
+            bookmarks: compare bookmarks
+            branch: a specific branch you would like to pull
+            bundle: file to store the bundles into
+            force: run even if remote repository is unrelated
+            git: use git extended diff format
+            graph: show the revision DAG
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            limit: limit number of changes displayed
+            newest-first: show newest record first
+            no-merges: do not show merges
+            patch: show patch
+            remote-hidden: include changesets hidden on the remote (EXPERIMENTAL)
+            remotecmd: specify hg command to run on the remote side
+            rev: a remote changeset intended to be added
+            ssh: specify ssh command to use
+            stat: output diffstat-style summary of changes
+            style: display using template map file (DEPRECATED)
+            subrepos: recurse into subrepositories
+            template: display with template
+    - name: init
+      description: create a new repository in the given directory
+      flags:
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --remotecmd=: specify hg command to run on the remote side
+        -e, --ssh=: specify ssh command to use
+      documentation:
+        flag:
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            remotecmd: specify hg command to run on the remote side
+            ssh: specify ssh command to use
+    - name: locate
+      description: locate files matching specific patterns (DEPRECATED)
+      flags:
+        -0, --print0: end filenames with NUL, for use with xargs
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -f, --fullpath: print complete paths from the filesystem root
+        -r, --rev=: search the repository as it is in REV
+      documentation:
+        flag:
+            exclude: exclude names matching the given patterns
+            fullpath: print complete paths from the filesystem root
+            include: include names matching the given patterns
+            print0: end filenames with NUL, for use with xargs
+            rev: search the repository as it is in REV
+    - name: log
+      description: show revision history of entire repository or files
+      flags:
+        --follow-first: only follow the first parent of merge changesets (DEPRECATED)
+        --only-branch=:
+            description: show only changesets within the given named branch (DEPRECATED)
+            nargs: -1
+        --removed: include revisions where files were removed
+        --stat: output diffstat-style summary of changes
+        --style=: display using template map file (DEPRECATED)
+        -B, --bookmark=:
+            description: show changesets within the given bookmark
+            nargs: -1
+        -C, --copies: show copied files
+        -G, --graph: show the revision DAG
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -L, --line-range=:
+            description: follow line range of specified file (EXPERIMENTAL)
+            nargs: -1
+        -M, --no-merges: do not show merges
+        -P, --prune=:
+            description: do not display revision or any of its ancestors
+            nargs: -1
+        -T, --template=: display with template
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -b, --branch=:
+            description: show changesets within the given named branch
+            nargs: -1
+        -d, --date=: show revisions matching date spec
+        -f, --follow: follow changeset history, or file history across copies and renames
+        -g, --git: use git extended diff format
+        -k, --keyword=:
+            description: do case-insensitive search for a given text
+            nargs: -1
+        -l, --limit=: limit number of changes displayed
+        -m, --only-merges: show only merges (DEPRECATED) (use -r "merge()" instead)
+        -p, --patch: show patch
+        -r, --rev=:
+            description: revisions to select or follow from
+            nargs: -1
+        -u, --user=:
+            description: revisions committed by user
+            nargs: -1
+      documentation:
+        flag:
+            bookmark: show changesets within the given bookmark
+            branch: show changesets within the given named branch
+            copies: show copied files
+            date: show revisions matching date spec
+            exclude: exclude names matching the given patterns
+            follow: follow changeset history, or file history across copies and renames
+            follow-first: only follow the first parent of merge changesets (DEPRECATED)
+            git: use git extended diff format
+            graph: show the revision DAG
+            include: include names matching the given patterns
+            keyword: do case-insensitive search for a given text
+            limit: limit number of changes displayed
+            line-range: follow line range of specified file (EXPERIMENTAL)
+            no-merges: do not show merges
+            only-branch: show only changesets within the given named branch (DEPRECATED)
+            only-merges: show only merges (DEPRECATED) (use -r "merge()" instead)
+            patch: show patch
+            prune: do not display revision or any of its ancestors
+            removed: include revisions where files were removed
+            rev: revisions to select or follow from
+            stat: output diffstat-style summary of changes
+            style: display using template map file (DEPRECATED)
+            template: display with template
+            user: revisions committed by user
+    - name: manifest
+      description: output the current or given revision of the project manifest
+      flags:
+        --all: list files from all revisions
+        -T, --template=: display with template
+        -r, --rev=: revision to display
+      documentation:
+        flag:
+            all: list files from all revisions
+            rev: revision to display
+            template: display with template
+    - name: merge
+      description: merge another revision into working directory
+      flags:
+        --abort: abort the ongoing merge
+        -P, --preview: review revisions to merge (no merge is performed)
+        -f, --force: force a merge including outstanding changes (DEPRECATED)
+        -r, --rev=: revision to merge
+        -t, --tool=: specify merge tool
+      documentation:
+        flag:
+            abort: abort the ongoing merge
+            force: force a merge including outstanding changes (DEPRECATED)
+            preview: review revisions to merge (no merge is performed)
+            rev: revision to merge
+            tool: specify merge tool
+    - name: outgoing
+      description: show changesets not found in the destination
+      flags:
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --remotecmd=: specify hg command to run on the remote side
+        --stat: output diffstat-style summary of changes
+        --style=: display using template map file (DEPRECATED)
+        -B, --bookmarks: compare bookmarks
+        -G, --graph: show the revision DAG
+        -M, --no-merges: do not show merges
+        -S, --subrepos: recurse into subrepositories
+        -T, --template=: display with template
+        -b, --branch=:
+            description: a specific branch you would like to push
+            nargs: -1
+        -e, --ssh=: specify ssh command to use
+        -f, --force: run even when the destination is unrelated
+        -g, --git: use git extended diff format
+        -l, --limit=: limit number of changes displayed
+        -n, --newest-first: show newest record first
+        -p, --patch: show patch
+        -r, --rev=:
+            description: a changeset intended to be included in the destination
+            nargs: -1
+      documentation:
+        flag:
+            bookmarks: compare bookmarks
+            branch: a specific branch you would like to push
+            force: run even when the destination is unrelated
+            git: use git extended diff format
+            graph: show the revision DAG
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            limit: limit number of changes displayed
+            newest-first: show newest record first
+            no-merges: do not show merges
+            patch: show patch
+            remotecmd: specify hg command to run on the remote side
+            rev: a changeset intended to be included in the destination
+            ssh: specify ssh command to use
+            stat: output diffstat-style summary of changes
+            style: display using template map file (DEPRECATED)
+            subrepos: recurse into subrepositories
+            template: display with template
+    - name: parents
+      description: show the parents of the working directory or revision (DEPRECATED)
+      flags:
+        --style=: display using template map file (DEPRECATED)
+        -T, --template=: display with template
+        -r, --rev=: show parents of the specified revision
+      documentation:
+        flag:
+            rev: show parents of the specified revision
+            style: display using template map file (DEPRECATED)
+            template: display with template
+    - name: paths
+      description: show aliases for remote repositories
+      flags:
+        -T, --template=: display with template
+      documentation:
+        flag:
+            template: display with template
+    - name: phase
+      description: set or show the current phase name
+      flags:
+        -d, --draft: set changeset phase to draft
+        -f, --force: allow to move boundary backward
+        -p, --public: set changeset phase to public
+        -r, --rev=:
+            description: target revision
+            nargs: -1
+        -s, --secret: set changeset phase to secret
+      documentation:
+        flag:
+            draft: set changeset phase to draft
+            force: allow to move boundary backward
+            public: set changeset phase to public
+            rev: target revision
+            secret: set changeset phase to secret
+    - name: pull
+      description: pull changes from the specified source
+      flags:
+        --confirm: confirm pull before applying changes
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --remote-hidden: include changesets hidden on the remote (EXPERIMENTAL)
+        --remotecmd=: specify hg command to run on the remote side
+        -B, --bookmark=:
+            description: bookmark to pull
+            nargs: -1
+        -b, --branch=:
+            description: a specific branch you would like to pull
+            nargs: -1
+        -e, --ssh=: specify ssh command to use
+        -f, --force: run even when remote repository is unrelated
+        -r, --rev=:
+            description: a remote changeset intended to be added
+            nargs: -1
+        -u, --update: update to new branch head if new descendants were pulled
+      documentation:
+        flag:
+            bookmark: bookmark to pull
+            branch: a specific branch you would like to pull
+            confirm: confirm pull before applying changes
+            force: run even when remote repository is unrelated
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            remote-hidden: include changesets hidden on the remote (EXPERIMENTAL)
+            remotecmd: specify hg command to run on the remote side
+            rev: a remote changeset intended to be added
+            ssh: specify ssh command to use
+            update: update to new branch head if new descendants were pulled
+    - name: purge
+      description: hg purge [OPTION]... [DIR]...
+      flags:
+        --all: purge ignored files too
+        --confirm: ask before permanently deleting files
+        --dirs: purge empty directories
+        --files: purge files
+        -0, --print0: end filenames with NUL, for use with xargs (implies -p/--print)
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -a, --abort-on-err: abort if an error occurs
+        -i, --ignored: purge only ignored files
+        -p, --print: print filenames instead of deleting them
+      documentation:
+        flag:
+            abort-on-err: abort if an error occurs
+            all: purge ignored files too
+            confirm: ask before permanently deleting files
+            dirs: purge empty directories
+            exclude: exclude names matching the given patterns
+            files: purge files
+            ignored: purge only ignored files
+            include: include names matching the given patterns
+            print: print filenames instead of deleting them
+            print0: end filenames with NUL, for use with xargs (implies -p/--print)
+    - name: push
+      description: push changes to the specified destination
+      flags:
+        --all-bookmarks: push all bookmarks (EXPERIMENTAL)
+        --insecure: do not verify server certificate (ignoring web.cacerts config)
+        --new-branch: allow pushing a new branch
+        --publish: push the changeset as public (EXPERIMENTAL)
+        --pushvars=:
+            description: variables that can be sent to server (ADVANCED)
+            nargs: -1
+        --remotecmd=: specify hg command to run on the remote side
+        -B, --bookmark=:
+            description: bookmark to push
+            nargs: -1
+        -b, --branch=:
+            description: a specific branch you would like to push
+            nargs: -1
+        -e, --ssh=: specify ssh command to use
+        -f, --force: force push
+        -r, --rev=:
+            description: a changeset intended to be included in the destination
+            nargs: -1
+      documentation:
+        flag:
+            all-bookmarks: push all bookmarks (EXPERIMENTAL)
+            bookmark: bookmark to push
+            branch: a specific branch you would like to push
+            force: force push
+            insecure: do not verify server certificate (ignoring web.cacerts config)
+            new-branch: allow pushing a new branch
+            publish: push the changeset as public (EXPERIMENTAL)
+            pushvars: variables that can be sent to server (ADVANCED)
+            remotecmd: specify hg command to run on the remote side
+            rev: a changeset intended to be included in the destination
+            ssh: specify ssh command to use
+    - name: recover
+      description: roll back an interrupted transaction
+      flags:
+        --verify: run `hg verify` after successful recover
+      documentation:
+        flag:
+            verify: run `hg verify` after successful recover
+    - name: remove
+      description: remove the specified files on the next commit
+      flags:
+        -A, --after: record delete for missing files
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -S, --subrepos: recurse into subrepositories
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -f, --force: forget added files, delete modified files
+        -n, --dry-run: do not perform actions, just print output
+      documentation:
+        flag:
+            after: record delete for missing files
+            dry-run: do not perform actions, just print output
+            exclude: exclude names matching the given patterns
+            force: forget added files, delete modified files
+            include: include names matching the given patterns
+            subrepos: recurse into subrepositories
+    - name: rename
+      description: rename files; equivalent of copy + remove
+      flags:
+        --at-rev=: (un)mark renames in the given revision (EXPERIMENTAL)
+        --forget: unmark a destination file as renamed
+        -A, --after: record a rename that has already occurred
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -f, --force: forcibly move over an existing managed file
+        -n, --dry-run: do not perform actions, just print output
+      documentation:
+        flag:
+            after: record a rename that has already occurred
+            at-rev: (un)mark renames in the given revision (EXPERIMENTAL)
+            dry-run: do not perform actions, just print output
+            exclude: exclude names matching the given patterns
+            force: forcibly move over an existing managed file
+            forget: unmark a destination file as renamed
+            include: include names matching the given patterns
+    - name: resolve
+      description: redo merges or set/view the merge status of files
+      flags:
+        --re-merge: re-merge files
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -T, --template=: display with template
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -a, --all: select all unresolved files
+        -l, --list: list state of files needing merge
+        -m, --mark: mark files as resolved
+        -n, --no-status: hide status prefix
+        -t, --tool=: specify merge tool
+        -u, --unmark: mark files as unresolved
+      documentation:
+        flag:
+            all: select all unresolved files
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            list: list state of files needing merge
+            mark: mark files as resolved
+            no-status: hide status prefix
+            re-merge: re-merge files
+            template: display with template
+            tool: specify merge tool
+            unmark: mark files as unresolved
+    - name: revert
+      description: restore files to their checkout state
+      flags:
+        -C, --no-backup: do not save backup copies of files
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -a, --all: revert all changes when no arguments given
+        -d, --date=: tipmost revision matching date
+        -i, --interactive: interactively select the changes
+        -n, --dry-run: do not perform actions, just print output
+        -r, --rev=: revert to the specified revision
+      documentation:
+        flag:
+            all: revert all changes when no arguments given
+            date: tipmost revision matching date
+            dry-run: do not perform actions, just print output
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            interactive: interactively select the changes
+            no-backup: do not save backup copies of files
+            rev: revert to the specified revision
+    - name: rollback
+      description: roll back the last transaction (DANGEROUS) (DEPRECATED)
+      flags:
+        -f, --force: ignore safety measures
+        -n, --dry-run: do not perform actions, just print output
+      documentation:
+        flag:
+            dry-run: do not perform actions, just print output
+            force: ignore safety measures
+    - name: root
+      description: print the root (top) of the current working directory
+      flags:
+        --share-source: print the share source root instead
+        -T, --template=: display with template
+      documentation:
+        flag:
+            share-source: print the share source root instead
+            template: display with template
+    - name: serve
+      description: start stand-alone webserver
+      flags:
+        --certificate=: SSL certificate file
+        --cmdserver=: for remote clients (ADVANCED)
+        --daemon-postexec=:
+            description: used internally by daemon mode
+            nargs: -1
+        --pid-file=: name of file to write process ID to
+        --prefix=: 'prefix path to serve from (default: server root)'
+        --print-url: start and print only the URL
+        --stdio: for remote clients (ADVANCED)
+        --style=: template style to use
+        --web-conf=: name of the hgweb config file (see 'hg help hgweb')
+        --webdir-conf=: name of the hgweb config file (DEPRECATED)
+        -6, --ipv6: use IPv6 instead of IPv4
+        -A, --accesslog=: name of access log file to write to
+        -E, --errorlog=: name of error log file to write to
+        -S, --subrepos: recurse into subrepositories
+        -a, --address=: 'address to listen on (default: all interfaces)'
+        -d, --daemon: run server in background
+        -n, --name=: 'name to show in web pages (default: working directory)'
+        -p, --port=: 'port to listen on (default: 8000)'
+        -t, --templates=: web templates to use
+      documentation:
+        flag:
+            accesslog: name of access log file to write to
+            address: 'address to listen on (default: all interfaces)'
+            certificate: SSL certificate file
+            cmdserver: for remote clients (ADVANCED)
+            daemon: run server in background
+            daemon-postexec: used internally by daemon mode
+            errorlog: name of error log file to write to
+            ipv6: use IPv6 instead of IPv4
+            name: 'name to show in web pages (default: working directory)'
+            pid-file: name of file to write process ID to
+            port: 'port to listen on (default: 8000)'
+            prefix: 'prefix path to serve from (default: server root)'
+            print-url: start and print only the URL
+            stdio: for remote clients (ADVANCED)
+            style: template style to use
+            subrepos: recurse into subrepositories
+            templates: web templates to use
+            web-conf: name of the hgweb config file (see 'hg help hgweb')
+            webdir-conf: name of the hgweb config file (DEPRECATED)
+    - name: shelve
+      description: hg shelve [OPTION]... [FILE]...
+      flags:
+        --cleanup: delete all shelved changes
+        --date=: shelve with the specified commit date
+        --stat: output diffstat-style summary of changes (provide the names of the shelved changes as positional arguments)
+        -A, --addremove: mark new/missing files as added/removed before shelving
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -d, --delete: delete the named shelved change(s)
+        -e, --edit: invoke editor on commit messages
+        -i, --interactive: interactive mode
+        -k, --keep: shelve, but keep changes in the working directory
+        -l, --list: list current shelves
+        -m, --message=: use text as shelve message
+        -n, --name=: use the given name for the shelved commit
+        -p, --patch: output patches for changes (provide the names of the shelved changes as positional arguments)
+        -u, --unknown: store unknown files in the shelve
+      documentation:
+        flag:
+            addremove: mark new/missing files as added/removed before shelving
+            cleanup: delete all shelved changes
+            date: shelve with the specified commit date
+            delete: delete the named shelved change(s)
+            edit: invoke editor on commit messages
+            exclude: exclude names matching the given patterns
+            include: include names matching the given patterns
+            interactive: interactive mode
+            keep: shelve, but keep changes in the working directory
+            list: list current shelves
+            message: use text as shelve message
+            name: use the given name for the shelved commit
+            patch: output patches for changes (provide the names of the shelved changes as positional arguments)
+            stat: output diffstat-style summary of changes (provide the names of the shelved changes as positional arguments)
+            unknown: store unknown files in the shelve
+    - name: status
+      description: show changed files in the working directory
+      flags:
+        --change=: list the changed files of a revision
+        --rev=:
+            description: show difference from revision
+            nargs: -1
+        -0, --print0: end filenames with NUL, for use with xargs
+        -A, --all: show status of all files
+        -C, --copies: 'show source of copied files (DEFAULT: ui.statuscopies)'
+        -I, --include=:
+            description: include names matching the given patterns
+            nargs: -1
+        -S, --subrepos: recurse into subrepositories
+        -T, --template=: display with template
+        -X, --exclude=:
+            description: exclude names matching the given patterns
+            nargs: -1
+        -a, --added: show only added files
+        -c, --clean: show only files without changes
+        -d, --deleted: show only missing files
+        -i, --ignored: show only ignored files
+        -m, --modified: show only modified files
+        -n, --no-status: hide status prefix
+        -r, --removed: show only removed files
+        -t, --terse=: show the terse output (EXPERIMENTAL)
+        -u, --unknown: show only unknown (not tracked) files
+      documentation:
+        flag:
+            added: show only added files
+            all: show status of all files
+            change: list the changed files of a revision
+            clean: show only files without changes
+            copies: 'show source of copied files (DEFAULT: ui.statuscopies)'
+            deleted: show only missing files
+            exclude: exclude names matching the given patterns
+            ignored: show only ignored files
+            include: include names matching the given patterns
+            modified: show only modified files
+            no-status: hide status prefix
+            print0: end filenames with NUL, for use with xargs
+            removed: show only removed files
+            rev: show difference from revision
+            subrepos: recurse into subrepositories
+            template: display with template
+            terse: show the terse output (EXPERIMENTAL)
+            unknown: show only unknown (not tracked) files
+    - name: summary
+      description: summarize working directory state
+      flags:
+        --remote: check for push and pull
+      documentation:
+        flag:
+            remote: check for push and pull
+    - name: tag
+      description: add one or more tags for the current or given revision
+      flags:
+        --remove: remove a tag
+        -d, --date=: record the specified date as commit date
+        -e, --edit: invoke editor on commit messages
+        -f, --force: force tag
+        -l, --local: make the tag local
+        -m, --message=: use text as commit message
+        -r, --rev=: revision to tag
+        -u, --user=: record the specified user as committer
+      documentation:
+        flag:
+            date: record the specified date as commit date
+            edit: invoke editor on commit messages
+            force: force tag
+            local: make the tag local
+            message: use text as commit message
+            remove: remove a tag
+            rev: revision to tag
+            user: record the specified user as committer
+    - name: tags
+      description: list repository tags
+      flags:
+        -T, --template=: display with template
+      documentation:
+        flag:
+            template: display with template
+    - name: tip
+      description: show the tip revision (DEPRECATED)
+      flags:
+        --style=: display using template map file (DEPRECATED)
+        -T, --template=: display with template
+        -g, --git: use git extended diff format
+        -p, --patch: show patch
+      documentation:
+        flag:
+            git: use git extended diff format
+            patch: show patch
+            style: display using template map file (DEPRECATED)
+            template: display with template
+    - name: unbundle
+      description: apply one or more bundle files
+      flags:
+        -u, --update: update to new branch head if changesets were unbundled
+      documentation:
+        flag:
+            update: update to new branch head if changesets were unbundled
+    - name: unshelve
+      description: hg unshelve [OPTION]... [[-n] SHELVED]
+      flags:
+        --date=: set date for temporary commits (DEPRECATED)
+        -a, --abort: abort an incomplete unshelve operation
+        -c, --continue: continue an incomplete unshelve operation
+        -i, --interactive: use interactive mode (EXPERIMENTAL)
+        -k, --keep: keep shelve after unshelving
+        -n, --name=: restore shelved change with given name
+        -t, --tool=: specify merge tool
+      documentation:
+        flag:
+            abort: abort an incomplete unshelve operation
+            continue: continue an incomplete unshelve operation
+            date: set date for temporary commits (DEPRECATED)
+            interactive: use interactive mode (EXPERIMENTAL)
+            keep: keep shelve after unshelving
+            name: restore shelved change with given name
+            tool: specify merge tool
+    - name: update
+      description: update working directory (or switch revisions)
+      flags:
+        -C, --clean: discard uncommitted changes (no backup)
+        -c, --check: require clean working directory
+        -d, --date=: tipmost revision matching date
+        -m, --merge: merge uncommitted changes
+        -r, --rev=: revision
+        -t, --tool=: specify merge tool
+      documentation:
+        flag:
+            check: require clean working directory
+            clean: discard uncommitted changes (no backup)
+            date: tipmost revision matching date
+            merge: merge uncommitted changes
+            rev: revision
+            tool: specify merge tool
+    - name: verify
+      description: verify the integrity of the repository
+      flags:
+        --full: perform more checks (EXPERIMENTAL)
+      documentation:
+        flag:
+            full: perform more checks (EXPERIMENTAL)
+    - name: version
+      description: output version and copyright information
+      flags:
+        -T, --template=: display with template
+      documentation:
+        flag:
+            template: display with template
+documentation:
+    flag:
+        color: when to colorize (boolean, always, auto, never, or debug)
+        config: set/override config option (use 'section.name=value')
+        config-file: load config file to set/override config options
+        cwd: change working directory
+        debug: enable debugging output
+        debugger: start debugger
+        encoding: set the charset encoding
+        encodingmode: set the charset encoding mode
+        help: display help and exit
+        hidden: consider hidden changesets
+        noninteractive: do not prompt, automatically pick the first choice for all prompts
+        pager: when to paginate (boolean, always, auto, or never)
+        profile: print command execution profile
+        quiet: suppress output
+        repository: repository root directory or name of overlay bundle file
+        time: time how long the command takes
+        traceback: always print a traceback on exception
+        verbose: enable additional output
+        version: output version information and exit
