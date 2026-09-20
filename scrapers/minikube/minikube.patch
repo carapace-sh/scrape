@@ -1,16 +1,16 @@
 diff --git a/cmd/minikube/cmd/root.go b/cmd/minikube/cmd/root.go
-index 0d35165..87318e9 100644
+index 466ffbe..7e76d81 100644
 --- a/cmd/minikube/cmd/root.go
 +++ b/cmd/minikube/cmd/root.go
-@@ -24,6 +24,7 @@ import (
- 	"runtime"
+@@ -25,6 +25,7 @@ import (
+ 	"slices"
  	"strings"
  
 +	"github.com/carapace-sh/carapace"
  	"github.com/spf13/cobra"
  	"github.com/spf13/pflag"
  	"github.com/spf13/viper"
-@@ -171,6 +172,7 @@ func Execute() {
+@@ -165,6 +166,7 @@ func Execute() {
  		klog.Errorf("oci env: %v", err)
  	}
  
