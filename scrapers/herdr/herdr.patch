@@ -1,8 +1,8 @@
 diff --git a/src/cli.rs b/src/cli.rs
-index 4d3c67c0..7dcd3174 100644
+index ea643f6..722365b 100644
 --- a/src/cli.rs
 +++ b/src/cli.rs
-@@ -19,7 +19,7 @@ mod protocol_guard;
+@@ -34,7 +34,7 @@ mod protocol_guard;
  mod runtime;
  mod server;
  mod server_not_running;
@@ -12,12 +12,12 @@ index 4d3c67c0..7dcd3174 100644
  mod tab;
  mod workspace;
 diff --git a/src/cli/spec.rs b/src/cli/spec.rs
-index 3be83328..79236454 100644
+index 2da0a25..1c0fec7 100644
 --- a/src/cli/spec.rs
 +++ b/src/cli/spec.rs
-@@ -2,7 +2,7 @@ use std::io::Write;
- 
- use clap::{Arg, ArgAction, ArgGroup, Command, ValueHint};
+@@ -5,7 +5,7 @@ use clap::{Arg, ArgAction, ArgGroup, Command, ValueHint};
+ mod completion;
+ mod machine;
  
 -pub(super) fn command() -> Command {
 +pub(crate) fn command() -> Command {
@@ -25,7 +25,7 @@ index 3be83328..79236454 100644
          .about("terminal workspace manager for AI coding agents")
          .disable_help_flag(true)
 diff --git a/src/main.rs b/src/main.rs
-index 27c1d92f..604d37f4 100644
+index cf7cf5b..ac2c9d0 100644
 --- a/src/main.rs
 +++ b/src/main.rs
 @@ -1,3 +1,5 @@
@@ -33,8 +33,8 @@ index 27c1d92f..604d37f4 100644
 +use clap_complete::generate;
  use std::io;
  
- use crossterm::event::{
-@@ -478,6 +480,11 @@ where
+ pub(crate) const HERDR_ENV_VAR: &str = "HERDR_ENV";
+@@ -483,6 +485,11 @@ where
  }
  
  fn main() -> io::Result<()> {

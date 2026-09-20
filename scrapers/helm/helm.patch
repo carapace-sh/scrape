@@ -1,20 +1,21 @@
 diff --git a/cmd/helm/helm.go b/cmd/helm/helm.go
-index 404ec0c..cb3bde0 100644
+index 42442d3..22e8da6 100644
 --- a/cmd/helm/helm.go
 +++ b/cmd/helm/helm.go
-@@ -20,6 +20,7 @@ import (
- 	"errors"
+@@ -21,6 +21,8 @@ import (
  	"log/slog"
  	"os"
-+	"github.com/carapace-sh/carapace"
  
++	"github.com/carapace-sh/carapace"
++
  	// Import to initialize client auth plugins.
  	_ "k8s.io/client-go/plugin/pkg/client/auth"
-@@ -41,6 +42,7 @@ func main() {
+ 
+@@ -41,6 +43,7 @@ func main() {
  		os.Exit(1)
  	}
  
 +	carapace.Gen(cmd)
  	if err := cmd.Execute(); err != nil {
- 		var cerr helmcmd.CommandError
- 		if errors.As(err, &cerr) {
+ 		if cerr, ok := errors.AsType[helmcmd.CommandError](err); ok {
+ 			os.Exit(cerr.ExitCode)
