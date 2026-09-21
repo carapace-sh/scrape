@@ -1,0 +1,199 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: grype [IMAGE]
+description: A vulnerability scanner for container images, filesystems, and SBOMs
+flags:
+  --add-cpes-if-none: generate CPEs for packages with no CPE data
+  --by-cve: orient results by CVE instead of the original vulnerability ID when possible
+  --distro=: 'distro to match against in the format: <distro>[-:@]<version>'
+  --exclude=*: exclude paths from being scanned using a glob expression
+  --file=: file to write the default report output to (default is STDOUT)
+  --from=*: specify the source behavior to use (e.g. docker, registry, podman, oci-dir, ...)
+  --ignore-states=: ignore matches for vulnerabilities with specified comma separated fix states, options=[fixed not-fixed unknown wont-fix]
+  --name=: set the name of the target being analyzed
+  --only-fixed: ignore matches for vulnerabilities that are not fixed
+  --only-notfixed: ignore matches for vulnerabilities that are fixed
+  --platform=: an optional platform specifier for container image sources (e.g. 'linux/arm64', 'linux/arm64/v8', 'arm64', 'linux')
+  --show-suppressed: show suppressed/ignored vulnerabilities in the output (only supported with table output format)
+  --sort-by=:
+    description: sort the match results with the given strategy, options=[package severity epss risk kev vulnerability]
+    default: risk
+  --vex=*: a list of VEX documents to consider when producing scanning results
+  -f, --fail-on=: set the return code to 2 if a vulnerability is found with a severity >= the given severity, options=[negligible low medium high critical]
+  -o, --output=*: report output formatter, formats=[json table cyclonedx cyclonedx-json sarif template], deprecated formats=[embedded-cyclonedx-vex-json embedded-cyclonedx-vex-xml]
+  -s, --scope=:
+    description: selection of layers to analyze, options=[squashed all-layers deep-squashed]
+    default: squashed
+  -t, --template=: specify the path to a Go template file (requires 'template' output to be selected)
+persistentflags:
+  --profile=*: configuration profiles to use
+  -c, --config=*: grype configuration file(s) to use
+  -q, --quiet: suppress all logging output
+  -v, --verbose*: increase verbosity (-v = info, -vv = debug)
+commands:
+  - name: completion [bash|zsh|fish]
+    description: Generate a shell completion for Grype (listing local docker images)
+    documentation:
+      command: |
+        To load completions (docker image list):
+
+        Bash:
+
+        $ source <(grype completion bash)
+
+        # To load completions for each session, execute once:
+        Linux:
+          $ grype completion bash > /etc/bash_completion.d/grype
+        MacOS:
+          $ grype completion bash > /usr/local/etc/bash_completion.d/grype
+
+        Zsh:
+
+        # If shell completion is not already enabled in your environment you will need
+        # to enable it.  You can execute the following once:
+
+        $ echo "autoload -U compinit; compinit" >> ~/.zshrc
+
+        # To load completions for each session, execute once:
+        $ grype completion zsh > "${fpath[1]}/_grype"
+
+        # You will need to start a new shell for this setup to take effect.
+
+        Fish:
+
+        $ grype completion fish | source
+
+        # To load completions for each session, execute once:
+        $ grype completion fish > ~/.config/fish/completions/grype.fish
+  - name: config
+    description: show the grype configuration
+    flags:
+      --load: load and validate the grype configuration
+    commands:
+      - name: locations
+        description: shows all locations and the order in which grype will look for a configuration file
+        flags:
+          --all: include every file extension supported
+  - name: db
+    description: vulnerability database operations
+    commands:
+      - name: check
+        description: Check to see if there is a database update available
+        flags:
+          -o, --output=:
+            description: format to display results (available=[text, json])
+            default: text
+      - name: delete
+        description: Delete the vulnerability database
+      - name: diff [flags] old_db_url_or_path [new_db_url_or_path]
+        description: Diff two databases, showing packages with added, removed, and modified vulnerability matches
+        flags:
+          --packages: only include packages
+          --vulns: only include vulnerabilities
+          -o, --output=:
+            description: format to display results (available=[text, json])
+            default: text
+      - name: import FILE | URL
+        description: Import a vulnerability database or archive from a local file or URL
+        documentation:
+          command: |-
+            import a vulnerability database archive from a local FILE or URL.
+            DB archives can be obtained from "https://grype.anchore.io/databases" (or running `db list`). If the URL has a `checksum` query parameter with a fully qualified digest (e.g. 'sha256:abc728...') then the archive/DB will be verified against this value.
+      - name: list
+        description: List all DBs available according to the listing URL
+        flags:
+          -o, --output=:
+            description: format to display results (available=[text, raw, json])
+            default: text
+      - name: providers
+        description: List vulnerability providers that are in the database
+        flags:
+          -o, --output=:
+            description: format to display results (available=[table, json])
+            default: table
+      - name: search
+        description: Search the DB for vulnerabilities or affected packages
+        flags:
+          --broad-cpe-matching: allow for specific package CPE attributes to match with '*' values on the vulnerability
+          --distro=*: 'refine to results with the given operating system (format: ''name'', ''name[-:@]version'', ''name[-:@]maj.min'', ''name[-:@]codename'')'
+          --ecosystem=: ecosystem of the package to search within
+          --fixed-state=*: only show vulnerabilities with the given fix state (fixed, not-fixed, unknown, wont-fix)
+          --limit=:
+            description: limit the number of results returned, use 0 for no limit
+            default: "5000"
+          --modified-after=: 'only show vulnerabilities originally published or modified since the given date (format: YYYY-MM-DD)'
+          --pkg=*: package name/CPE/PURL to search for
+          --provider=*: only show vulnerabilities from the given provider
+          --published-after=: 'only show vulnerabilities originally published after the given date (format: YYYY-MM-DD)'
+          --vuln=*: only show results for the given vulnerability ID
+          -o, --output=:
+            description: format to display results (available=[table, json])
+            default: table
+        commands:
+          - name: vuln ID...
+            aliases:
+              - vulnerability
+              - vulnerabilities
+              - vulns
+            description: Search for vulnerabilities within the DB (supports DB schema v6+ only)
+            flags:
+              --fixed-state=*: only show vulnerabilities with the given fix state (fixed, not-fixed, unknown, wont-fix)
+              --limit=:
+                description: limit the number of results returned, use 0 for no limit
+                default: "5000"
+              --modified-after=: 'only show vulnerabilities originally published or modified since the given date (format: YYYY-MM-DD)'
+              --provider=*: only show vulnerabilities from the given provider
+              --published-after=: 'only show vulnerabilities originally published after the given date (format: YYYY-MM-DD)'
+              -o, --output=:
+                description: format to display results (available=[table, json])
+                default: table
+      - name: status
+        description: Display database status and metadata
+        flags:
+          -o, --output=:
+            description: format to display results (available=[text, json])
+            default: text
+      - name: update
+        description: Download and install the latest vulnerability database
+  - name: explain --id [VULNERABILITY ID]
+    description: Ask grype to explain a set of findings
+    flags:
+      --id=*: CVE IDs to explain
+  - name: help [command]
+    description: Help about any command
+    documentation:
+      command: |-
+        Help provides help for any command in the application.
+        Simply type grype help [path to command] for full details.
+  - name: version
+    description: show version information
+    flags:
+      -o, --output=:
+        description: 'the format to show the results (allowable: [text json])'
+        default: text
+documentation:
+  command: |+
+    A vulnerability scanner for container images, filesystems, and SBOMs.
+
+    Supports the following image sources:
+        grype yourrepo/yourimage:tag             defaults to using images from a Docker daemon
+        grype path/to/yourproject                a Docker tar, OCI tar, OCI directory, SIF container, or generic filesystem directory
+
+    You can also explicitly specify the scheme to use:
+        grype podman:yourrepo/yourimage:tag          explicitly use the Podman daemon
+        grype docker:yourrepo/yourimage:tag          explicitly use the Docker daemon
+        grype docker-archive:path/to/yourimage.tar   use a tarball from disk for archives created from "docker save"
+        grype oci-archive:path/to/yourimage.tar      use a tarball from disk for OCI archives (from Podman or otherwise)
+        grype oci-dir:path/to/yourimage              read directly from a path on disk for OCI layout directories (from Skopeo or otherwise)
+        grype singularity:path/to/yourimage.sif      read directly from a Singularity Image Format (SIF) container on disk
+        grype dir:path/to/yourproject                read directly from a path on disk (any directory)
+        grype file:path/to/yourfile                  read directly from a file on disk
+        grype sbom:path/to/syft.json                 read Syft JSON from path on disk
+        grype registry:yourrepo/yourimage:tag        pull image directly from a registry (no container runtime required)
+        grype purl:path/to/purl/file                 read a newline separated file of package URLs from a path on disk
+        grype PURL                                   read a single package PURL directly (e.g. pkg:apk/openssl@3.2.1?distro=alpine-3.20.3)
+        grype cpes:path/to/cpes/file                 read a newline separated file of package CPEs from a path on disk
+        grype CPE                                    read a single CPE directly (e.g. cpe:2.3:a:openssl:openssl:3.0.14:*:*:*:*:*:*:* or cpe:/a:openssl:openssl:3.0.14)
+        grype zarf:path/to/package.tar.zst           scan all SBOMs within a Zarf package archive
+
+    You can also pipe in Syft JSON directly:
+    	syft yourimage:tag -o json | grype
