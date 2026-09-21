@@ -37,7 +37,7 @@
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.18.1",
     "git-meta": "https://github.com/git-meta/git-meta#d5ad47dcd2935f0ca1836cef0cbab03ca1431190",
     "grit": "https://github.com/gitbutlerapp/grit#v0.5.0",
-    "grype": "https://github.com/anchore/grype#v0.118.0",
+    "grype": "https://github.com/anchore/grype#v0.119.0",
     "gum": "https://github.com/charmbracelet/gum#v2.0.1",
     "hg": "https://www.mercurial-scm.org/repo/hg-stable#7.2.4",
     "helm": "https://github.com/helm/helm#v4.3.0",
