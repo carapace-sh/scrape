@@ -41,7 +41,7 @@
     "gum": "https://github.com/charmbracelet/gum#v2.0.1",
     "hg": "https://www.mercurial-scm.org/repo/hg-stable#7.2.4",
     "helm": "https://github.com/helm/helm#v4.3.0",
-    "herdr": "https://github.com/ogulcancelik/herdr#v0.9.0",
+    "herdr": "https://github.com/ogulcancelik/herdr#v0.9.1",
     "hl": "https://github.com/pamburus/hl#v0.36.3",
     "hurl": "https://github.com/Orange-OpenSource/hurl#8.0.1",
     "hyperfine": "https://github.com/sharkdp/hyperfine#v1.20.0",
