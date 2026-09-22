@@ -1,0 +1,24 @@
+diff --git a/cli/src/bin/main.rs b/cli/src/bin/main.rs
+index 86228773..fe2cc3b4 100644
+--- a/cli/src/bin/main.rs
++++ b/cli/src/bin/main.rs
+@@ -1,6 +1,18 @@
+-use {anchor_cli::Opts, anyhow::Result, clap::Parser, std::ffi::OsString};
++use {
++    anchor_cli::Opts,
++    anyhow::Result,
++    carapace_spec_clap::Spec,
++    clap::{CommandFactory, Parser},
++    clap_complete::generate,
++    std::{ffi::OsString, io},
++};
+ 
+ fn main() -> Result<()> {
++    generate(Spec, &mut Opts::command().name("anchor"), "anchor", &mut io::stdout());
++    if true {
++        return Ok(());
++    }
++
+     #[cfg(not(windows))]
+     if anchor_cli::debugger::rustc_wrapper::maybe_exec_as_wrapper() {
+         unreachable!();
