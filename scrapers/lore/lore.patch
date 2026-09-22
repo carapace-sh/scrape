@@ -1,5 +1,5 @@
 diff --git a/lore-client/src/cli/client_main.rs b/lore-client/src/cli/client_main.rs
-index c355ef8..ef7e291 100644
+index 3ce54da..5c926d7 100644
 --- a/lore-client/src/cli/client_main.rs
 +++ b/lore-client/src/cli/client_main.rs
 @@ -4,6 +4,10 @@ use std::time::Instant;
@@ -11,9 +11,9 @@ index c355ef8..ef7e291 100644
 +use std::io;
 +
  use crate::cli::LoreCli;
+ use crate::cli::LoreCommands;
  use crate::cli::handle_lore_commands;
- use crate::cli::lore_globals_from_args;
-@@ -21,6 +25,11 @@ pub fn client_main() -> ExitCode {
+@@ -35,6 +39,11 @@ pub fn client_main() -> ExitCode {
  
      let time_start = Instant::now();
  
