@@ -79,6 +79,7 @@ jobs:
   taplo: {uses: ./.github/workflows/scrape-template.yml, with: {command: taplo}}
   task: {uses: ./.github/workflows/scrape-template.yml, with: {command: task}}
   tsh: {uses: ./.github/workflows/scrape-template.yml, with: {command: tsh}}
+  uv: {uses: ./.github/workflows/scrape-template.yml, with: {command: uv}}
   vhs: {uses: ./.github/workflows/scrape-template.yml, with: {command: vhs}}
   vivid: {uses: ./.github/workflows/scrape-template.yml, with: {command: vivid}}
   watchexec: {uses: ./.github/workflows/scrape-template.yml, with: {command: watchexec}}

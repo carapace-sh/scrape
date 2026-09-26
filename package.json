@@ -74,6 +74,7 @@
     "taplo": "https://github.com/tamasfe/taplo#0.10.0",
     "task": "https://github.com/go-task/task#v3.53.1",
     "tsh": "https://github.com/gravitational/teleport#v18.11.1",
+    "uv": "https://github.com/astral-sh/uv#0.12.19",
     "vhs": "https://github.com/charmbracelet/vhs#v0.12.0",
     "vivid": "https://github.com/sharkdp/vivid#v0.11.1",
     "watchexec": "https://github.com/watchexec/watchexec#v2.7.3",
