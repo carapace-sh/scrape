@@ -1,0 +1,34 @@
+diff --git a/crates/uv/Cargo.toml b/crates/uv/Cargo.toml
+--- a/crates/uv/Cargo.toml
++++ b/crates/uv/Cargo.toml
+@@ -40,6 +40,8 @@
+   "github_releases",
+   "tokio",
+ ], optional = true }
++carapace_spec_clap = "1.2.3"
+ clap = { workspace = true, features = ["derive", "string", "wrap_help"] }
++clap_complete = "4.6.5"
+ console = { workspace = true }
+ ctrlc = { workspace = true }
+diff --git a/crates/uv/src/bin/uv.rs b/crates/uv/src/bin/uv.rs
+--- a/crates/uv/src/bin/uv.rs
++++ b/crates/uv/src/bin/uv.rs
+@@ -6,9 +6,18 @@
++use std::io;
+ use std::process::ExitCode;
+ 
++use carapace_spec_clap::Spec;
++use clap::CommandFactory;
++use clap_complete::generate;
+ use uv::main as uv_main;
++use uv_cli::Cli;
+ 
+ #[allow(unsafe_code)]
+ fn main() -> ExitCode {
++    generate(Spec, &mut Cli::command(), "uv", &mut io::stdout());
++    if true {
++        return ExitCode::SUCCESS;
++    }
+     // SAFETY: This is safe because we are running it early in `main` before spawning any threads.
+     unsafe { uv_main(std::env::args_os()) }
+ }
