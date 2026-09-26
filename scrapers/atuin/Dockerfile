@@ -8,6 +8,6 @@ ADD atuin.patch /
 WORKDIR /atuin
 RUN git apply ../atuin.patch
 RUN cargo add --package atuin carapace_spec_clap
-RUN cargo install --path crates/atuin --root /usr
+RUN cargo install --locked --path crates/atuin --root /usr
 
 ENTRYPOINT ["/usr/bin/atuin"]
