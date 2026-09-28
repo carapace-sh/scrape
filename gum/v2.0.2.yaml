@@ -1,0 +1,2573 @@
+name: gum
+description: "A tool for \e[38;5;212mglamorous\e[m shell scripts."
+flags:
+    -h, --help: Show context-sensitive help.
+    -v, --version: Print the version number
+commands:
+    - name: choose
+      description: Choose an option from a list of choices
+      flags:
+        --cursor-prefix=:
+            description: Prefix to show on the cursor item (hidden if limit is 1)
+            default: '• '
+        --cursor.align=&:
+            description: Text Alignment
+            default: left
+        --cursor.background=: Background Color
+        --cursor.bold&: Bold text
+        --cursor.border-background=&: Border Background Color
+        --cursor.border-foreground=&: Border Foreground Color
+        --cursor.border=&:
+            description: Border Style
+            default: none
+        --cursor.faint&: Faint text
+        --cursor.foreground=:
+            description: Foreground Color
+            default: "212"
+        --cursor.height=&: Text height
+        --cursor.italic&: Italicize text
+        --cursor.margin=&:
+            description: Text margin
+            default: 0 0
+        --cursor.padding=&:
+            description: Text padding
+            default: 0 0
+        --cursor.strikethrough&: Strikethrough text
+        --cursor.underline&: Underline text
+        --cursor.width=&: Text width
+        --cursor=:
+            description: Prefix to show on item that corresponds to the cursor position
+            default: '> '
+        --header.align=&:
+            description: Text Alignment
+            default: left
+        --header.background=: Background Color
+        --header.bold&: Bold text
+        --header.border-background=&: Border Background Color
+        --header.border-foreground=&: Border Foreground Color
+        --header.border=&:
+            description: Border Style
+            default: none
+        --header.faint&: Faint text
+        --header.foreground=:
+            description: Foreground Color
+            default: "99"
+        --header.height=&: Text height
+        --header.italic&: Italicize text
+        --header.margin=&:
+            description: Text margin
+            default: 0 0
+        --header.padding=&:
+            description: Text padding
+            default: 0 0
+        --header.strikethrough&: Strikethrough text
+        --header.underline&: Underline text
+        --header.width=&: Text width
+        --header=:
+            description: Header value
+            default: 'Choose:'
+        --height=:
+            description: Height of the list
+            default: "10"
+        --input-delimiter=:
+            description: Option delimiter when reading from STDIN
+            default: |4+
+        --item.align=&:
+            description: Text Alignment
+            default: left
+        --item.background=: Background Color
+        --item.bold&: Bold text
+        --item.border-background=&: Border Background Color
+        --item.border-foreground=&: Border Foreground Color
+        --item.border=&:
+            description: Border Style
+            default: none
+        --item.faint&: Faint text
+        --item.foreground=: Foreground Color
+        --item.height=&: Text height
+        --item.italic&: Italicize text
+        --item.margin=&:
+            description: Text margin
+            default: 0 0
+        --item.padding=&:
+            description: Text padding
+            default: 0 0
+        --item.strikethrough&: Strikethrough text
+        --item.underline&: Underline text
+        --item.width=&: Text width
+        --label-delimiter=: Allows to set a delimiter, so options can be set as label:value
+        --limit=:
+            description: Maximum number of options to pick
+            default: "1"
+        --no-limit: Pick unlimited number of options (ignores limit)
+        --ordered: Maintain the order of the selected options
+        --output-delimiter=:
+            description: Option delimiter when writing to STDOUT
+            default: |4+
+        --padding=:
+            description: Padding
+            default: 0 0
+        --select-if-one: Select the given option if there is only one
+        --selected-prefix=:
+            description: Prefix to show on selected items (hidden if limit is 1)
+            default: '✓ '
+        --selected.align=&:
+            description: Text Alignment
+            default: left
+        --selected.background=: Background Color
+        --selected.bold&: Bold text
+        --selected.border-background=&: Border Background Color
+        --selected.border-foreground=&: Border Foreground Color
+        --selected.border=&:
+            description: Border Style
+            default: none
+        --selected.faint&: Faint text
+        --selected.foreground=:
+            description: Foreground Color
+            default: "212"
+        --selected.height=&: Text height
+        --selected.italic&: Italicize text
+        --selected.margin=&:
+            description: Text margin
+            default: 0 0
+        --selected.padding=&:
+            description: Text padding
+            default: 0 0
+        --selected.strikethrough&: Strikethrough text
+        --selected.underline&: Underline text
+        --selected.width=&: Text width
+        --selected=*: Options that should start as selected (selects all if given *)
+        --show-help:
+            description: Show help keybinds
+            default: "true"
+        --strip-ansi:
+            description: Strip ANSI sequences when reading from STDIN
+            default: "true"
+        --timeout=: Timeout until choose returns selected element
+        --unselected-prefix=:
+            description: Prefix to show on unselected items (hidden if limit is 1)
+            default: '• '
+      completion:
+        flag:
+            cursor.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            item.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            item.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: confirm
+      description: Ask a user to confirm an action
+      flags:
+        --affirmative=:
+            description: The title of the affirmative action
+            default: "Yes"
+        --default:
+            description: Default confirmation action
+            default: "true"
+        --negative=:
+            description: The title of the negative action
+            default: "No"
+        --padding=:
+            description: Padding
+            default: 0 0
+        --prompt.align=&:
+            description: Text Alignment
+            default: left
+        --prompt.background=: Background Color
+        --prompt.bold&:
+            description: Bold text
+            default: "true"
+        --prompt.border-background=&: Border Background Color
+        --prompt.border-foreground=&: Border Foreground Color
+        --prompt.border=&:
+            description: Border Style
+            default: none
+        --prompt.faint&: Faint text
+        --prompt.foreground=:
+            description: Foreground Color
+            default: '#7571F9'
+        --prompt.height=&: Text height
+        --prompt.italic&: Italicize text
+        --prompt.margin=&:
+            description: Text margin
+            default: 0 0 0 1
+        --prompt.padding=&:
+            description: Text padding
+            default: 0 0
+        --prompt.strikethrough&: Strikethrough text
+        --prompt.underline&: Underline text
+        --prompt.width=&: Text width
+        --selected.align=&:
+            description: Text Alignment
+            default: left
+        --selected.background=:
+            description: Background Color
+            default: "212"
+        --selected.bold&: Bold text
+        --selected.border-background=&: Border Background Color
+        --selected.border-foreground=&: Border Foreground Color
+        --selected.border=&:
+            description: Border Style
+            default: none
+        --selected.faint&: Faint text
+        --selected.foreground=:
+            description: Foreground Color
+            default: "230"
+        --selected.height=&: Text height
+        --selected.italic&: Italicize text
+        --selected.margin=&:
+            description: Text margin
+            default: 0 1
+        --selected.padding=&:
+            description: Text padding
+            default: 0 3
+        --selected.strikethrough&: Strikethrough text
+        --selected.underline&: Underline text
+        --selected.width=&: Text width
+        --show-help:
+            description: Show help key binds
+            default: "true"
+        --show-output: Print prompt and chosen action to output
+        --timeout=: Timeout until confirm returns selected value or default if provided
+        --unselected.align=&:
+            description: Text Alignment
+            default: left
+        --unselected.background=:
+            description: Background Color
+            default: "235"
+        --unselected.bold&: Bold text
+        --unselected.border-background=&: Border Background Color
+        --unselected.border-foreground=&: Border Foreground Color
+        --unselected.border=&:
+            description: Border Style
+            default: none
+        --unselected.faint&: Faint text
+        --unselected.foreground=:
+            description: Foreground Color
+            default: "254"
+        --unselected.height=&: Text height
+        --unselected.italic&: Italicize text
+        --unselected.margin=&:
+            description: Text margin
+            default: 0 1
+        --unselected.padding=&:
+            description: Text padding
+            default: 0 3
+        --unselected.strikethrough&: Strikethrough text
+        --unselected.underline&: Underline text
+        --unselected.width=&: Text width
+      completion:
+        flag:
+            prompt.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prompt.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            unselected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            unselected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: file
+      description: Pick a file from a folder
+      flags:
+        --cursor.align=&:
+            description: Text Alignment
+            default: left
+        --cursor.background=: Background Color
+        --cursor.bold&: Bold text
+        --cursor.border-background=&: Border Background Color
+        --cursor.border-foreground=&: Border Foreground Color
+        --cursor.border=&:
+            description: Border Style
+            default: none
+        --cursor.faint&: Faint text
+        --cursor.foreground=:
+            description: Foreground Color
+            default: "212"
+        --cursor.height=&: Text height
+        --cursor.italic&: Italicize text
+        --cursor.margin=&:
+            description: Text margin
+            default: 0 0
+        --cursor.padding=&:
+            description: Text padding
+            default: 0 0
+        --cursor.strikethrough&: Strikethrough text
+        --cursor.underline&: Underline text
+        --cursor.width=&: Text width
+        --directory: Allow directories selection
+        --directory.align=&:
+            description: Text Alignment
+            default: left
+        --directory.background=: Background Color
+        --directory.bold&: Bold text
+        --directory.border-background=&: Border Background Color
+        --directory.border-foreground=&: Border Foreground Color
+        --directory.border=&:
+            description: Border Style
+            default: none
+        --directory.faint&: Faint text
+        --directory.foreground=:
+            description: Foreground Color
+            default: "99"
+        --directory.height=&: Text height
+        --directory.italic&: Italicize text
+        --directory.margin=&:
+            description: Text margin
+            default: 0 0
+        --directory.padding=&:
+            description: Text padding
+            default: 0 0
+        --directory.strikethrough&: Strikethrough text
+        --directory.underline&: Underline text
+        --directory.width=&: Text width
+        --file:
+            description: Allow files selection
+            default: "true"
+        --file-size.align=&:
+            description: Text Alignment
+            default: right
+        --file-size.background=: Background Color
+        --file-size.bold&: Bold text
+        --file-size.border-background=&: Border Background Color
+        --file-size.border-foreground=&: Border Foreground Color
+        --file-size.border=&:
+            description: Border Style
+            default: none
+        --file-size.faint&: Faint text
+        --file-size.foreground=:
+            description: Foreground Color
+            default: "240"
+        --file-size.height=&: Text height
+        --file-size.italic&: Italicize text
+        --file-size.margin=&:
+            description: Text margin
+            default: 0 0
+        --file-size.padding=&:
+            description: Text padding
+            default: 0 0
+        --file-size.strikethrough&: Strikethrough text
+        --file-size.underline&: Underline text
+        --file-size.width=&:
+            description: Text width
+            default: "8"
+        --file.align=&:
+            description: Text Alignment
+            default: left
+        --file.background=: Background Color
+        --file.bold&: Bold text
+        --file.border-background=&: Border Background Color
+        --file.border-foreground=&: Border Foreground Color
+        --file.border=&:
+            description: Border Style
+            default: none
+        --file.faint&: Faint text
+        --file.foreground=: Foreground Color
+        --file.height=&: Text height
+        --file.italic&: Italicize text
+        --file.margin=&:
+            description: Text margin
+            default: 0 0
+        --file.padding=&:
+            description: Text padding
+            default: 0 0
+        --file.strikethrough&: Strikethrough text
+        --file.underline&: Underline text
+        --file.width=&: Text width
+        --header.align=&:
+            description: Text Alignment
+            default: left
+        --header.background=: Background Color
+        --header.bold&: Bold text
+        --header.border-background=&: Border Background Color
+        --header.border-foreground=&: Border Foreground Color
+        --header.border=&:
+            description: Border Style
+            default: none
+        --header.faint&: Faint text
+        --header.foreground=:
+            description: Foreground Color
+            default: "99"
+        --header.height=&: Text height
+        --header.italic&: Italicize text
+        --header.margin=&:
+            description: Text margin
+            default: 0 0
+        --header.padding=&:
+            description: Text padding
+            default: 0 0
+        --header.strikethrough&: Strikethrough text
+        --header.underline&: Underline text
+        --header.width=&: Text width
+        --header=: Header value
+        --height=:
+            description: Maximum number of files to display
+            default: "10"
+        --padding=:
+            description: Padding
+            default: 0 0
+        --permissions.align=&:
+            description: Text Alignment
+            default: left
+        --permissions.background=: Background Color
+        --permissions.bold&: Bold text
+        --permissions.border-background=&: Border Background Color
+        --permissions.border-foreground=&: Border Foreground Color
+        --permissions.border=&:
+            description: Border Style
+            default: none
+        --permissions.faint&: Faint text
+        --permissions.foreground=:
+            description: Foreground Color
+            default: "244"
+        --permissions.height=&: Text height
+        --permissions.italic&: Italicize text
+        --permissions.margin=&:
+            description: Text margin
+            default: 0 0
+        --permissions.padding=&:
+            description: Text padding
+            default: 0 0
+        --permissions.strikethrough&: Strikethrough text
+        --permissions.underline&: Underline text
+        --permissions.width=&: Text width
+        --selected.align=&:
+            description: Text Alignment
+            default: left
+        --selected.background=: Background Color
+        --selected.bold&:
+            description: Bold text
+            default: "true"
+        --selected.border-background=&: Border Background Color
+        --selected.border-foreground=&: Border Foreground Color
+        --selected.border=&:
+            description: Border Style
+            default: none
+        --selected.faint&: Faint text
+        --selected.foreground=:
+            description: Foreground Color
+            default: "212"
+        --selected.height=&: Text height
+        --selected.italic&: Italicize text
+        --selected.margin=&:
+            description: Text margin
+            default: 0 0
+        --selected.padding=&:
+            description: Text padding
+            default: 0 0
+        --selected.strikethrough&: Strikethrough text
+        --selected.underline&: Underline text
+        --selected.width=&: Text width
+        --show-help:
+            description: Show help key binds
+            default: "true"
+        --symlink.align=&:
+            description: Text Alignment
+            default: left
+        --symlink.background=: Background Color
+        --symlink.bold&: Bold text
+        --symlink.border-background=&: Border Background Color
+        --symlink.border-foreground=&: Border Foreground Color
+        --symlink.border=&:
+            description: Border Style
+            default: none
+        --symlink.faint&: Faint text
+        --symlink.foreground=:
+            description: Foreground Color
+            default: "36"
+        --symlink.height=&: Text height
+        --symlink.italic&: Italicize text
+        --symlink.margin=&:
+            description: Text margin
+            default: 0 0
+        --symlink.padding=&:
+            description: Text padding
+            default: 0 0
+        --symlink.strikethrough&: Strikethrough text
+        --symlink.underline&: Underline text
+        --symlink.width=&: Text width
+        --timeout=: Timeout until command aborts without a selection
+        -a, --all: Show hidden and 'dot' files
+        -c, --cursor=:
+            description: The cursor character
+            default: '>'
+        -p, --permissions:
+            description: Show file permissions
+            default: "true"
+        -s, --size:
+            description: Show file size
+            default: "true"
+      completion:
+        flag:
+            cursor.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            directory.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            directory.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            file-size.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            file-size.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            file.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            file.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            permissions.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            permissions.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            symlink.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            symlink.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: filter
+      description: Filter items from a list
+      flags:
+        --cursor-text.align=&:
+            description: Text Alignment
+            default: left
+        --cursor-text.background=: Background Color
+        --cursor-text.bold&: Bold text
+        --cursor-text.border-background=&: Border Background Color
+        --cursor-text.border-foreground=&: Border Foreground Color
+        --cursor-text.border=&:
+            description: Border Style
+            default: none
+        --cursor-text.faint&: Faint text
+        --cursor-text.foreground=: Foreground Color
+        --cursor-text.height=&: Text height
+        --cursor-text.italic&: Italicize text
+        --cursor-text.margin=&:
+            description: Text margin
+            default: 0 0
+        --cursor-text.padding=&:
+            description: Text padding
+            default: 0 0
+        --cursor-text.strikethrough&: Strikethrough text
+        --cursor-text.underline&: Underline text
+        --cursor-text.width=&: Text width
+        --fuzzy:
+            description: Enable fuzzy matching; otherwise match from start of word
+            default: "true"
+        --fuzzy-sort:
+            description: Sort fuzzy results by their scores
+            default: "true"
+        --header.align=&:
+            description: Text Alignment
+            default: left
+        --header.background=: Background Color
+        --header.bold&: Bold text
+        --header.border-background=&: Border Background Color
+        --header.border-foreground=&: Border Foreground Color
+        --header.border=&:
+            description: Border Style
+            default: none
+        --header.faint&: Faint text
+        --header.foreground=:
+            description: Foreground Color
+            default: "99"
+        --header.height=&: Text height
+        --header.italic&: Italicize text
+        --header.margin=&:
+            description: Text margin
+            default: 0 0
+        --header.padding=&:
+            description: Text padding
+            default: 0 0
+        --header.strikethrough&: Strikethrough text
+        --header.underline&: Underline text
+        --header.width=&: Text width
+        --header=: Header value
+        --height=: Input height
+        --indicator.align=&:
+            description: Text Alignment
+            default: left
+        --indicator.background=: Background Color
+        --indicator.bold&: Bold text
+        --indicator.border-background=&: Border Background Color
+        --indicator.border-foreground=&: Border Foreground Color
+        --indicator.border=&:
+            description: Border Style
+            default: none
+        --indicator.faint&: Faint text
+        --indicator.foreground=:
+            description: Foreground Color
+            default: "212"
+        --indicator.height=&: Text height
+        --indicator.italic&: Italicize text
+        --indicator.margin=&:
+            description: Text margin
+            default: 0 0
+        --indicator.padding=&:
+            description: Text padding
+            default: 0 0
+        --indicator.strikethrough&: Strikethrough text
+        --indicator.underline&: Underline text
+        --indicator.width=&: Text width
+        --indicator=:
+            description: Character for selection
+            default: •
+        --input-delimiter=:
+            description: Option delimiter when reading from STDIN
+            default: |4+
+        --limit=:
+            description: Maximum number of options to pick
+            default: "1"
+        --match.align=&:
+            description: Text Alignment
+            default: left
+        --match.background=: Background Color
+        --match.bold&: Bold text
+        --match.border-background=&: Border Background Color
+        --match.border-foreground=&: Border Foreground Color
+        --match.border=&:
+            description: Border Style
+            default: none
+        --match.faint&: Faint text
+        --match.foreground=:
+            description: Foreground Color
+            default: "212"
+        --match.height=&: Text height
+        --match.italic&: Italicize text
+        --match.margin=&:
+            description: Text margin
+            default: 0 0
+        --match.padding=&:
+            description: Text padding
+            default: 0 0
+        --match.strikethrough&: Strikethrough text
+        --match.underline&: Underline text
+        --match.width=&: Text width
+        --no-limit: Pick unlimited number of options (ignores limit)
+        --output-delimiter=:
+            description: Option delimiter when writing to STDOUT
+            default: |4+
+        --padding=:
+            description: Padding
+            default: 0 0
+        --placeholder.align=&:
+            description: Text Alignment
+            default: left
+        --placeholder.background=: Background Color
+        --placeholder.bold&: Bold text
+        --placeholder.border-background=&: Border Background Color
+        --placeholder.border-foreground=&: Border Foreground Color
+        --placeholder.border=&:
+            description: Border Style
+            default: none
+        --placeholder.faint&: Faint text
+        --placeholder.foreground=:
+            description: Foreground Color
+            default: "240"
+        --placeholder.height=&: Text height
+        --placeholder.italic&: Italicize text
+        --placeholder.margin=&:
+            description: Text margin
+            default: 0 0
+        --placeholder.padding=&:
+            description: Text padding
+            default: 0 0
+        --placeholder.strikethrough&: Strikethrough text
+        --placeholder.underline&: Underline text
+        --placeholder.width=&: Text width
+        --placeholder=:
+            description: Placeholder value
+            default: Filter...
+        --prompt.align=&:
+            description: Text Alignment
+            default: left
+        --prompt.background=: Background Color
+        --prompt.bold&: Bold text
+        --prompt.border-background=&: Border Background Color
+        --prompt.border-foreground=&: Border Foreground Color
+        --prompt.border=&:
+            description: Border Style
+            default: none
+        --prompt.faint&: Faint text
+        --prompt.foreground=:
+            description: Foreground Color
+            default: "240"
+        --prompt.height=&: Text height
+        --prompt.italic&: Italicize text
+        --prompt.margin=&:
+            description: Text margin
+            default: 0 0
+        --prompt.padding=&:
+            description: Text padding
+            default: 0 0
+        --prompt.strikethrough&: Strikethrough text
+        --prompt.underline&: Underline text
+        --prompt.width=&: Text width
+        --prompt=:
+            description: Prompt to display
+            default: '> '
+        --reverse: Display from the bottom of the screen
+        --select-if-one: Select the given option if there is only one
+        --selected-indicator.align=&:
+            description: Text Alignment
+            default: left
+        --selected-indicator.background=: Background Color
+        --selected-indicator.bold&: Bold text
+        --selected-indicator.border-background=&: Border Background Color
+        --selected-indicator.border-foreground=&: Border Foreground Color
+        --selected-indicator.border=&:
+            description: Border Style
+            default: none
+        --selected-indicator.faint&: Faint text
+        --selected-indicator.foreground=:
+            description: Foreground Color
+            default: "212"
+        --selected-indicator.height=&: Text height
+        --selected-indicator.italic&: Italicize text
+        --selected-indicator.margin=&:
+            description: Text margin
+            default: 0 0
+        --selected-indicator.padding=&:
+            description: Text padding
+            default: 0 0
+        --selected-indicator.strikethrough&: Strikethrough text
+        --selected-indicator.underline&: Underline text
+        --selected-indicator.width=&: Text width
+        --selected-prefix=:
+            description: Character to indicate selected items (hidden if limit is 1)
+            default: ' ◉ '
+        --selected=*: Options that should start as selected (selects all if given *)
+        --show-help:
+            description: Show help keybinds
+            default: "true"
+        --sort&:
+            description: Sort fuzzy results by their scores
+            default: "true"
+        --strict:
+            description: Only returns if anything matched. Otherwise return Filter
+            default: "true"
+        --strip-ansi:
+            description: Strip ANSI sequences when reading from STDIN
+            default: "true"
+        --text.align=&:
+            description: Text Alignment
+            default: left
+        --text.background=: Background Color
+        --text.bold&: Bold text
+        --text.border-background=&: Border Background Color
+        --text.border-foreground=&: Border Foreground Color
+        --text.border=&:
+            description: Border Style
+            default: none
+        --text.faint&: Faint text
+        --text.foreground=: Foreground Color
+        --text.height=&: Text height
+        --text.italic&: Italicize text
+        --text.margin=&:
+            description: Text margin
+            default: 0 0
+        --text.padding=&:
+            description: Text padding
+            default: 0 0
+        --text.strikethrough&: Strikethrough text
+        --text.underline&: Underline text
+        --text.width=&: Text width
+        --timeout=: Timeout until filter command aborts
+        --unselected-prefix.align=&:
+            description: Text Alignment
+            default: left
+        --unselected-prefix.background=: Background Color
+        --unselected-prefix.bold&: Bold text
+        --unselected-prefix.border-background=&: Border Background Color
+        --unselected-prefix.border-foreground=&: Border Foreground Color
+        --unselected-prefix.border=&:
+            description: Border Style
+            default: none
+        --unselected-prefix.faint&: Faint text
+        --unselected-prefix.foreground=:
+            description: Foreground Color
+            default: "240"
+        --unselected-prefix.height=&: Text height
+        --unselected-prefix.italic&: Italicize text
+        --unselected-prefix.margin=&:
+            description: Text margin
+            default: 0 0
+        --unselected-prefix.padding=&:
+            description: Text padding
+            default: 0 0
+        --unselected-prefix.strikethrough&: Strikethrough text
+        --unselected-prefix.underline&: Underline text
+        --unselected-prefix.width=&: Text width
+        --unselected-prefix=:
+            description: Character to indicate unselected items (hidden if limit is 1)
+            default: ' ○ '
+        --value=: Initial filter value
+        --width=: Input width
+      completion:
+        flag:
+            cursor-text.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor-text.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            indicator.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            indicator.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            match.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            match.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            placeholder.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            placeholder.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            prompt.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prompt.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected-indicator.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected-indicator.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            text.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            text.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            unselected-prefix.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            unselected-prefix.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: format
+      description: Format a string using a template
+      flags:
+        --strip-ansi:
+            description: Strip ANSI sequences when reading from STDIN
+            default: "true"
+        --theme=:
+            description: Glamour theme to use for markdown formatting
+            default: pink
+        -l, --language=: Programming language to parse code
+        -t, --type=:
+            description: Format to use (markdown,template,code,emoji)
+            default: markdown
+      completion:
+        flag:
+            type:
+                - markdown
+                - template
+                - code
+                - emoji
+    - name: input
+      description: Prompt for some input
+      flags:
+        --char-limit=:
+            description: Maximum value length (0 for no limit)
+            default: "400"
+        --cursor.align=&:
+            description: Text Alignment
+            default: left
+        --cursor.background=: Background Color
+        --cursor.bold&: Bold text
+        --cursor.border-background=&: Border Background Color
+        --cursor.border-foreground=&: Border Foreground Color
+        --cursor.border=&:
+            description: Border Style
+            default: none
+        --cursor.faint&: Faint text
+        --cursor.foreground=:
+            description: Foreground Color
+            default: "212"
+        --cursor.height=&: Text height
+        --cursor.italic&: Italicize text
+        --cursor.margin=&:
+            description: Text margin
+            default: 0 0
+        --cursor.mode=:
+            description: Cursor mode
+            default: blink
+        --cursor.padding=&:
+            description: Text padding
+            default: 0 0
+        --cursor.strikethrough&: Strikethrough text
+        --cursor.underline&: Underline text
+        --cursor.width=&: Text width
+        --header.align=&:
+            description: Text Alignment
+            default: left
+        --header.background=: Background Color
+        --header.bold&: Bold text
+        --header.border-background=&: Border Background Color
+        --header.border-foreground=&: Border Foreground Color
+        --header.border=&:
+            description: Border Style
+            default: none
+        --header.faint&: Faint text
+        --header.foreground=:
+            description: Foreground Color
+            default: "240"
+        --header.height=&: Text height
+        --header.italic&: Italicize text
+        --header.margin=&:
+            description: Text margin
+            default: 0 0
+        --header.padding=&:
+            description: Text padding
+            default: 0 0
+        --header.strikethrough&: Strikethrough text
+        --header.underline&: Underline text
+        --header.width=&: Text width
+        --header=: Header value
+        --padding=:
+            description: Padding
+            default: 0 0
+        --password: Mask input characters
+        --placeholder.align=&:
+            description: Text Alignment
+            default: left
+        --placeholder.background=: Background Color
+        --placeholder.bold&: Bold text
+        --placeholder.border-background=&: Border Background Color
+        --placeholder.border-foreground=&: Border Foreground Color
+        --placeholder.border=&:
+            description: Border Style
+            default: none
+        --placeholder.faint&: Faint text
+        --placeholder.foreground=:
+            description: Foreground Color
+            default: "240"
+        --placeholder.height=&: Text height
+        --placeholder.italic&: Italicize text
+        --placeholder.margin=&:
+            description: Text margin
+            default: 0 0
+        --placeholder.padding=&:
+            description: Text padding
+            default: 0 0
+        --placeholder.strikethrough&: Strikethrough text
+        --placeholder.underline&: Underline text
+        --placeholder.width=&: Text width
+        --placeholder=:
+            description: Placeholder value
+            default: Type something...
+        --prompt.align=&:
+            description: Text Alignment
+            default: left
+        --prompt.background=: Background Color
+        --prompt.bold&: Bold text
+        --prompt.border-background=&: Border Background Color
+        --prompt.border-foreground=&: Border Foreground Color
+        --prompt.border=&:
+            description: Border Style
+            default: none
+        --prompt.faint&: Faint text
+        --prompt.foreground=: Foreground Color
+        --prompt.height=&: Text height
+        --prompt.italic&: Italicize text
+        --prompt.margin=&:
+            description: Text margin
+            default: 0 0
+        --prompt.padding=&:
+            description: Text padding
+            default: 0 0
+        --prompt.strikethrough&: Strikethrough text
+        --prompt.underline&: Underline text
+        --prompt.width=&: Text width
+        --prompt=:
+            description: Prompt to display
+            default: '> '
+        --show-help:
+            description: Show help keybinds
+            default: "true"
+        --strip-ansi:
+            description: Strip ANSI sequences when reading from STDIN
+            default: "true"
+        --timeout=: Timeout until input aborts
+        --value=: Initial value (can also be passed via stdin)
+        --width=: Input width (0 for terminal width)
+      completion:
+        flag:
+            cursor.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor.mode:
+                - blink
+                - hide
+                - static
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            placeholder.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            placeholder.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            prompt.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prompt.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: join
+      description: Join text vertically or horizontally
+      flags:
+        --align=:
+            description: Text alignment
+            default: left
+        --horizontal: Join (potentially multi-line) strings horizontally
+        --vertical: Join (potentially multi-line) strings vertically
+      completion:
+        flag:
+            align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+    - name: pager
+      description: Scroll through a file
+      flags:
+        --align=&:
+            description: Text Alignment
+            default: left
+        --background=: Background Color
+        --bold&: Bold text
+        --border-background=&: Border Background Color
+        --border-foreground=&:
+            description: Border Foreground Color
+            default: "212"
+        --border=&:
+            description: Border Style
+            default: rounded
+        --faint&: Faint text
+        --foreground=: Foreground Color
+        --height=&: Text height
+        --help.align=&:
+            description: Text Alignment
+            default: left
+        --help.background=: Background Color
+        --help.bold&: Bold text
+        --help.border-background=&: Border Background Color
+        --help.border-foreground=&: Border Foreground Color
+        --help.border=&:
+            description: Border Style
+            default: none
+        --help.faint&: Faint text
+        --help.foreground=:
+            description: Foreground Color
+            default: "241"
+        --help.height=&: Text height
+        --help.italic&: Italicize text
+        --help.margin=&:
+            description: Text margin
+            default: 0 0
+        --help.padding=&:
+            description: Text padding
+            default: 0 0
+        --help.strikethrough&: Strikethrough text
+        --help.underline&: Underline text
+        --help.width=&: Text width
+        --italic&: Italicize text
+        --line-number.align=&:
+            description: Text Alignment
+            default: left
+        --line-number.background=: Background Color
+        --line-number.bold&: Bold text
+        --line-number.border-background=&: Border Background Color
+        --line-number.border-foreground=&: Border Foreground Color
+        --line-number.border=&:
+            description: Border Style
+            default: none
+        --line-number.faint&: Faint text
+        --line-number.foreground=:
+            description: Foreground Color
+            default: "237"
+        --line-number.height=&: Text height
+        --line-number.italic&: Italicize text
+        --line-number.margin=&:
+            description: Text margin
+            default: 0 0
+        --line-number.padding=&:
+            description: Text padding
+            default: 0 0
+        --line-number.strikethrough&: Strikethrough text
+        --line-number.underline&: Underline text
+        --line-number.width=&: Text width
+        --margin=&:
+            description: Text margin
+            default: 0 0
+        --match-highlight.align=&:
+            description: Text Alignment
+            default: left
+        --match-highlight.background=:
+            description: Background Color
+            default: "225"
+        --match-highlight.bold&:
+            description: Bold text
+            default: "true"
+        --match-highlight.border-background=&: Border Background Color
+        --match-highlight.border-foreground=&: Border Foreground Color
+        --match-highlight.border=&:
+            description: Border Style
+            default: none
+        --match-highlight.faint&: Faint text
+        --match-highlight.foreground=:
+            description: Foreground Color
+            default: "235"
+        --match-highlight.height=&: Text height
+        --match-highlight.italic&: Italicize text
+        --match-highlight.margin=&:
+            description: Text margin
+            default: 0 0
+        --match-highlight.padding=&:
+            description: Text padding
+            default: 0 0
+        --match-highlight.strikethrough&: Strikethrough text
+        --match-highlight.underline&: Underline text
+        --match-highlight.width=&: Text width
+        --match.align=&:
+            description: Text Alignment
+            default: left
+        --match.background=: Background Color
+        --match.bold&:
+            description: Bold text
+            default: "true"
+        --match.border-background=&: Border Background Color
+        --match.border-foreground=&: Border Foreground Color
+        --match.border=&:
+            description: Border Style
+            default: none
+        --match.faint&: Faint text
+        --match.foreground=:
+            description: Foreground Color
+            default: "212"
+        --match.height=&: Text height
+        --match.italic&: Italicize text
+        --match.margin=&:
+            description: Text margin
+            default: 0 0
+        --match.padding=&:
+            description: Text padding
+            default: 0 0
+        --match.strikethrough&: Strikethrough text
+        --match.underline&: Underline text
+        --match.width=&: Text width
+        --padding=&:
+            description: Text padding
+            default: 0 1
+        --show-line-numbers:
+            description: Show line numbers
+            default: "true"
+        --soft-wrap:
+            description: Soft wrap lines
+            default: "true"
+        --strikethrough&: Strikethrough text
+        --timeout=: Timeout until command exits
+        --underline&: Underline text
+        --width=&: Text width
+      completion:
+        flag:
+            align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            help.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            help.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            line-number.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            line-number.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            match-highlight.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            match-highlight.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            match.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            match.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: spin
+      description: Display spinner while running a command
+      flags:
+        --padding=:
+            description: Padding
+            default: 0 0
+        --show-error: Show output of command only if the command fails
+        --show-output: Show or pipe output of command during execution (shows both STDOUT and STDERR)
+        --show-stderr: Show STDERR errput
+        --show-stdout: Show STDOUT output
+        --spinner.align=&:
+            description: Text Alignment
+            default: left
+        --spinner.background=: Background Color
+        --spinner.bold&: Bold text
+        --spinner.border-background=&: Border Background Color
+        --spinner.border-foreground=&: Border Foreground Color
+        --spinner.border=&:
+            description: Border Style
+            default: none
+        --spinner.faint&: Faint text
+        --spinner.foreground=:
+            description: Foreground Color
+            default: "212"
+        --spinner.height=&: Text height
+        --spinner.italic&: Italicize text
+        --spinner.margin=&:
+            description: Text margin
+            default: 0 0
+        --spinner.padding=&:
+            description: Text padding
+            default: 0 0
+        --spinner.strikethrough&: Strikethrough text
+        --spinner.underline&: Underline text
+        --spinner.width=&: Text width
+        --timeout=: Timeout until spin command aborts
+        --title.align=&:
+            description: Text Alignment
+            default: left
+        --title.background=: Background Color
+        --title.bold&: Bold text
+        --title.border-background=&: Border Background Color
+        --title.border-foreground=&: Border Foreground Color
+        --title.border=&:
+            description: Border Style
+            default: none
+        --title.faint&: Faint text
+        --title.foreground=: Foreground Color
+        --title.height=&: Text height
+        --title.italic&: Italicize text
+        --title.margin=&:
+            description: Text margin
+            default: 0 0
+        --title.padding=&:
+            description: Text padding
+            default: 0 0
+        --title.strikethrough&: Strikethrough text
+        --title.underline&: Underline text
+        --title.width=&: Text width
+        --title=:
+            description: Text to display to user while spinning
+            default: Loading...
+        -a, --align=:
+            description: Alignment of spinner with regard to the title
+            default: left
+        -s, --spinner=:
+            description: Spinner type
+            default: dot
+      completion:
+        flag:
+            align:
+                - left
+                - right
+            spinner:
+                - line
+                - dot
+                - minidot
+                - jump
+                - pulse
+                - points
+                - globe
+                - moon
+                - monkey
+                - meter
+                - hamburger
+            spinner.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            spinner.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            title.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            title.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: style
+      description: Apply coloring, borders, spacing to text
+      flags:
+        --align=:
+            description: Text Alignment
+            default: left
+        --background=: Background Color
+        --bold: Bold text
+        --border-background=: Border Background Color
+        --border-foreground=: Border Foreground Color
+        --border=:
+            description: Border Style
+            default: none
+        --faint: Faint text
+        --foreground=: Foreground Color
+        --height=: Text height
+        --italic: Italicize text
+        --margin=:
+            description: Text margin
+            default: 0 0
+        --padding=:
+            description: Text padding
+            default: 0 0
+        --strikethrough: Strikethrough text
+        --strip-ansi:
+            description: Strip ANSI sequences when reading from STDIN
+            default: "true"
+        --trim: Trim whitespaces on every input line
+        --underline: Underline text
+        --width=: Text width
+      completion:
+        flag:
+            align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: table
+      description: Render a table of data
+      flags:
+        --border.align=&:
+            description: Text Alignment
+            default: left
+        --border.background=: Background Color
+        --border.bold&: Bold text
+        --border.border-background=&: Border Background Color
+        --border.border-foreground=&: Border Foreground Color
+        --border.border=&:
+            description: Border Style
+            default: none
+        --border.faint&: Faint text
+        --border.foreground=: Foreground Color
+        --border.height=&: Text height
+        --border.italic&: Italicize text
+        --border.margin=&:
+            description: Text margin
+            default: 0 0
+        --border.padding=&:
+            description: Text padding
+            default: 0 0
+        --border.strikethrough&: Strikethrough text
+        --border.underline&: Underline text
+        --border.width=&: Text width
+        --cell.align=&:
+            description: Text Alignment
+            default: left
+        --cell.background=: Background Color
+        --cell.bold&: Bold text
+        --cell.border-background=&: Border Background Color
+        --cell.border-foreground=&: Border Foreground Color
+        --cell.border=&:
+            description: Border Style
+            default: none
+        --cell.faint&: Faint text
+        --cell.foreground=: Foreground Color
+        --cell.height=&: Text height
+        --cell.italic&: Italicize text
+        --cell.margin=&:
+            description: Text margin
+            default: 0 0
+        --cell.padding=&:
+            description: Text padding
+            default: 0 0
+        --cell.strikethrough&: Strikethrough text
+        --cell.underline&: Underline text
+        --cell.width=&: Text width
+        --fields-per-record=: Sets the number of expected fields per record
+        --header.align=&:
+            description: Text Alignment
+            default: left
+        --header.background=: Background Color
+        --header.bold&: Bold text
+        --header.border-background=&: Border Background Color
+        --header.border-foreground=&: Border Foreground Color
+        --header.border=&:
+            description: Border Style
+            default: none
+        --header.faint&: Faint text
+        --header.foreground=: Foreground Color
+        --header.height=&: Text height
+        --header.italic&: Italicize text
+        --header.margin=&:
+            description: Text margin
+            default: 0 0
+        --header.padding=&:
+            description: Text padding
+            default: 0 0
+        --header.strikethrough&: Strikethrough text
+        --header.underline&: Underline text
+        --header.width=&: Text width
+        --height=: Table height
+        --hide-count: Hide item count on help keybinds
+        --lazy-quotes: If LazyQuotes is true, a quote may appear in an unquoted field and a non-doubled quote may appear in a quoted field
+        --padding=:
+            description: Padding
+            default: 0 0
+        --selected.align=&:
+            description: Text Alignment
+            default: left
+        --selected.background=: Background Color
+        --selected.bold&: Bold text
+        --selected.border-background=&: Border Background Color
+        --selected.border-foreground=&: Border Foreground Color
+        --selected.border=&:
+            description: Border Style
+            default: none
+        --selected.faint&: Faint text
+        --selected.foreground=:
+            description: Foreground Color
+            default: "212"
+        --selected.height=&: Text height
+        --selected.italic&: Italicize text
+        --selected.margin=&:
+            description: Text margin
+            default: 0 0
+        --selected.padding=&:
+            description: Text padding
+            default: 0 0
+        --selected.strikethrough&: Strikethrough text
+        --selected.underline&: Underline text
+        --selected.width=&: Text width
+        --show-help:
+            description: Show help keybinds
+            default: "true"
+        --timeout=: Timeout until choose returns selected element
+        -b, --border=:
+            description: border style
+            default: rounded
+        -c, --columns=*: Column names
+        -f, --file=: file path
+        -p, --print: static print
+        -r, --return-column=: Which column number should be returned instead of whole row as string. Default=0 returns whole Row
+        -s, --separator=:
+            description: Row separator
+            default: ','
+        -w, --widths=*: Column widths
+      completion:
+        flag:
+            border:
+                - rounded
+                - thick
+                - normal
+                - hidden
+                - double
+                - none
+            border.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            border.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cell.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cell.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            selected.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            selected.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: write
+      description: Prompt for long-form text
+      flags:
+        --base.align=&:
+            description: Text Alignment
+            default: left
+        --base.background=: Background Color
+        --base.bold&: Bold text
+        --base.border-background=&: Border Background Color
+        --base.border-foreground=&: Border Foreground Color
+        --base.border=&:
+            description: Border Style
+            default: none
+        --base.faint&: Faint text
+        --base.foreground=: Foreground Color
+        --base.height=&: Text height
+        --base.italic&: Italicize text
+        --base.margin=&:
+            description: Text margin
+            default: 0 0
+        --base.padding=&:
+            description: Text padding
+            default: 0 0
+        --base.strikethrough&: Strikethrough text
+        --base.underline&: Underline text
+        --base.width=&: Text width
+        --char-limit=: Maximum value length (0 for no limit)
+        --cursor-line-number.align=&:
+            description: Text Alignment
+            default: left
+        --cursor-line-number.background=: Background Color
+        --cursor-line-number.bold&: Bold text
+        --cursor-line-number.border-background=&: Border Background Color
+        --cursor-line-number.border-foreground=&: Border Foreground Color
+        --cursor-line-number.border=&:
+            description: Border Style
+            default: none
+        --cursor-line-number.faint&: Faint text
+        --cursor-line-number.foreground=:
+            description: Foreground Color
+            default: "7"
+        --cursor-line-number.height=&: Text height
+        --cursor-line-number.italic&: Italicize text
+        --cursor-line-number.margin=&:
+            description: Text margin
+            default: 0 0
+        --cursor-line-number.padding=&:
+            description: Text padding
+            default: 0 0
+        --cursor-line-number.strikethrough&: Strikethrough text
+        --cursor-line-number.underline&: Underline text
+        --cursor-line-number.width=&: Text width
+        --cursor-line.align=&:
+            description: Text Alignment
+            default: left
+        --cursor-line.background=: Background Color
+        --cursor-line.bold&: Bold text
+        --cursor-line.border-background=&: Border Background Color
+        --cursor-line.border-foreground=&: Border Foreground Color
+        --cursor-line.border=&:
+            description: Border Style
+            default: none
+        --cursor-line.faint&: Faint text
+        --cursor-line.foreground=: Foreground Color
+        --cursor-line.height=&: Text height
+        --cursor-line.italic&: Italicize text
+        --cursor-line.margin=&:
+            description: Text margin
+            default: 0 0
+        --cursor-line.padding=&:
+            description: Text padding
+            default: 0 0
+        --cursor-line.strikethrough&: Strikethrough text
+        --cursor-line.underline&: Underline text
+        --cursor-line.width=&: Text width
+        --cursor.align=&:
+            description: Text Alignment
+            default: left
+        --cursor.background=: Background Color
+        --cursor.bold&: Bold text
+        --cursor.border-background=&: Border Background Color
+        --cursor.border-foreground=&: Border Foreground Color
+        --cursor.border=&:
+            description: Border Style
+            default: none
+        --cursor.faint&: Faint text
+        --cursor.foreground=:
+            description: Foreground Color
+            default: "212"
+        --cursor.height=&: Text height
+        --cursor.italic&: Italicize text
+        --cursor.margin=&:
+            description: Text margin
+            default: 0 0
+        --cursor.mode=:
+            description: Cursor mode
+            default: blink
+        --cursor.padding=&:
+            description: Text padding
+            default: 0 0
+        --cursor.strikethrough&: Strikethrough text
+        --cursor.underline&: Underline text
+        --cursor.width=&: Text width
+        --end-of-buffer.align=&:
+            description: Text Alignment
+            default: left
+        --end-of-buffer.background=: Background Color
+        --end-of-buffer.bold&: Bold text
+        --end-of-buffer.border-background=&: Border Background Color
+        --end-of-buffer.border-foreground=&: Border Foreground Color
+        --end-of-buffer.border=&:
+            description: Border Style
+            default: none
+        --end-of-buffer.faint&: Faint text
+        --end-of-buffer.foreground=:
+            description: Foreground Color
+            default: "0"
+        --end-of-buffer.height=&: Text height
+        --end-of-buffer.italic&: Italicize text
+        --end-of-buffer.margin=&:
+            description: Text margin
+            default: 0 0
+        --end-of-buffer.padding=&:
+            description: Text padding
+            default: 0 0
+        --end-of-buffer.strikethrough&: Strikethrough text
+        --end-of-buffer.underline&: Underline text
+        --end-of-buffer.width=&: Text width
+        --header.align=&:
+            description: Text Alignment
+            default: left
+        --header.background=: Background Color
+        --header.bold&: Bold text
+        --header.border-background=&: Border Background Color
+        --header.border-foreground=&: Border Foreground Color
+        --header.border=&:
+            description: Border Style
+            default: none
+        --header.faint&: Faint text
+        --header.foreground=:
+            description: Foreground Color
+            default: "240"
+        --header.height=&: Text height
+        --header.italic&: Italicize text
+        --header.margin=&:
+            description: Text margin
+            default: 0 0
+        --header.padding=&:
+            description: Text padding
+            default: 0 0
+        --header.strikethrough&: Strikethrough text
+        --header.underline&: Underline text
+        --header.width=&: Text width
+        --header=: Header value
+        --height=:
+            description: Text area height
+            default: "5"
+        --line-number.align=&:
+            description: Text Alignment
+            default: left
+        --line-number.background=: Background Color
+        --line-number.bold&: Bold text
+        --line-number.border-background=&: Border Background Color
+        --line-number.border-foreground=&: Border Foreground Color
+        --line-number.border=&:
+            description: Border Style
+            default: none
+        --line-number.faint&: Faint text
+        --line-number.foreground=:
+            description: Foreground Color
+            default: "7"
+        --line-number.height=&: Text height
+        --line-number.italic&: Italicize text
+        --line-number.margin=&:
+            description: Text margin
+            default: 0 0
+        --line-number.padding=&:
+            description: Text padding
+            default: 0 0
+        --line-number.strikethrough&: Strikethrough text
+        --line-number.underline&: Underline text
+        --line-number.width=&: Text width
+        --max-lines=: Maximum number of lines (0 for no limit)
+        --padding=:
+            description: Padding
+            default: 0 0
+        --placeholder.align=&:
+            description: Text Alignment
+            default: left
+        --placeholder.background=: Background Color
+        --placeholder.bold&: Bold text
+        --placeholder.border-background=&: Border Background Color
+        --placeholder.border-foreground=&: Border Foreground Color
+        --placeholder.border=&:
+            description: Border Style
+            default: none
+        --placeholder.faint&: Faint text
+        --placeholder.foreground=:
+            description: Foreground Color
+            default: "240"
+        --placeholder.height=&: Text height
+        --placeholder.italic&: Italicize text
+        --placeholder.margin=&:
+            description: Text margin
+            default: 0 0
+        --placeholder.padding=&:
+            description: Text padding
+            default: 0 0
+        --placeholder.strikethrough&: Strikethrough text
+        --placeholder.underline&: Underline text
+        --placeholder.width=&: Text width
+        --placeholder=:
+            description: Placeholder value
+            default: Write something...
+        --prompt.align=&:
+            description: Text Alignment
+            default: left
+        --prompt.background=: Background Color
+        --prompt.bold&: Bold text
+        --prompt.border-background=&: Border Background Color
+        --prompt.border-foreground=&: Border Foreground Color
+        --prompt.border=&:
+            description: Border Style
+            default: none
+        --prompt.faint&: Faint text
+        --prompt.foreground=:
+            description: Foreground Color
+            default: "7"
+        --prompt.height=&: Text height
+        --prompt.italic&: Italicize text
+        --prompt.margin=&:
+            description: Text margin
+            default: 0 0
+        --prompt.padding=&:
+            description: Text padding
+            default: 0 0
+        --prompt.strikethrough&: Strikethrough text
+        --prompt.underline&: Underline text
+        --prompt.width=&: Text width
+        --prompt=:
+            description: Prompt to display
+            default: '┃ '
+        --show-cursor-line: Show cursor line
+        --show-help:
+            description: Show help key binds
+            default: "true"
+        --show-line-numbers: Show line numbers
+        --strip-ansi:
+            description: Strip ANSI sequences when reading from STDIN
+            default: "true"
+        --timeout=: Timeout until choose returns selected element
+        --value=: Initial value (can be passed via stdin)
+        --width=: Text area width (0 for terminal width)
+      completion:
+        flag:
+            base.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            base.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor-line-number.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor-line-number.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor-line.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor-line.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            cursor.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            cursor.mode:
+                - blink
+                - hide
+                - static
+            end-of-buffer.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            end-of-buffer.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            header.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            header.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            line-number.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            line-number.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            placeholder.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            placeholder.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            prompt.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prompt.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: log
+      description: Log messages to output
+      flags:
+        --formatter=:
+            description: The log formatter to use
+            default: text
+        --key.align=&:
+            description: Text Alignment
+            default: left
+        --key.background=: Background Color
+        --key.bold&: Bold text
+        --key.border-background=&: Border Background Color
+        --key.border-foreground=&: Border Foreground Color
+        --key.border=&:
+            description: Border Style
+            default: none
+        --key.faint&:
+            description: Faint text
+            default: "true"
+        --key.foreground=: Foreground Color
+        --key.height=&: Text height
+        --key.italic&: Italicize text
+        --key.margin=&:
+            description: Text margin
+            default: 0 0
+        --key.padding=&:
+            description: Text padding
+            default: 0 0
+        --key.strikethrough&: Strikethrough text
+        --key.underline&: Underline text
+        --key.width=&: Text width
+        --level.align=&:
+            description: Text Alignment
+            default: left
+        --level.background=: Background Color
+        --level.bold&:
+            description: Bold text
+            default: "true"
+        --level.border-background=&: Border Background Color
+        --level.border-foreground=&: Border Foreground Color
+        --level.border=&:
+            description: Border Style
+            default: none
+        --level.faint&: Faint text
+        --level.foreground=: Foreground Color
+        --level.height=&: Text height
+        --level.italic&: Italicize text
+        --level.margin=&:
+            description: Text margin
+            default: 0 0
+        --level.padding=&:
+            description: Text padding
+            default: 0 0
+        --level.strikethrough&: Strikethrough text
+        --level.underline&: Underline text
+        --level.width=&: Text width
+        --message.align=&:
+            description: Text Alignment
+            default: left
+        --message.background=: Background Color
+        --message.bold&: Bold text
+        --message.border-background=&: Border Background Color
+        --message.border-foreground=&: Border Foreground Color
+        --message.border=&:
+            description: Border Style
+            default: none
+        --message.faint&: Faint text
+        --message.foreground=: Foreground Color
+        --message.height=&: Text height
+        --message.italic&: Italicize text
+        --message.margin=&:
+            description: Text margin
+            default: 0 0
+        --message.padding=&:
+            description: Text padding
+            default: 0 0
+        --message.strikethrough&: Strikethrough text
+        --message.underline&: Underline text
+        --message.width=&: Text width
+        --min-level=: Minimal level to show
+        --prefix.align=&:
+            description: Text Alignment
+            default: left
+        --prefix.background=: Background Color
+        --prefix.bold&:
+            description: Bold text
+            default: "true"
+        --prefix.border-background=&: Border Background Color
+        --prefix.border-foreground=&: Border Foreground Color
+        --prefix.border=&:
+            description: Border Style
+            default: none
+        --prefix.faint&:
+            description: Faint text
+            default: "true"
+        --prefix.foreground=: Foreground Color
+        --prefix.height=&: Text height
+        --prefix.italic&: Italicize text
+        --prefix.margin=&:
+            description: Text margin
+            default: 0 0
+        --prefix.padding=&:
+            description: Text padding
+            default: 0 0
+        --prefix.strikethrough&: Strikethrough text
+        --prefix.underline&: Underline text
+        --prefix.width=&: Text width
+        --prefix=: Prefix to print before the message
+        --separator.align=&:
+            description: Text Alignment
+            default: left
+        --separator.background=: Background Color
+        --separator.bold&: Bold text
+        --separator.border-background=&: Border Background Color
+        --separator.border-foreground=&: Border Foreground Color
+        --separator.border=&:
+            description: Border Style
+            default: none
+        --separator.faint&:
+            description: Faint text
+            default: "true"
+        --separator.foreground=: Foreground Color
+        --separator.height=&: Text height
+        --separator.italic&: Italicize text
+        --separator.margin=&:
+            description: Text margin
+            default: 0 0
+        --separator.padding=&:
+            description: Text padding
+            default: 0 0
+        --separator.strikethrough&: Strikethrough text
+        --separator.underline&: Underline text
+        --separator.width=&: Text width
+        --time.align=&:
+            description: Text Alignment
+            default: left
+        --time.background=: Background Color
+        --time.bold&: Bold text
+        --time.border-background=&: Border Background Color
+        --time.border-foreground=&: Border Foreground Color
+        --time.border=&:
+            description: Border Style
+            default: none
+        --time.faint&: Faint text
+        --time.foreground=: Foreground Color
+        --time.height=&: Text height
+        --time.italic&: Italicize text
+        --time.margin=&:
+            description: Text margin
+            default: 0 0
+        --time.padding=&:
+            description: Text padding
+            default: 0 0
+        --time.strikethrough&: Strikethrough text
+        --time.underline&: Underline text
+        --time.width=&: Text width
+        --value.align=&:
+            description: Text Alignment
+            default: left
+        --value.background=: Background Color
+        --value.bold&: Bold text
+        --value.border-background=&: Border Background Color
+        --value.border-foreground=&: Border Foreground Color
+        --value.border=&:
+            description: Border Style
+            default: none
+        --value.faint&: Faint text
+        --value.foreground=: Foreground Color
+        --value.height=&: Text height
+        --value.italic&: Italicize text
+        --value.margin=&:
+            description: Text margin
+            default: 0 0
+        --value.padding=&:
+            description: Text padding
+            default: 0 0
+        --value.strikethrough&: Strikethrough text
+        --value.underline&: Underline text
+        --value.width=&: Text width
+        -f, --format: Format message using printf
+        -l, --level=:
+            description: The log level to use
+            default: none
+        -o, --file=: Log to file
+        -s, --structured: Use structured logging
+        -t, --time=: The time format to use (kitchen, layout, ansic, rfc822, etc...)
+      exclusiveflags:
+        - - format
+          - structured
+        - - format
+          - structured
+      completion:
+        flag:
+            formatter:
+                - json
+                - logfmt
+                - text
+            key.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            key.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            level:
+                - none
+                - debug
+                - info
+                - warn
+                - error
+                - fatal
+            level.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            level.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            message.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            message.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            prefix.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            prefix.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            separator.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            separator.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            time.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            time.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+            value.align:
+                - left
+                - center
+                - right
+                - bottom
+                - middle
+                - top
+            value.border:
+                - none
+                - hidden
+                - normal
+                - rounded
+                - thick
+                - double
+    - name: version-check
+      description: Semver check current gum version
