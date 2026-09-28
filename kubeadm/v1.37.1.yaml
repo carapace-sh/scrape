@@ -1,0 +1,1916 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: kubeadm
+description: 'kubeadm: easily bootstrap a secure Kubernetes cluster'
+persistentflags:
+  --rootfs=: The path to the 'real' host root filesystem. This will cause kubeadm to chroot into the provided path.
+  --vmodule=: comma-separated list of pattern=N settings for file-filtered logging
+  -v, --v=:
+    description: number for the log level verbosity
+    default: "0"
+commands:
+  - name: alpha
+    description: Kubeadm experimental sub-commands
+  - name: certs
+    aliases:
+      - certificates
+    description: Commands related to handling Kubernetes certificates
+    commands:
+      - name: certificate-key
+        description: Generate certificate keys
+        documentation:
+          command: |2
+            This command will print out a secure randomly-generated certificate key that can be used with
+            the "init" command.
+
+            You can also use "kubeadm init --upload-certs" without specifying a certificate key and it will
+            generate and print one for you.
+      - name: check-expiration
+        description: Check certificates expiration for a Kubernetes cluster
+        flags:
+          --allow-missing-template-keys:
+            description: If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats.
+            default: "true"
+          --cert-dir=:
+            description: The path where to save the certificates
+            default: /etc/kubernetes/pki
+          --config=: Path to a kubeadm configuration file.
+          --kubeconfig=:
+            description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+            default: /etc/kubernetes/admin.conf
+          --show-managed-fields: If true, keep the managedFields when printing objects in JSON or YAML format.
+          -o, --output=:
+            description: 'Output format. One of: text|json|yaml|kyaml|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file.'
+            default: text
+        documentation:
+          command: Checks expiration for the certificates in the local PKI managed by kubeadm.
+      - name: generate-csr
+        description: Generate keys and certificate signing requests
+        flags:
+          --cert-dir=: The path where to save the certificates
+          --config=: Path to a kubeadm configuration file.
+          --kubeconfig-dir=:
+            description: The path where to save the kubeconfig file.
+            default: /etc/kubernetes
+        documentation:
+          command: |-
+            Generates keys and certificate signing requests (CSRs) for all the certificates required to run the control plane. This command also generates partial kubeconfig files with private key data in the  "users > user > client-key-data" field, and for each kubeconfig file an accompanying ".csr" file is created.
+
+            This command is designed for use in [Kubeadm External CA Mode](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/#external-ca-mode). It generates CSRs which you can then submit to your external certificate authority for signing.
+
+            The PEM encoded signed certificates should then be saved alongside the key files, using ".crt" as the file extension, or in the case of kubeconfig files, the PEM encoded signed certificate should be base64 encoded and added to the kubeconfig file in the "users > user > client-certificate-data" field.
+      - name: renew
+        description: Renew certificates for a Kubernetes cluster
+        commands:
+          - name: admin.conf
+            description: Renew the certificate embedded in the kubeconfig file for the admin to use and for kubeadm itself
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate embedded in the kubeconfig file for the admin to use and for kubeadm itself.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: all
+            description: Renew all available certificates
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: Renew all known certificates necessary to run the control plane. Renewals are run unconditionally, regardless of expiration date. Renewals can also be run individually for more control.
+          - name: apiserver
+            description: Renew the certificate for serving the Kubernetes API
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate for serving the Kubernetes API.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: apiserver-etcd-client
+            description: Renew the certificate the apiserver uses to access etcd
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate the apiserver uses to access etcd.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: apiserver-kubelet-client
+            description: Renew the certificate for the API server to connect to kubelet
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate for the API server to connect to kubelet.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: controller-manager.conf
+            description: Renew the certificate embedded in the kubeconfig file for the controller manager to use
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate embedded in the kubeconfig file for the controller manager to use.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: etcd-healthcheck-client
+            description: Renew the certificate for liveness probes to healthcheck etcd
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate for liveness probes to healthcheck etcd.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: etcd-peer
+            description: Renew the certificate for etcd nodes to communicate with each other
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate for etcd nodes to communicate with each other.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: etcd-server
+            description: Renew the certificate for serving etcd
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate for serving etcd.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: front-proxy-client
+            description: Renew the certificate for the front proxy client
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate for the front proxy client.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: scheduler.conf
+            description: Renew the certificate embedded in the kubeconfig file for the scheduler manager to use
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate embedded in the kubeconfig file for the scheduler manager to use.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+          - name: super-admin.conf
+            description: Renew the certificate embedded in the kubeconfig file for the super-admin
+            flags:
+              --cert-dir=:
+                description: The path where to save the certificates
+                default: /etc/kubernetes/pki
+              --config=: Path to a kubeadm configuration file.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: |-
+                Renew the certificate embedded in the kubeconfig file for the super-admin.
+
+                Renewals run unconditionally, regardless of certificate expiration date; extra attributes such as SANs will be based on the existing file/certificates, there is no need to resupply them.
+
+                Renewal by default tries to use the certificate authority in the local PKI managed by kubeadm; as alternative it is possible to use K8s certificate API for certificate renewal, or as a last option, to generate a CSR request.
+
+                After renewal, in order to make changes effective, is required to restart control-plane components and eventually re-distribute the renewed certificate in case the file is used elsewhere.
+  - name: completion SHELL
+    description: Output shell completion code for the specified shell (bash or zsh)
+    documentation:
+      command: |2-
+        Output shell completion code for the specified shell (bash or zsh).
+        The shell code must be evaluated to provide interactive
+        completion of kubeadm commands. This can be done by sourcing it from
+        the .bash_profile.
+
+        Note: this requires the bash-completion framework.
+
+        To install it on Mac use homebrew:
+            $ brew install bash-completion
+        Once installed, bash_completion must be evaluated. This can be done by adding the
+        following line to the .bash_profile
+            $ source $(brew --prefix)/etc/bash_completion
+
+        If bash-completion is not installed on Linux, please install the 'bash-completion' package
+        via your distribution's package manager.
+
+        Note for zsh users: [1] zsh completions are only supported in versions of zsh >= 5.2
+  - name: config
+    description: Manage configuration for a kubeadm cluster persisted in a ConfigMap in the cluster
+    persistentflags:
+      --kubeconfig=:
+        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+        default: /etc/kubernetes/admin.conf
+    commands:
+      - name: images
+        description: Interact with container images used by kubeadm
+        commands:
+          - name: list
+            description: Print a list of images kubeadm will use. The configuration file is used in case any images or image repositories are customized
+            flags:
+              --allow-missing-template-keys:
+                description: If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats.
+                default: "true"
+              --show-managed-fields: If true, keep the managedFields when printing objects in JSON or YAML format.
+              -o, --output=:
+                description: 'Output format. One of: text|json|yaml|kyaml|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file.'
+                default: text
+            persistentflags:
+              --config=: Path to a kubeadm configuration file.
+              --feature-gates=: |-
+                A set of key=value pairs that describe feature gates for various features. Options are:
+                RootlessControlPlane=true|false (ALPHA - default=false)
+              --image-repository=:
+                description: Choose a container registry to pull control plane images from
+                default: registry.k8s.io
+              --kubernetes-version=:
+                description: Choose a specific Kubernetes version for the control plane.
+                default: stable-1
+          - name: pull
+            description: Pull images used by kubeadm
+            persistentflags:
+              --config=: Path to a kubeadm configuration file.
+              --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+              --feature-gates=: |-
+                A set of key=value pairs that describe feature gates for various features. Options are:
+                RootlessControlPlane=true|false (ALPHA - default=false)
+              --image-repository=:
+                description: Choose a container registry to pull control plane images from
+                default: registry.k8s.io
+              --kubernetes-version=:
+                description: Choose a specific Kubernetes version for the control plane.
+                default: stable-1
+      - name: migrate
+        description: Read an older version of the kubeadm configuration API types from a file, and output the similar config object for the newer version
+        flags:
+          --allow-experimental-api: Allow migration to experimental, unreleased APIs.
+          --new-config=: Path to the resulting equivalent kubeadm config file using the new API version. Optional, if not specified output will be sent to STDOUT.
+          --old-config=: Path to the kubeadm config file that is using an old API version and should be converted. This flag is mandatory.
+        documentation:
+          command: |2
+            This command lets you convert configuration objects of older versions to the latest supported version,
+            locally in the CLI tool without ever touching anything in the cluster.
+            In this version of kubeadm, the following API versions are supported:
+            - kubeadm.k8s.io/v1beta4
+
+            Further, kubeadm can only write out config of version "kubeadm.k8s.io/v1beta4", but read both types.
+            So regardless of what version you pass to the --old-config parameter here, the API object will be
+            read, deserialized, defaulted, converted, validated, and re-serialized when written to stdout or
+            --new-config if specified.
+
+            In other words, the output of this command is what kubeadm actually would read internally if you
+            submitted this file to "kubeadm init"
+      - name: print
+        description: Print configuration
+        commands:
+          - name: init-defaults
+            description: Print default init configuration, that can be used for 'kubeadm init'
+            flags:
+              --component-configs=*: 'A comma-separated list for component config API objects to print the default values for. Available values: [KubeProxyConfiguration KubeletConfiguration]. If this flag is not set, no component configs will be printed.'
+            documentation:
+              command: |2
+                This command prints objects such as the default init configuration that is used for 'kubeadm init'.
+
+                Note that sensitive values like the Bootstrap Token fields are replaced with placeholder values like "abcdef.0123456789abcdef" in order to pass validation but
+                not perform the real computation for creating a token.
+          - name: join-defaults
+            description: Print default join configuration, that can be used for 'kubeadm join'
+            documentation:
+              command: |2
+                This command prints objects such as the default join configuration that is used for 'kubeadm join'.
+
+                Note that sensitive values like the Bootstrap Token fields are replaced with placeholder values like "abcdef.0123456789abcdef" in order to pass validation but
+                not perform the real computation for creating a token.
+          - name: reset-defaults
+            description: Print default reset configuration, that can be used for 'kubeadm reset'
+            documentation:
+              command: |2
+                This command prints objects such as the default reset configuration that is used for 'kubeadm reset'.
+
+                Note that sensitive values like the Bootstrap Token fields are replaced with placeholder values like "abcdef.0123456789abcdef" in order to pass validation but
+                not perform the real computation for creating a token.
+          - name: upgrade-defaults
+            description: Print default upgrade configuration, that can be used for 'kubeadm upgrade'
+            documentation:
+              command: |2
+                This command prints objects such as the default upgrade configuration that is used for 'kubeadm upgrade'.
+
+                Note that sensitive values like the Bootstrap Token fields are replaced with placeholder values like "abcdef.0123456789abcdef" in order to pass validation but
+                not perform the real computation for creating a token.
+        documentation:
+          command: |2-
+            This command prints configurations for subcommands provided.
+            For details, see: https://pkg.go.dev/k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm#section-directories
+      - name: validate
+        description: Read a file containing the kubeadm configuration API and report any validation problems
+        flags:
+          --allow-deprecated-api: Allow validation of deprecated APIs.
+          --allow-experimental-api: Allow validation of experimental, unreleased APIs.
+          --config=: Path to a kubeadm configuration file.
+        documentation:
+          command: |2
+            This command lets you validate a kubeadm configuration API file and report any warnings and errors.
+            If there are no errors the exit status will be zero, otherwise it will be non-zero.
+            Any unmarshaling problems such as unknown API fields will trigger errors. Unknown API versions and
+            fields with invalid values will also trigger errors. Any other errors or warnings may be reported
+            depending on contents of the input file.
+
+            In this version of kubeadm, the following API versions are supported:
+            - kubeadm.k8s.io/v1beta4
+    documentation:
+      command: |2
+        There is a ConfigMap in the kube-system namespace called "kubeadm-config" that kubeadm uses to store internal configuration about the
+        cluster. kubeadm CLI v1.8.0+ automatically creates this ConfigMap with the config used with 'kubeadm init', but if you
+        initialized your cluster using kubeadm v1.7.x or lower, you must use the 'kubeadm init phase upload-config' command to
+        create this ConfigMap. This is required so that 'kubeadm upgrade' can configure your upgraded cluster correctly.
+  - name: help [command]
+    description: Help about any command
+    documentation:
+      command: |-
+        Help provides help for any command in the application.
+        Simply type kubeadm help [path to command] for full details.
+  - name: init
+    description: Run this command in order to set up the Kubernetes control plane
+    flags:
+      --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+      --apiserver-bind-port=:
+        description: Port for the API Server to bind to.
+        default: "6443"
+      --apiserver-cert-extra-sans=*: Optional extra Subject Alternative Names (SANs) to use for the API Server serving certificate. Can be both IP addresses and DNS names.
+      --cert-dir=:
+        description: The path where to save and store the certificates.
+        default: /etc/kubernetes/pki
+      --certificate-key=: Key used to encrypt the control-plane certificates in the kubeadm-certs Secret. The certificate key is a hex encoded string that is an AES key of size 32 bytes.
+      --config=: Path to a kubeadm configuration file.
+      --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+      --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+      --dry-run: Don't apply any changes; just output what would be done.
+      --feature-gates=: |-
+        A set of key=value pairs that describe feature gates for various features. Options are:
+        RootlessControlPlane=true|false (ALPHA - default=false)
+      --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+      --image-repository=:
+        description: Choose a container registry to pull control plane images from
+        default: registry.k8s.io
+      --kubernetes-version=:
+        description: Choose a specific Kubernetes version for the control plane.
+        default: stable-1
+      --node-name=: Specify the node name.
+      --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+      --pod-network-cidr=: Specify range of IP addresses for the pod network. If set, the control plane will automatically allocate CIDRs for every node.
+      --service-cidr=:
+        description: Use alternative range of IP address for service VIPs.
+        default: 10.96.0.0/12
+      --service-dns-domain=:
+        description: Use alternative domain for services, e.g. "myorg.internal".
+        default: cluster.local
+      --skip-certificate-key-print: Don't print the key used to encrypt the control-plane certificates.
+      --skip-phases=*: List of phases to be skipped
+      --skip-token-print: Skip printing of the default bootstrap token generated by 'kubeadm init'.
+      --token-ttl=:
+        description: The duration before the token is automatically deleted (e.g. 1s, 2m, 3h). If set to '0', the token will never expire
+        default: 24h0m0s
+      --token=: The token to use for establishing bidirectional trust between nodes and control-plane nodes. The format is [a-z0-9]{6}\.[a-z0-9]{16} - e.g. abcdef.0123456789abcdef
+      --upload-certs: Upload control-plane certificates to the kubeadm-certs Secret.
+    commands:
+      - name: phase
+        description: Use this command to invoke single phase of the "init" workflow
+        commands:
+          - name: addon
+            description: Install required addons for passing conformance tests
+            commands:
+              - name: all
+                description: Install all the addons
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --feature-gates=: |-
+                    A set of key=value pairs that describe feature gates for various features. Options are:
+                    RootlessControlPlane=true|false (ALPHA - default=false)
+                  --image-repository=:
+                    description: Choose a container registry to pull control plane images from
+                    default: registry.k8s.io
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --pod-network-cidr=: Specify range of IP addresses for the pod network. If set, the control plane will automatically allocate CIDRs for every node.
+                  --service-cidr=:
+                    description: Use alternative range of IP address for service VIPs.
+                    default: 10.96.0.0/12
+                  --service-dns-domain=:
+                    description: Use alternative domain for services, e.g. "myorg.internal".
+                    default: cluster.local
+              - name: coredns
+                description: Install the CoreDNS addon to a Kubernetes cluster
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --feature-gates=: |-
+                    A set of key=value pairs that describe feature gates for various features. Options are:
+                    RootlessControlPlane=true|false (ALPHA - default=false)
+                  --image-repository=:
+                    description: Choose a container registry to pull control plane images from
+                    default: registry.k8s.io
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --print-manifest: Print the addon manifests to STDOUT instead of installing them
+                  --service-cidr=:
+                    description: Use alternative range of IP address for service VIPs.
+                    default: 10.96.0.0/12
+                  --service-dns-domain=:
+                    description: Use alternative domain for services, e.g. "myorg.internal".
+                    default: cluster.local
+                documentation:
+                  command: Install the CoreDNS addon components via the API server. Please note that although the DNS server is deployed, it will not be scheduled until CNI is installed.
+              - name: kube-proxy
+                description: Install the kube-proxy addon to a Kubernetes cluster
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --image-repository=:
+                    description: Choose a container registry to pull control plane images from
+                    default: registry.k8s.io
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --pod-network-cidr=: Specify range of IP addresses for the pod network. If set, the control plane will automatically allocate CIDRs for every node.
+                  --print-manifest: Print the addon manifests to STDOUT instead of installing them
+                documentation:
+                  command: Install the kube-proxy addon components via the API server.
+          - name: bootstrap-token
+            aliases:
+              - bootstraptoken
+            description: Generates bootstrap tokens used to join a node to a cluster
+            flags:
+              --config=: Path to a kubeadm configuration file.
+              --dry-run: Don't apply any changes; just output what would be done.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+              --skip-token-print: Skip printing of the default bootstrap token generated by 'kubeadm init'.
+            documentation:
+              command: |-
+                Bootstrap tokens are used for establishing bidirectional trust between a node joining the cluster and a control-plane node.
+
+                This command makes all the configurations required to make bootstrap tokens works and then creates an initial token.
+          - name: certs
+            description: Certificate generation
+            commands:
+              - name: all
+                description: Generate all certificates
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-cert-extra-sans=*: Optional extra Subject Alternative Names (SANs) to use for the API Server serving certificate. Can be both IP addresses and DNS names.
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --service-cidr=:
+                    description: Use alternative range of IP address for service VIPs.
+                    default: 10.96.0.0/12
+                  --service-dns-domain=:
+                    description: Use alternative domain for services, e.g. "myorg.internal".
+                    default: cluster.local
+              - name: apiserver
+                description: Generate the certificate for serving the Kubernetes API
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-cert-extra-sans=*: Optional extra Subject Alternative Names (SANs) to use for the API Server serving certificate. Can be both IP addresses and DNS names.
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --service-cidr=:
+                    description: Use alternative range of IP address for service VIPs.
+                    default: 10.96.0.0/12
+                  --service-dns-domain=:
+                    description: Use alternative domain for services, e.g. "myorg.internal".
+                    default: cluster.local
+                documentation:
+                  command: |-
+                    Generate the certificate for serving the Kubernetes API, and save them into apiserver.crt and apiserver.key files.
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: apiserver-etcd-client
+                description: Generate the certificate the apiserver uses to access etcd
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the certificate the apiserver uses to access etcd, and save them into apiserver-etcd-client.crt and apiserver-etcd-client.key files.
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: apiserver-kubelet-client
+                description: Generate the certificate for the API server to connect to kubelet
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the certificate for the API server to connect to kubelet, and save them into apiserver-kubelet-client.crt and apiserver-kubelet-client.key files.
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: ca
+                description: Generate the self-signed Kubernetes CA to provision identities for other Kubernetes components
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the self-signed Kubernetes CA to provision identities for other Kubernetes components, and save them into ca.crt and ca.key files.
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: etcd-ca
+                description: Generate the self-signed CA to provision identities for etcd
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the self-signed CA to provision identities for etcd, and save them into etcd/ca.crt and etcd/ca.key files.
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: etcd-healthcheck-client
+                description: Generate the certificate for liveness probes to healthcheck etcd
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the certificate for liveness probes to healthcheck etcd, and save them into etcd/healthcheck-client.crt and etcd/healthcheck-client.key files.
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: etcd-peer
+                description: Generate the certificate for etcd nodes to communicate with each other
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the certificate for etcd nodes to communicate with each other, and save them into etcd/peer.crt and etcd/peer.key files.
+
+                    Default SANs are localhost, 127.0.0.1, 127.0.0.1, ::1
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: etcd-server
+                description: Generate the certificate for serving etcd
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the certificate for serving etcd, and save them into etcd/server.crt and etcd/server.key files.
+
+                    Default SANs are localhost, 127.0.0.1, 127.0.0.1, ::1
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: front-proxy-ca
+                description: Generate the self-signed CA to provision identities for front proxy
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the self-signed CA to provision identities for front proxy, and save them into front-proxy-ca.crt and front-proxy-ca.key files.
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: front-proxy-client
+                description: Generate the certificate for the front proxy client
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the certificate for the front proxy client, and save them into front-proxy-client.crt and front-proxy-client.key files.
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+              - name: sa
+                description: Generate a private key for signing service account tokens along with its public key
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: |-
+                    Generate the private key for signing service account tokens along with its public key, and save them into sa.key and sa.pub files.
+
+                    If both files already exist, kubeadm skips the generation step and existing files will be used.
+          - name: control-plane
+            description: Generate all static Pod manifest files necessary to establish the control plane
+            commands:
+              - name: all
+                description: Generate all static Pod manifest files
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --apiserver-extra-args=&: A set of extra flags to pass to the API Server or override default ones in form of <flagname>=<value>
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --controller-manager-extra-args=&: A set of extra flags to pass to the Controller Manager or override default ones in form of <flagname>=<value>
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --feature-gates=: |-
+                    A set of key=value pairs that describe feature gates for various features. Options are:
+                    RootlessControlPlane=true|false (ALPHA - default=false)
+                  --image-repository=:
+                    description: Choose a container registry to pull control plane images from
+                    default: registry.k8s.io
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                  --pod-network-cidr=: Specify range of IP addresses for the pod network. If set, the control plane will automatically allocate CIDRs for every node.
+                  --scheduler-extra-args=&: A set of extra flags to pass to the Scheduler or override default ones in form of <flagname>=<value>
+                  --service-cidr=:
+                    description: Use alternative range of IP address for service VIPs.
+                    default: 10.96.0.0/12
+              - name: apiserver
+                description: Generates the kube-apiserver static Pod manifest
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --apiserver-extra-args=&: A set of extra flags to pass to the API Server or override default ones in form of <flagname>=<value>
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --feature-gates=: |-
+                    A set of key=value pairs that describe feature gates for various features. Options are:
+                    RootlessControlPlane=true|false (ALPHA - default=false)
+                  --image-repository=:
+                    description: Choose a container registry to pull control plane images from
+                    default: registry.k8s.io
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                  --service-cidr=:
+                    description: Use alternative range of IP address for service VIPs.
+                    default: 10.96.0.0/12
+              - name: controller-manager
+                description: Generates the kube-controller-manager static Pod manifest
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --controller-manager-extra-args=&: A set of extra flags to pass to the Controller Manager or override default ones in form of <flagname>=<value>
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --image-repository=:
+                    description: Choose a container registry to pull control plane images from
+                    default: registry.k8s.io
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                  --pod-network-cidr=: Specify range of IP addresses for the pod network. If set, the control plane will automatically allocate CIDRs for every node.
+              - name: scheduler
+                description: Generates the kube-scheduler static Pod manifest
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --image-repository=:
+                    description: Choose a container registry to pull control plane images from
+                    default: registry.k8s.io
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                  --scheduler-extra-args=&: A set of extra flags to pass to the Scheduler or override default ones in form of <flagname>=<value>
+          - name: etcd
+            description: Generate static Pod manifest file for local etcd
+            commands:
+              - name: local
+                description: Generate the static Pod manifest file for a local, single-node local etcd instance
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --image-repository=:
+                    description: Choose a container registry to pull control plane images from
+                    default: registry.k8s.io
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+          - name: kubeconfig
+            description: Generate all kubeconfig files necessary to establish the control plane and the admin kubeconfig file
+            commands:
+              - name: admin
+                description: Generate a kubeconfig file for the admin to use and for kubeadm itself
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubeconfig-dir=:
+                    description: The path where to save the kubeconfig file.
+                    default: /etc/kubernetes
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: Generate the kubeconfig file for the admin and for kubeadm itself, and save it to admin.conf file.
+              - name: all
+                description: Generate all kubeconfig files
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubeconfig-dir=:
+                    description: The path where to save the kubeconfig file.
+                    default: /etc/kubernetes
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --node-name=: Specify the node name.
+              - name: controller-manager
+                description: Generate a kubeconfig file for the controller manager to use
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubeconfig-dir=:
+                    description: The path where to save the kubeconfig file.
+                    default: /etc/kubernetes
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: Generate the kubeconfig file for the controller manager to use and save it to controller-manager.conf file
+              - name: kubelet
+                description: Generate a kubeconfig file for the kubelet to use *only* for cluster bootstrapping purposes
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubeconfig-dir=:
+                    description: The path where to save the kubeconfig file.
+                    default: /etc/kubernetes
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                  --node-name=: Specify the node name.
+                documentation:
+                  command: |-
+                    Generate the kubeconfig file for the kubelet to use and save it to kubelet.conf file.
+
+                    Please note that this should *only* be used for cluster bootstrapping purposes. After your control plane is up, you should request all kubelet credentials from the CSR API.
+              - name: scheduler
+                description: Generate a kubeconfig file for the scheduler to use
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubeconfig-dir=:
+                    description: The path where to save the kubeconfig file.
+                    default: /etc/kubernetes
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: Generate the kubeconfig file for the scheduler to use and save it to scheduler.conf file.
+              - name: super-admin
+                description: Generate a kubeconfig file for the super-admin
+                flags:
+                  --apiserver-advertise-address=: The IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: Port for the API Server to bind to.
+                    default: "6443"
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane-endpoint=: Specify a stable IP address or DNS name for the control plane.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubeconfig-dir=:
+                    description: The path where to save the kubeconfig file.
+                    default: /etc/kubernetes
+                  --kubernetes-version=:
+                    description: Choose a specific Kubernetes version for the control plane.
+                    default: stable-1
+                documentation:
+                  command: Generate a kubeconfig file for the super-admin, and save it to super-admin.conf file.
+          - name: kubelet-finalize
+            description: Updates settings relevant to the kubelet after TLS bootstrap
+            commands:
+              - name: all
+                description: Run all kubelet-finalize phases
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+              - name: enable-client-cert-rotation
+                description: Enable kubelet client certificate rotation
+                flags:
+                  --cert-dir=:
+                    description: The path where to save and store the certificates.
+                    default: /etc/kubernetes/pki
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Don't apply any changes; just output what would be done.
+          - name: kubelet-start
+            description: Write kubelet settings and (re)start the kubelet
+            flags:
+              --config=: Path to a kubeadm configuration file.
+              --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+              --dry-run: Don't apply any changes; just output what would be done.
+              --image-repository=:
+                description: Choose a container registry to pull control plane images from
+                default: registry.k8s.io
+              --node-name=: Specify the node name.
+              --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+            documentation:
+              command: Write a file with KubeletConfiguration and an environment file with node specific kubelet settings, and then (re)start kubelet.
+          - name: mark-control-plane
+            description: Mark a node as a control-plane
+            flags:
+              --config=: Path to a kubeadm configuration file.
+              --dry-run: Don't apply any changes; just output what would be done.
+              --node-name=: Specify the node name.
+          - name: preflight
+            description: Run pre-flight checks
+            flags:
+              --config=: Path to a kubeadm configuration file.
+              --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+              --dry-run: Don't apply any changes; just output what would be done.
+              --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+              --image-repository=:
+                description: Choose a container registry to pull control plane images from
+                default: registry.k8s.io
+            documentation:
+              command: Run pre-flight checks for kubeadm init.
+          - name: show-join-command
+            description: Show the join command for control-plane and worker node
+          - name: upload-certs
+            description: Upload certificates to kubeadm-certs
+            flags:
+              --certificate-key=: Key used to encrypt the control-plane certificates in the kubeadm-certs Secret. The certificate key is a hex encoded string that is an AES key of size 32 bytes.
+              --config=: Path to a kubeadm configuration file.
+              --dry-run: Don't apply any changes; just output what would be done.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+              --skip-certificate-key-print: Don't print the key used to encrypt the control-plane certificates.
+              --upload-certs: Upload control-plane certificates to the kubeadm-certs Secret.
+            documentation:
+              command: Upload control plane certificates to the kubeadm-certs Secret
+          - name: upload-config
+            aliases:
+              - uploadconfig
+            description: Upload the kubeadm and kubelet configuration to a ConfigMap
+            commands:
+              - name: all
+                description: Upload all configuration to a config map
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+              - name: kubeadm
+                description: Upload the kubeadm ClusterConfiguration to a ConfigMap
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                documentation:
+                  command: |-
+                    Upload the kubeadm ClusterConfiguration to a ConfigMap called kubeadm-config in the kube-system namespace. This enables correct configuration of system components and a seamless user experience when upgrading.
+
+                    Alternatively, you can use kubeadm config.
+              - name: kubelet
+                description: Upload the kubelet component config to a ConfigMap
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                documentation:
+                  command: Upload the kubelet configuration extracted from the kubeadm InitConfiguration object to a kubelet-config ConfigMap in the cluster
+          - name: wait-control-plane
+            description: Wait for the control plane to start
+    documentation:
+      command: |
+        Run this command in order to set up the Kubernetes control plane
+
+        The "init" command executes the following phases:
+        ```
+        preflight                     Run pre-flight checks
+        certs                         Certificate generation
+          /ca                           Generate the self-signed Kubernetes CA to provision identities for other Kubernetes components
+          /apiserver                    Generate the certificate for serving the Kubernetes API
+          /apiserver-kubelet-client     Generate the certificate for the API server to connect to kubelet
+          /front-proxy-ca               Generate the self-signed CA to provision identities for front proxy
+          /front-proxy-client           Generate the certificate for the front proxy client
+          /etcd-ca                      Generate the self-signed CA to provision identities for etcd
+          /etcd-server                  Generate the certificate for serving etcd
+          /etcd-peer                    Generate the certificate for etcd nodes to communicate with each other
+          /etcd-healthcheck-client      Generate the certificate for liveness probes to healthcheck etcd
+          /apiserver-etcd-client        Generate the certificate the apiserver uses to access etcd
+          /sa                           Generate a private key for signing service account tokens along with its public key
+        kubeconfig                    Generate all kubeconfig files necessary to establish the control plane and the admin kubeconfig file
+          /admin                        Generate a kubeconfig file for the admin to use and for kubeadm itself
+          /super-admin                  Generate a kubeconfig file for the super-admin
+          /kubelet                      Generate a kubeconfig file for the kubelet to use *only* for cluster bootstrapping purposes
+          /controller-manager           Generate a kubeconfig file for the controller manager to use
+          /scheduler                    Generate a kubeconfig file for the scheduler to use
+        etcd                          Generate static Pod manifest file for local etcd
+          /local                        Generate the static Pod manifest file for a local, single-node local etcd instance
+        control-plane                 Generate all static Pod manifest files necessary to establish the control plane
+          /apiserver                    Generates the kube-apiserver static Pod manifest
+          /controller-manager           Generates the kube-controller-manager static Pod manifest
+          /scheduler                    Generates the kube-scheduler static Pod manifest
+        kubelet-start                 Write kubelet settings and (re)start the kubelet
+        wait-control-plane            Wait for the control plane to start
+        upload-config                 Upload the kubeadm and kubelet configuration to a ConfigMap
+          /kubeadm                      Upload the kubeadm ClusterConfiguration to a ConfigMap
+          /kubelet                      Upload the kubelet component config to a ConfigMap
+        upload-certs                  Upload certificates to kubeadm-certs
+        mark-control-plane            Mark a node as a control-plane
+        bootstrap-token               Generates bootstrap tokens used to join a node to a cluster
+        kubelet-finalize              Updates settings relevant to the kubelet after TLS bootstrap
+          /enable-client-cert-rotation  Enable kubelet client certificate rotation
+        addon                         Install required addons for passing conformance tests
+          /coredns                      Install the CoreDNS addon to a Kubernetes cluster
+          /kube-proxy                   Install the kube-proxy addon to a Kubernetes cluster
+        show-join-command             Show the join command for control-plane and worker node
+        ```
+  - name: join [api-server-endpoint]
+    description: Run this on any machine you wish to join an existing cluster
+    flags:
+      --apiserver-advertise-address=: If the node should host a new control plane instance, the IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+      --apiserver-bind-port=:
+        description: If the node should host a new control plane instance, the port for the API Server to bind to.
+        default: "6443"
+      --certificate-key=: Use this key to decrypt the certificate secrets uploaded by init. The certificate key is a hex encoded string that is an AES key of size 32 bytes.
+      --config=: Path to a kubeadm configuration file.
+      --control-plane: Create a new control plane instance on this node
+      --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+      --discovery-file=: For file-based discovery, a file or URL from which to load cluster information.
+      --discovery-token-ca-cert-hash=*: 'For token-based discovery, validate that the root CA public key matches this hash (format: "<type>:<value>").'
+      --discovery-token-unsafe-skip-ca-verification: For token-based discovery, allow joining without --discovery-token-ca-cert-hash pinning.
+      --discovery-token=: For token-based discovery, the token used to validate cluster information fetched from the API server.
+      --dry-run: Don't apply any changes; just output what would be done.
+      --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+      --node-name=: Specify the node name.
+      --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+      --skip-phases=*: List of phases to be skipped
+      --tls-bootstrap-token=: Specify the token used to temporarily authenticate with the Kubernetes Control Plane while joining the node.
+      --token=: Use this token for both discovery-token and tls-bootstrap-token when those values are not provided.
+    commands:
+      - name: phase
+        description: Use this command to invoke single phase of the "join" workflow
+        commands:
+          - name: control-plane-join
+            description: Join a machine as a control plane instance
+            commands:
+              - name: all
+                description: Join a machine as a control plane instance
+                flags:
+                  --apiserver-advertise-address=: If the node should host a new control plane instance, the IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane: Create a new control plane instance on this node
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --node-name=: Specify the node name.
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+              - name: mark-control-plane
+                description: Mark a node as a control-plane
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane: Create a new control plane instance on this node
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --node-name=: Specify the node name.
+          - name: control-plane-prepare
+            description: Prepare the machine for serving a control plane
+            commands:
+              - name: all [api-server-endpoint]
+                description: Prepare the machine for serving a control plane
+                flags:
+                  --apiserver-advertise-address=: If the node should host a new control plane instance, the IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: If the node should host a new control plane instance, the port for the API Server to bind to.
+                    default: "6443"
+                  --certificate-key=: Use this key to decrypt the certificate secrets uploaded by init. The certificate key is a hex encoded string that is an AES key of size 32 bytes.
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane: Create a new control plane instance on this node
+                  --discovery-file=: For file-based discovery, a file or URL from which to load cluster information.
+                  --discovery-token-ca-cert-hash=*: 'For token-based discovery, validate that the root CA public key matches this hash (format: "<type>:<value>").'
+                  --discovery-token-unsafe-skip-ca-verification: For token-based discovery, allow joining without --discovery-token-ca-cert-hash pinning.
+                  --discovery-token=: For token-based discovery, the token used to validate cluster information fetched from the API server.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --node-name=: Specify the node name.
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                  --tls-bootstrap-token=: Specify the token used to temporarily authenticate with the Kubernetes Control Plane while joining the node.
+                  --token=: Use this token for both discovery-token and tls-bootstrap-token when those values are not provided.
+              - name: certs [api-server-endpoint]
+                description: Generate the certificates for the new control plane components
+                flags:
+                  --apiserver-advertise-address=: If the node should host a new control plane instance, the IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane: Create a new control plane instance on this node
+                  --discovery-file=: For file-based discovery, a file or URL from which to load cluster information.
+                  --discovery-token-ca-cert-hash=*: 'For token-based discovery, validate that the root CA public key matches this hash (format: "<type>:<value>").'
+                  --discovery-token-unsafe-skip-ca-verification: For token-based discovery, allow joining without --discovery-token-ca-cert-hash pinning.
+                  --discovery-token=: For token-based discovery, the token used to validate cluster information fetched from the API server.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --node-name=: Specify the node name.
+                  --tls-bootstrap-token=: Specify the token used to temporarily authenticate with the Kubernetes Control Plane while joining the node.
+                  --token=: Use this token for both discovery-token and tls-bootstrap-token when those values are not provided.
+              - name: control-plane
+                description: Generate the manifests for the new control plane components
+                flags:
+                  --apiserver-advertise-address=: If the node should host a new control plane instance, the IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+                  --apiserver-bind-port=:
+                    description: If the node should host a new control plane instance, the port for the API Server to bind to.
+                    default: "6443"
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane: Create a new control plane instance on this node
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+              - name: download-certs [api-server-endpoint]
+                description: Download certificates shared among control-plane nodes from the kubeadm-certs Secret
+                flags:
+                  --certificate-key=: Use this key to decrypt the certificate secrets uploaded by init. The certificate key is a hex encoded string that is an AES key of size 32 bytes.
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane: Create a new control plane instance on this node
+                  --discovery-file=: For file-based discovery, a file or URL from which to load cluster information.
+                  --discovery-token-ca-cert-hash=*: 'For token-based discovery, validate that the root CA public key matches this hash (format: "<type>:<value>").'
+                  --discovery-token-unsafe-skip-ca-verification: For token-based discovery, allow joining without --discovery-token-ca-cert-hash pinning.
+                  --discovery-token=: For token-based discovery, the token used to validate cluster information fetched from the API server.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --tls-bootstrap-token=: Specify the token used to temporarily authenticate with the Kubernetes Control Plane while joining the node.
+                  --token=: Use this token for both discovery-token and tls-bootstrap-token when those values are not provided.
+              - name: kubeconfig [api-server-endpoint]
+                description: Generate the kubeconfig for the new control plane components
+                flags:
+                  --certificate-key=: Use this key to decrypt the certificate secrets uploaded by init. The certificate key is a hex encoded string that is an AES key of size 32 bytes.
+                  --config=: Path to a kubeadm configuration file.
+                  --control-plane: Create a new control plane instance on this node
+                  --discovery-file=: For file-based discovery, a file or URL from which to load cluster information.
+                  --discovery-token-ca-cert-hash=*: 'For token-based discovery, validate that the root CA public key matches this hash (format: "<type>:<value>").'
+                  --discovery-token-unsafe-skip-ca-verification: For token-based discovery, allow joining without --discovery-token-ca-cert-hash pinning.
+                  --discovery-token=: For token-based discovery, the token used to validate cluster information fetched from the API server.
+                  --dry-run: Don't apply any changes; just output what would be done.
+                  --tls-bootstrap-token=: Specify the token used to temporarily authenticate with the Kubernetes Control Plane while joining the node.
+                  --token=: Use this token for both discovery-token and tls-bootstrap-token when those values are not provided.
+          - name: etcd-join
+            description: Join etcd for control plane nodes
+            flags:
+              --apiserver-advertise-address=: If the node should host a new control plane instance, the IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+              --config=: Path to a kubeadm configuration file.
+              --control-plane: Create a new control plane instance on this node
+              --dry-run: Don't apply any changes; just output what would be done.
+              --node-name=: Specify the node name.
+              --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+          - name: kubelet-start [api-server-endpoint]
+            description: Write kubelet settings, certificates and (re)start the kubelet
+            flags:
+              --config=: Path to a kubeadm configuration file.
+              --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+              --discovery-file=: For file-based discovery, a file or URL from which to load cluster information.
+              --discovery-token-ca-cert-hash=*: 'For token-based discovery, validate that the root CA public key matches this hash (format: "<type>:<value>").'
+              --discovery-token-unsafe-skip-ca-verification: For token-based discovery, allow joining without --discovery-token-ca-cert-hash pinning.
+              --discovery-token=: For token-based discovery, the token used to validate cluster information fetched from the API server.
+              --dry-run: Don't apply any changes; just output what would be done.
+              --node-name=: Specify the node name.
+              --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+              --tls-bootstrap-token=: Specify the token used to temporarily authenticate with the Kubernetes Control Plane while joining the node.
+              --token=: Use this token for both discovery-token and tls-bootstrap-token when those values are not provided.
+            documentation:
+              command: Write a file with KubeletConfiguration and an environment file with node specific kubelet settings, and then (re)start kubelet.
+          - name: kubelet-wait-bootstrap
+            description: Wait for the kubelet to bootstrap itself
+            flags:
+              --config=: Path to a kubeadm configuration file.
+              --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+              --dry-run: Don't apply any changes; just output what would be done.
+          - name: preflight [api-server-endpoint]
+            description: Run join pre-flight checks
+            flags:
+              --apiserver-advertise-address=: If the node should host a new control plane instance, the IP address the API Server will advertise it's listening on. If not set the default network interface will be used.
+              --apiserver-bind-port=:
+                description: If the node should host a new control plane instance, the port for the API Server to bind to.
+                default: "6443"
+              --certificate-key=: Use this key to decrypt the certificate secrets uploaded by init. The certificate key is a hex encoded string that is an AES key of size 32 bytes.
+              --config=: Path to a kubeadm configuration file.
+              --control-plane: Create a new control plane instance on this node
+              --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+              --discovery-file=: For file-based discovery, a file or URL from which to load cluster information.
+              --discovery-token-ca-cert-hash=*: 'For token-based discovery, validate that the root CA public key matches this hash (format: "<type>:<value>").'
+              --discovery-token-unsafe-skip-ca-verification: For token-based discovery, allow joining without --discovery-token-ca-cert-hash pinning.
+              --discovery-token=: For token-based discovery, the token used to validate cluster information fetched from the API server.
+              --dry-run: Don't apply any changes; just output what would be done.
+              --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+              --node-name=: Specify the node name.
+              --tls-bootstrap-token=: Specify the token used to temporarily authenticate with the Kubernetes Control Plane while joining the node.
+              --token=: Use this token for both discovery-token and tls-bootstrap-token when those values are not provided.
+            documentation:
+              command: Run pre-flight checks for kubeadm join.
+          - name: wait-control-plane
+            description: Wait for the control plane to start
+    documentation:
+      command: |2
+        When joining a kubeadm initialized cluster, we need to establish
+        bidirectional trust. This is split into discovery (having the Node
+        trust the Kubernetes Control Plane) and TLS bootstrap (having the
+        Kubernetes Control Plane trust the Node).
+
+        There are 2 main schemes for discovery. The first is to use a shared
+        token along with the IP address of the API server. The second is to
+        provide a file - a subset of the standard kubeconfig file. The
+        discovery/kubeconfig file supports token, client-go authentication
+        plugins ("exec"), "tokenFile", and "authProvider". This file can be a
+        local file or downloaded via an HTTPS URL. The forms are
+        kubeadm join --discovery-token abcdef.1234567890abcdef 1.2.3.4:6443,
+        kubeadm join --discovery-file path/to/file.conf, or kubeadm join
+        --discovery-file https://url/file.conf. Only one form can be used. If
+        the discovery information is loaded from a URL, HTTPS must be used.
+        Also, in that case the host installed CA bundle is used to verify
+        the connection.
+
+        If you use a shared token for discovery, you should also pass the
+        --discovery-token-ca-cert-hash flag to validate the public key of the
+        root certificate authority (CA) presented by the Kubernetes Control Plane.
+        The value of this flag is specified as "<hash-type>:<hex-encoded-value>",
+        where the supported hash type is "sha256". The hash is calculated over
+        the bytes of the Subject Public Key Info (SPKI) object (as in RFC7469).
+        This value is available in the output of "kubeadm init" or can be
+        calculated using standard tools. The --discovery-token-ca-cert-hash flag
+        may be repeated multiple times to allow more than one public key.
+
+        If you cannot know the CA public key hash ahead of time, you can pass
+        the --discovery-token-unsafe-skip-ca-verification flag to disable this
+        verification. This weakens the kubeadm security model since other nodes
+        can potentially impersonate the Kubernetes Control Plane.
+
+        The TLS bootstrap mechanism is also driven via a shared token. This is
+        used to temporarily authenticate with the Kubernetes Control Plane to submit a
+        certificate signing request (CSR) for a locally created key pair. By
+        default, kubeadm will set up the Kubernetes Control Plane to automatically
+        approve these signing requests. This token is passed in with the
+        --tls-bootstrap-token abcdef.1234567890abcdef flag.
+
+        Often times the same token is used for both parts. In this case, the
+        --token flag can be used instead of specifying each token individually.
+
+
+        The "join [api-server-endpoint]" command executes the following phases:
+        ```
+        preflight               Run join pre-flight checks
+        control-plane-prepare   Prepare the machine for serving a control plane
+          /download-certs         Download certificates shared among control-plane nodes from the kubeadm-certs Secret
+          /certs                  Generate the certificates for the new control plane components
+          /kubeconfig             Generate the kubeconfig for the new control plane components
+          /control-plane          Generate the manifests for the new control plane components
+        kubelet-start           Write kubelet settings, certificates and (re)start the kubelet
+        etcd-join               Join etcd for control plane nodes
+        kubelet-wait-bootstrap  Wait for the kubelet to bootstrap itself
+        control-plane-join      Join a machine as a control plane instance
+          /mark-control-plane     Mark a node as a control-plane
+        wait-control-plane      Wait for the control plane to start
+        ```
+  - name: kubeconfig
+    description: Kubeconfig file utilities
+    commands:
+      - name: user
+        description: Output a kubeconfig file for an additional user
+        flags:
+          --client-name=!: The name of user. It will be used as the CN if client certificates are created
+          --config=: Path to a kubeadm configuration file.
+          --org=*: The organizations of the client certificate. It will be used as the O if client certificates are created
+          --token=: The token that should be used as the authentication mechanism for this kubeconfig, instead of client certificates
+          --validity-period=:
+            description: The validity period of the client certificate. It is an offset from the current time.
+            default: 8760h0m0s
+        documentation:
+          command: Output a kubeconfig file for an additional user.
+    documentation:
+      command: Kubeconfig file utilities.
+  - name: reset
+    description: Performs a best effort revert of changes made to this host by 'kubeadm init' or 'kubeadm join'
+    flags:
+      --cert-dir=:
+        description: The path to the directory where the certificates are stored. If specified, clean this directory.
+        default: /etc/kubernetes/pki
+      --cleanup-tmp-dir: Cleanup the "/etc/kubernetes/tmp" directory
+      --config=: Path to a kubeadm configuration file.
+      --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+      --dry-run: Don't apply any changes; just output what would be done.
+      --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+      --kubeconfig=:
+        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+        default: /etc/kubernetes/admin.conf
+      --skip-phases=*: List of phases to be skipped
+      -f, --force: Reset the node without prompting for confirmation.
+    commands:
+      - name: phase
+        description: Use this command to invoke single phase of the "reset" workflow
+        commands:
+          - name: cleanup-node
+            aliases:
+              - cleanupnode
+            description: Run cleanup node.
+            flags:
+              --cert-dir=:
+                description: The path to the directory where the certificates are stored. If specified, clean this directory.
+                default: /etc/kubernetes/pki
+              --cleanup-tmp-dir: Cleanup the "/etc/kubernetes/tmp" directory
+              --cri-socket=: Path to the CRI socket to connect. If empty kubeadm will try to auto-detect this value; use this option only if you have more than one CRI installed or if you have non-standard CRI socket.
+              --dry-run: Don't apply any changes; just output what would be done.
+          - name: preflight
+            aliases:
+              - pre-flight
+            description: Run reset pre-flight checks
+            flags:
+              --dry-run: Don't apply any changes; just output what would be done.
+              --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+              -f, --force: Reset the node without prompting for confirmation.
+            documentation:
+              command: Run pre-flight checks for kubeadm reset.
+          - name: remove-etcd-member
+            description: Remove a local etcd member.
+            flags:
+              --dry-run: Don't apply any changes; just output what would be done.
+              --kubeconfig=:
+                description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                default: /etc/kubernetes/admin.conf
+            documentation:
+              command: Remove a local etcd member for a control plane node.
+    documentation:
+      command: |
+        Performs a best effort revert of changes made to this host by 'kubeadm init' or 'kubeadm join'
+
+        The "reset" command executes the following phases:
+        ```
+        preflight           Run reset pre-flight checks
+        remove-etcd-member  Remove a local etcd member.
+        cleanup-node        Run cleanup node.
+        ```
+  - name: token
+    description: Manage bootstrap tokens
+    persistentflags:
+      --dry-run: Whether to enable dry-run mode or not
+      --kubeconfig=:
+        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+        default: /etc/kubernetes/admin.conf
+    commands:
+      - name: create [token]
+        description: Create bootstrap tokens on the server
+        flags:
+          --certificate-key=: When used together with '--print-join-command', print the full 'kubeadm join' flag needed to join the cluster as a control-plane. To create a new certificate key you must use 'kubeadm init phase upload-certs --upload-certs'.
+          --config=: Path to a kubeadm configuration file.
+          --description=: A human friendly description of how this token is used.
+          --groups=*:
+            description: Extra groups that this token will authenticate as when used for authentication. Must match "\\Asystem:bootstrappers:[a-z0-9:-]{0,255}[a-z0-9]\\z"
+            default: '[system:bootstrappers:kubeadm:default-node-token]'
+          --print-join-command: Instead of printing only the token, print the full 'kubeadm join' flag needed to join the cluster using the token.
+          --ttl=:
+            description: The duration before the token is automatically deleted (e.g. 1s, 2m, 3h). If set to '0', the token will never expire
+            default: 24h0m0s
+          --usages=*:
+            description: 'Describes the ways in which this token can be used. You can pass --usages multiple times or provide a comma separated list of options. Valid options: [signing,authentication]'
+            default: '[signing,authentication]'
+        documentation:
+          command: |2
+            This command will create a bootstrap token for you.
+            You can specify the usages for this token, the "time to live" and an optional human friendly description.
+
+            The [token] is the actual token to write.
+            This should be a securely generated random token of the form "[a-z0-9]{6}.[a-z0-9]{16}".
+            If no [token] is given, kubeadm will generate a random token instead.
+      - name: delete [token-value] ...
+        description: Delete bootstrap tokens on the server
+        documentation:
+          command: |2
+            This command will delete a list of bootstrap tokens for you.
+
+            The [token-value] is the full Token of the form "[a-z0-9]{6}.[a-z0-9]{16}" or the
+            Token ID of the form "[a-z0-9]{6}" to delete.
+      - name: generate
+        description: Generate and print a bootstrap token, but do not create it on the server
+        documentation:
+          command: |2
+            This command will print out a randomly-generated bootstrap token that can be used with
+            the "init" and "join" commands.
+
+            You don't have to use this command in order to generate a token. You can do so
+            yourself as long as it is in the format "[a-z0-9]{6}.[a-z0-9]{16}". This
+            command is provided for convenience to generate tokens in the given format.
+
+            You can also use "kubeadm init" without specifying a token and it will
+            generate and print one for you.
+      - name: list
+        description: List bootstrap tokens on the server
+        flags:
+          --allow-missing-template-keys:
+            description: If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats.
+            default: "true"
+          --show-managed-fields: If true, keep the managedFields when printing objects in JSON or YAML format.
+          -o, --output=:
+            description: 'Output format. One of: text|json|yaml|kyaml|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file.'
+            default: text
+        documentation:
+          command: |2
+            This command will list all bootstrap tokens for you.
+    documentation:
+      command: |2
+        This command manages bootstrap tokens. It is optional and needed only for advanced use cases.
+
+        In short, bootstrap tokens are used for establishing bidirectional trust between a client and a server.
+        A bootstrap token can be used when a client (for example a node that is about to join the cluster) needs
+        to trust the server it is talking to. Then a bootstrap token with the "signing" usage can be used.
+        bootstrap tokens can also function as a way to allow short-lived authentication to the API Server
+        (the token serves as a way for the API Server to trust the client), for example for doing the TLS Bootstrap.
+
+        What is a bootstrap token more exactly?
+         - It is a Secret in the kube-system namespace of type "bootstrap.kubernetes.io/token".
+         - A bootstrap token must be of the form "[a-z0-9]{6}.[a-z0-9]{16}". The former part is the public token ID,
+           while the latter is the Token Secret and it must be kept private at all circumstances!
+         - The name of the Secret must be named "bootstrap-token-(token-id)".
+
+        You can read more about bootstrap tokens here:
+          https://kubernetes.io/docs/admin/bootstrap-tokens/
+  - name: upgrade
+    description: Upgrade your cluster smoothly to a newer version with this command
+    commands:
+      - name: apply [version]
+        description: Upgrade your Kubernetes cluster to the specified version
+        flags:
+          --allow-experimental-upgrades: Show unstable versions of Kubernetes as an upgrade alternative and allow upgrading to an alpha/beta/release candidate versions of Kubernetes.
+          --allow-release-candidate-upgrades: Show release candidate versions of Kubernetes as an upgrade alternative and allow upgrading to a release candidate versions of Kubernetes.
+          --certificate-renewal:
+            description: Perform the renewal of certificates used by component changed during upgrades.
+            default: "true"
+          --config=: Path to a kubeadm configuration file.
+          --dry-run: Do not change any state, just output what actions would be performed.
+          --etcd-upgrade:
+            description: Perform the upgrade of etcd.
+            default: "true"
+          --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+          --kubeconfig=:
+            description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+            default: /etc/kubernetes/admin.conf
+          --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+          --print-config: Specifies whether the configuration file that will be used in the upgrade should be printed or not.
+          --skip-phases=*: List of phases to be skipped
+          -f, --force: Force upgrading although some requirements might not be met. This also implies non-interactive mode.
+          -y, --yes: Perform the upgrade and do not prompt for confirmation (non-interactive mode).
+        commands:
+          - name: phase
+            description: Use this command to invoke single phase of the "apply" workflow
+            commands:
+              - name: addon
+                description: Upgrade the default kubeadm addons
+                commands:
+                  - name: all
+                    description: Upgrade all the addons
+                    flags:
+                      --config=: Path to a kubeadm configuration file.
+                      --dry-run: Do not change any state, just output what actions would be performed.
+                      --kubeconfig=:
+                        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                        default: /etc/kubernetes/admin.conf
+                      --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                  - name: coredns
+                    description: Upgrade the CoreDNS addon
+                    flags:
+                      --config=: Path to a kubeadm configuration file.
+                      --dry-run: Do not change any state, just output what actions would be performed.
+                      --kubeconfig=:
+                        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                        default: /etc/kubernetes/admin.conf
+                      --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                  - name: kube-proxy
+                    description: Upgrade the kube-proxy addon
+                    flags:
+                      --config=: Path to a kubeadm configuration file.
+                      --dry-run: Do not change any state, just output what actions would be performed.
+                      --kubeconfig=:
+                        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                        default: /etc/kubernetes/admin.conf
+                      --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+              - name: bootstrap-token
+                description: Configures bootstrap token and cluster-info RBAC rules
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Do not change any state, just output what actions would be performed.
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+              - name: control-plane
+                description: Upgrade the control plane
+                flags:
+                  --certificate-renewal:
+                    description: Perform the renewal of certificates used by component changed during upgrades.
+                    default: "true"
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Do not change any state, just output what actions would be performed.
+                  --etcd-upgrade:
+                    description: Perform the upgrade of etcd.
+                    default: "true"
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+              - name: kubelet-config
+                description: Upgrade the kubelet configuration for this node
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Do not change any state, just output what actions would be performed.
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                documentation:
+                  command: Upgrade the kubelet configuration for this node by downloading it from the kubelet-config ConfigMap stored in the cluster
+              - name: post-upgrade
+                description: Run post upgrade tasks
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Do not change any state, just output what actions would be performed.
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+              - name: preflight
+                description: Run preflight checks before upgrade
+                flags:
+                  --allow-experimental-upgrades: Show unstable versions of Kubernetes as an upgrade alternative and allow upgrading to an alpha/beta/release candidate versions of Kubernetes.
+                  --allow-release-candidate-upgrades: Show release candidate versions of Kubernetes as an upgrade alternative and allow upgrading to a release candidate versions of Kubernetes.
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Do not change any state, just output what actions would be performed.
+                  --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                  -f, --force: Force upgrading although some requirements might not be met. This also implies non-interactive mode.
+                  -y, --yes: Perform the upgrade and do not prompt for confirmation (non-interactive mode).
+              - name: upload-config
+                aliases:
+                  - uploadconfig
+                description: Upload the kubeadm and kubelet configurations to ConfigMaps
+                commands:
+                  - name: all
+                    description: Upload all the configurations to ConfigMaps
+                    flags:
+                      --config=: Path to a kubeadm configuration file.
+                      --dry-run: Do not change any state, just output what actions would be performed.
+                      --kubeconfig=:
+                        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                        default: /etc/kubernetes/admin.conf
+                  - name: kubeadm
+                    description: Upload the kubeadm ClusterConfiguration to a ConfigMap
+                    flags:
+                      --config=: Path to a kubeadm configuration file.
+                      --dry-run: Do not change any state, just output what actions would be performed.
+                      --kubeconfig=:
+                        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                        default: /etc/kubernetes/admin.conf
+                  - name: kubelet
+                    description: Upload the kubelet configuration to a ConfigMap
+                    flags:
+                      --config=: Path to a kubeadm configuration file.
+                      --dry-run: Do not change any state, just output what actions would be performed.
+                      --kubeconfig=:
+                        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                        default: /etc/kubernetes/admin.conf
+        documentation:
+          command: |
+            Upgrade your Kubernetes cluster to the specified version
+
+            The "apply [version]" command executes the following phases:
+            ```
+            preflight        Run preflight checks before upgrade
+            control-plane    Upgrade the control plane
+            upload-config    Upload the kubeadm and kubelet configurations to ConfigMaps
+              /kubeadm         Upload the kubeadm ClusterConfiguration to a ConfigMap
+              /kubelet         Upload the kubelet configuration to a ConfigMap
+            kubelet-config   Upgrade the kubelet configuration for this node
+            bootstrap-token  Configures bootstrap token and cluster-info RBAC rules
+            addon            Upgrade the default kubeadm addons
+              /coredns         Upgrade the CoreDNS addon
+              /kube-proxy      Upgrade the kube-proxy addon
+            post-upgrade     Run post upgrade tasks
+            ```
+      - name: diff [version]
+        description: 'Show what differences would be applied to existing static pod manifests. See also: kubeadm upgrade apply --dry-run'
+        flags:
+          --config=: Path to a kubeadm configuration file.
+          --kubeconfig=:
+            description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+            default: /etc/kubernetes/admin.conf
+          -c, --context-lines=:
+            description: How many lines of context in the diff
+            default: "3"
+      - name: node
+        description: Upgrade commands for a node in the cluster
+        flags:
+          --certificate-renewal:
+            description: Perform the renewal of certificates used by component changed during upgrades.
+            default: "true"
+          --config=: Path to a kubeadm configuration file.
+          --dry-run: Do not change any state, just output the actions that would be performed.
+          --etcd-upgrade:
+            description: Perform the upgrade of etcd.
+            default: "true"
+          --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+          --kubeconfig=:
+            description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+            default: /etc/kubernetes/admin.conf
+          --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+          --skip-phases=*: List of phases to be skipped
+        commands:
+          - name: phase
+            description: Use this command to invoke single phase of the "node" workflow
+            commands:
+              - name: addon
+                description: Upgrade the default kubeadm addons
+                commands:
+                  - name: all
+                    description: Upgrade all the addons
+                    flags:
+                      --config=: Path to a kubeadm configuration file.
+                      --dry-run: Do not change any state, just output the actions that would be performed.
+                      --kubeconfig=:
+                        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                        default: /etc/kubernetes/admin.conf
+                      --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                  - name: coredns
+                    description: Upgrade the CoreDNS addon
+                    flags:
+                      --config=: Path to a kubeadm configuration file.
+                      --dry-run: Do not change any state, just output the actions that would be performed.
+                      --kubeconfig=:
+                        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                        default: /etc/kubernetes/admin.conf
+                      --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                  - name: kube-proxy
+                    description: Upgrade the kube-proxy addon
+                    flags:
+                      --config=: Path to a kubeadm configuration file.
+                      --dry-run: Do not change any state, just output the actions that would be performed.
+                      --kubeconfig=:
+                        description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                        default: /etc/kubernetes/admin.conf
+                      --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+              - name: control-plane
+                description: Upgrade the control plane instance deployed on this node, if any
+                flags:
+                  --certificate-renewal:
+                    description: Perform the renewal of certificates used by component changed during upgrades.
+                    default: "true"
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Do not change any state, just output the actions that would be performed.
+                  --etcd-upgrade:
+                    description: Perform the upgrade of etcd.
+                    default: "true"
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+              - name: kubelet-config
+                description: Upgrade the kubelet configuration for this node
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Do not change any state, just output the actions that would be performed.
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+                  --patches=: Path to a directory that contains files named "target[suffix][+patchtype].extension". For example, "kube-apiserver0+merge.yaml" or just "etcd.json". "target" can be one of "kube-apiserver", "kube-controller-manager", "kube-scheduler", "etcd", "kubeletconfiguration", "corednsdeployment", "kubeproxydaemonset". "patchtype" can be one of "strategic", "merge" or "json" and they match the patch formats supported by kubectl. The default "patchtype" is "strategic". "extension" must be either "json" or "yaml". "suffix" is an optional string that can be used to determine which patches are applied first alpha-numerically.
+                documentation:
+                  command: Upgrade the kubelet configuration for this node by downloading it from the kubelet-config ConfigMap stored in the cluster
+              - name: post-upgrade
+                description: Run post upgrade tasks
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --dry-run: Do not change any state, just output the actions that would be performed.
+                  --kubeconfig=:
+                    description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                    default: /etc/kubernetes/admin.conf
+              - name: preflight
+                description: Run upgrade node pre-flight checks
+                flags:
+                  --config=: Path to a kubeadm configuration file.
+                  --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+                documentation:
+                  command: Run pre-flight checks for kubeadm upgrade node.
+        documentation:
+          command: |
+            Upgrade commands for a node in the cluster
+
+            The "node" command executes the following phases:
+            ```
+            preflight       Run upgrade node pre-flight checks
+            control-plane   Upgrade the control plane instance deployed on this node, if any
+            kubelet-config  Upgrade the kubelet configuration for this node
+            addon           Upgrade the default kubeadm addons
+              /coredns        Upgrade the CoreDNS addon
+              /kube-proxy     Upgrade the kube-proxy addon
+            post-upgrade    Run post upgrade tasks
+            ```
+      - name: plan [version] [flags]
+        description: Check which versions are available to upgrade to and validate whether your current cluster is upgradeable.
+        flags:
+          --allow-experimental-upgrades: Show unstable versions of Kubernetes as an upgrade alternative and allow upgrading to an alpha/beta/release candidate versions of Kubernetes.
+          --allow-missing-template-keys:
+            description: If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats.
+            default: "true"
+          --allow-release-candidate-upgrades: Show release candidate versions of Kubernetes as an upgrade alternative and allow upgrading to a release candidate versions of Kubernetes.
+          --config=: Path to a kubeadm configuration file.
+          --etcd-upgrade:
+            description: Perform the upgrade of etcd.
+            default: "true"
+          --ignore-preflight-errors=*: 'A list of checks whose errors will be shown as warnings. Example: ''IsPrivilegedUser,Swap''. Value ''all'' ignores errors from all checks.'
+          --kubeconfig=:
+            description: The kubeconfig file to use when talking to the cluster. If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+            default: /etc/kubernetes/admin.conf
+          --print-config: Specifies whether the configuration file that will be used in the upgrade should be printed or not.
+          --show-managed-fields: If true, keep the managedFields when printing objects in JSON or YAML format.
+          -o, --output=:
+            description: 'Output format. One of: text|json|yaml|kyaml|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file.'
+            default: text
+        documentation:
+          command: Check which versions are available to upgrade to and validate whether your current cluster is upgradeable. This command can only run on the control plane nodes where the kubeconfig file "admin.conf" exists. To skip the internet check, pass in the optional [version] parameter.
+  - name: version
+    description: Print the version of kubeadm
+    flags:
+      -o, --output=: Output format; available options are 'yaml', 'json' and 'short'
+documentation:
+  command: |2+
+
+        ┌──────────────────────────────────────────────────────────┐
+        │ KUBEADM                                                  │
+        │ Easily bootstrap a secure Kubernetes cluster             │
+        │                                                          │
+        │ Please give us feedback at:                              │
+        │ https://github.com/kubernetes/kubeadm/issues             │
+        └──────────────────────────────────────────────────────────┘
+
+    Example usage:
+
+        Create a two-machine cluster with one control-plane node
+        (which controls the cluster), and one worker node
+        (where your workloads, like Pods and Deployments run).
+
+        ┌──────────────────────────────────────────────────────────┐
+        │ On the first machine:                                    │
+        ├──────────────────────────────────────────────────────────┤
+        │ control-plane# kubeadm init                              │
+        └──────────────────────────────────────────────────────────┘
+
+        ┌──────────────────────────────────────────────────────────┐
+        │ On the second machine:                                   │
+        ├──────────────────────────────────────────────────────────┤
+        │ worker# kubeadm join <arguments-returned-from-init>      │
+        └──────────────────────────────────────────────────────────┘
+
+        You can then repeat the second step on as many other machines as you like.
