@@ -1,0 +1,131 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: vhs <file>
+description: Run a given tape file and generates its outputs.
+flags:
+  -o, --output=*: file name(s) of video output
+  -p, --publish: publish your GIF to vhs.charm.sh and get a shareable URL
+persistentflags:
+  -q, --quiet: quiet do not log messages. If publish flag is provided, it will log shareable URL
+commands:
+  - name: completion
+    description: Generate the autocompletion script for the specified shell
+    hidden: true
+    commands:
+      - name: bash
+        description: Generate the autocompletion script for bash
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the bash shell.
+
+            This script depends on the 'bash-completion' package.
+            If it is not installed already, you can install it via your OS's package manager.
+
+            To load completions in your current shell session:
+
+            	source <(vhs completion bash)
+
+            To load completions for every new session, execute once:
+
+            #### Linux:
+
+            	vhs completion bash > /etc/bash_completion.d/vhs
+
+            #### macOS:
+
+            	vhs completion bash > $(brew --prefix)/etc/bash_completion.d/vhs
+
+            You will need to start a new shell for this setup to take effect.
+      - name: fish
+        description: Generate the autocompletion script for fish
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the fish shell.
+
+            To load completions in your current shell session:
+
+            	vhs completion fish | source
+
+            To load completions for every new session, execute once:
+
+            	vhs completion fish > ~/.config/fish/completions/vhs.fish
+
+            You will need to start a new shell for this setup to take effect.
+      - name: powershell
+        description: Generate the autocompletion script for powershell
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for powershell.
+
+            To load completions in your current shell session:
+
+            	vhs completion powershell | Out-String | Invoke-Expression
+
+            To load completions for every new session, add the output of the above command
+            to your powershell profile.
+      - name: zsh
+        description: Generate the autocompletion script for zsh
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the zsh shell.
+
+            If shell completion is not already enabled in your environment you will need
+            to enable it.  You can execute the following once:
+
+            	echo "autoload -U compinit; compinit" >> ~/.zshrc
+
+            To load completions in your current shell session:
+
+            	source <(vhs completion zsh)
+
+            To load completions for every new session, execute once:
+
+            #### Linux:
+
+            	vhs completion zsh > "${fpath[1]}/_vhs"
+
+            #### macOS:
+
+            	vhs completion zsh > $(brew --prefix)/share/zsh/site-functions/_vhs
+
+            You will need to start a new shell for this setup to take effect.
+    documentation:
+      command: |
+        Generate the autocompletion script for vhs for the specified shell.
+        See each sub-command's help for details on how to use the generated script.
+  - name: help [command]
+    description: Help about any command
+    documentation:
+      command: |-
+        Help provides help for any command in the application.
+        Simply type vhs help [path to command] for full details.
+  - name: manual
+    aliases:
+      - man
+    description: Generate man pages
+    hidden: true
+  - name: new <name>
+    description: Create a new tape file with example tape file contents and documentation
+  - name: publish <gif>
+    description: Publish your GIF to vhs.charm.sh and get a shareable URL
+  - name: record
+    description: Create a new tape file by recording your actions
+    flags:
+      -s, --shell=:
+        description: shell for recording
+        default: .
+  - name: serve
+    description: Start the VHS SSH server
+  - name: themes
+    description: List all the available themes, one per line
+    flags:
+      --markdown&: output as markdown
+  - name: validate <file>...
+    description: Validate a glob file path and parses all the files to ensure they are valid without running them.
