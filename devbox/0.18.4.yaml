@@ -1,0 +1,596 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: devbox
+description: Instant, easy, predictable development environments
+persistentflags:
+  --debug&: Show full stack traces on errors
+  --trace?&: write a trace to a file
+  -q, --quiet: suppresses logs
+commands:
+  - name: add <pkg>...
+    description: Add a new package to your devbox
+    flags:
+      --allow-insecure=*: allow adding packages marked as insecure.
+      --disable-plugin: disable plugin (if any) for this package.
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      --patch-glibc&: patch any ELF binaries to use the latest glibc version in nixpkgs
+      --patch=:
+        description: allow Devbox to patch the package to fix known issues (auto, always, never)
+        default: auto
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      -e, --exclude-platform=*: exclude packages from a specific platform.
+      -o, --outputs=*: specify the outputs to select for the nix package
+      -p, --platform=*: add packages to run on only this platform.
+    exclusiveflags:
+      - - patch
+        - patch-glibc
+  - name: all
+    description: List all commands, including hidden ones
+    hidden: true
+  - name: completion
+    description: Generate the autocompletion script for the specified shell
+    commands:
+      - name: bash
+        description: Generate the autocompletion script for bash
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the bash shell.
+
+            This script depends on the 'bash-completion' package.
+            If it is not installed already, you can install it via your OS's package manager.
+
+            To load completions in your current shell session:
+
+            	source <(devbox completion bash)
+
+            To load completions for every new session, execute once:
+
+            #### Linux:
+
+            	devbox completion bash > /etc/bash_completion.d/devbox
+
+            #### macOS:
+
+            	devbox completion bash > $(brew --prefix)/etc/bash_completion.d/devbox
+
+            You will need to start a new shell for this setup to take effect.
+      - name: fish
+        description: Generate the autocompletion script for fish
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the fish shell.
+
+            To load completions in your current shell session:
+
+            	devbox completion fish | source
+
+            To load completions for every new session, execute once:
+
+            	devbox completion fish > ~/.config/fish/completions/devbox.fish
+
+            You will need to start a new shell for this setup to take effect.
+      - name: powershell
+        description: Generate the autocompletion script for powershell
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for powershell.
+
+            To load completions in your current shell session:
+
+            	devbox completion powershell | Out-String | Invoke-Expression
+
+            To load completions for every new session, add the output of the above command
+            to your powershell profile.
+      - name: zsh
+        description: Generate the autocompletion script for zsh
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the zsh shell.
+
+            If shell completion is not already enabled in your environment you will need
+            to enable it.  You can execute the following once:
+
+            	echo "autoload -U compinit; compinit" >> ~/.zshrc
+
+            To load completions in your current shell session:
+
+            	source <(devbox completion zsh)
+
+            To load completions for every new session, execute once:
+
+            #### Linux:
+
+            	devbox completion zsh > "${fpath[1]}/_devbox"
+
+            #### macOS:
+
+            	devbox completion zsh > $(brew --prefix)/share/zsh/site-functions/_devbox
+
+            You will need to start a new shell for this setup to take effect.
+    documentation:
+      command: |
+        Generate the autocompletion script for devbox for the specified shell.
+        See each sub-command's help for details on how to use the generated script.
+  - name: create [dir] --template <template>
+    description: Initialize a directory as a devbox project using a template
+    flags:
+      --show-all: show all available templates
+      -r, --repo=&: 'Git repository HTTPS URL to import template files from. Example: https://github.com/jetify-com/devbox'
+      -s, --subdir=&: 'Subdirectory of the Git repository in which the template files reside. Example: examples/tutorial'
+      -t, --template=: template to initialize the project with
+  - name: gen-docs <path>
+    description: '[Internal] Generate documentation for the CLI'
+    hidden: true
+    documentation:
+      command: '[Internal] Generates the documentation for the CLI''s Cobra commands. Docs are placed in the directory specified by <path>.'
+  - name: generate
+    aliases:
+      - gen
+    description: Generate supporting files for your project
+    flags:
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+    commands:
+      - name: alias
+        description: Generate shell script aliases for this project
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --no-prefix: Do not use a prefix for the generated aliases
+          -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+          -p, --prefix=: Prefix for the generated aliases
+        documentation:
+          command: Generate shell script aliases for this project. Usage is typically `eval "$(devbox gen alias)"`.
+      - name: debug
+        hidden: true
+      - name: devcontainer
+        description: Generate Dockerfile and devcontainer.json files under .devcontainer/ directory
+        flags:
+          --root-user: Use root as default user inside the container
+          -f, --force: force overwrite on existing files
+        documentation:
+          command: Generate Dockerfile and devcontainer.json files necessary to run VSCode in remote container environments.
+      - name: direnv
+        description: Generate a .envrc file that integrates direnv with this devbox project
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --envrc-dir=: |-
+            path to directory where the .envrc file should be generated.
+            If not specified, the .envrc file will be generated in the same directory as
+            the devbox.json.
+          -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+          -f, --force: force overwrite existing files
+          -p, --print-envrc&: output contents of devbox configuration to use in .envrc
+        persistentflags:
+          --env-file=: path to a file containing environment variables to set in the devbox environment
+          -e, --env=: environment variables to set in the devbox environment
+        documentation:
+          command: Generate a .envrc file that integrates direnv with this devbox project. Requires direnv to be installed.
+      - name: dockerfile
+        description: Generate a Dockerfile that replicates devbox shell
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --for=&:
+            description: Generate Dockerfile for a specific type of container (dev, prod)
+            default: dev
+          --root-user: Use root as default user inside the container
+          -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+          -f, --force: force overwrite existing files
+        documentation:
+          command: Generate a Dockerfile that replicates devbox shell. Can be used to run devbox shell environment in an OCI container.
+      - name: readme [filename]
+        description: Generate markdown readme file for this project
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --save-template: Save default template for the README file
+          -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+          -t, --template=: Path to a custom template for the README file
+  - name: global
+    description: Manage global devbox packages
+    commands:
+      - name: add <pkg>...
+        description: Add a new package to your devbox
+        flags:
+          --allow-insecure=*: allow adding packages marked as insecure.
+          --disable-plugin: disable plugin (if any) for this package.
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --patch-glibc&: patch any ELF binaries to use the latest glibc version in nixpkgs
+          --patch=:
+            description: allow Devbox to patch the package to fix known issues (auto, always, never)
+            default: auto
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+          -e, --exclude-platform=*: exclude packages from a specific platform.
+          -o, --outputs=*: specify the outputs to select for the nix package
+          -p, --platform=*: add packages to run on only this platform.
+        exclusiveflags:
+          - - patch
+            - patch-glibc
+      - name: info <pkg>
+        description: Display package info
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --markdown: output in markdown format
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      - name: install
+        description: Install all packages mentioned in devbox.json
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --tidy-lockfile: Fix missing store paths in the devbox.lock file.
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      - name: list
+        aliases:
+          - ls
+        description: List installed packages
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --outdated: List outdated packages
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      - name: path
+        description: Show path to [global] devbox config
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      - name: pull <file> | <url>
+        description: Pull a config from a file or URL
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+          -f, --force: Force overwrite of existing [global] config files
+        documentation:
+          command: Pull a config from a file or URL. URLs must be prefixed with 'http://' or 'https://'.
+      - name: push <git-repo>
+        description: Push a [global] config to a git repo
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      - name: rm <pkg>...
+        description: Remove a package from your devbox
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      - name: run [<script> | <cmd>]
+        description: Run a script or command in a shell with access to your packages
+        flags:
+          --all-projects: run command in all projects in the working directory, recursively. If command is not found in any project, it will be skipped.
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --omit-nix-env&:
+            description: shell environment will omit the env-vars from print-dev-env
+            default: "true"
+          --pure: if this flag is specified, devbox runs the script in an isolated environment inheriting almost no variables from the current environment. A few variables, in particular HOME, USER and DISPLAY, are retained.
+          --recompute:
+            description: recompute environment if needed
+            default: "true"
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+          -l, --list: list all scripts defined in devbox.json
+        persistentflags:
+          --env-file=: path to a file containing environment variables to set in the devbox environment
+          -e, --env=: environment variables to set in the devbox environment
+        documentation:
+          command: |+
+            Start a new shell and runs your script or command in it, exiting when done.
+
+            The script must be defined in `devbox.json`, or else it will be interpreted as an arbitrary command. You can pass arguments to your script or command. Everything after `--` will be passed verbatim into your command (see examples).
+
+            Scripts and commands always run from the project's root directory (the directory containing your `devbox.json`), not the current working directory. If you invoke `devbox run` from a subdirectory and need to run there, change into it as part of your command, e.g. `devbox run -- sh -c 'cd subdir && <command>'`.
+
+      - name: services
+        description: Interact with devbox services.
+        persistentflags:
+          --env-file=: path to a file containing environment variables to set in the devbox environment
+          --environment=:
+            description: environment to use, when supported (e.g. secrets support dev, prod, preview.)
+            default: dev
+          --run-in-current-shell&: run the command in the current shell instead of a new shell
+          -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+          -e, --env=: environment variables to set in the devbox environment
+        commands:
+          - name: attach
+            description: Attach to a running process-compose for the current project
+          - name: ls
+            description: List available services
+          - name: pcport
+            description: Display the port that process-compose is running on
+          - name: restart [service]...
+            description: Restart service. If no service is specified, restarts all services
+          - name: start [service]...
+            description: Start service. If no service is specified, starts all services
+          - name: stop [service]...
+            aliases:
+              - down
+            description: Stop one or more services in the current project. If no service is specified, stops all services in the current project.
+            flags:
+              --all-projects: |-
+                stop all running services across all your projects.
+                This flag cannot be used simultaneously with the [services] argument
+            documentation:
+              command: Stop one or more services in the current project. If no service is specified, stops all services in the current project. \nIf the --all-projects flag is specified, stops all running services across all your projects. This flag cannot be used with [service] arguments.
+          - name: up [service]...
+            description: Starts process manager with specified services. If no services are listed, starts the process manager with all the services in your project
+            flags:
+              --pcflags=*: pass flags directly to process compose
+              --process-compose-file=: path to process compose file or directory containing process compose-file.yaml|yml. Default is directory containing devbox.json
+              -b, --background: run service in background
+              -p, --pcport=: specify the port for process-compose to use. You can also set the pcport by exporting DEVBOX_PC_PORT_NUM
+        documentation:
+          command: Interact with devbox services. Services start in a new shell. Plugin services use environment variables specified by plugin unless overridden by the user. To override plugin environment variables, use the --env or --env-file flag. You may also override in devbox.json by using the `env` field or exporting an environment variable in the init hook.
+      - name: shellenv
+        description: Print shell commands that create a Devbox Environment in the shell
+        flags:
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --format=:
+            description: Output format for shell environment (nushell)
+            default: bash
+          --init-hook: runs init hook after exporting shell environment
+          --install: install packages before exporting shell environment
+          --no-refresh-alias&: by default, devbox will add refresh alias to the environmentUse this flag to disable this behavior.
+          --omit-nix-env&:
+            description: shell environment will omit the env-vars from print-dev-env
+            default: "true"
+          --preserve-path-stack&: preserves existing PATH order if this project's environment is already in PATH. Useful if you want to avoid overshadowing another devbox project that is already active
+          --pure: if this flag is specified, devbox creates an isolated environment inheriting almost no variables from the current environment. A few variables, in particular HOME, USER and DISPLAY, are retained.
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+          -r, --recompute: Recompute environment if needed
+        persistentflags:
+          --env-file=: path to a file containing environment variables to set in the devbox environment
+          -e, --env=: environment variables to set in the devbox environment
+      - name: update [pkg]...
+        description: Update packages in your devbox
+        flags:
+          --all-projects: update all projects in the working directory, recursively.
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --no-install: update lockfile but don't install anything
+          --sync-lock: sync all devbox.lock dependencies in multiple projects. Dependencies will sync to the latest local version.
+          -c, --config=&: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+        documentation:
+          command: Update one, many, or all packages in your devbox. If no packages are specified, all packages will be updated. Legacy non-versioned packages will be converted to @latest versioned packages resolved to their current version.
+  - name: help [command]
+    description: Help about any command
+    documentation:
+      command: |-
+        Help provides help for any command in the application.
+        Simply type devbox help [path to command] for full details.
+  - name: info <pkg>
+    description: Display package info
+    flags:
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      --markdown: output in markdown format
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+  - name: init [<dir>]
+    description: Initialize a directory as a devbox project
+    flags:
+      --auto&: Automatically detect packages to add
+      --dry-run&: Dry run for auto mode. Prints the config that would be used
+    documentation:
+      command: Initialize a directory as a devbox project. This will create an empty devbox.json in the current directory. You can then add packages using `devbox add`
+  - name: install
+    description: Install all packages mentioned in devbox.json
+    flags:
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      --tidy-lockfile: Fix missing store paths in the devbox.lock file.
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+  - name: integrate
+    description: integrate with an IDE
+    hidden: true
+    commands:
+      - name: vscode
+        description: Integrate devbox environment with VSCode or other VSCode-based editors.
+        hidden: true
+        flags:
+          --debugmode: enable debug outputs to a file.
+          --environment=:
+            description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+            default: dev
+          --ide=:
+            description: name of the currently open editor to reopen after it's closed.
+            default: code
+          --run-init-hook: run the project's init_hook and include the variables it sets in the editor's environment.
+          -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+  - name: list
+    aliases:
+      - ls
+    description: List installed packages
+    flags:
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      --outdated: List outdated packages
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+  - name: log <event-name> [<event-specific-args>]
+    hidden: true
+  - name: patch <store-path>
+    description: Apply Devbox patches to a package to fix common linker errors
+    hidden: true
+    flags:
+      --gcc=: patch binaries to use a different gcc
+      --glibc=: patch binaries to use a different glibc
+      --restore-refs: restore references to removed store paths
+  - name: rm <pkg>...
+    description: Remove a package from your devbox
+    flags:
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+  - name: run [<script> | <cmd>]
+    description: Run a script or command in a shell with access to your packages
+    flags:
+      --all-projects: run command in all projects in the working directory, recursively. If command is not found in any project, it will be skipped.
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      --omit-nix-env&: shell environment will omit the env-vars from print-dev-env
+      --pure: if this flag is specified, devbox runs the script in an isolated environment inheriting almost no variables from the current environment. A few variables, in particular HOME, USER and DISPLAY, are retained.
+      --recompute:
+        description: recompute environment if needed
+        default: "true"
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      -l, --list: list all scripts defined in devbox.json
+    persistentflags:
+      --env-file=: path to a file containing environment variables to set in the devbox environment
+      -e, --env=: environment variables to set in the devbox environment
+    documentation:
+      command: |+
+        Start a new shell and runs your script or command in it, exiting when done.
+
+        The script must be defined in `devbox.json`, or else it will be interpreted as an arbitrary command. You can pass arguments to your script or command. Everything after `--` will be passed verbatim into your command (see examples).
+
+        Scripts and commands always run from the project's root directory (the directory containing your `devbox.json`), not the current working directory. If you invoke `devbox run` from a subdirectory and need to run there, change into it as part of your command, e.g. `devbox run -- sh -c 'cd subdir && <command>'`.
+
+  - name: search <pkg>
+    description: Search for nix packages
+    flags:
+      --show-all: show all available templates
+  - name: services
+    description: Interact with devbox services.
+    persistentflags:
+      --env-file=: path to a file containing environment variables to set in the devbox environment
+      --environment=:
+        description: environment to use, when supported (e.g. secrets support dev, prod, preview.)
+        default: dev
+      --run-in-current-shell&: run the command in the current shell instead of a new shell
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      -e, --env=: environment variables to set in the devbox environment
+    commands:
+      - name: attach
+        description: Attach to a running process-compose for the current project
+      - name: ls
+        description: List available services
+      - name: pcport
+        description: Display the port that process-compose is running on
+      - name: restart [service]...
+        description: Restart service. If no service is specified, restarts all services
+      - name: start [service]...
+        description: Start service. If no service is specified, starts all services
+      - name: stop [service]...
+        aliases:
+          - down
+        description: Stop one or more services in the current project. If no service is specified, stops all services in the current project.
+        flags:
+          --all-projects: |-
+            stop all running services across all your projects.
+            This flag cannot be used simultaneously with the [services] argument
+        documentation:
+          command: Stop one or more services in the current project. If no service is specified, stops all services in the current project. \nIf the --all-projects flag is specified, stops all running services across all your projects. This flag cannot be used with [service] arguments.
+      - name: up [service]...
+        description: Starts process manager with specified services. If no services are listed, starts the process manager with all the services in your project
+        flags:
+          --pcflags=*: pass flags directly to process compose
+          --process-compose-file=: path to process compose file or directory containing process compose-file.yaml|yml. Default is directory containing devbox.json
+          -b, --background: run service in background
+          -p, --pcport=: specify the port for process-compose to use. You can also set the pcport by exporting DEVBOX_PC_PORT_NUM
+    documentation:
+      command: Interact with devbox services. Services start in a new shell. Plugin services use environment variables specified by plugin unless overridden by the user. To override plugin environment variables, use the --env or --env-file flag. You may also override in devbox.json by using the `env` field or exporting an environment variable in the init hook.
+  - name: setup
+    description: Setup devbox dependencies
+    hidden: true
+    commands:
+      - name: nix
+        description: Install Nix
+        flags:
+          --daemon: Install Nix in multi-user mode. This flag is not supported if you are using DetSys installer
+  - name: shell
+    description: Start a new shell with access to your packages
+    flags:
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      --omit-nix-env&: shell environment will omit the env-vars from print-dev-env
+      --print-env: print script to setup shell environment
+      --pure: if this flag is specified, devbox creates an isolated shell inheriting almost no variables from the current environment. A few variables, in particular HOME, USER and DISPLAY, are retained.
+      --recompute:
+        description: recompute environment if needed
+        default: "true"
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+    persistentflags:
+      --env-file=: path to a file containing environment variables to set in the devbox environment
+      -e, --env=: environment variables to set in the devbox environment
+    documentation:
+      command: |-
+        Start a new shell with access to your packages.
+
+        If the --config flag is set, the shell will be started using the devbox.json found in the --config flag directory. If --config isn't set, then devbox recursively searches the current directory and its parents.
+  - name: shellenv
+    description: Print shell commands that create a Devbox Environment in the shell
+    flags:
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      --format=:
+        description: Output format for shell environment (nushell)
+        default: bash
+      --init-hook: runs init hook after exporting shell environment
+      --install: install packages before exporting shell environment
+      --no-refresh-alias&: by default, devbox will add refresh alias to the environmentUse this flag to disable this behavior.
+      --omit-nix-env&: shell environment will omit the env-vars from print-dev-env
+      --preserve-path-stack&: preserves existing PATH order if this project's environment is already in PATH. Useful if you want to avoid overshadowing another devbox project that is already active
+      --pure: if this flag is specified, devbox creates an isolated environment inheriting almost no variables from the current environment. A few variables, in particular HOME, USER and DISPLAY, are retained.
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+      -r, --recompute:
+        description: Recompute environment if needed
+        default: "true"
+    persistentflags:
+      --env-file=: path to a file containing environment variables to set in the devbox environment
+      -e, --env=: environment variables to set in the devbox environment
+  - name: update [pkg]...
+    description: Update packages in your devbox
+    flags:
+      --all-projects: update all projects in the working directory, recursively.
+      --environment=:
+        description: environment to use, when supported (e.g.secrets support dev, prod, preview.)
+        default: dev
+      --no-install: update lockfile but don't install anything
+      --sync-lock: sync all devbox.lock dependencies in multiple projects. Dependencies will sync to the latest local version.
+      -c, --config=: path to directory containing a devbox.json config file (defaults to the DEVBOX_CONFIG env var, if set)
+    documentation:
+      command: Update one, many, or all packages in your devbox. If no packages are specified, all packages will be updated. Legacy non-versioned packages will be converted to @latest versioned packages resolved to their current version.
+  - name: version
+    description: Print version information
+    flags:
+      -v, --verbose: displays additional version information
+    commands:
+      - name: update
+        description: Update devbox launcher and binary
