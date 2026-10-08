@@ -1,0 +1,156 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: fury
+description: Command line interface to Gemfury API
+persistentflags:
+  --api-token=: Inline authentication token (or set FURY_TOKEN)
+  --no-input: Never ask; fail where input is needed
+  --no-progress: Do not show progress bars and spinners
+  -a, --account=: Account to act on, if not your own (or set FURY_ACCOUNT)
+  -q, --quiet: Show only results, warnings, and errors
+  -y, --yes: Answer yes to every confirmation
+commands:
+  - name: accounts
+    description: Listing of your collaborations
+    documentation:
+      command: |-
+        List the accounts that you collaborate on, each of which
+        can be given to --account.
+  - name: beta
+    description: Experimental features
+    hidden: true
+    commands:
+      - name: backup DIR
+        description: Save all files to a directory
+        flags:
+          --kind=: 'Filter to one kind of package: ruby, js, python, php, deb, rpm, bower, nuget, maven, go'
+      - name: download PACKAGE@VERSION...
+        description: Download a package to the current directory
+  - name: git
+    description: Git repository commands
+    commands:
+      - name: config REPO
+        description: Configure Git build
+        commands:
+          - name: get REPO KEY...
+            description: Get Git build environment key
+          - name: set REPO KEY=VAL...
+            description: Set Git build environment key
+          - name: unset REPO KEY...
+            description: Remove Git build environment key
+        documentation:
+          command: |-
+            List the build environment of a Git repository,
+            or get, set, and unset its keys.
+      - name: destroy REPO
+        aliases:
+          - reset
+        description: Remove Git repository
+        flags:
+          --reset-only: Reset repo without destroying
+          -f, --force: Skip confirmation
+        documentation:
+          command: |-
+            Remove Git repository, once confirmed. As "reset", or with
+            --reset-only, the repository is reset and not removed.
+      - name: list
+        description: List repos in this account
+      - name: rebuild REPO
+        description: Run the builder on the repo
+        flags:
+          -r, --revision=: 'Revision to build: a branch, a tag, or a commit'
+      - name: rename REPO NEWNAME
+        description: Rename a Git repository
+      - name: stack REPO
+        description: Configure Git stack
+        commands:
+          - name: set REPO STACK
+            description: Set Git stack for repo
+            documentation:
+              command: Set Git stack for repo, to one that "fury git stack REPO" lists.
+        documentation:
+          command: |-
+            List the stacks that a repository can be built on, marking
+            the current one, or set another.
+  - name: help [command]
+    description: Help about any command
+    documentation:
+      command: |-
+        Help provides help for any command in the application.
+        Simply type fury help [path to command] for full details.
+  - name: login
+    description: Authenticate into Gemfury account
+    flags:
+      --interactive: Login by email and password, not by the browser
+    documentation:
+      command: |-
+        Authenticate into Gemfury account, and save the session for the
+        commands that follow. Login is by the browser, or with --interactive
+        by email and password at the terminal.
+
+        With a token, by --api-token or FURY_TOKEN, that token is verified and
+        nothing is saved.
+  - name: logout
+    description: Clear CLI session credentials
+  - name: packages
+    aliases:
+      - list
+    description: List packages in this account
+  - name: push FILE...
+    description: Upload a new version of a package
+    flags:
+      --public: Create as public package
+  - name: sharing
+    description: Collaboration commands
+    commands:
+      - name: add EMAIL...
+        description: Add a collaborator
+        flags:
+          --role=: 'Collaborator role: pull, push, or owner'
+      - name: remove EMAIL...
+        description: Remove a collaborator
+    documentation:
+      command: List the collaborators of this account, or add and remove them.
+  - name: versions PACKAGE
+    description: List versions for a package
+  - name: whoami
+    description: Show current account
+  - name: yank PACKAGE@VERSION...
+    description: Remove a package version
+    flags:
+      -f, --force: Skip confirmation
+      -v, --version=: Version, for a PACKAGE given without one
+    documentation:
+      command: |-
+        Remove a package version, once confirmed.
+
+        If packages of different kinds share a name, prefix the kind, as
+        KIND:PACKAGE@VERSION. The kinds are:
+          ruby, js, python, php, deb, rpm, bower, nuget, maven, go
+documentation:
+  command: |-
+    Manage the packages, collaborators, and Git repositories of a Gemfury
+    account. See https://gemfury.com/help/gemfury-cli
+
+    Commands act on your own account, or on the one given by --account.
+    They authenticate by --api-token, or else by FURY_TOKEN, or else by
+    the session that "fury login" has saved.
+
+    Environment variables:
+      FURY_TOKEN     Authentication token, unless --api-token is given
+      FURY_ACCOUNT   Account to act on, unless --account is given
+
+    Without a terminal, or with --no-input, nothing is asked: pass --yes
+    to confirm, and set FURY_TOKEN to authenticate.
+
+    With --quiet, only results, warnings, and errors are shown: the exit
+    status tells whether a change was made.
+
+    Exit status:
+      0   Success
+      1   Any other error
+      2   Usage: check the arguments and flags, or confirm with --yes
+      3   Not found
+      4   Not authenticated
+      5   Already exists
+      6   Unavailable: try again later
+      130 Interrupted, or 143 when terminated
