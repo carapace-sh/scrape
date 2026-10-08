@@ -16,7 +16,7 @@ ADD herdr.patch /
 
 WORKDIR /herdr
 RUN git apply ../herdr.patch
-RUN cargo add carapace_spec_clap
+RUN cargo add --package herdr carapace_spec_clap
 RUN cargo install --path . --root /usr
 
 ENTRYPOINT ["/usr/bin/herdr"]
