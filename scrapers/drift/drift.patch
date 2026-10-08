@@ -1,29 +1,25 @@
 diff --git a/src/main.rs b/src/main.rs
-index 244dd37..3c6ee94 100644
+index f7950b0..199d96e 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -11,8 +11,13 @@ use std::io::IsTerminal;
- use std::path::PathBuf;
- use std::time::Duration;
- 
-+use clap::CommandFactory;
- use clap::Parser;
- 
+@@ -17,6 +17,9 @@ use clap::{CommandFactory, Parser, ValueHint};
+ use clap_complete::engine::{ArgValueCompleter, CompletionCandidate, PathCompleter, ValueCompleter as _};
+ use clap_complete::env::Shells;
+ use clap_complete::{CompleteEnv, Shell};
 +use carapace_spec_clap::Spec;
 +use clap_complete::generate;
 +use std::io;
-+
+ 
  use config::Config;
  use git::Source;
- 
-@@ -73,6 +78,10 @@ struct Cli {
- }
+@@ -330,6 +333,10 @@ const POWERSHELL_COMPLETION: &str = r#"Register-ArgumentCompleter -Native -Comma
+ "#;
  
  fn main() {
 +    generate(Spec, &mut Cli::command(), "drift", &mut io::stdout());
 +    if true {
 +        return;
 +    }
-     if let Err(e) = run() {
-         eprintln!("drift: {e}");
-         std::process::exit(1);
+     // With `DRIFT_COMPLETE=<shell>` set, print the candidates for the words
+     // the shell passes back (the `--completions` scripts do this on each
+     // TAB), then exit.
