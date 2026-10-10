@@ -32,7 +32,7 @@
     "gh": "https://github.com/cli/cli#v2.102.0",
     "gh-dash": "https://github.com/dlvhdr/gh-dash#v4.26.0",
     "gh-stack": "https://github.com/github/gh-stack#v0.2.0",
-    "glab": "https://gitlab.com/gitlab-org/cli#v1.112.0",
+    "glab": "https://gitlab.com/gitlab-org/cli#v1.122.0",
     "glow": "https://github.com/charmbracelet/glow#v3.0.0",
     "golangci-lint": "https://github.com/golangci/golangci-lint#v2.14.0",
     "goreleaser": "https://github.com/goreleaser/goreleaser#v2.18.2",
