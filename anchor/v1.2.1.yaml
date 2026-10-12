@@ -1,0 +1,1135 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: anchor
+description: ''
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+persistentflags:
+  --commitment=: 'Commitment override (valid values: processed, confirmed, finalized)'
+  --provider.cluster=: Cluster override
+  --provider.wallet=: Wallet override
+commands:
+- name: init
+  description: Initializes a workspace
+  flags:
+    --anchor-version=:
+      description: Anchor template version to generate
+      default: v1
+    --force: Initialize even if there are files
+    -h, --help: Print help (see more with '--help')
+    --install-agent-skills: Install Solana agent skills
+    -j, --javascript: Use JavaScript instead of TypeScript
+    --no-git: Don't initialize git
+    --no-install: Don't install JavaScript dependencies
+    --package-manager=: Package Manager to use. If omitted, detection cascades `pnpm` -> `yarn` -> `npm` and picks the first one on PATH. When set explicitly, the chosen binary must be installed
+    -t, --template=:
+      description: Rust program template to use
+      default: multiple
+    --test-template=:
+      description: Test template to use
+      default: litesvm
+  completion:
+    flag:
+      anchor-version:
+      - "v1\tGenerate Anchor v1 templates"
+      - "v2\tGenerate Anchor v2 templates"
+      package-manager:
+      - "npm\tUse npm as the package manager"
+      - "yarn\tUse yarn as the package manager"
+      - "pnpm\tUse pnpm as the package manager"
+      - "bun\tUse bun as the package manager"
+      template:
+      - "single\tProgram with a single `lib.rs` file (not recommended for production)"
+      - "multiple\tProgram with multiple files for instructions, state... (recommended)"
+      test-template:
+      - "mocha\tGenerate template for Mocha unit-test"
+      - "jest\tGenerate template for Jest unit-test"
+      - "rust\tGenerate template for Rust unit-test"
+      - "mollusk\tGenerate template for Mollusk Rust unit-test"
+      - "litesvm\tGenerate template for LiteSVM rust unit-test"
+  documentation:
+    flag:
+      help: Print help (see a summary with '-h')
+- name: build
+  aliases:
+  - b
+  description: Builds the workspace
+  flags:
+    --arch=:
+      description: SBPF architecture to pass to `cargo build-sbf`
+      default: v3
+    -b, --bootstrap=:
+      description: Bootstrap docker image from scratch, installing all requirements for verifiable builds. Only works for debian-based images
+      default: none
+    -d, --docker-image=: Docker image to use. For --verifiable builds only
+    -e, --env=*: Environment variables to pass into the docker container
+    -h, --help: Print help
+    -i, --idl=: Output directory for the IDL
+    -t, --idl-ts=: Output directory for the TypeScript IDL
+    --ignore-keys: Skip checking for program ID mismatch between keypair and declare_id
+    --no-docs: Suppress doc strings in IDL output
+    --no-idl: Do not build the IDL
+    -p, --program-name=: Name of the program to build
+    --skip-lint: True if the build should not fail even if there are no "CHECK" comments
+    -s, --solana-version=: Version of the Solana toolchain to use. For --verifiable builds only
+    --tools-version=:
+      description: Platform tools version to pass to `cargo build-sbf`
+      default: v1.57
+    -v, --verifiable: True if the build artifact needs to be deterministic and verifiable
+  completion:
+    flag:
+      bootstrap:
+      - none
+      - debian
+- name: expand
+  description: Expands macros (wrapper around cargo expand)
+  flags:
+    -h, --help: Print help (see more with '--help')
+    -p, --program-name=: Expand only this program
+    --stdout: Write to stdout
+  documentation:
+    command: |-
+      Expands macros (wrapper around cargo expand)
+
+      Use it in a program folder to expand program
+
+      Use it in a workspace but outside a program folder to expand the entire workspace
+    flag:
+      help: Print help (see a summary with '-h')
+- name: verify
+  description: Verifies the on-chain bytecode matches the locally compiled artifact. Run this command inside a program subdirectory, i.e., in the dir containing the program's Cargo.toml
+  flags:
+    --commit-hash=: The commit hash to verify against. Requires `--repo-url`
+    --current-dir: Verify against the source code in the current directory. Conflicts with `--repo-url`
+    -h, --help: Print help
+    --program-name=: Name of the program to run the command on. Defaults to the package name
+    --repo-url=: The URL of the repository to verify against. Conflicts with `--current-dir`
+- name: test
+  aliases:
+  - t
+  description: Runs integration tests
+  flags:
+    --detach: Flag to keep the local validator running after tests to be able to check the transactions
+    -e, --env=*: Environment variables to pass into the docker container
+    -h, --help: Print help (see more with '--help')
+    --no-idl: Do not build the IDL
+    --profile: 'Profile each test: record per-test SBF register traces and render flamegraph SVGs under target/anchor-v2-profile'
+    -p, --program-name=: Build and test only this program
+    --run=*: Run the test suites under the specified path
+    --script=: Name of the script to run from [scripts] section (defaults to "test")
+    --skip-build: Flag to skip building the program in the workspace, use this to save time when running test and the program code is not altered
+    --skip-deploy: Use this flag if you want to run tests against previously deployed programs
+    --skip-lint: True if the build should not fail even if there are no "CHECK" comments where normally required
+    --skip-local-validator: Flag to skip starting a local validator, if the configured cluster url is a localnet
+    --validator=:
+      description: Validator type to use for local testing
+      default: surfpool
+  completion:
+    flag:
+      validator:
+      - "surfpool\tUse Surfpool validator (default)"
+      - "legacy\tUse Solana test validator"
+  documentation:
+    flag:
+      help: Print help (see a summary with '-h')
+- name: fuzz
+  description: Coverage-guided fuzzing for Solana programs (powered by Crucible)
+  flags:
+    -h, --help: Print help
+  persistentflags:
+    -C, --harness-dir=: Use this directory instead of ./fuzz/<program_name>/
+  completion:
+    flag:
+      harness-dir:
+      - $files
+  commands:
+  - name: init
+    description: Create a new fuzz harness for a program
+    flags:
+      -h, --help: Print help
+    completion:
+      flag:
+        harness-dir:
+        - $files
+  - name: run
+    description: Run a fuzz test
+    flags:
+      --binary-in=: Run a prebuilt harness binary directly
+      -j, --cores=: Run N parallel fuzzer workers
+      --corpus-in=: Load seed corpus from directory
+      --corpus-out=: Write corpus to directory
+      --coverage: Enable coverage reporting (single-core only)
+      --crashes-meta-out=: 'Custom directory for .meta.json files (default: same as crashes_out)'
+      --crashes-out=: Custom crash output directory
+      --dry-run: Validate setup without fuzzing
+      -h, --help: Print help
+      --lcov-out=: LCOV coverage output path
+      --max-actions=: 'Maximum number of actions per fuzzer iteration (default: 8 stateless, 100 stateful)'
+      --max-depth=: 'Maximum state depth (action chain length) in stateful mode (default: 15)'
+      --mode=: Remote fuzzing operational mode (dry_run, explore, coverage, reproduce, corpus_merge)
+      --no-tracing: Disable SVM register tracing for higher throughput (no coverage guidance)
+      --pool-size=: 'State pool capacity in stateful mode (default: 256000)'
+      --program-so=: Path to alternative program .so binary
+      --release: Build in release mode
+      --replay=: Replay a single crash/input file
+      --seed=: Random seed for reproducible fuzzing
+      --stateful: 'Stateful fuzzing: single action per iteration with state pool'
+      --stats: Show detailed performance stats (profiling, memory, pick/exec breakdown)
+      --stop-on-crash: Stop fuzzing on first crash
+      --symbols=: Path to debug binary with DWARF symbols (for source-level coverage with --coverage)
+      --timeout=: Stop after N seconds
+    completion:
+      flag:
+        binary-in:
+        - $files
+        corpus-in:
+        - $files
+        corpus-out:
+        - $files
+        crashes-meta-out:
+        - $files
+        crashes-out:
+        - $files
+        harness-dir:
+        - $files
+        lcov-out:
+        - $files
+        program-so:
+        - $files
+        replay:
+        - $files
+        symbols:
+        - $files
+  - name: list
+    description: List available fuzz tests
+    flags:
+      -C, --harness-dir=: Use this directory instead of ./fuzz/<program_name>/
+      -h, --help: Print help
+    completion:
+      flag:
+        harness-dir:
+        - $files
+  - name: show
+    description: View/replay crashes
+    flags:
+      --crash-meta-dir=: 'Custom directory for .meta.json files (default: same as crashes_dir)'
+      --crashes-dir=: Custom crashes directory to read from
+      -h, --help: Print help
+      --regen: Batch-regenerate .meta.json for all crashes (requires --replay)
+      --replay: Actually replay the crash (requires compiled binary)
+    completion:
+      flag:
+        crash-meta-dir:
+        - $files
+        crashes-dir:
+        - $files
+        harness-dir:
+        - $files
+  - name: tmin
+    description: Minimize a crash to smallest reproducing action sequence
+    flags:
+      --all: Minimize all crashes for this test
+      --crash-meta-dir=: 'Custom directory for .meta.json files (default: same as crashes directory)'
+      -h, --help: Print help
+      --release: Build in release mode
+    completion:
+      flag:
+        crash-meta-dir:
+        - $files
+        harness-dir:
+        - $files
+  - name: cmin
+    description: Minimize corpus to smallest set preserving coverage
+    flags:
+      --corpus-in=: Input corpus directory (flag alternative)
+      --corpus-out=: 'Output directory (default: overwrite input)'
+      -h, --help: Print help
+      --release: Build in release mode
+    completion:
+      flag:
+        corpus-in:
+        - $files
+        corpus-out:
+        - $files
+        harness-dir:
+        - $files
+      positional:
+      - - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: init
+      description: Create a new fuzz harness for a program
+    - name: run
+      description: Run a fuzz test
+    - name: list
+      description: List available fuzz tests
+    - name: show
+      description: View/replay crashes
+    - name: tmin
+      description: Minimize a crash to smallest reproducing action sequence
+    - name: cmin
+      description: Minimize corpus to smallest set preserving coverage
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: new
+  description: Creates a new program
+  flags:
+    --anchor-version=:
+      description: Anchor template version to generate
+      default: v1
+    --force: Create new program even if there is already one
+    -h, --help: Print help (see more with '--help')
+    -t, --template=:
+      description: Rust program template to use
+      default: multiple
+  completion:
+    flag:
+      anchor-version:
+      - "v1\tGenerate Anchor v1 templates"
+      - "v2\tGenerate Anchor v2 templates"
+      template:
+      - "single\tProgram with a single `lib.rs` file (not recommended for production)"
+      - "multiple\tProgram with multiple files for instructions, state... (recommended)"
+  documentation:
+    flag:
+      help: Print help (see a summary with '-h')
+- name: debugger
+  description: Run tests under an instruction-level debugger
+  flags:
+    --gdb: Drive tests over sbpf's gdb-stub instead of reading dumped trace files
+    -h, --help: Print help
+    --skip-build: Skip `cargo build-sbf`
+    --skip-lint: Forwarded to the underlying `anchor test` invocation
+    --skip-run: Skip the build+test phase and open the TUI over existing traces
+- name: coverage
+  description: Generate source-level coverage from SBF register traces
+  flags:
+    -h, --help: Print help
+    --output=:
+      description: Output path for the LCOV file
+      default: target/coverage/sbf.lcov
+    --skip-build: Skip `cargo build-sbf`
+    --skip-run: Skip the build+test phase and generate coverage from existing traces
+    --trace-dir=:
+      description: Directory containing register trace files
+      default: target/coverage/traces
+- name: idl
+  description: Commands for interacting with interface definitions
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: init
+    description: Initializes a program's IDL account. Can only be run once
+    flags:
+      -f, --filepath!=: ''
+      -h, --help: Print help
+      --non-canonical: Create non-canonical metadata account (third-party metadata)
+      --priority-fee=: ''
+    completion:
+      flag:
+        filepath:
+        - $files
+  - name: upgrade
+    description: Upgrades the IDL to the new file. An alias for first writing and then then setting the idl buffer account
+    flags:
+      -f, --filepath!=: ''
+      -h, --help: Print help
+      --priority-fee=: ''
+    completion:
+      flag:
+        filepath:
+        - $files
+  - name: build
+    aliases:
+    - b
+    description: Generates the IDL for the program using the compilation method
+    flags:
+      -h, --help: Print help
+      --no-docs: Suppress doc strings in output
+      -o, --out=: Output file for the IDL (stdout if not specified)
+      -t, --out-ts=: Output file for the TypeScript IDL
+      -p, --program-name=: ''
+      --skip-lint: Do not check for safety comments
+  - name: fetch
+    description: Fetches an IDL for the given program from a cluster
+    flags:
+      -h, --help: Print help
+      --non-canonical: Fetch non-canonical metadata account (third-party metadata)
+      -o, --out=: Output file for the IDL (stdout if not specified)
+  - name: fetch-historical
+    description: Fetches historical IDL versions for the given program from a cluster
+    flags:
+      --after=: Fetch IDL after this date (YYYY-MM-DD)
+      --authority=: Fetch authority-scoped PMP metadata account history for this authority
+      --before=: Fetch IDL before this date (YYYY-MM-DD)
+      -h, --help: Print help (see more with '--help')
+      --max-signatures=:
+        description: Hard cap on signatures fetched per history source
+        default: '1000'
+      --no-parallel: Force sequential transaction fetches (equivalent to --rpc-workers 1)
+      --out-dir=: Output directory for fetched versions (defaults to the current directory)
+      --rpc-max-retries=:
+        description: Max retry attempts per transaction on 429/timeout errors
+        default: '5'
+      --rpc-retry-backoff-ms=:
+        description: Base backoff in milliseconds between retries (doubled each attempt)
+        default: '500'
+      --rpc-workers=: Max parallel RPC workers for transaction fetches
+      --slot=: Fetch IDL at specific slot
+      --verbose: Print diagnostic progress messages
+    completion:
+      flag:
+        out-dir:
+        - $files
+    documentation:
+      command: |-
+        Fetches historical IDL versions for the given program from a cluster.
+
+        With no filters, fetches all historical versions.
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: convert
+    description: Convert legacy IDLs (pre Anchor 0.30) to the new IDL spec
+    flags:
+      -h, --help: Print help
+      -o, --out=: Output file for the IDL (stdout if not specified)
+      -p, --program-id=: Program id to initialize IDL for. If not provided, discovers program ID from IDL
+      --to-legacy: Convert a current-spec IDL back to the legacy (pre Anchor v0.30) format. Without this flag the converter runs in the default direction (legacy -> current)
+    completion:
+      flag:
+        out:
+        - $files
+      positional:
+      - - $files
+  - name: type
+    description: Generate TypeScript type for the IDL
+    flags:
+      -h, --help: Print help
+      -o, --out=: Output file for the IDL (stdout if not specified)
+    completion:
+      flag:
+        out:
+        - $files
+      positional:
+      - - $files
+  - name: close
+    description: Close a metadata account and recover rent
+    flags:
+      -h, --help: Print help
+      --priority-fee=: Priority fees in micro-lamports per compute unit
+      --seed=:
+        description: 'The seed used for the metadata account (default: "idl")'
+        default: idl
+  - name: create-buffer
+    description: Create a buffer account for metadata
+    flags:
+      -f, --filepath!=: Path to the metadata file
+      -h, --help: Print help
+      --priority-fee=: Priority fees in micro-lamports per compute unit
+    completion:
+      flag:
+        filepath:
+        - $files
+  - name: set-buffer-authority
+    description: Set a new authority on a buffer account
+    flags:
+      -h, --help: Print help
+      -n, --new-authority!=: The new authority
+      --priority-fee=: Priority fees in micro-lamports per compute unit
+  - name: write-buffer
+    description: Write metadata using a buffer account
+    flags:
+      -b, --buffer!=: The buffer account address
+      --close-buffer: Close the buffer after writing
+      -h, --help: Print help
+      --priority-fee=: Priority fees in micro-lamports per compute unit
+      --seed=:
+        description: 'The seed to use for the metadata account (default: "idl")'
+        default: idl
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: init
+      description: Initializes a program's IDL account. Can only be run once
+    - name: upgrade
+      description: Upgrades the IDL to the new file. An alias for first writing and then then setting the idl buffer account
+    - name: build
+      description: Generates the IDL for the program using the compilation method
+    - name: fetch
+      description: Fetches an IDL for the given program from a cluster
+    - name: fetch-historical
+      description: Fetches historical IDL versions for the given program from a cluster
+    - name: convert
+      description: Convert legacy IDLs (pre Anchor 0.30) to the new IDL spec
+    - name: type
+      description: Generate TypeScript type for the IDL
+    - name: close
+      description: Close a metadata account and recover rent
+    - name: create-buffer
+      description: Create a buffer account for metadata
+    - name: set-buffer-authority
+      description: Set a new authority on a buffer account
+    - name: write-buffer
+      description: Write metadata using a buffer account
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: clean
+  description: Remove all artifacts from the generated directories except program keypairs
+  flags:
+    -h, --help: Print help
+- name: deploy
+  description: Deploys each program in the workspace
+  hidden: true
+  flags:
+    -h, --help: Print help
+    --no-idl: Don't upload IDL during deployment (IDL is uploaded by default)
+    --program-keypair=: Keypair of the program (filepath) (requires program-name)
+    -p, --program-name=: Only deploy this program
+    -v, --verifiable: If true, deploy from path target/verifiable
+  completion:
+    flag:
+      program-keypair:
+      - $files
+- name: migrate
+  description: Runs the deploy migration script
+  flags:
+    -h, --help: Print help
+- name: upgrade
+  description: Deploys, initializes an IDL, and migrates all in one command. Upgrades a single program. The configured wallet must be the upgrade authority
+  hidden: true
+  flags:
+    -h, --help: Print help
+    --max-retries=:
+      description: Max times to retry on failure
+      default: '0'
+    -p, --program-id!=: The program to upgrade
+  completion:
+    positional:
+    - - $files
+- name: airdrop
+  description: Request an airdrop of SOL
+  flags:
+    -h, --help: Print help
+- name: cluster
+  description: Cluster commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: list
+    description: Prints common cluster urls
+    flags:
+      -h, --help: Print help
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: Prints common cluster urls
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: config
+  description: Configuration management commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: get
+    description: Get configuration settings from the local Anchor.toml
+    flags:
+      -h, --help: Print help
+  - name: set
+    description: Set configuration settings in the local Anchor.toml
+    flags:
+      -h, --help: Print help
+      -k, --keypair=: Path to wallet keypair file to update the Anchor.toml file with
+      -u, --url=: Cluster to connect to (custom URL). Use -um, -ud, -ut, -ul for standard clusters
+    completion:
+      flag:
+        keypair:
+        - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: get
+      description: Get configuration settings from the local Anchor.toml
+    - name: set
+      description: Set configuration settings in the local Anchor.toml
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: shell
+  description: Starts a node shell with an Anchor client setup according to the local config
+  flags:
+    -h, --help: Print help
+- name: run
+  aliases:
+  - r
+  description: Runs the script defined by the current workspace's Anchor.toml
+  flags:
+    -h, --help: Print help
+- name: keys
+  description: Program keypair commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: list
+    description: List all of the program keys
+    flags:
+      -h, --help: Print help
+  - name: sync
+    description: Sync program `declare_id!` pubkeys with the program's actual pubkey
+    flags:
+      -h, --help: Print help
+      -p, --program-name=: Only sync the given program instead of all programs
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: List all of the program keys
+    - name: sync
+      description: Sync program `declare_id!` pubkeys with the program's actual pubkey
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: localnet
+  description: Localnet commands
+  flags:
+    -e, --env=*: Environment variables to pass into the docker container
+    -h, --help: Print help (see more with '--help')
+    --ignore-keys: Skip checking for program ID mismatch between keypair and declare_id
+    --skip-build: Flag to skip building the program in the workspace, use this to save time when running test and the program code is not altered
+    --skip-deploy: Use this flag if you want to run tests against previously deployed programs
+    --skip-lint: True if the build should not fail even if there are no "CHECK" comments where normally required
+    --validator=:
+      description: Validator type to use for local testing
+      default: surfpool
+  completion:
+    flag:
+      validator:
+      - "surfpool\tUse Surfpool validator (default)"
+      - "legacy\tUse Solana test validator"
+  documentation:
+    flag:
+      help: Print help (see a summary with '-h')
+- name: account
+  description: Fetch and deserialize an account using the IDL provided
+  flags:
+    -h, --help: Print help
+    --idl=: Path of IDL to use (defaults to workspace IDL)
+  completion:
+    flag:
+      idl:
+      - $files
+- name: completions
+  description: Generates shell completions
+  flags:
+    -h, --help: Print help
+  completion:
+    positional:
+    - - bash
+      - elvish
+      - fish
+      - powershell
+      - zsh
+- name: address
+  description: Get your public key
+  flags:
+    -h, --help: Print help
+- name: balance
+  description: Get your balance
+  flags:
+    -h, --help: Print help
+    --lamports: Display balance in lamports instead of SOL
+- name: epoch
+  description: Get current epoch
+  flags:
+    -h, --help: Print help
+- name: epoch-info
+  description: Get information about the current epoch
+  flags:
+    -h, --help: Print help
+- name: logs
+  description: Stream transaction logs
+  flags:
+    --address=*: Addresses to filter logs by
+    -h, --help: Print help
+    --include-votes: Include vote transactions when monitoring all transactions
+- name: show-account
+  description: Show the contents of an account
+  flags:
+    -h, --help: Print help
+    --lamports: Display balance in lamports instead of SOL
+    --output=: Return information in specified output format
+    -o, --output-file=: Write the account data to this file
+  completion:
+    flag:
+      output:
+      - json
+      - json-compact
+      output-file:
+      - $files
+- name: keygen
+  description: Keypair generation and management
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: new
+    description: Generate a new keypair
+    flags:
+      -f, --force: Overwrite the output file if it exists
+      -h, --help: Print help
+      --no-passphrase: Do not prompt for a passphrase
+      -o, --outfile=: Path to generated keypair file
+      --silent: Do not display the generated pubkey
+      -w, --word-count=:
+        description: 'Number of words in the mnemonic phrase [possible values: 12, 15, 18, 21, 24]'
+        default: '12'
+    completion:
+      flag:
+        outfile:
+        - $files
+  - name: pubkey
+    description: Display the pubkey for a given keypair
+    flags:
+      -h, --help: Print help
+    completion:
+      positional:
+      - - $files
+  - name: recover
+    description: Recover a keypair from a seed phrase
+    flags:
+      -f, --force: Overwrite the output file if it exists
+      -h, --help: Print help
+      --no-passphrase: Do not prompt for a passphrase
+      -o, --outfile=: Path to recovered keypair file
+      --skip-seed-phrase-validation: Skip seed phrase validation
+    completion:
+      flag:
+        outfile:
+        - $files
+  - name: verify
+    description: Verify a keypair can sign and verify a message
+    flags:
+      -h, --help: Print help
+    completion:
+      positional:
+      - - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: new
+      description: Generate a new keypair
+    - name: pubkey
+      description: Display the pubkey for a given keypair
+    - name: recover
+      description: Recover a keypair from a seed phrase
+    - name: verify
+      description: Verify a keypair can sign and verify a message
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: program
+  description: Program deployment and management commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: deploy
+    description: Deploy an upgradeable program
+    flags:
+      --buffer=: Buffer account to use for deployment
+      --final: Make the program immutable after deployment (cannot be upgraded)
+      -h, --help: Print help
+      --max-len=: Maximum transaction length (BPF loader upgradeable limit)
+      --no-idl: Don't upload IDL during deployment (IDL is uploaded by default)
+      --program-id=: Program id to deploy to (derived from program-keypair if not specified)
+      --program-keypair=: Program keypair filepath (defaults to target/deploy/{program_name}-keypair.json)
+      -p, --program-name=: Program name to deploy (from workspace). Used when program_filepath is not provided
+      --upgrade-authority=: Upgrade authority keypair (defaults to configured wallet)
+      --use-rpc: Send write transactions through RPC instead of TPU
+    completion:
+      flag:
+        program-keypair:
+        - $files
+      positional:
+      - - $files
+  - name: write-buffer
+    description: Write a program into a buffer account
+    flags:
+      --buffer=: Buffer account keypair (defaults to new keypair)
+      --buffer-authority=: Buffer authority (defaults to configured wallet)
+      -h, --help: Print help
+      --max-len=: Maximum transaction length
+      -p, --program-name=: Program name to write (from workspace). Used when program_filepath is not provided
+    completion:
+      positional:
+      - - $files
+  - name: set-buffer-authority
+    description: Set a new buffer authority
+    flags:
+      -h, --help: Print help
+  - name: set-upgrade-authority
+    description: Set a new program authority
+    flags:
+      --final: Make the program immutable (cannot be upgraded)
+      -h, --help: Print help
+      --new-upgrade-authority=: New upgrade authority pubkey
+      --new-upgrade-authority-signer=: New upgrade authority signer (keypair file). Required unless --skip-new-upgrade-authority-signer-check is used. When provided, both current and new authority will sign (checked mode, recommended)
+      --skip-new-upgrade-authority-signer-check: 'Skip new upgrade authority signer check. Allows setting authority with only current authority signature. WARNING: Less safe - use only if you''re confident the pubkey is correct'
+      --upgrade-authority=: Current upgrade authority keypair (defaults to configured wallet)
+  - name: show
+    description: Display information about a buffer or program
+    flags:
+      --all: Show all accounts
+      --get-buffers: Get account information from the Solana config file
+      --get-programs: Get account information from the Solana config file
+      -h, --help: Print help
+  - name: upgrade
+    description: Upgrade an upgradeable program
+    flags:
+      --buffer=: Existing buffer account to upgrade from. If not provided, auto-discovers program from workspace
+      -h, --help: Print help
+      --max-retries=:
+        description: Max times to retry on failure
+        default: '0'
+      --program-filepath=: Program filepath (e.g., target/deploy/my_program.so). If not provided, discovers from workspace
+      -p, --program-name=: Program name to upgrade (from workspace). Used when program_filepath is not provided
+      --upgrade-authority=: Upgrade authority (defaults to configured wallet)
+      --use-rpc: Send write transactions through RPC instead of TPU
+    completion:
+      flag:
+        program-filepath:
+        - $files
+  - name: dump
+    description: Write the program data to a file
+    flags:
+      -h, --help: Print help
+  - name: close
+    description: Close a program or buffer account and withdraw all lamports
+    flags:
+      --authority=: Authority keypair (defaults to configured wallet)
+      --bypass-warning: Bypass warning prompts
+      -h, --help: Print help
+      -p, --program-name=: Program name to close (from workspace). Used when account is not provided
+      --recipient=: Recipient address for reclaimed lamports (defaults to authority)
+  - name: extend
+    description: Extend the length of an upgradeable program
+    flags:
+      -h, --help: Print help
+      -p, --program-name=: Program name to extend (from workspace). Used when program_id is not provided
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: deploy
+      description: Deploy an upgradeable program
+    - name: write-buffer
+      description: Write a program into a buffer account
+    - name: set-buffer-authority
+      description: Set a new buffer authority
+    - name: set-upgrade-authority
+      description: Set a new program authority
+    - name: show
+      description: Display information about a buffer or program
+    - name: upgrade
+      description: Upgrade an upgradeable program
+    - name: dump
+      description: Write the program data to a file
+    - name: close
+      description: Close a program or buffer account and withdraw all lamports
+    - name: extend
+      description: Extend the length of an upgradeable program
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: codama
+  description: Codama IDL integration commands
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: convert
+    description: Convert an Anchor IDL JSON file (post-0.30 spec) into a Codama IDL rooted at a `rootNode`
+    flags:
+      -h, --help: Print help
+      -o, --out=: Output file (stdout if not specified)
+  - name: generate
+    description: Convert an Anchor IDL and run Codama renderers to produce client libraries in one or more languages
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -l, --language!=*: 'Languages to generate clients for. Repeat the flag or comma- separate values: `-l js,go -l rust`'
+      -p, --path=:
+        description: Base output directory; per-language clients are written to `<path>/<language>`
+        default: clients
+    completion:
+      flag:
+        language:
+        - js
+        - js-umi
+        - rust
+        - go
+    documentation:
+      command: |-
+        Convert an Anchor IDL and run Codama renderers to produce client libraries in one or more languages.
+
+        The IDL is converted in-process; the resulting Codama IDL is handed to `@codama/cli` (run via `npx --yes codama` by default), which loads the per-language renderer packages and writes generated sources under `<path>/<language>`.
+      flag:
+        help: Print help (see a summary with '-h')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: convert
+      description: Convert an Anchor IDL JSON file (post-0.30 spec) into a Codama IDL rooted at a `rootNode`
+    - name: generate
+      description: Convert an Anchor IDL and run Codama renderers to produce client libraries in one or more languages
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: legacy-idl
+  description: '[DEPRECATED] Manage legacy on-chain IDL accounts. These commands interact with the old Anchor IDL instruction protocol and will be removed in a future release. Migrate to Program Metadata-based IDL management (`anchor idl`)'
+  flags:
+    -h, --help: Print help
+  commands:
+  - name: close
+    description: '[DEPRECATED] Close the legacy IDL account and recover rent'
+    flags:
+      -h, --help: Print help
+      --idl-address=: The IDL account to close. If none is given, the IDL account derived from program_id is used
+      --print-only: Print the instruction in base64 without executing it. Useful for multisig execution when the local wallet keypair is not available
+      --priority-fee=: ''
+  - name: write-buffer
+    description: '[DEPRECATED] Write an IDL into a legacy buffer account. Use with set-buffer to upgrade'
+    flags:
+      -f, --filepath!=: ''
+      -h, --help: Print help
+      --priority-fee=: ''
+  - name: set-buffer
+    description: '[DEPRECATED] Set a new IDL buffer for the program'
+    flags:
+      -b, --buffer!=: Address of the buffer account to set as the IDL on the program
+      -h, --help: Print help
+      --print-only: Print the instruction in base64 without executing it
+      --priority-fee=: ''
+  - name: set-authority
+    description: '[DEPRECATED] Set a new authority on the legacy IDL account'
+    flags:
+      -h, --help: Print help
+      -n, --new-authority!=: New authority of the IDL account
+      --print-only: Print the instruction in base64 without executing it
+      --priority-fee=: ''
+      -p, --program-id!=: Program to change the IDL authority
+  - name: erase-authority
+    description: '[DEPRECATED] Remove the ability to modify the legacy IDL account'
+    flags:
+      -h, --help: Print help
+      --priority-fee=: ''
+      -p, --program-id!=: ''
+  - name: authority
+    description: '[DEPRECATED] Output the authority for the legacy IDL account'
+    flags:
+      -h, --help: Print help
+  - name: init
+    description: '[DEPRECATED] Initialize the legacy on-chain IDL account for the first time'
+    flags:
+      -f, --filepath!=: ''
+      -h, --help: Print help
+      --priority-fee=: ''
+  - name: upgrade
+    description: '[DEPRECATED] Upgrade the legacy IDL (write buffer → set buffer → close buffer)'
+    flags:
+      -f, --filepath!=: ''
+      -h, --help: Print help
+      --priority-fee=: ''
+  - name: fetch
+    description: '[DEPRECATED] Fetch the IDL from a legacy on-chain IdlAccount'
+    flags:
+      -h, --help: Print help
+      -o, --out=: Path to write the fetched IDL. Prints to stdout if omitted
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: close
+      description: '[DEPRECATED] Close the legacy IDL account and recover rent'
+    - name: write-buffer
+      description: '[DEPRECATED] Write an IDL into a legacy buffer account. Use with set-buffer to upgrade'
+    - name: set-buffer
+      description: '[DEPRECATED] Set a new IDL buffer for the program'
+    - name: set-authority
+      description: '[DEPRECATED] Set a new authority on the legacy IDL account'
+    - name: erase-authority
+      description: '[DEPRECATED] Remove the ability to modify the legacy IDL account'
+    - name: authority
+      description: '[DEPRECATED] Output the authority for the legacy IDL account'
+    - name: init
+      description: '[DEPRECATED] Initialize the legacy on-chain IDL account for the first time'
+    - name: upgrade
+      description: '[DEPRECATED] Upgrade the legacy IDL (write buffer → set buffer → close buffer)'
+    - name: fetch
+      description: '[DEPRECATED] Fetch the IDL from a legacy on-chain IdlAccount'
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: init
+    description: Initializes a workspace
+  - name: build
+    description: Builds the workspace
+  - name: expand
+    description: Expands macros (wrapper around cargo expand)
+  - name: verify
+    description: Verifies the on-chain bytecode matches the locally compiled artifact. Run this command inside a program subdirectory, i.e., in the dir containing the program's Cargo.toml
+  - name: test
+    description: Runs integration tests
+  - name: fuzz
+    description: Coverage-guided fuzzing for Solana programs (powered by Crucible)
+    commands:
+    - name: init
+      description: Create a new fuzz harness for a program
+    - name: run
+      description: Run a fuzz test
+    - name: list
+      description: List available fuzz tests
+    - name: show
+      description: View/replay crashes
+    - name: tmin
+      description: Minimize a crash to smallest reproducing action sequence
+    - name: cmin
+      description: Minimize corpus to smallest set preserving coverage
+  - name: new
+    description: Creates a new program
+  - name: debugger
+    description: Run tests under an instruction-level debugger
+  - name: coverage
+    description: Generate source-level coverage from SBF register traces
+  - name: idl
+    description: Commands for interacting with interface definitions
+    commands:
+    - name: init
+      description: Initializes a program's IDL account. Can only be run once
+    - name: upgrade
+      description: Upgrades the IDL to the new file. An alias for first writing and then then setting the idl buffer account
+    - name: build
+      description: Generates the IDL for the program using the compilation method
+    - name: fetch
+      description: Fetches an IDL for the given program from a cluster
+    - name: fetch-historical
+      description: Fetches historical IDL versions for the given program from a cluster
+    - name: convert
+      description: Convert legacy IDLs (pre Anchor 0.30) to the new IDL spec
+    - name: type
+      description: Generate TypeScript type for the IDL
+    - name: close
+      description: Close a metadata account and recover rent
+    - name: create-buffer
+      description: Create a buffer account for metadata
+    - name: set-buffer-authority
+      description: Set a new authority on a buffer account
+    - name: write-buffer
+      description: Write metadata using a buffer account
+  - name: clean
+    description: Remove all artifacts from the generated directories except program keypairs
+  - name: deploy
+    description: Deploys each program in the workspace
+    hidden: true
+  - name: migrate
+    description: Runs the deploy migration script
+  - name: upgrade
+    description: Deploys, initializes an IDL, and migrates all in one command. Upgrades a single program. The configured wallet must be the upgrade authority
+    hidden: true
+  - name: airdrop
+    description: Request an airdrop of SOL
+  - name: cluster
+    description: Cluster commands
+    commands:
+    - name: list
+      description: Prints common cluster urls
+  - name: config
+    description: Configuration management commands
+    commands:
+    - name: get
+      description: Get configuration settings from the local Anchor.toml
+    - name: set
+      description: Set configuration settings in the local Anchor.toml
+  - name: shell
+    description: Starts a node shell with an Anchor client setup according to the local config
+  - name: run
+    description: Runs the script defined by the current workspace's Anchor.toml
+  - name: keys
+    description: Program keypair commands
+    commands:
+    - name: list
+      description: List all of the program keys
+    - name: sync
+      description: Sync program `declare_id!` pubkeys with the program's actual pubkey
+  - name: localnet
+    description: Localnet commands
+  - name: account
+    description: Fetch and deserialize an account using the IDL provided
+  - name: completions
+    description: Generates shell completions
+  - name: address
+    description: Get your public key
+  - name: balance
+    description: Get your balance
+  - name: epoch
+    description: Get current epoch
+  - name: epoch-info
+    description: Get information about the current epoch
+  - name: logs
+    description: Stream transaction logs
+  - name: show-account
+    description: Show the contents of an account
+  - name: keygen
+    description: Keypair generation and management
+    commands:
+    - name: new
+      description: Generate a new keypair
+    - name: pubkey
+      description: Display the pubkey for a given keypair
+    - name: recover
+      description: Recover a keypair from a seed phrase
+    - name: verify
+      description: Verify a keypair can sign and verify a message
+  - name: program
+    description: Program deployment and management commands
+    commands:
+    - name: deploy
+      description: Deploy an upgradeable program
+    - name: write-buffer
+      description: Write a program into a buffer account
+    - name: set-buffer-authority
+      description: Set a new buffer authority
+    - name: set-upgrade-authority
+      description: Set a new program authority
+    - name: show
+      description: Display information about a buffer or program
+    - name: upgrade
+      description: Upgrade an upgradeable program
+    - name: dump
+      description: Write the program data to a file
+    - name: close
+      description: Close a program or buffer account and withdraw all lamports
+    - name: extend
+      description: Extend the length of an upgradeable program
+  - name: codama
+    description: Codama IDL integration commands
+    commands:
+    - name: convert
+      description: Convert an Anchor IDL JSON file (post-0.30 spec) into a Codama IDL rooted at a `rootNode`
+    - name: generate
+      description: Convert an Anchor IDL and run Codama renderers to produce client libraries in one or more languages
+  - name: legacy-idl
+    description: '[DEPRECATED] Manage legacy on-chain IDL accounts. These commands interact with the old Anchor IDL instruction protocol and will be removed in a future release. Migrate to Program Metadata-based IDL management (`anchor idl`)'
+    commands:
+    - name: close
+      description: '[DEPRECATED] Close the legacy IDL account and recover rent'
+    - name: write-buffer
+      description: '[DEPRECATED] Write an IDL into a legacy buffer account. Use with set-buffer to upgrade'
+    - name: set-buffer
+      description: '[DEPRECATED] Set a new IDL buffer for the program'
+    - name: set-authority
+      description: '[DEPRECATED] Set a new authority on the legacy IDL account'
+    - name: erase-authority
+      description: '[DEPRECATED] Remove the ability to modify the legacy IDL account'
+    - name: authority
+      description: '[DEPRECATED] Output the authority for the legacy IDL account'
+    - name: init
+      description: '[DEPRECATED] Initialize the legacy on-chain IDL account for the first time'
+    - name: upgrade
+      description: '[DEPRECATED] Upgrade the legacy IDL (write buffer → set buffer → close buffer)'
+    - name: fetch
+      description: '[DEPRECATED] Fetch the IDL from a legacy on-chain IdlAccount'
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
