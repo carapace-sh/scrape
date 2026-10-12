@@ -1,0 +1,169 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: hyperfine
+description: A command-line benchmarking tool.
+flags:
+  -N: An alias for '--shell=none'.
+  -S: An alias for '--shell=default' (sh on Unix, cmd.exe on Windows).
+  -c, --cleanup=: Execute CMD after the completion of all benchmarking runs for each individual command to be benchmarked. This is useful if the commands to be benchmarked produce artifacts that need to be cleaned up.
+  -n, --command-name=*: Give a meaningful name to a command. This can be specified multiple times if several commands are benchmarked.
+  -C, --conclude=*: |-
+    Execute CMD after each benchmark run. This is useful for killing long-running processes started (e.g. a web server started in --prepare), for example.
+    The --conclude option can be specified once for all commands or multiple times, once for each command. In the latter case, each conclude command will be run after the corresponding benchmark command.
+  --debug-mode&: Enable debug mode which does not actually run commands, but returns fake times when the command is 'sleep <time>'.
+  --env=*: |-
+    Set environment variables for benchmark commands and their respective setup, prepare, conclude, and cleanup commands. Assignments are space-separated and support shell-style quoting, but no shell expansion:
+
+      hyperfine \
+        --env 'OMP_NUM_THREADS=8 CFLAGS="-O3 -march=native"' \
+        'my_command'
+
+    Specify once for all commands or once per benchmark command:
+
+      hyperfine \
+        --env 'OMP_NUM_THREADS=8' './benchmark-cpp' \
+        --env 'RAYON_NUM_THREADS=8' './benchmark-rust'
+
+    Use an empty --env='' for no overrides. Values can contain parameter placeholders. For example, the following benchmarks 'my_command' with OMP_NUM_THREADS ranging from 1 to 8:
+
+      hyperfine -P threads 1 8 \
+        --env 'OMP_NUM_THREADS={threads}' 'my_command'
+  --export-asciidoc=: Export the primary metric summary statistics as an AsciiDoc table to the given FILE. The unit can be set with --metrics METRIC:UNIT.
+  --export-csv=: Export summary statistics for all selected metrics as CSV to the given FILE. If you need all metrics for each individual run, use the JSON export format. Column names are prefixed with the metric name. Use the explicitly selected units, or base units when unspecified.
+  --export-json=: Export all collected metrics and individual runs as JSON to the given FILE. Values always use base units (seconds, bytes, counts).
+  --export-markdown=: Export the primary metric summary statistics as a Markdown table to the given FILE. The unit can be set with --metrics METRIC:UNIT.
+  --export-orgmode=: Export the primary metric summary statistics as an Emacs org-mode table to the given FILE. The unit can be set with --metrics METRIC:UNIT.
+  -h, --help: Print help
+  -i, --ignore-failure?: Ignore failures of the benchmarked programs. Without a value or with 'all-non-zero', all non-zero exit codes are ignored. You can also provide a comma-separated list of exit codes to ignore (e.g., --ignore-failure=1,2).
+  --input=: |-
+    Control where the input of the benchmark comes from.
+
+    <WHERE> can be:
+
+      null:     Read from /dev/null (the default).
+
+      <FILE>:   Read the input from the given file.
+  -M, --max-runs=: Perform at most NUM runs for each command. By default, there is no limit.
+  --metrics=:
+    description: |-
+      Performance metrics to measure, in order.
+
+      This is either a preset name, or a comma-separated list of metrics with optional units. CSV exports all selected metrics; markup exports use the first metric. JSON always includes all collected metrics.
+
+      Presets (use one on its own):
+        default  Wall-clock time and peak RSS
+        time     Wall-clock, CPU, user, and system time
+        all      All available metrics
+
+      Presets use automatic units.
+
+      Metrics and optional units:
+        Time: time_wall_clock, time_cpu, time_user, time_system
+          Units: ns, us, ms, s, min, h
+        Memory: memory_peak_resident
+          Units: B, kB, MB, GB, TB, KiB, MiB, GiB, TiB
+        Counters: cpu_cycles, instructions, cache_references,
+          cache_misses, branch_misses
+          Units: count, k (thousand), M (million), B (billion)
+
+      Examples:
+        --metrics time_cpu,instructions
+        --metrics memory_peak_resident:MiB,time_wall_clock:ms
+        --metrics time
+    default: default
+  --min-benchmarking-time&=: Set the minimum time (in seconds) to run benchmarks. Note that the number of benchmark runs is additionally influenced by the `--min-runs`, `--max-runs`, and `--runs` option.
+  -m, --min-runs=: 'Perform at least NUM runs for each command (default: 10).'
+  --output=*: |+
+    Control where the output of the benchmark is redirected. Note that some programs like 'grep' detect when standard output is /dev/null and apply certain optimizations. To avoid that, consider using '--output=pipe'.
+
+    <WHERE> can be:
+
+      null:     Redirect output to /dev/null (the default).
+
+      pipe:     Feed the output through a pipe before discarding it.
+
+      inherit:  Don't redirect the output at all (same as '--show-output').
+
+      <FILE>:   Write the output to the given file.
+
+    This option can be specified once for all commands or multiple times, once for each command. Note: If you want to log the output of each and every iteration, you can use a shell redirection and the '$HYPERFINE_ITERATION' environment variable:
+        hyperfine -S 'my-command > output-${HYPERFINE_ITERATION}.log'
+
+  -L, --parameter-list=*:
+    description: |
+      Perform benchmark runs for each value in the comma-separated list VALUES. Replaces the string '{VAR}' in each command by the current parameter value.
+
+      Example:  hyperfine -L compiler g++,clang++ '{compiler} -O2 main.cpp'
+
+      This performs benchmarks for 'g++ -O2 main.cpp' and 'clang++ -O2 main.cpp'.
+
+      The option can be specified multiple times to run benchmarks for all possible parameter combinations.
+    nargs: 2
+  -P, --parameter-scan=:
+    description: |-
+      Perform benchmark runs for each value in the range MIN..MAX. Replaces the string '{VAR}' in each command by the current parameter value.
+
+        Example:  hyperfine --prepare 'make clean' -P threads 1 8 'make -j {threads}'
+
+      This performs benchmarks for 'make -j 1', 'make -j 2', …, 'make -j 8'.
+
+      To have the value increase following different patterns, use shell arithmetic.
+
+        Example: hyperfine --shell=bash -P size 0 3 'sleep $((2**{size}))'
+
+      This performs benchmarks with power of 2 increases: 'sleep 1', 'sleep 2', 'sleep 4', …
+      The exact syntax may vary depending on your shell and OS.
+    nargs: 3
+  -D, --parameter-step-size=: |-
+    This argument requires --parameter-scan to be specified as well. Traverse the range MIN..MAX in steps of DELTA, which must be positive.
+
+      Example:  hyperfine -P delay 0.3 0.7 -D 0.2 'sleep {delay}'
+
+    This performs benchmarks for 'sleep 0.3', 'sleep 0.5' and 'sleep 0.7'.
+  -p, --prepare=*: |-
+    Execute CMD before each benchmark run. This is useful for clearing disk caches, for example.
+    The --prepare option can be specified once for all commands or multiple times, once for each command. In the latter case, each preparation command will be run prior to the corresponding benchmark command.
+  --reference&=: 'Removed: put your reference command first instead.'
+  -r, --runs=: Perform exactly NUM runs for each command. If this option is not specified, hyperfine automatically determines the number of runs.
+  -s, --setup=: Execute CMD before each set of benchmark runs. This is useful for compiling your software with the provided parameters, or to do any other work that should happen once before a series of benchmark runs, not every time as would happen with the --prepare option.
+  --shell=: 'Set the shell to use for executing benchmarked commands, including warmup runs (default: none). This can be the name or the path to the shell executable, or a full command line like "bash --norc". It can also be set to "default" to explicitly select the platform shell (sh on Unix, cmd.exe on Windows). It can also be set to "none" to disable the shell. In this case, benchmarked commands will be executed directly. They can still have arguments, but more complex things like "sleep 0.1; sleep 0.2" are not possible without a shell. Setup, prepare, conclude, and cleanup commands always use a shell: the selected shell, or the platform shell when this option is omitted or set to "none".'
+  --show-output: Print the stdout and stderr of the benchmark instead of suppressing it. This will increase the time it takes for benchmarks to run, so it should only be used for debugging purposes or when trying to benchmark output speed.
+  --style=: 'Set output style type (default: auto). Set this to ''basic'' to disable output coloring and interactive elements. Set it to ''full'' to enable all effects even if no interactive terminal was detected. Set this to ''nocolor'' to keep the interactive output without any colors. Set this to ''color'' to keep the colors without any interactive output. Set this to ''none'' to disable all the output of the tool.'
+  -V, --version: Print version
+  -w, --warmup=: Perform NUM warmup runs before the actual benchmark. This can be used to fill (disk) caches for I/O-heavy programs.
+completion:
+  flag:
+    cleanup:
+    - $executables
+    - $files
+    conclude:
+    - $executables
+    - $files
+    export-asciidoc:
+    - $files
+    export-csv:
+    - $files
+    export-json:
+    - $files
+    export-markdown:
+    - $files
+    export-orgmode:
+    - $files
+    prepare:
+    - $executables
+    - $files
+    setup:
+    - $executables
+    - $files
+    shell:
+    - $executables
+    - $files
+    style:
+    - auto
+    - basic
+    - full
+    - nocolor
+    - color
+    - none
+  positional:
+  - - $executables
+    - $files
