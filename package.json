@@ -21,7 +21,7 @@
     "dlv": "https://github.com/go-delve/delve#v1.27.2",
     "docker": "https://github.com/docker/cli#v29.8.2",
     "docker-compose": "https://github.com/docker/compose#v5.6.0",
-    "drift": "https://github.com/aymanbagabas/drift#v0.0.10",
+    "drift": "https://github.com/aymanbagabas/drift#v0.0.11",
     "eopkg": "https://github.com/getsolus/eopkg#v5.0.0",
     "eza": "https://github.com/eza-community/eza#v0.23.5",
     "faas-cli": "https://github.com/openfaas/faas-cli#0.18.14",
