@@ -1,0 +1,23 @@
+diff --git a/src/main.rs b/src/main.rs
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -7,6 +7,7 @@
+ 
+ use clap::{CommandFactory, Parser, Subcommand, ValueEnum};
+ use clap_complete::generate;
++use carapace_spec_clap::Spec;
+ use rand::RngExt;
+ use starship::context::{Context, Properties, Target};
+ use starship::module::ALL_MODULES;
+@@ -166,6 +167,11 @@
+ }
+ 
+ fn main() {
++    let mut cmd = Cli::command();
++    generate(Spec, &mut cmd, "starship", &mut io::stdout());
++    if true {
++        return;
++    }
+     // Configure the current terminal on windows to support ANSI escape sequences.
+     #[cfg(windows)]
+     let _ = nu_ansi_term::enable_ansi_support();
