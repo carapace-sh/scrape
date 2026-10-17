@@ -75,6 +75,7 @@ jobs:
   rustup: {uses: ./.github/workflows/scrape-template.yml, with: {command: rustup}}
   scc: {uses: ./.github/workflows/scrape-template.yml, with: {command: scc}}
   sd: {uses: ./.github/workflows/scrape-template.yml, with: {command: sd}}
+  starship: {uses: ./.github/workflows/scrape-template.yml, with: {command: starship}}
   syft: {uses: ./.github/workflows/scrape-template.yml, with: {command: syft}}
   taplo: {uses: ./.github/workflows/scrape-template.yml, with: {command: taplo}}
   task: {uses: ./.github/workflows/scrape-template.yml, with: {command: task}}
