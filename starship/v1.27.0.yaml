@@ -1,0 +1,240 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: starship
+description: The cross-shell prompt for astronauts. ☄🌌️
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+commands:
+- name: bug-report
+  description: Create a pre-populated GitHub issue with information about your configuration
+  flags:
+    -h, --help: Print help
+- name: completions
+  description: Generate starship shell completions for your shell to stdout
+  flags:
+    -h, --help: Print help
+  completion:
+    positional:
+    - - bash
+      - elvish
+      - fish
+      - nushell
+      - powershell
+      - zsh
+- name: config
+  description: Edit the starship configuration
+  flags:
+    -h, --help: Print help
+- name: explain
+  description: Explains the currently showing modules
+  flags:
+    -d, --cmd-duration=: The execution duration of the last command, in milliseconds
+    -h, --help: Print help
+    -j, --jobs=:
+      description: The number of currently running jobs
+      default: '0'
+    -k, --keymap=:
+      description: The keymap of fish/zsh/cmd
+      default: viins
+    -P, --logical-path=: The logical path that the prompt should render for. This path should be a virtual/logical representation of the PATH argument
+    -p, --path=: The path that the prompt should render for
+    --pipestatus=*: Bash, Fish and Zsh support returning codes for each process in a pipeline
+    --shlvl=: The current value of SHLVL, for shells that mis-handle it in $()
+    -s, --status=: The status code of the previously run command as an unsigned or signed 32bit integer
+    -w, --terminal-width=:
+      description: The width of the current interactive terminal
+      default: '80'
+  completion:
+    flag:
+      logical-path:
+      - $files
+      path:
+      - $files
+- name: init
+  description: Prints the shell function used to execute starship
+  flags:
+    -h, --help: Print help
+    --print-full-init: ''
+- name: module
+  description: Prints a specific prompt module
+  flags:
+    -d, --cmd-duration=: The execution duration of the last command, in milliseconds
+    -h, --help: Print help
+    -j, --jobs=:
+      description: The number of currently running jobs
+      default: '0'
+    -k, --keymap=:
+      description: The keymap of fish/zsh/cmd
+      default: viins
+    -l, --list: List out all supported modules
+    -P, --logical-path=: The logical path that the prompt should render for. This path should be a virtual/logical representation of the PATH argument
+    -p, --path=: The path that the prompt should render for
+    --pipestatus=*: Bash, Fish and Zsh support returning codes for each process in a pipeline
+    --shlvl=: The current value of SHLVL, for shells that mis-handle it in $()
+    -s, --status=: The status code of the previously run command as an unsigned or signed 32bit integer
+    -w, --terminal-width=:
+      description: The width of the current interactive terminal
+      default: '80'
+  completion:
+    flag:
+      logical-path:
+      - $files
+      path:
+      - $files
+- name: preset
+  description: Prints a preset config
+  flags:
+    -f, --force: Forcibly overwrite the output file if it already exists
+    -h, --help: Print help
+    -l, --list: List out all preset names
+    -o, --output=: Output the preset to a file instead of stdout
+  completion:
+    flag:
+      output:
+      - $files
+    positional:
+    - - bracketed-segments
+      - catppuccin-powerline
+      - gruvbox-rainbow
+      - jetpack
+      - nerd-font-symbols
+      - no-empty-icons
+      - no-nerd-font
+      - no-runtime-versions
+      - pastel-powerline
+      - plain-text-symbols
+      - pure-preset
+      - tokyo-night
+- name: print-config
+  description: Prints the computed starship configuration
+  flags:
+    -d, --default: Print the default instead of the computed config
+    -h, --help: Print help
+- name: prompt
+  description: Prints the full starship prompt
+  flags:
+    -d, --cmd-duration=: The execution duration of the last command, in milliseconds
+    --continuation: Print the continuation prompt (instead of the standard left prompt)
+    -h, --help: Print help
+    -j, --jobs=:
+      description: The number of currently running jobs
+      default: '0'
+    -k, --keymap=:
+      description: The keymap of fish/zsh/cmd
+      default: viins
+    -P, --logical-path=: The logical path that the prompt should render for. This path should be a virtual/logical representation of the PATH argument
+    -p, --path=: The path that the prompt should render for
+    --pipestatus=*: Bash, Fish and Zsh support returning codes for each process in a pipeline
+    --profile=: Print the prompt with the specified profile name (instead of the standard left prompt)
+    --right: Print the right prompt (instead of the standard left prompt)
+    --shlvl=: The current value of SHLVL, for shells that mis-handle it in $()
+    -s, --status=: The status code of the previously run command as an unsigned or signed 32bit integer
+    -w, --terminal-width=:
+      description: The width of the current interactive terminal
+      default: '80'
+  completion:
+    flag:
+      logical-path:
+      - $files
+      path:
+      - $files
+- name: session
+  description: Generate random session key
+  flags:
+    -h, --help: Print help
+- name: statusline
+  description: Prints the statusline with a specific profile
+  flags:
+    -d, --cmd-duration=: The execution duration of the last command, in milliseconds
+    -h, --help: Print help
+    -j, --jobs=:
+      description: The number of currently running jobs
+      default: '0'
+    -k, --keymap=:
+      description: The keymap of fish/zsh/cmd
+      default: viins
+    -P, --logical-path=: The logical path that the prompt should render for. This path should be a virtual/logical representation of the PATH argument
+    -p, --path=: The path that the prompt should render for
+    --pipestatus=*: Bash, Fish and Zsh support returning codes for each process in a pipeline
+    --profile=: ''
+    --shlvl=: The current value of SHLVL, for shells that mis-handle it in $()
+    -s, --status=: The status code of the previously run command as an unsigned or signed 32bit integer
+    -w, --terminal-width=:
+      description: The width of the current interactive terminal
+      default: '80'
+  completion:
+    flag:
+      logical-path:
+      - $files
+      path:
+      - $files
+    positional:
+    - - claude-code
+- name: time
+  description: Prints time in milliseconds
+  hidden: true
+  flags:
+    -h, --help: Print help
+- name: timings
+  description: Prints timings of all active modules
+  flags:
+    -d, --cmd-duration=: The execution duration of the last command, in milliseconds
+    -h, --help: Print help
+    -j, --jobs=:
+      description: The number of currently running jobs
+      default: '0'
+    -k, --keymap=:
+      description: The keymap of fish/zsh/cmd
+      default: viins
+    -P, --logical-path=: The logical path that the prompt should render for. This path should be a virtual/logical representation of the PATH argument
+    -p, --path=: The path that the prompt should render for
+    --pipestatus=*: Bash, Fish and Zsh support returning codes for each process in a pipeline
+    --shlvl=: The current value of SHLVL, for shells that mis-handle it in $()
+    -s, --status=: The status code of the previously run command as an unsigned or signed 32bit integer
+    -w, --terminal-width=:
+      description: The width of the current interactive terminal
+      default: '80'
+  completion:
+    flag:
+      logical-path:
+      - $files
+      path:
+      - $files
+- name: toggle
+  description: Toggle a given starship module
+  flags:
+    -h, --help: Print help
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: bug-report
+    description: Create a pre-populated GitHub issue with information about your configuration
+  - name: completions
+    description: Generate starship shell completions for your shell to stdout
+  - name: config
+    description: Edit the starship configuration
+  - name: explain
+    description: Explains the currently showing modules
+  - name: init
+    description: Prints the shell function used to execute starship
+  - name: module
+    description: Prints a specific prompt module
+  - name: preset
+    description: Prints a preset config
+  - name: print-config
+    description: Prints the computed starship configuration
+  - name: prompt
+    description: Prints the full starship prompt
+  - name: session
+    description: Generate random session key
+  - name: statusline
+    description: Prints the statusline with a specific profile
+  - name: time
+    description: Prints time in milliseconds
+    hidden: true
+  - name: timings
+    description: Prints timings of all active modules
+  - name: toggle
+    description: Toggle a given starship module
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
