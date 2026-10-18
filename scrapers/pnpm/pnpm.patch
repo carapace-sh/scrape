@@ -1,8 +1,8 @@
 diff --git a/pnpm/crates/cli/src/lib.rs b/pnpm/crates/cli/src/lib.rs
-index 90c71e9..e093485 100644
+index adbaefe..b43384c 100644
 --- a/pnpm/crates/cli/src/lib.rs
 +++ b/pnpm/crates/cli/src/lib.rs
-@@ -51,6 +51,9 @@ mod with_current;
+@@ -52,6 +52,9 @@ mod with_current;
  
  use boolean_negations::with_boolean_negations;
  use clap::{CommandFactory, FromArgMatches};
@@ -12,7 +12,7 @@ index 90c71e9..e093485 100644
  use cli_args::CliArgs;
  use config_overrides::ConfigOverrides;
  use flag_relocation::relocate_pre_subcommand_flags;
-@@ -60,6 +63,8 @@ use state::State;
+@@ -62,6 +65,8 @@ use state::State;
  use std::{ffi::OsString, future::Future, path::Path, process::ExitCode};
  
  pub fn main() -> ExitCode {
@@ -21,3 +21,16 @@ index 90c71e9..e093485 100644
      #[cfg(target_family = "wasm")]
      if let Err(error) = initialize_wasm_paths() {
          eprintln!("Failed to initialize pnpm host paths: {error}");
+diff --git a/pnpm/crates/deps-restorer/src/cas.rs b/pnpm/crates/deps-restorer/src/cas.rs
+index 34aebff..3f706e3 100644
+--- a/pnpm/crates/deps-restorer/src/cas.rs
++++ b/pnpm/crates/deps-restorer/src/cas.rs
+@@ -20,7 +20,7 @@ mod bin_state;
+ mod bins;
+ mod link;
+ 
+-const LOADER: &str = include_str!("cas-loader.mjs.inc");
++const LOADER: &str = "";
+ 
+ pub(crate) fn write_installation(
+     inputs: &LinkPhaseInputs<'_>,

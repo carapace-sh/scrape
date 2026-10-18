@@ -1,7 +1,8 @@
 diff --git a/crates/uv/Cargo.toml b/crates/uv/Cargo.toml
+index dc1c6f7..c293af2 100644
 --- a/crates/uv/Cargo.toml
 +++ b/crates/uv/Cargo.toml
-@@ -40,6 +40,8 @@
+@@ -78,7 +78,9 @@ axoupdater = { workspace = true, features = [
    "github_releases",
    "tokio",
  ], optional = true }
@@ -9,11 +10,16 @@ diff --git a/crates/uv/Cargo.toml b/crates/uv/Cargo.toml
  clap = { workspace = true, features = ["derive", "string", "wrap_help"] }
 +clap_complete = "4.6.5"
  console = { workspace = true }
- ctrlc = { workspace = true }
+ diskus = { workspace = true }
+ etcetera = { workspace = true }
 diff --git a/crates/uv/src/bin/uv.rs b/crates/uv/src/bin/uv.rs
+index ee178a7..d997771 100644
 --- a/crates/uv/src/bin/uv.rs
 +++ b/crates/uv/src/bin/uv.rs
-@@ -6,9 +6,18 @@
+@@ -3,12 +3,21 @@
+ #[cfg(feature = "performance-memory-allocator")]
+ extern crate uv_performance_memory_allocator;
+ 
 +use std::io;
  use std::process::ExitCode;
  
