@@ -1,5 +1,5 @@
 diff --git a/cmd/glab/main.go b/cmd/glab/main.go
-index fb47d0c55..466519c84 100644
+index 8fd1b36..ee696cf 100644
 --- a/cmd/glab/main.go
 +++ b/cmd/glab/main.go
 @@ -12,6 +12,7 @@ import (
@@ -10,11 +10,11 @@ index fb47d0c55..466519c84 100644
  	"github.com/spf13/cobra"
  
  	"gitlab.com/gitlab-org/cli/internal/api"
-@@ -113,6 +114,7 @@ func main() {
+@@ -112,6 +113,7 @@ func main() {
  		expandedArgs = os.Args[1:]
  	}
  	rootCmd := commands.NewCmdRoot(cmdFactory)
 +	carapace.Gen(rootCmd)
  	cmd, _, err := rootCmd.Traverse(expandedArgs)
  
- 	setupTelemetryHook(cfg, cmdFactory, cmd)
+ 	if err != nil || cmd == rootCmd {
