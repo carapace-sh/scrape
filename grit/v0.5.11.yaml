@@ -1,0 +1,776 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: grit
+description: A simple Grit-powered CLI
+flags:
+  -h, --help: Print help (see more with '--help')
+  -v, --version: Print version
+  -V&: Print version
+persistentflags:
+  --filter=: jq-like expression applied to JSON output (requires `--json`)
+  --json: Emit machine-readable JSON instead of human-readable text
+  --markdown: Emit agent-friendly Markdown instead of human-readable text
+  --threads=: Worker threads for parallel library work (`0` = auto, `1` = serial)
+documentation:
+  flag:
+    filter: |-
+      jq-like expression applied to JSON output (requires `--json`).
+
+      Examples: `.branch`, `.commits[].oid`, `{branch, clean}`.
+    help: Print help (see a summary with '-h')
+commands:
+- name: init
+  description: Create a new, empty repository
+  flags:
+    --bare: Create a bare repository (no working tree)
+    -h, --help: Print help (see more with '--help')
+    --ref-format=:
+      description: Ref storage backend for the new repository
+      default: files
+- name: clone
+  description: Copy a remote repository into a new directory
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: remote
+  description: List remotes, or add one
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: add
+    description: Add a new remote
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: refs
+    description: List references on a remote (like `git ls-remote`)
+    flags:
+      --heads: Only show refs under `refs/heads/`
+      -h, --help: Print help (see more with '--help')
+      --tags: Only show refs under `refs/tags/`
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: add
+      description: Add a new remote
+    - name: refs
+      description: List references on a remote (like `git ls-remote`)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: log
+  description: Show recent commits reachable from HEAD
+  flags:
+    --before=: Continue listing from before this commit (for paging)
+    -h, --help: Print help (see more with '--help')
+    --limit=: Stop after this many commits (default page size is ten when omitted)
+    --stat: Show which files each commit changed, with insertion and deletion counts
+- name: revs
+  description: List or count commits matching revision ranges
+  flags:
+    --count: Print only the number of reachable commits
+    --first-parent: Follow only the first parent at merges
+    -h, --help: Print help (see more with '--help')
+    --limit=: Stop after this many commits (listing mode only)
+- name: merge-base
+  description: Find merge bases or test whether one commit is an ancestor of another
+  flags:
+    --all: List every minimal merge base (criss-cross histories)
+    -h, --help: Print help (see more with '--help')
+    --is-ancestor: Exit 0 when `a` is an ancestor of `b`, 1 otherwise; prints nothing in human mode
+- name: reflog
+  description: Show, delete, or expire reflog entries
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --limit=: Show at most this many entries (newest first)
+  commands:
+  - name: delete
+    description: Remove one or more reflog entries (`ref@{n}`)
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: expire
+    description: Drop reflog entries older than configured or explicit cutoffs
+    flags:
+      --all: Process every ref under `refs/`, not only refs that already have log files
+      --expire=: Expire reachable entries older than this (Git `--expire` syntax)
+      --expire-unreachable=: Expire unreachable entries older than this
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: delete
+      description: Remove one or more reflog entries (`ref@{n}`)
+    - name: expire
+      description: Drop reflog entries older than configured or explicit cutoffs
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: blame
+  description: Show who last modified each line of a file
+  flags:
+    --first-parent: At merge commits, follow only the first parent (Git's `--first-parent`)
+    -h, --help: Print help (see more with '--help')
+    -L, --lines=: Limit to an inclusive 1-based line range (`START,END`)
+    --rev=: Blame at this revision instead of `HEAD`
+- name: diff
+  description: 'Show changes as a diff. No argument: uncommitted changes; with a commit: the change that commit introduced; with two commits (or `A..B`) diff their trees'
+  flags:
+    --against=: Compare the worktree to this ref's tree instead of HEAD (no commit arguments)
+    -h, --help: Print help (see more with '--help')
+    -S, --staged: Staged changes only (index vs HEAD)
+    --unstaged: Unstaged changes only (worktree vs index)
+- name: show
+  description: Show information about a commit, tag, or branch (defaults to HEAD)
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: status
+  aliases:
+  - st
+  description: Show what's changed and where you are (this is the default)
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --untracked=: 'How untracked paths are listed: `normal` (default) collapses wholly untracked directories; `all` lists every file; `no` omits untracked paths. When omitted, uses `status.showUntrackedFiles` from config'
+- name: shortlog
+  aliases:
+  - sl
+  description: List the commits on this branch that aren't on the target branch yet
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: add
+  description: Stage changes. With no paths, stages everything
+  flags:
+    --executable: Mark staged regular files as executable (`100755`) in the index
+    -h, --help: Print help (see more with '--help')
+    --non-executable: Mark staged regular files as non-executable (`100644`) in the index
+- name: rm
+  description: Remove tracked paths from the working tree and index
+  flags:
+    --cached: Remove from the index only; keep files in the working tree
+    -f, --force: Remove even when paths have local modifications
+    -h, --help: Print help (see more with '--help')
+- name: mv
+  description: Rename or move tracked paths
+  flags:
+    -f, --force: Replace existing files at the destination
+    -h, --help: Print help (see more with '--help')
+- name: clean
+  description: Remove untracked files from the working tree
+  flags:
+    -f, --force: Actually delete files. Without this flag, only prints what would be removed
+    -h, --help: Print help (see more with '--help')
+    --ignored: Remove ignored files as well (like `git clean -x`)
+- name: repack
+  description: Pack reachable objects and remove redundant packs
+  flags:
+    --dry-run: Show what would be packed without writing
+    -h, --help: Print help (see more with '--help')
+    -q, --quiet: Suppress progress summary on stderr
+- name: gc
+  description: Pack refs, expire reflogs, repack, prune, and refresh commit-graph
+  flags:
+    --dry-run: Show what would run without writing
+    -h, --help: Print help (see more with '--help')
+    -q, --quiet: Suppress progress summary on stderr
+  commands:
+  - name: repack
+    description: Repack reachable objects into one pack
+    flags:
+      --bitmaps: Write a reachability `.bitmap` sidecar for the new pack
+      -h, --help: Print help (see more with '--help')
+  - name: commit-graph
+    description: Write a reachable commit-graph with changed-path Bloom filters
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: midx
+    description: Write or refresh the multi-pack-index
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: pack-refs
+    description: Pack loose refs into `packed-refs` (or compact reftable)
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: prune
+    description: Delete unreachable loose objects
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --older-than=: Only remove objects older than this date (Git approxidate syntax)
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: repack
+      description: Repack reachable objects into one pack
+    - name: commit-graph
+      description: Write a reachable commit-graph with changed-path Bloom filters
+    - name: midx
+      description: Write or refresh the multi-pack-index
+    - name: pack-refs
+      description: Pack loose refs into `packed-refs` (or compact reftable)
+    - name: prune
+      description: Delete unreachable loose objects
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: fsck
+  aliases:
+  - verify
+  description: Check refs, objects, and pack indexes for problems
+  flags:
+    --connectivity-only: Check connectivity from refs only (skip store-wide object validation)
+    --dangling: Report unreachable objects (with `--connectivity-only`, off unless this flag is set)
+    -h, --help: Print help (see more with '--help')
+    --no-dangling: Do not list dangling objects (matches Git `--no-dangling`)
+    --strict: Treat ref warnings as errors
+- name: ignore
+  description: Query exclude (gitignore) rules
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: check
+    description: Print whether paths match exclude rules
+    flags:
+      --all: Also list paths that are not ignored
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: check
+      description: Print whether paths match exclude rules
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: hooks
+  description: List hook scripts or run one by name
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: list
+    description: List hook scripts in the resolved hooks directory
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: run
+    description: Run a hook by name (passes `--` arguments through to the script)
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: List hook scripts in the resolved hooks directory
+    - name: run
+      description: Run a hook by name (passes `--` arguments through to the script)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: patch-id
+  description: Print stable patch-IDs for one or more commits
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --unstable: Use legacy unstable patch-ID algorithm (Git 1.9 and older)
+- name: resolve
+  description: Resolve revision specs to object ids and types
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --short: Print abbreviated object ids
+- name: cat
+  description: Show blob, tree, commit, or tag contents for a revision spec
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: commit
+  description: Stage every change and record a new commit
+  flags:
+    -a, --all: Stage every change first, then commit. This is the default behavior
+    --allow-empty: Record a commit even when the tree matches the parent (same as `git commit --allow-empty`)
+    --amend: Replace the tip commit instead of creating a new one
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: Commit message
+- name: branch
+  description: List branches, or create / delete one
+  flags:
+    -d, --delete: Delete the named branch instead of creating it
+    -D, --force: Delete even when the branch is not fully merged into the current branch
+    -h, --help: Print help (see more with '--help')
+- name: switch
+  aliases:
+  - checkout
+  - co
+  description: Switch to another branch, remote branch, or detached commit
+  flags:
+    -c, --create: Create the branch first, then switch to it
+    --detach: Check out a commit in detached HEAD mode
+    -h, --help: Print help (see more with '--help')
+- name: reset
+  description: Move the branch tip and optionally reset the index or worktree
+  flags:
+    --hard: Reset the index and worktree to match the target commit
+    -h, --help: Print help (see more with '--help')
+    --mixed: Reset the index to the target commit; keep the worktree (default)
+    --soft: Keep the index and worktree; move the branch tip only
+- name: merge
+  description: Merge another branch into the current one
+  flags:
+    --abort: Cancel an in-progress merge and restore the pre-merge state
+    -h, --help: Print help (see more with '--help')
+- name: pick
+  description: Cherry-pick a commit onto the current branch
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: revert
+  description: Undo a commit with a new inverse commit
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: stash
+  description: Save or restore shelved work
+  flags:
+    -h, --help: Print help (see more with '--help')
+  persistentflags:
+    -u, --include-untracked: Include untracked files (bare `grit stash` / `grit stash push`)
+    -m, --message=: Stash message (bare `grit stash` / `grit stash push`)
+  commands:
+  - name: push
+    description: Save local changes to the stash and reset the working tree
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -u, --include-untracked: Include untracked files in the stash
+      -m, --message=: Stash message
+  - name: list
+    description: List stash entries
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: show
+    description: Show the summary or patch for a stash entry
+    flags:
+      -h, --help: Print help (see more with '--help')
+      -p, --patch: Show the full patch instead of a diffstat
+  - name: apply
+    description: Apply a stash entry without removing it
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: pop
+    description: Apply a stash entry and remove it when there are no conflicts
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: drop
+    description: Remove a stash entry without applying it
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: push
+      description: Save local changes to the stash and reset the working tree
+    - name: list
+      description: List stash entries
+    - name: show
+      description: Show the summary or patch for a stash entry
+    - name: apply
+      description: Apply a stash entry without removing it
+    - name: pop
+      description: Apply a stash entry and remove it when there are no conflicts
+    - name: drop
+      description: Remove a stash entry without applying it
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: restore
+  description: Restore working tree and/or index paths
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --source=: Tree or commit to restore from
+    -S, --staged: Restore the index from HEAD (or `--source`)
+    -W, --worktree: Restore the working tree (default when `--staged` is absent)
+- name: fetch
+  description: Download refs and objects from a remote
+  flags:
+    -h, --help: Print help (see more with '--help')
+    --no-prune: Do not prune stale remote-tracking refs, even when config enables it
+    --prune: Remove remote-tracking refs that no longer exist on the remote
+- name: pull
+  description: Fetch from the remote and integrate it into the current branch
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: push
+  description: Publish the current branch to its remote
+  flags:
+    --delete=*: Delete a remote branch or tag (may be repeated)
+    -h, --help: Print help (see more with '--help')
+    --remote=: Remote to push to (defaults to the current branch's remote or `origin`)
+    -t, --tags: Push tags instead of the current branch. Pushes every local tag under `refs/tags/` to the remote
+- name: bundle
+  description: Create, verify, or list git bundle files
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: create
+    description: Write a bundle file from revision specs
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: verify
+    description: Check that a bundle file is well-formed
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: list
+    description: List refs recorded in a bundle header
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: unbundle
+    description: Ingest a bundle pack into the current repository
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: create
+      description: Write a bundle file from revision specs
+    - name: verify
+      description: Check that a bundle file is well-formed
+    - name: list
+      description: List refs recorded in a bundle header
+    - name: unbundle
+      description: Ingest a bundle pack into the current repository
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: notes
+  description: List, show, add, or remove Git notes on commits
+  flags:
+    -h, --help: Print help (see more with '--help')
+  persistentflags:
+    --ref=: 'Notes ref (default: `core.notesRef` or `refs/notes/commits`)'
+  commands:
+  - name: list
+    description: List notes attached to commits
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: show
+    description: Show the note for a revision
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: add
+    description: Add or replace a note on a revision
+    flags:
+      --force: Replace an existing note
+      -h, --help: Print help (see more with '--help')
+      -m, --message!=: Note text
+  - name: remove
+    description: Remove notes from one or more revisions
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: List notes attached to commits
+    - name: show
+      description: Show the note for a revision
+    - name: add
+      description: Add or replace a note on a revision
+    - name: remove
+      description: Remove notes from one or more revisions
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: tag
+  description: List tags, or create / delete one
+  flags:
+    -d, --delete: Delete the named tag instead of creating it
+    -h, --help: Print help (see more with '--help')
+    -m, --message=: Annotated tag message (`-m` creates an annotated tag)
+    --object=: Object to tag (revision). Defaults to `HEAD`
+- name: worktree
+  description: List, add, or remove linked worktrees
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: list
+    description: List registered worktrees (main first, then linked)
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: add
+    description: Create a linked worktree at `path`
+    flags:
+      -b, --branch=: Create and check out a new branch
+      --detach: Check out in detached HEAD mode
+      -f, --force: Reuse a stale registration when the working tree directory is missing
+      -h, --help: Print help (see more with '--help')
+    completion:
+      positional:
+      - - $files
+  - name: remove
+    description: Remove a linked worktree
+    flags:
+      -f, --force: Remove even when the worktree has local changes or is locked
+      -h, --help: Print help (see more with '--help')
+    completion:
+      positional:
+      - - $files
+  - name: prune
+    description: Drop registrations for linked worktrees whose directories are gone
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: lock
+    description: Mark a linked worktree as locked (prevents accidental removal)
+    flags:
+      -h, --help: Print help (see more with '--help')
+      --reason=: Optional reason stored in the lock file
+    completion:
+      positional:
+      - - $files
+  - name: unlock
+    description: Clear the lock on a linked worktree
+    flags:
+      -h, --help: Print help (see more with '--help')
+    completion:
+      positional:
+      - - $files
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: list
+      description: List registered worktrees (main first, then linked)
+    - name: add
+      description: Create a linked worktree at `path`
+    - name: remove
+      description: Remove a linked worktree
+    - name: prune
+      description: Drop registrations for linked worktrees whose directories are gone
+    - name: lock
+      description: Mark a linked worktree as locked (prevents accidental removal)
+    - name: unlock
+      description: Clear the lock on a linked worktree
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: auth
+  description: Sign in to GitHub (device flow) and store a token for HTTPS push/fetch
+  flags:
+    -h, --help: Print help (see more with '--help')
+  commands:
+  - name: logout
+    description: Forget the stored GitHub token (sign out)
+    flags:
+      -h, --help: Print help (see more with '--help')
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
+    commands:
+    - name: logout
+      description: Forget the stored GitHub token (sign out)
+    - name: help
+      description: Print this message or the help of the given subcommand(s)
+- name: update
+  description: Update grit to the latest release (re-runs the install script)
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: skill
+  description: Print an agent skill (SKILL.md) that explains how to use grit
+  flags:
+    -h, --help: Print help (see more with '--help')
+- name: completions
+  description: Generate shell completion scripts for bash, zsh, or fish
+  flags:
+    -h, --help: Print help (see more with '--help')
+  completion:
+    positional:
+    - - bash
+      - elvish
+      - fish
+      - powershell
+      - zsh
+- name: config
+  description: Read, set, or list configuration values
+  flags:
+    --global: Use the global (per-user) config file instead of this repository's
+    -h, --help: Print help (see more with '--help')
+    -l, --list: List all configuration values
+    --unset: Remove the key instead of reading or setting it
+- name: manager
+  description: Git credential helper backed by the Windows Credential Manager
+  flags:
+    -h, --help: Print help (see more with '--help')
+  documentation:
+    command: |-
+      Git credential helper backed by the Windows Credential Manager.
+
+      You don't normally run this yourself — `grit auth` wires it into `credential.helper` on Windows. It speaks Git's credential protocol.
+- name: upload-pack
+  description: Serve a fetch or clone over stdin/stdout (run by ssh and grit-http-server)
+  hidden: true
+  flags:
+    --advertise-refs: Print the ref advertisement and exit (smart HTTP discovery)
+    --http-backend-info-refs&: Print the ref advertisement and exit (smart HTTP discovery)
+    -h, --help: Print help (see more with '--help')
+    --stateless-rpc: Answer a single request without advertising refs first (smart HTTP)
+- name: receive-pack
+  description: Accept a push over stdin/stdout (run by ssh and grit-http-server)
+  hidden: true
+  flags:
+    --advertise-refs: Print the ref advertisement and exit (smart HTTP discovery)
+    --http-backend-info-refs&: Print the ref advertisement and exit (smart HTTP discovery)
+    -h, --help: Print help (see more with '--help')
+    --stateless-rpc: Answer a single request without advertising refs first (smart HTTP)
+- name: help
+  description: Print this message or the help of the given subcommand(s)
+  commands:
+  - name: init
+    description: Create a new, empty repository
+  - name: clone
+    description: Copy a remote repository into a new directory
+  - name: remote
+    description: List remotes, or add one
+    commands:
+    - name: add
+      description: Add a new remote
+    - name: refs
+      description: List references on a remote (like `git ls-remote`)
+  - name: log
+    description: Show recent commits reachable from HEAD
+  - name: revs
+    description: List or count commits matching revision ranges
+  - name: merge-base
+    description: Find merge bases or test whether one commit is an ancestor of another
+  - name: reflog
+    description: Show, delete, or expire reflog entries
+    commands:
+    - name: delete
+      description: Remove one or more reflog entries (`ref@{n}`)
+    - name: expire
+      description: Drop reflog entries older than configured or explicit cutoffs
+  - name: blame
+    description: Show who last modified each line of a file
+  - name: diff
+    description: 'Show changes as a diff. No argument: uncommitted changes; with a commit: the change that commit introduced; with two commits (or `A..B`) diff their trees'
+  - name: show
+    description: Show information about a commit, tag, or branch (defaults to HEAD)
+  - name: status
+    description: Show what's changed and where you are (this is the default)
+  - name: shortlog
+    description: List the commits on this branch that aren't on the target branch yet
+  - name: add
+    description: Stage changes. With no paths, stages everything
+  - name: rm
+    description: Remove tracked paths from the working tree and index
+  - name: mv
+    description: Rename or move tracked paths
+  - name: clean
+    description: Remove untracked files from the working tree
+  - name: repack
+    description: Pack reachable objects and remove redundant packs
+  - name: gc
+    description: Pack refs, expire reflogs, repack, prune, and refresh commit-graph
+    commands:
+    - name: repack
+      description: Repack reachable objects into one pack
+    - name: commit-graph
+      description: Write a reachable commit-graph with changed-path Bloom filters
+    - name: midx
+      description: Write or refresh the multi-pack-index
+    - name: pack-refs
+      description: Pack loose refs into `packed-refs` (or compact reftable)
+    - name: prune
+      description: Delete unreachable loose objects
+  - name: fsck
+    description: Check refs, objects, and pack indexes for problems
+  - name: ignore
+    description: Query exclude (gitignore) rules
+    commands:
+    - name: check
+      description: Print whether paths match exclude rules
+  - name: hooks
+    description: List hook scripts or run one by name
+    commands:
+    - name: list
+      description: List hook scripts in the resolved hooks directory
+    - name: run
+      description: Run a hook by name (passes `--` arguments through to the script)
+  - name: patch-id
+    description: Print stable patch-IDs for one or more commits
+  - name: resolve
+    description: Resolve revision specs to object ids and types
+  - name: cat
+    description: Show blob, tree, commit, or tag contents for a revision spec
+  - name: commit
+    description: Stage every change and record a new commit
+  - name: branch
+    description: List branches, or create / delete one
+  - name: switch
+    description: Switch to another branch, remote branch, or detached commit
+  - name: reset
+    description: Move the branch tip and optionally reset the index or worktree
+  - name: merge
+    description: Merge another branch into the current one
+  - name: pick
+    description: Cherry-pick a commit onto the current branch
+  - name: revert
+    description: Undo a commit with a new inverse commit
+  - name: stash
+    description: Save or restore shelved work
+    commands:
+    - name: push
+      description: Save local changes to the stash and reset the working tree
+    - name: list
+      description: List stash entries
+    - name: show
+      description: Show the summary or patch for a stash entry
+    - name: apply
+      description: Apply a stash entry without removing it
+    - name: pop
+      description: Apply a stash entry and remove it when there are no conflicts
+    - name: drop
+      description: Remove a stash entry without applying it
+  - name: restore
+    description: Restore working tree and/or index paths
+  - name: fetch
+    description: Download refs and objects from a remote
+  - name: pull
+    description: Fetch from the remote and integrate it into the current branch
+  - name: push
+    description: Publish the current branch to its remote
+  - name: bundle
+    description: Create, verify, or list git bundle files
+    commands:
+    - name: create
+      description: Write a bundle file from revision specs
+    - name: verify
+      description: Check that a bundle file is well-formed
+    - name: list
+      description: List refs recorded in a bundle header
+    - name: unbundle
+      description: Ingest a bundle pack into the current repository
+  - name: notes
+    description: List, show, add, or remove Git notes on commits
+    commands:
+    - name: list
+      description: List notes attached to commits
+    - name: show
+      description: Show the note for a revision
+    - name: add
+      description: Add or replace a note on a revision
+    - name: remove
+      description: Remove notes from one or more revisions
+  - name: tag
+    description: List tags, or create / delete one
+  - name: worktree
+    description: List, add, or remove linked worktrees
+    commands:
+    - name: list
+      description: List registered worktrees (main first, then linked)
+    - name: add
+      description: Create a linked worktree at `path`
+    - name: remove
+      description: Remove a linked worktree
+    - name: prune
+      description: Drop registrations for linked worktrees whose directories are gone
+    - name: lock
+      description: Mark a linked worktree as locked (prevents accidental removal)
+    - name: unlock
+      description: Clear the lock on a linked worktree
+  - name: auth
+    description: Sign in to GitHub (device flow) and store a token for HTTPS push/fetch
+    commands:
+    - name: logout
+      description: Forget the stored GitHub token (sign out)
+  - name: update
+    description: Update grit to the latest release (re-runs the install script)
+  - name: skill
+    description: Print an agent skill (SKILL.md) that explains how to use grit
+  - name: completions
+    description: Generate shell completion scripts for bash, zsh, or fish
+  - name: config
+    description: Read, set, or list configuration values
+  - name: manager
+    description: Git credential helper backed by the Windows Credential Manager
+  - name: upload-pack
+    description: Serve a fetch or clone over stdin/stdout (run by ssh and grit-http-server)
+    hidden: true
+  - name: receive-pack
+    description: Accept a push over stdin/stdout (run by ssh and grit-http-server)
+    hidden: true
+  - name: help
+    description: Print this message or the help of the given subcommand(s)
