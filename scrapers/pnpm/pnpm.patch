@@ -1,8 +1,8 @@
 diff --git a/pnpm/crates/cli/src/lib.rs b/pnpm/crates/cli/src/lib.rs
-index adbaefe..b43384c 100644
+index 8fc6cd0..ffd9e6d 100644
 --- a/pnpm/crates/cli/src/lib.rs
 +++ b/pnpm/crates/cli/src/lib.rs
-@@ -52,6 +52,9 @@ mod with_current;
+@@ -53,6 +53,9 @@ mod with_current;
  
  use boolean_negations::with_boolean_negations;
  use clap::{CommandFactory, FromArgMatches};
@@ -12,7 +12,7 @@ index adbaefe..b43384c 100644
  use cli_args::CliArgs;
  use config_overrides::ConfigOverrides;
  use flag_relocation::relocate_pre_subcommand_flags;
-@@ -62,6 +65,8 @@ use state::State;
+@@ -63,6 +66,8 @@ use state::State;
  use std::{ffi::OsString, future::Future, path::Path, process::ExitCode};
  
  pub fn main() -> ExitCode {
@@ -20,7 +20,7 @@ index adbaefe..b43384c 100644
 +    return ExitCode::SUCCESS;
      #[cfg(target_family = "wasm")]
      if let Err(error) = initialize_wasm_paths() {
-         eprintln!("Failed to initialize pnpm host paths: {error}");
+         pnpm_diagnostics::eprintln!("Failed to initialize pnpm host paths: {error}");
 diff --git a/pnpm/crates/deps-restorer/src/cas.rs b/pnpm/crates/deps-restorer/src/cas.rs
 index 34aebff..3f706e3 100644
 --- a/pnpm/crates/deps-restorer/src/cas.rs
