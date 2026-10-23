@@ -43,7 +43,7 @@
     "hg": "https://www.mercurial-scm.org/repo/hg-stable#7.2.4",
     "helm": "https://github.com/helm/helm#v4.3.1",
     "herdr": "https://github.com/ogulcancelik/herdr#v0.9.5",
-    "hl": "https://github.com/pamburus/hl#v0.36.3",
+    "hl": "https://github.com/pamburus/hl#v0.36.4",
     "hurl": "https://github.com/Orange-OpenSource/hurl#8.0.1",
     "hyperfine": "https://github.com/sharkdp/hyperfine#v2.0.0",
     "jj": "https://github.com/jj-vcs/jj#v0.46.0",
