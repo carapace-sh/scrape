@@ -1,0 +1,292 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: xh
+description: xh is a friendly and fast tool for sending HTTP requests
+flags:
+  --all: Show any intermediary requests/responses while following redirects with --follow
+  -a, --auth=: Authenticate as USER with PASS (-A basic|digest) or with TOKEN (-A bearer)
+  -A, --auth-type=: Specify the auth mechanism
+  --bearer&=: Authenticate with a bearer token
+  -b, --body: Print only the response body. Shortcut for --print=b
+  --cert=: Use a client side certificate for SSL
+  --cert-key=: A private key file to use with --cert
+  --check-status: (default) Exit with an error status code if the server replies with an error
+  -x, --compress*: Content compressed (encoded) with Deflate algorithm
+  -c, --continue: Resume an interrupted download. Requires --download and --output
+  --curl: Print a translation to a curl command
+  --curl-long: Use the long versions of curl's flags
+  --debug: Print full error stack traces and debug log messages
+  --default-scheme&=: The default scheme to use if not specified in the URL
+  -d, --download: Download the body to a file instead of printing it
+  -F, --follow: Do follow redirects
+  -f, --form: Serialize data items from the command line as form fields
+  --format-options=*: Set output formatting options
+  --generate=: Generate shell completions or man pages
+  -h, --headers: Print only the response headers. Shortcut for --print=h
+  --help: Print help
+  -P, --history-print=: The same as --print but applies only to intermediary requests/responses
+  --http-version=: HTTP version to use
+  --https: Make HTTPS requests if not specified in the URL
+  --ignore-netrc: Do not use credentials from .netrc
+  -I, --ignore-stdin: Do not attempt to read stdin
+  --interface=: Bind to a network interface or local IP address
+  -4, --ipv4: Resolve hostname to ipv4 addresses only
+  -6, --ipv6: Resolve hostname to ipv6 addresses only
+  -j, --json: (default) Serialize data items from the command line as a JSON object
+  --max-redirects=: Number of redirects to follow. Only respected if --follow is used
+  -m, --meta: Print only the response metadata. Shortcut for --print=m
+  --multipart: Like --form, but force a multipart/form-data request even without files
+  --native-tls&: Use the system TLS library instead of rustls (if enabled at compile time)
+  --offline: Construct HTTP requests without sending them anywhere
+  -o, --output=: Save output to FILE instead of stdout
+  --pretty=: Controls output processing
+  -p, --print=: String specifying what the output should contain
+  --proxy=*: 'Use a proxy for a protocol. For example: --proxy https:http://proxy.host:8080'
+  -q, --quiet*: Do not print to stdout or stderr
+  --raw=: Pass raw request data without extra processing
+  --resolve=*: Override DNS resolution for specific domain to a custom IP
+  --response-charset=: Override the response encoding for terminal display purposes
+  --response-mime=: Override the response mime type for coloring and formatting for the terminal
+  --session=: Create, or reuse and update a session
+  --session-read-only=: Create or read a session without updating it from the request/response exchange
+  --ssl=: Force a particular TLS version
+  -S, --stream: Always stream the response body
+  -s, --style=: Output coloring style
+  --timeout=: Connection timeout of the request
+  --unix-socket=: Connect using a Unix domain socket
+  --unstable-m-sig-alg&=: Message signature algorithm (RFC 9421)
+  --unstable-m-sig-comp&=*: Comma-separated list of message signature components (RFC 9421)
+  --unstable-m-sig-id&=: Message signature key identifier (RFC 9421)
+  --unstable-m-sig-key&=: Message signature key material (RFC 9421)
+  -v, --verbose*: Print the whole request as well as the response
+  --verify=: If "no", skip SSL verification. If a file path, use it as a CA bundle
+  -V, --version: Print version
+completion:
+  flag:
+    auth-type:
+    - basic
+    - bearer
+    - digest
+    cert:
+    - $files
+    cert-key:
+    - $files
+    generate:
+    - complete-bash
+    - complete-elvish
+    - complete-fish
+    - complete-nushell
+    - complete-powershell
+    - complete-zsh
+    - man
+    - man-markdown
+    http-version:
+    - '1.0'
+    - '1.1'
+    - '2'
+    - 2-prior-knowledge
+    - 3-prior-knowledge
+    output:
+    - $files
+    pretty:
+    - "all\t(default) Enable both coloring and formatting"
+    - "colors\tApply syntax highlighting to output"
+    - "format\tPretty-print json and sort headers"
+    - "none\tDisable both coloring and formatting"
+    ssl:
+    - auto
+    - tls1
+    - tls1.1
+    - tls1.2
+    - tls1.3
+    style:
+    - auto
+    - solarized
+    - monokai
+    - fruity
+    unix-socket:
+    - $files
+    unstable-m-sig-alg:
+    - hmac-sha256
+    - ed25519
+    - ecdsa-p256-sha256
+    - ecdsa-p384-sha384
+    - rsa-v1_5-sha256
+    - rsa-pss-sha512
+documentation:
+  command: |-
+    xh is a friendly and fast tool for sending HTTP requests.
+
+    It reimplements as much as possible of HTTPie's excellent design, with a focus on improved performance.
+  flag:
+    auth: |-
+      Authenticate as USER with PASS (-A basic|digest) or with TOKEN (-A bearer).
+
+      PASS will be prompted if missing. Use a trailing colon (i.e. "USER:") to authenticate with just a username.
+
+      TOKEN is expected if --auth-type=bearer.
+    cert-key: |-
+      A private key file to use with --cert.
+
+      Only necessary if the private key is not contained in the cert file.
+    check-status: |-
+      (default) Exit with an error status code if the server replies with an error.
+
+      The exit code will be 4 on 4xx (Client Error), 5 on 5xx (Server Error), or 3 on 3xx (Redirect) if --follow isn't set.
+
+      If stdout is redirected then a warning is written to stderr.
+    compress: |-
+      Content compressed (encoded) with Deflate algorithm.
+
+      The Content-Encoding header is set to deflate.
+
+      Compression is skipped if it appears that compression ratio is negative. Compression can be forced by repeating this option.
+
+      Note: Compression cannot be used if the Content-Encoding request header is present.
+    curl: |-
+      Print a translation to a curl command.
+
+      For translating the other way, try https://curl2httpie.online/.
+    debug: |-
+      Print full error stack traces and debug log messages.
+
+      Logging can be configured in more detail using the `$RUST_LOG` environment variable. Set `RUST_LOG=trace` to show even more messages. See https://docs.rs/env_logger/0.11.3/env_logger/#enabling-logging.
+    download: |-
+      Download the body to a file instead of printing it.
+
+      The Accept-Encoding header is set to identity and any redirects will be followed.
+    form: |-
+      Serialize data items from the command line as form fields.
+
+      Overrides both --json and --multipart.
+    format-options: |-
+      Set output formatting options. Supported option are:
+
+          json.indent:<NUM>
+          json.format:<true|false>
+          xml.indent:<NUM>
+          xml.format:<true|false>
+          headers.sort:<true|false>
+
+      Example: --format-options=json.indent:2,headers.sort:false
+    generate: |-
+      Generate shell completions or man pages. Possible values are:
+
+          complete-bash         Generate completions for bash
+          complete-elvish       Generate completions for elvish
+          complete-fish         Generage completions for fish
+          complete-nushell      Generate completions for nushell
+          complete-powershell   Generate completions for powershell
+          complete-zsh          Generate completions for zsh
+          man                   Generate manual page in roff format
+          man-markdown          Generate manual page in markdown format
+
+      Example: xh --generate=complete-bash > xh.bash
+    ignore-stdin: |-
+      Do not attempt to read stdin.
+
+      This disables the default behaviour of reading the request body from stdin when a redirected input is detected.
+
+      It is recommended to pass this flag when using xh for scripting purposes. For more information, refer to https://httpie.io/docs/cli/best-practices.
+    interface: |-
+      Bind to a network interface or local IP address.
+
+      Example: --interface=eth0 --interface=192.168.0.2
+    json: |-
+      (default) Serialize data items from the command line as a JSON object.
+
+      Overrides both --form and --multipart.
+    multipart: |-
+      Like --form, but force a multipart/form-data request even without files.
+
+      Overrides both --json and --form.
+    pretty: |-
+      Controls output processing. Possible values are:
+
+          all      (default) Enable both coloring and formatting
+          colors   Apply syntax highlighting to output
+          format   Pretty-print json and sort headers
+          none     Disable both coloring and formatting
+
+      Defaults to "format" if the NO_COLOR env is set and to "none" if stdout is not tty.
+    print: |-
+      String specifying what the output should contain
+
+          H   request headers
+          B   request body
+          h   response headers
+          b   response body
+          m   response metadata
+
+      Example: --print=Hb
+    proxy: |-
+      Use a proxy for a protocol. For example: --proxy https:http://proxy.host:8080.
+
+      PROTOCOL can be "all", "http" or "https".
+
+      If your proxy requires credentials, put them in the URL, like so: --proxy http:socks5://user:password@proxy.host:8000.
+
+      You can specify proxies for multiple protocols by repeating this option.
+
+      The environment variables "ALL_PROXY", "HTTP_PROXY" and "HTTPS_PROXY" can also be used, but are completely ignored if --proxy is passed.
+    quiet: |-
+      Do not print to stdout or stderr.
+
+      Using quiet twice i.e. -qq will suppress warnings as well.
+    resolve: |-
+      Override DNS resolution for specific domain to a custom IP.
+
+      You can override multiple domains by repeating this option.
+
+      Example: --resolve=example.com:127.0.0.1
+    response-charset: |-
+      Override the response encoding for terminal display purposes.
+
+      Example: --response-charset=latin1
+    response-mime: |-
+      Override the response mime type for coloring and formatting for the terminal.
+
+      Example: --response-mime=application/json
+    session: |-
+      Create, or reuse and update a session.
+
+      Within a session, custom headers, auth credentials, as well as any cookies sent by the server persist between requests.
+    ssl: |-
+      Force a particular TLS version.
+
+      "auto" gives the default behavior of negotiating a version with the server.
+    timeout: |-
+      Connection timeout of the request.
+
+      The default value is "0", i.e., there is no timeout limit.
+    unix-socket: |-
+      Connect using a Unix domain socket.
+
+      Example: xh :/index.html --unix-socket=/var/run/temp.sock
+    unstable-m-sig-alg: |-
+      Message signature algorithm (RFC 9421).
+
+      Supported algorithms: hmac-sha256, ed25519, ecdsa-p256-sha256, ecdsa-p384-sha384, rsa-v1_5-sha256, rsa-pss-sha512.
+    unstable-m-sig-comp: |-
+      Comma-separated list of message signature components (RFC 9421).
+
+      If not specified, defaults to "@method, @authority, @target-uri". This flag can be passed multiple times; values are appended in order. "@query-params" is a shorthand for all query parameters. "content-digest" is included if there's a body.
+
+      Example: "@method,@path,content-digest"
+    unstable-m-sig-key: |-
+      Message signature key material (RFC 9421).
+
+      Can be a raw string or a file path starting with @.
+    verbose: |-
+      Print the whole request as well as the response.
+
+      Additionally, this enables --all for printing intermediary requests/responses while following redirects.
+
+      Using verbose twice i.e. -vv will print the response metadata as well.
+
+      Equivalent to --print=HhBb --all.
+    verify: |-
+      If "no", skip SSL verification. If a file path, use it as a CA bundle.
+
+      Specifying a CA bundle will disable the system's built-in root certificates.
+
+      "false" instead of "no" also works. The default is "yes" ("true").
