@@ -1,8 +1,8 @@
 diff --git a/grit-cli/src/main.rs b/grit-cli/src/main.rs
-index f282f92..5e747f2 100644
+index 72e1861..38e3c19 100644
 --- a/grit-cli/src/main.rs
 +++ b/grit-cli/src/main.rs
-@@ -23,9 +23,13 @@ mod terminal_progress;
+@@ -48,9 +48,13 @@ mod terminal_progress;
  mod ui;
  
  use anyhow::{bail, Result};
@@ -14,10 +14,10 @@ index f282f92..5e747f2 100644
 +use clap_complete::generate;
 +use std::io;
 +
+ use exit_status::ExitStatus;
  use output::{emit, OutputMode, OutputOptions, RenderContext};
  
- /// A small, opinionated Git client built on `grit-lib`.
-@@ -501,6 +505,11 @@ struct ServeArgs {
+@@ -1777,6 +1781,11 @@ fn normalize_tag_verify_argv(mut args: Vec<String>) -> Vec<String> {
  }
  
  fn main() {
@@ -27,5 +27,5 @@ index f282f92..5e747f2 100644
 +    }
 +
      stdio::configure();
-     let cli = match Cli::try_parse() {
-         Ok(cli) => cli,
+     grit_trace::maybe_init_from_env();
+     let status = match run() {
