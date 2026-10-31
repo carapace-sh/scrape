@@ -56,6 +56,7 @@ jobs:
   kcl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kcl}}
   k3d: {uses: ./.github/workflows/scrape-template.yml, with: {command: k3d}}
   kak-lsp: {uses: ./.github/workflows/scrape-template.yml, with: {command: kak-lsp}}
+  kind: {uses: ./.github/workflows/scrape-template.yml, with: {command: kind}}
   kubeadm: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubeadm}}
   kubectl: {uses: ./.github/workflows/scrape-template.yml, with: {command: kubectl}}
   procs: {uses: ./.github/workflows/scrape-template.yml, with: {command: procs}}
@@ -69,11 +70,14 @@ jobs:
   openstack: {uses: ./.github/workflows/scrape-template.yml, with: {command: openstack}}
   pixi: {uses: ./.github/workflows/scrape-template.yml, with: {command: pixi}}
   pnpm: {uses: ./.github/workflows/scrape-template.yml, with: {command: pnpm}}
+  pre-commit: {uses: ./.github/workflows/scrape-template.yml, with: {command: pre-commit}}
   restic: {uses: ./.github/workflows/scrape-template.yml, with: {command: restic}}
   ripsecrets: {uses: ./.github/workflows/scrape-template.yml, with: {command: ripsecrets}}
+  ruff: {uses: ./.github/workflows/scrape-template.yml, with: {command: ruff}}
   rustup: {uses: ./.github/workflows/scrape-template.yml, with: {command: rustup}}
   scc: {uses: ./.github/workflows/scrape-template.yml, with: {command: scc}}
   sd: {uses: ./.github/workflows/scrape-template.yml, with: {command: sd}}
+  skaffold: {uses: ./.github/workflows/scrape-template.yml, with: {command: skaffold}}
   starship: {uses: ./.github/workflows/scrape-template.yml, with: {command: starship}}
   syft: {uses: ./.github/workflows/scrape-template.yml, with: {command: syft}}
   taplo: {uses: ./.github/workflows/scrape-template.yml, with: {command: taplo}}

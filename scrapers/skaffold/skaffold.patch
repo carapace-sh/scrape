@@ -1,0 +1,20 @@
+diff --git a/cmd/skaffold/app/cmd/cmd.go b/cmd/skaffold/app/cmd/cmd.go
+index 98d4dbb3..fc76b8b5 100644
+--- a/cmd/skaffold/app/cmd/cmd.go
++++ b/cmd/skaffold/app/cmd/cmd.go
+@@ -23,6 +23,7 @@ import (
+ 	"os"
+ 	"strings"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/joho/godotenv"
+ 	"github.com/spf13/cobra"
+ 	"github.com/spf13/pflag"
+@@ -185,6 +186,7 @@ func NewSkaffoldCommand(out, errOut io.Writer) *cobra.Command {
+ 	rootCmd.AddCommand(NewCmdInspect())
+ 	rootCmd.AddCommand(NewCmdLint())
+ 	rootCmd.AddCommand(NewCmdLSP())
++	carapace.Gen(rootCmd)
+ 
+ 	templates.ActsAsRootCommand(rootCmd, nil, groups...)
+ 	rootCmd.PersistentFlags().StringVarP(&v, "verbosity", "v", log.DefaultLogLevel.String(), fmt.Sprintf("Log level: one of %v", log.AllLevels))
