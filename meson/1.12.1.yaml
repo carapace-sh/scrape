@@ -1,0 +1,912 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: meson
+commands:
+    - name: compile
+      description: Build the project
+      flags:
+        --clean: Clean the build directory.
+        --ninja-args=: Arguments to pass to `ninja` (applied only on `ninja` backend).
+        --vs-args=: Arguments to pass to `msbuild` (applied only on `vs` backend).
+        --xcode-args=: Arguments to pass to `xcodebuild` (applied only on `xcode` backend).
+        -C=: directory to cd into before running
+        -j, --jobs=: The number of worker jobs to run (if supported).
+        -l, --load-average=: The system load average to try to maintain (if supported).
+        -v, --verbose: Show more verbose output.
+      documentation:
+        flag:
+            C: directory to cd into before running
+            clean: Clean the build directory.
+            jobs: The number of worker jobs to run (if supported). If the value is less than 1 the build program will guess.
+            load-average: The system load average to try to maintain (if supported).
+            ninja-args: Arguments to pass to `ninja` (applied only on `ninja` backend).
+            verbose: Show more verbose output.
+            vs-args: Arguments to pass to `msbuild` (applied only on `vs` backend).
+            xcode-args: Arguments to pass to `xcodebuild` (applied only on `xcode` backend).
+    - name: configure
+      description: Change project options
+      flags:
+        --auto-features=: 'Override value of all ''auto'' features (default: auto).'
+        --backend=: 'Backend to use (default: ninja).'
+        --bindir=: 'Executable directory (default: bin).'
+        --build.cmake-prefix-path=: 'List of additional prefixes for cmake to search (just for build machine, default: []).'
+        --build.pkg-config-path=: 'List of additional paths for pkg-config to search (just for build machine, default: []).'
+        --buildtype=: 'Build type to use (default: debug).'
+        --clearcache: Clear cached state (e.g. found dependencies)
+        --cmake-prefix-path=: 'List of additional prefixes for cmake to search (just for host machine, default: []).'
+        --datadir=: 'Data file directory (default: share).'
+        --debug=: Enable debug symbols and other information.
+        --default-both-libraries=: 'Default library type for both_libraries (default: shared).'
+        --default-library=: 'Default library type (default: shared).'
+        --errorlogs=: Whether to print the logs from failing tests.
+        --force-fallback-for=: 'Force fallback for those subprojects (default: []).'
+        --genvslite=: 'Setup multiple buildtype-suffixed ninja-backend build directories, and a [builddir]_vs containing a Visual Studio meta-backend with multiple configurations that calls into them (default: vs2022).'
+        --includedir=: 'Header file directory (default: include).'
+        --infodir=: 'Info page directory (default: share/info).'
+        --install-umask=: 'Default umask to apply on permissions of installed files (default: 0o22).'
+        --layout=: 'Build directory layout (default: mirror).'
+        --libdir=: 'Library directory (default: lib64).'
+        --libexecdir=: 'Library executable directory (default: libexec).'
+        --licensedir=: 'Licenses directory (default: ).'
+        --localedir=: 'Locale data directory (default: share/locale).'
+        --localstatedir=: 'Localstate data directory (default: var).'
+        --mandir=: 'Manual page directory (default: share/man).'
+        --namingscheme=: 'How target file names are formed (default: classic).'
+        --no-pager: Do not redirect output to a pager
+        --optimization=: 'Optimization level (default: 0).'
+        --os2-emxomf=: Use OMF format on OS/2.
+        --pkg-config-path=: 'List of additional paths for pkg-config to search (just for host machine, default: []).'
+        --pkgconfig.relocatable=: Generate pkgconfig files as relocatable.
+        --prefer-static=: Whether to try static linking before shared linking.
+        --prefix=: 'Installation prefix (default: /usr/local).'
+        --python.allow-limited-api=: Whether to allow use of the Python Limited API.
+        --python.build-config=: 'Config file containing the build details for the target Python installation (default: ).'
+        --python.bytecompile=: 'Whether to compile bytecode (default: 0).'
+        --python.install-env=: 'Which python environment to install to (default: prefix).'
+        --python.platlibdir=: 'Directory for site-specific, platform-specific files (default: ).'
+        --python.purelibdir=: 'Directory for site-specific, non-platform-specific files (default: ).'
+        --sbindir=: 'System executable directory (default: sbin).'
+        --sharedstatedir=: 'Architecture-independent data directory (default: com).'
+        --stdsplit=: Split stdout and stderr in test logs.
+        --strip=: Strip targets on install.
+        --sysconfdir=: 'Sysconf data directory (default: etc).'
+        --unity-size=: 'Unity block size (default: 4).'
+        --unity=: 'Unity build (default: off).'
+        --vsenv=: Activate Visual Studio environment.
+        --warnlevel=: 'Compiler warning level to use (default: 1).'
+        --werror=: Treat warnings as errors.
+        --wrap-mode=: 'Wrap mode (default: default).'
+        -D=: Set the value of an option, can be used several times to set multiple options.
+        -U=: Remove a subproject option.
+      completion:
+        flag:
+            auto-features:
+                - enabled
+                - disabled
+                - auto
+            backend:
+                - ninja
+                - vs
+                - vs2010
+                - vs2012
+                - vs2013
+                - vs2015
+                - vs2017
+                - vs2019
+                - vs2022
+                - vs2026
+                - xcode
+                - none
+            buildtype:
+                - plain
+                - debug
+                - debugoptimized
+                - release
+                - minsize
+                - custom
+            default-both-libraries:
+                - shared
+                - static
+                - auto
+            default-library:
+                - shared
+                - static
+                - both
+            genvslite:
+                - vs2022
+                - vs2026
+            layout:
+                - mirror
+                - flat
+            namingscheme:
+                - platform
+                - classic
+            optimization:
+                - plain
+                - "0"
+                - g
+                - "1"
+                - "2"
+                - "3"
+                - s
+            python.install-env:
+                - auto
+                - prefix
+                - system
+                - venv
+            unity:
+                - "on"
+                - "off"
+                - subprojects
+            warnlevel:
+                - "0"
+                - "1"
+                - "2"
+                - "3"
+                - everything
+            wrap-mode:
+                - default
+                - nofallback
+                - nodownload
+                - forcefallback
+                - nopromote
+      documentation:
+        flag:
+            D: Set the value of an option, can be used several times to set multiple options.
+            U: Remove a subproject option.
+            auto-features: 'Override value of all ''auto'' features (default: auto).'
+            backend: 'Backend to use (default: ninja).'
+            bindir: 'Executable directory (default: bin).'
+            build.cmake-prefix-path: 'List of additional prefixes for cmake to search (just for build machine, default: []).'
+            build.pkg-config-path: 'List of additional paths for pkg-config to search (just for build machine, default: []).'
+            buildtype: 'Build type to use (default: debug).'
+            clearcache: Clear cached state (e.g. found dependencies)
+            cmake-prefix-path: 'List of additional prefixes for cmake to search (just for host machine, default: []).'
+            datadir: 'Data file directory (default: share).'
+            debug: Enable debug symbols and other information.
+            default-both-libraries: 'Default library type for both_libraries (default: shared).'
+            default-library: 'Default library type (default: shared).'
+            errorlogs: Whether to print the logs from failing tests.
+            force-fallback-for: 'Force fallback for those subprojects (default: []).'
+            genvslite: 'Setup multiple buildtype-suffixed ninja-backend build directories, and a [builddir]_vs containing a Visual Studio meta-backend with multiple configurations that calls into them (default: vs2022).'
+            includedir: 'Header file directory (default: include).'
+            infodir: 'Info page directory (default: share/info).'
+            install-umask: 'Default umask to apply on permissions of installed files (default: 0o22).'
+            layout: 'Build directory layout (default: mirror).'
+            libdir: 'Library directory (default: lib64).'
+            libexecdir: 'Library executable directory (default: libexec).'
+            licensedir: 'Licenses directory (default: ).'
+            localedir: 'Locale data directory (default: share/locale).'
+            localstatedir: 'Localstate data directory (default: var).'
+            mandir: 'Manual page directory (default: share/man).'
+            namingscheme: 'How target file names are formed (default: classic).'
+            no-pager: Do not redirect output to a pager
+            optimization: 'Optimization level (default: 0).'
+            os2-emxomf: Use OMF format on OS/2.
+            pkg-config-path: 'List of additional paths for pkg-config to search (just for host machine, default: []).'
+            pkgconfig.relocatable: Generate pkgconfig files as relocatable.
+            prefer-static: Whether to try static linking before shared linking.
+            prefix: 'Installation prefix (default: /usr/local).'
+            python.allow-limited-api: Whether to allow use of the Python Limited API.
+            python.build-config: 'Config file containing the build details for the target Python installation (default: ).'
+            python.bytecompile: 'Whether to compile bytecode (default: 0).'
+            python.install-env: 'Which python environment to install to (default: prefix).'
+            python.platlibdir: 'Directory for site-specific, platform-specific files (default: ).'
+            python.purelibdir: 'Directory for site-specific, non-platform-specific files (default: ).'
+            sbindir: 'System executable directory (default: sbin).'
+            sharedstatedir: 'Architecture-independent data directory (default: com).'
+            stdsplit: Split stdout and stderr in test logs.
+            strip: Strip targets on install.
+            sysconfdir: 'Sysconf data directory (default: etc).'
+            unity: 'Unity build (default: off).'
+            unity-size: 'Unity block size (default: 4).'
+            vsenv: Activate Visual Studio environment.
+            warnlevel: 'Compiler warning level to use (default: 1).'
+            werror: Treat warnings as errors.
+            wrap-mode: 'Wrap mode (default: default).'
+    - name: devenv
+      description: Run commands in developer environment
+      flags:
+        --dump-format=: Format used with --dump (Since 1.1.0)
+        --dump=: Only print required environment (Since 0.62.0) Takes an optional file path (Since 1.1.0)
+        -C=: Path to build directory
+        -w, --workdir=: 'Directory to cd into before running (default: builddir, Since 1.0.0)'
+      completion:
+        flag:
+            dump-format:
+                - sh
+                - export
+                - vscode
+      documentation:
+        flag:
+            C: Path to build directory
+            dump: Only print required environment (Since 0.62.0) Takes an optional file path (Since 1.1.0)
+            dump-format: Format used with --dump (Since 1.1.0)
+            workdir: 'Directory to cd into before running (default: builddir, Since 1.0.0)'
+    - name: dist
+      description: Generate release archive
+      flags:
+        --allow-dirty: Allow even when repository contains uncommitted changes.
+        --formats=: Comma separated list of archive types to create.
+        --include-subprojects: Include source code of subprojects that have been used for the build.
+        --no-tests: Do not build and test generated packages.
+        -C=: directory to cd into before running
+        -j, --num-processes=: How many parallel processes to use (e.g. for compilation and testing).
+      documentation:
+        flag:
+            C: directory to cd into before running
+            allow-dirty: Allow even when repository contains uncommitted changes.
+            formats: Comma separated list of archive types to create. Supports xztar (default), bztar, gztar, and zip.
+            include-subprojects: Include source code of subprojects that have been used for the build.
+            no-tests: Do not build and test generated packages.
+            num-processes: How many parallel processes to use (e.g. for compilation and testing).
+    - name: env2mfile
+      description: Convert current environment to a cross or native file
+      flags:
+        --android: Generate cross files for Android toolchains.
+        --cpu-family=: Define cpu family for cross compilation.
+        --cpu=: Define cpu for cross compilation.
+        --cross: Generate a cross compilation file.
+        --debarch=: The dpkg architecture to generate.
+        --endian=: Define endianness for cross compilation.
+        --gccsuffix=: A particular gcc version suffix if necessary.
+        --kernel=: Define kernel for cross compilation.
+        --native: Generate a native compilation file.
+        --subsystem=: Define subsystem for cross compilation.
+        --system=: Define system for cross compilation.
+        --use-for-build: Use _FOR_BUILD envvars.
+        -o=!: The output file or directory (for Android).
+      completion:
+        flag:
+            endian:
+                - big
+                - little
+      documentation:
+        flag:
+            android: Generate cross files for Android toolchains.
+            cpu: Define cpu for cross compilation.
+            cpu-family: Define cpu family for cross compilation.
+            cross: Generate a cross compilation file.
+            debarch: The dpkg architecture to generate.
+            endian: Define endianness for cross compilation.
+            gccsuffix: A particular gcc version suffix if necessary.
+            kernel: Define kernel for cross compilation.
+            native: Generate a native compilation file.
+            o: The output file or directory (for Android).
+            subsystem: Define subsystem for cross compilation.
+            system: Define system for cross compilation.
+            use-for-build: Use _FOR_BUILD envvars.
+    - name: fmt
+      flags:
+        --source-file-path=: path to use, when reading from stdin
+        -c, --configuration=: read configuration from meson.format
+        -d, --check-diff: exit with 1 and show diff if files would be modified by meson format
+        -e, --editor-config: try to read configuration from .editorconfig
+        -i, --inplace: format files in-place
+        -o, --output=: output file (implies having exactly one input)
+        -q, --check-only: silently exit with 1 if files would be modified by meson format
+        -r, --recursive: recurse subdirs (requires --check-only, --check-diff or --inplace option)
+        -s, --subprojects: recurse subprojects (requires --recursive)
+      documentation:
+        flag:
+            check-diff: exit with 1 and show diff if files would be modified by meson format
+            check-only: silently exit with 1 if files would be modified by meson format
+            configuration: read configuration from meson.format
+            editor-config: try to read configuration from .editorconfig
+            inplace: format files in-place
+            output: output file (implies having exactly one input)
+            recursive: recurse subdirs (requires --check-only, --check-diff or --inplace option)
+            source-file-path: path to use, when reading from stdin
+            subprojects: recurse subprojects (requires --recursive)
+    - name: format
+      description: Format meson source file
+      flags:
+        --source-file-path=: path to use, when reading from stdin
+        -c, --configuration=: read configuration from meson.format
+        -d, --check-diff: exit with 1 and show diff if files would be modified by meson format
+        -e, --editor-config: try to read configuration from .editorconfig
+        -i, --inplace: format files in-place
+        -o, --output=: output file (implies having exactly one input)
+        -q, --check-only: silently exit with 1 if files would be modified by meson format
+        -r, --recursive: recurse subdirs (requires --check-only, --check-diff or --inplace option)
+        -s, --subprojects: recurse subprojects (requires --recursive)
+      documentation:
+        flag:
+            check-diff: exit with 1 and show diff if files would be modified by meson format
+            check-only: silently exit with 1 if files would be modified by meson format
+            configuration: read configuration from meson.format
+            editor-config: try to read configuration from .editorconfig
+            inplace: format files in-place
+            output: output file (implies having exactly one input)
+            recursive: recurse subdirs (requires --check-only, --check-diff or --inplace option)
+            source-file-path: path to use, when reading from stdin
+            subprojects: recurse subprojects (requires --recursive)
+    - name: help
+      description: Print help of a subcommand
+    - name: init
+      description: Create a new project
+      flags:
+        --builddir=: directory for build
+        --type=: project type.
+        --version=: project version.
+        -C=: directory to cd into before running
+        -b, --build: build after generation
+        -d, --deps=: dependencies, comma-separated
+        -e, --executable=: executable name.
+        -f, --force: force overwrite of existing files and directories.
+        -l, --language=: project language.
+        -n, --name=: project name.
+      completion:
+        flag:
+            language:
+                - c
+                - cpp
+                - cs
+                - cuda
+                - d
+                - fortran
+                - java
+                - objc
+                - objcpp
+                - rust
+                - vala
+            type:
+                - executable
+                - library
+      documentation:
+        flag:
+            C: directory to cd into before running
+            build: build after generation
+            builddir: directory for build
+            deps: dependencies, comma-separated
+            executable: 'executable name. default: project name'
+            force: force overwrite of existing files and directories.
+            language: 'project language. default: autodetected based on source files'
+            name: 'project name. default: name of current directory'
+            type: 'project type. default: executable based project'
+            version: 'project version. default: 0.1'
+    - name: install
+      description: Install the project
+      flags:
+        --destdir=: Sets or overrides DESTDIR environment.
+        --no-rebuild: Do not rebuild before installing.
+        --only-changed: Only overwrite files that are older than the copied file.
+        --profile-self: ==SUPPRESS==
+        --skip-subprojects=: Do not install files from given subprojects.
+        --strip: Strip targets even if strip option was not set during configure.
+        --tags=: Install only targets having one of the given tags.
+        -C=: directory to cd into before running
+        -n, --dry-run: Doesn't actually install, but print logs.
+        -q, --quiet: Do not print every file that was installed.
+      documentation:
+        flag:
+            C: directory to cd into before running
+            destdir: Sets or overrides DESTDIR environment. (Since 0.57.0)
+            dry-run: Doesn't actually install, but print logs. (Since 0.57.0)
+            no-rebuild: Do not rebuild before installing.
+            only-changed: Only overwrite files that are older than the copied file.
+            profile-self: ==SUPPRESS==
+            quiet: Do not print every file that was installed.
+            skip-subprojects: Do not install files from given subprojects. (Since 0.58.0)
+            strip: Strip targets even if strip option was not set during configure. (Since 0.62.0)
+            tags: Install only targets having one of the given tags. (Since 0.60.0)
+    - name: introspect
+      description: Introspect project
+      flags:
+        --ast: Dump the AST of the meson file.
+        --backend=: The backend to use for the --buildoptions introspection.
+        --benchmarks: List all benchmarks.
+        --buildoptions: List all build options.
+        --buildsystem-files: List files that make up the build system.
+        --compilers: List used compilers.
+        --dependencies: List external dependencies.
+        --install-plan: List all installed files and directories with their details.
+        --installed: List all installed files and directories.
+        --machines: Information about host, build, and target machines.
+        --projectinfo: Information about projects.
+        --scan-dependencies: Scan for dependencies used in the meson.build file.
+        --targets: List top level targets.
+        --tests: List all unit tests.
+        -a, --all: Print all available information.
+        -f, --force-object-output: Always use the new JSON format for multiple entries (even for 0 and 1 introspection commands)
+        -i, --indent: Enable pretty printed JSON.
+      completion:
+        flag:
+            backend:
+                - ninja
+                - none
+                - vs
+                - vs2010
+                - vs2012
+                - vs2013
+                - vs2015
+                - vs2017
+                - vs2019
+                - vs2022
+                - vs2026
+                - xcode
+      documentation:
+        flag:
+            all: Print all available information.
+            ast: Dump the AST of the meson file.
+            backend: The backend to use for the --buildoptions introspection.
+            benchmarks: List all benchmarks.
+            buildoptions: List all build options.
+            buildsystem-files: List files that make up the build system.
+            compilers: List used compilers.
+            dependencies: List external dependencies.
+            force-object-output: Always use the new JSON format for multiple entries (even for 0 and 1 introspection commands)
+            indent: Enable pretty printed JSON.
+            install-plan: List all installed files and directories with their details.
+            installed: List all installed files and directories.
+            machines: Information about host, build, and target machines.
+            projectinfo: Information about projects.
+            scan-dependencies: Scan for dependencies used in the meson.build file.
+            targets: List top level targets.
+            tests: List all unit tests.
+    - name: reprotest
+      description: Test if project builds reproducibly
+      flags:
+        --intermediaries: Check intermediate files.
+      documentation:
+        flag:
+            intermediaries: Check intermediate files.
+    - name: rewrite
+      description: Modify the project definition
+      flags:
+        -S, --skip-errors: Skip errors instead of aborting
+        -V, --verbose: Enable verbose output
+        -s, --sourcedir=: Path to source directory.
+      commands:
+        - name: cmd
+        - name: command
+          description: Execute a JSON array of commands
+        - name: def
+        - name: default-options
+          description: Modify the project default options
+        - name: kwargs
+          description: Modify keyword arguments
+        - name: target
+          description: Modify a target
+          flags:
+            --type=: Type of the target to add (only for the "add_target" action)
+            -s, --subdir=: Subdirectory of the new target (only for the "add_target" action)
+          completion:
+            flag:
+                type:
+                    - both_libraries
+                    - executable
+                    - jar
+                    - library
+                    - shared_library
+                    - shared_module
+                    - static_library
+          documentation:
+            flag:
+                subdir: Subdirectory of the new target (only for the "add_target" action)
+                type: Type of the target to add (only for the "add_target" action)
+        - name: tgt
+          flags:
+            --type=: Type of the target to add (only for the "add_target" action)
+            -s, --subdir=: Subdirectory of the new target (only for the "add_target" action)
+          completion:
+            flag:
+                type:
+                    - both_libraries
+                    - executable
+                    - jar
+                    - library
+                    - shared_library
+                    - shared_module
+                    - static_library
+          documentation:
+            flag:
+                subdir: Subdirectory of the new target (only for the "add_target" action)
+                type: Type of the target to add (only for the "add_target" action)
+      documentation:
+        flag:
+            skip-errors: Skip errors instead of aborting
+            sourcedir: Path to source directory.
+            verbose: Enable verbose output
+    - name: setup
+      description: Configure the project
+      flags:
+        --auto-features=: 'Override value of all ''auto'' features (default: auto).'
+        --backend=: 'Backend to use (default: ninja).'
+        --bindir=: 'Executable directory (default: bin).'
+        --build.cmake-prefix-path=: 'List of additional prefixes for cmake to search (just for build machine, default: []).'
+        --build.pkg-config-path=: 'List of additional paths for pkg-config to search (just for build machine, default: []).'
+        --buildtype=: 'Build type to use (default: debug).'
+        --clearcache: Clear cached state (e.g. found dependencies).
+        --cmake-prefix-path=: 'List of additional prefixes for cmake to search (just for host machine, default: []).'
+        --cross-file=: File describing cross compilation environment.
+        --datadir=: 'Data file directory (default: share).'
+        --debug=: Enable debug symbols and other information.
+        --default-both-libraries=: 'Default library type for both_libraries (default: shared).'
+        --default-library=: 'Default library type (default: shared).'
+        --errorlogs=: Whether to print the logs from failing tests.
+        --fatal-meson-warnings: Make all Meson warnings fatal
+        --force-fallback-for=: 'Force fallback for those subprojects (default: []).'
+        --genvslite=: 'Setup multiple buildtype-suffixed ninja-backend build directories, and a [builddir]_vs containing a Visual Studio meta-backend with multiple configurations that calls into them (default: vs2022).'
+        --includedir=: 'Header file directory (default: include).'
+        --infodir=: 'Info page directory (default: share/info).'
+        --install-umask=: 'Default umask to apply on permissions of installed files (default: 0o22).'
+        --layout=: 'Build directory layout (default: mirror).'
+        --libdir=: 'Library directory (default: lib64).'
+        --libexecdir=: 'Library executable directory (default: libexec).'
+        --licensedir=: 'Licenses directory (default: ).'
+        --localedir=: 'Locale data directory (default: share/locale).'
+        --localstatedir=: 'Localstate data directory (default: var).'
+        --mandir=: 'Manual page directory (default: share/man).'
+        --namingscheme=: 'How target file names are formed (default: classic).'
+        --native-file=: File containing overrides for native compilation environment.
+        --optimization=: 'Optimization level (default: 0).'
+        --os2-emxomf=: Use OMF format on OS/2.
+        --pkg-config-path=: 'List of additional paths for pkg-config to search (just for host machine, default: []).'
+        --pkgconfig.relocatable=: Generate pkgconfig files as relocatable.
+        --prefer-static=: Whether to try static linking before shared linking.
+        --prefix=: 'Installation prefix (default: /usr/local).'
+        --profile-self: ==SUPPRESS==
+        --python.allow-limited-api=: Whether to allow use of the Python Limited API.
+        --python.build-config=: 'Config file containing the build details for the target Python installation (default: ).'
+        --python.bytecompile=: 'Whether to compile bytecode (default: 0).'
+        --python.install-env=: 'Which python environment to install to (default: prefix).'
+        --python.platlibdir=: 'Directory for site-specific, platform-specific files (default: ).'
+        --python.purelibdir=: 'Directory for site-specific, non-platform-specific files (default: ).'
+        --reconfigure: Set options and reconfigure the project.
+        --sbindir=: 'System executable directory (default: sbin).'
+        --sharedstatedir=: 'Architecture-independent data directory (default: com).'
+        --stdsplit=: Split stdout and stderr in test logs.
+        --strip=: Strip targets on install.
+        --sysconfdir=: 'Sysconf data directory (default: etc).'
+        --unity-size=: 'Unity block size (default: 4).'
+        --unity=: 'Unity build (default: off).'
+        --vsenv=: Activate Visual Studio environment.
+        --warnlevel=: 'Compiler warning level to use (default: 1).'
+        --werror=: Treat warnings as errors.
+        --wipe: Wipe build directory and reconfigure using previous command line options.
+        --wrap-mode=: 'Wrap mode (default: default).'
+        -D=: Set the value of an option, can be used several times to set multiple options.
+        -v, --version=: show program's version number and exit
+      completion:
+        flag:
+            auto-features:
+                - enabled
+                - disabled
+                - auto
+            backend:
+                - ninja
+                - vs
+                - vs2010
+                - vs2012
+                - vs2013
+                - vs2015
+                - vs2017
+                - vs2019
+                - vs2022
+                - vs2026
+                - xcode
+                - none
+            buildtype:
+                - plain
+                - debug
+                - debugoptimized
+                - release
+                - minsize
+                - custom
+            default-both-libraries:
+                - shared
+                - static
+                - auto
+            default-library:
+                - shared
+                - static
+                - both
+            genvslite:
+                - vs2022
+                - vs2026
+            layout:
+                - mirror
+                - flat
+            namingscheme:
+                - platform
+                - classic
+            optimization:
+                - plain
+                - "0"
+                - g
+                - "1"
+                - "2"
+                - "3"
+                - s
+            python.install-env:
+                - auto
+                - prefix
+                - system
+                - venv
+            unity:
+                - "on"
+                - "off"
+                - subprojects
+            warnlevel:
+                - "0"
+                - "1"
+                - "2"
+                - "3"
+                - everything
+            wrap-mode:
+                - default
+                - nofallback
+                - nodownload
+                - forcefallback
+                - nopromote
+      documentation:
+        flag:
+            D: Set the value of an option, can be used several times to set multiple options.
+            auto-features: 'Override value of all ''auto'' features (default: auto).'
+            backend: 'Backend to use (default: ninja).'
+            bindir: 'Executable directory (default: bin).'
+            build.cmake-prefix-path: 'List of additional prefixes for cmake to search (just for build machine, default: []).'
+            build.pkg-config-path: 'List of additional paths for pkg-config to search (just for build machine, default: []).'
+            buildtype: 'Build type to use (default: debug).'
+            clearcache: Clear cached state (e.g. found dependencies). Since 1.3.0.
+            cmake-prefix-path: 'List of additional prefixes for cmake to search (just for host machine, default: []).'
+            cross-file: File describing cross compilation environment.
+            datadir: 'Data file directory (default: share).'
+            debug: Enable debug symbols and other information.
+            default-both-libraries: 'Default library type for both_libraries (default: shared).'
+            default-library: 'Default library type (default: shared).'
+            errorlogs: Whether to print the logs from failing tests.
+            fatal-meson-warnings: Make all Meson warnings fatal
+            force-fallback-for: 'Force fallback for those subprojects (default: []).'
+            genvslite: 'Setup multiple buildtype-suffixed ninja-backend build directories, and a [builddir]_vs containing a Visual Studio meta-backend with multiple configurations that calls into them (default: vs2022).'
+            includedir: 'Header file directory (default: include).'
+            infodir: 'Info page directory (default: share/info).'
+            install-umask: 'Default umask to apply on permissions of installed files (default: 0o22).'
+            layout: 'Build directory layout (default: mirror).'
+            libdir: 'Library directory (default: lib64).'
+            libexecdir: 'Library executable directory (default: libexec).'
+            licensedir: 'Licenses directory (default: ).'
+            localedir: 'Locale data directory (default: share/locale).'
+            localstatedir: 'Localstate data directory (default: var).'
+            mandir: 'Manual page directory (default: share/man).'
+            namingscheme: 'How target file names are formed (default: classic).'
+            native-file: File containing overrides for native compilation environment.
+            optimization: 'Optimization level (default: 0).'
+            os2-emxomf: Use OMF format on OS/2.
+            pkg-config-path: 'List of additional paths for pkg-config to search (just for host machine, default: []).'
+            pkgconfig.relocatable: Generate pkgconfig files as relocatable.
+            prefer-static: Whether to try static linking before shared linking.
+            prefix: 'Installation prefix (default: /usr/local).'
+            profile-self: ==SUPPRESS==
+            python.allow-limited-api: Whether to allow use of the Python Limited API.
+            python.build-config: 'Config file containing the build details for the target Python installation (default: ).'
+            python.bytecompile: 'Whether to compile bytecode (default: 0).'
+            python.install-env: 'Which python environment to install to (default: prefix).'
+            python.platlibdir: 'Directory for site-specific, platform-specific files (default: ).'
+            python.purelibdir: 'Directory for site-specific, non-platform-specific files (default: ).'
+            reconfigure: Set options and reconfigure the project. Useful when new options have been added to the project and the default value is not working.
+            sbindir: 'System executable directory (default: sbin).'
+            sharedstatedir: 'Architecture-independent data directory (default: com).'
+            stdsplit: Split stdout and stderr in test logs.
+            strip: Strip targets on install.
+            sysconfdir: 'Sysconf data directory (default: etc).'
+            unity: 'Unity build (default: off).'
+            unity-size: 'Unity block size (default: 4).'
+            version: show program's version number and exit
+            vsenv: Activate Visual Studio environment.
+            warnlevel: 'Compiler warning level to use (default: 1).'
+            werror: Treat warnings as errors.
+            wipe: Wipe build directory and reconfigure using previous command line options. Useful when build directory got corrupted, or when rebuilding with a newer version of meson.
+            wrap-mode: 'Wrap mode (default: default).'
+    - name: subprojects
+      description: Manage subprojects
+      commands:
+        - name: checkout
+          description: Checkout a branch (git only)
+          flags:
+            --allow-insecure: Allow insecure server connections.
+            --sourcedir=: Path to source directory
+            --types=: Comma-separated list of subproject types.
+            -b: Create a new branch
+            -j, --num-processes=: How many parallel processes to use (Since 0.59.0).
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+                b: Create a new branch
+                num-processes: How many parallel processes to use (Since 0.59.0).
+                sourcedir: Path to source directory
+                types: 'Comma-separated list of subproject types. Supported types are: file, git, hg, svn, redirect (default: all)'
+        - name: download
+          description: Ensure subprojects are fetched, even if not in use.
+          flags:
+            --allow-insecure: Allow insecure server connections.
+            --sourcedir=: Path to source directory
+            --types=: Comma-separated list of subproject types.
+            -j, --num-processes=: How many parallel processes to use (Since 0.59.0).
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+                num-processes: How many parallel processes to use (Since 0.59.0).
+                sourcedir: Path to source directory
+                types: 'Comma-separated list of subproject types. Supported types are: file, git, hg, svn, redirect (default: all)'
+        - name: foreach
+          description: Execute a command in each subproject directory.
+          flags:
+            --allow-insecure: Allow insecure server connections.
+            --filter=: 'Patterns of subprojects to operate on (default: all)'
+            --sourcedir=: Path to source directory
+            --types=: Comma-separated list of subproject types.
+            -j, --num-processes=: How many parallel processes to use (Since 0.59.0).
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+                filter: 'Patterns of subprojects to operate on (default: all)'
+                num-processes: How many parallel processes to use (Since 0.59.0).
+                sourcedir: Path to source directory
+                types: 'Comma-separated list of subproject types. Supported types are: file, git, hg, svn, redirect (default: all)'
+        - name: packagefiles
+          description: Manage the packagefiles overlay
+          flags:
+            --allow-insecure: Allow insecure server connections.
+            --apply: Apply packagefiles to the subproject
+            --save: Save packagefiles from the subproject
+            --sourcedir=: Path to source directory
+            --types=: Comma-separated list of subproject types.
+            -j, --num-processes=: How many parallel processes to use (Since 0.59.0).
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+                apply: Apply packagefiles to the subproject
+                num-processes: How many parallel processes to use (Since 0.59.0).
+                save: Save packagefiles from the subproject
+                sourcedir: Path to source directory
+                types: 'Comma-separated list of subproject types. Supported types are: file, git, hg, svn, redirect (default: all)'
+        - name: purge
+          description: Remove all wrap-based subproject artifacts
+          flags:
+            --allow-insecure: Allow insecure server connections.
+            --confirm: Confirm the removal of subproject artifacts
+            --include-cache: Remove the package cache as well
+            --sourcedir=: Path to source directory
+            --types=: Comma-separated list of subproject types.
+            -j, --num-processes=: How many parallel processes to use (Since 0.59.0).
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+                confirm: Confirm the removal of subproject artifacts
+                include-cache: Remove the package cache as well
+                num-processes: How many parallel processes to use (Since 0.59.0).
+                sourcedir: Path to source directory
+                types: 'Comma-separated list of subproject types. Supported types are: file, git, hg, svn, redirect (default: all)'
+        - name: update
+          description: Update all subprojects from wrap files
+          flags:
+            --allow-insecure: Allow insecure server connections.
+            --rebase: Rebase your branch on top of wrap's revision.
+            --reset: Checkout wrap's revision and hard reset to that commit.
+            --sourcedir=: Path to source directory
+            --types=: Comma-separated list of subproject types.
+            -j, --num-processes=: How many parallel processes to use (Since 0.59.0).
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+                num-processes: How many parallel processes to use (Since 0.59.0).
+                rebase: Rebase your branch on top of wrap's revision. Deprecated, it is now the default behaviour. (git only)
+                reset: Checkout wrap's revision and hard reset to that commit. (git only)
+                sourcedir: Path to source directory
+                types: 'Comma-separated list of subproject types. Supported types are: file, git, hg, svn, redirect (default: all)'
+    - name: test
+      description: Run tests
+      flags:
+        --benchmark: Run benchmarks instead of tests.
+        --exclude=: Exclude tests with the given name.
+        --gdb: Run test under gdb.
+        --gdb-path=: 'Path to the gdb binary (default: gdb).'
+        --list: List available tests.
+        --logbase=: Base name for log file.
+        --max-lines=: Maximum number of lines to show from a long test log.
+        --no-rebuild: Do not rebuild before running tests.
+        --no-stdsplit: Do not split stderr and stdout in test logs.
+        --no-suite=: Do not run tests belonging to the given suite.
+        --print-errorlogs: Whether to print failing tests' logs.
+        --repeat=: Number of times to run the tests.
+        --setup=: Which test setup to use.
+        --slice=: Split tests into NUM_SLICES slices and execute slice SLICE.
+        --suite=: Only run tests belonging to the given suite.
+        --test-args=: Arguments to pass to the specified test(s) or all tests
+        --wrapper=: wrapper to run tests with (e.g. Valgrind)
+        -C=: directory to cd into before running
+        -i, --interactive: Run tests with interactive input/output.
+        -j, --num-processes=: How many parallel processes to use.
+        -k, --maxfail=: Number of failing tests before aborting the test run.
+        -q, --quiet: Produce less output to the terminal.
+        -t, --timeout-multiplier=: Define a multiplier for test timeout, for example  when running tests in particular conditions they might take more time to execute.
+        -v, --verbose: Do not redirect stdout and stderr
+      documentation:
+        flag:
+            C: directory to cd into before running
+            benchmark: Run benchmarks instead of tests.
+            exclude: Exclude tests with the given name.
+            gdb: Run test under gdb.
+            gdb-path: 'Path to the gdb binary (default: gdb).'
+            interactive: Run tests with interactive input/output.
+            list: List available tests.
+            logbase: Base name for log file.
+            max-lines: Maximum number of lines to show from a long test log. Since 1.5.0.
+            maxfail: 'Number of failing tests before aborting the test run. (default: 0, to disable aborting on failure)'
+            no-rebuild: Do not rebuild before running tests.
+            no-stdsplit: Do not split stderr and stdout in test logs.
+            no-suite: Do not run tests belonging to the given suite.
+            num-processes: How many parallel processes to use.
+            print-errorlogs: Whether to print failing tests' logs.
+            quiet: Produce less output to the terminal.
+            repeat: Number of times to run the tests.
+            setup: Which test setup to use.
+            slice: Split tests into NUM_SLICES slices and execute slice SLICE. Since 1.8.0.
+            suite: Only run tests belonging to the given suite.
+            test-args: Arguments to pass to the specified test(s) or all tests
+            timeout-multiplier: Define a multiplier for test timeout, for example  when running tests in particular conditions they might take more time to execute. (<= 0 to disable timeout)
+            verbose: Do not redirect stdout and stderr
+            wrapper: wrapper to run tests with (e.g. Valgrind)
+    - name: wrap
+      description: Wrap tools
+      commands:
+        - name: info
+          description: show available versions of a project
+          flags:
+            --allow-insecure: Allow insecure server connections.
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+        - name: install
+          description: install the specified project
+          flags:
+            --allow-insecure: Allow insecure server connections.
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+        - name: list
+          description: show all available projects
+          flags:
+            --allow-insecure: Allow insecure server connections.
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+        - name: promote
+          description: bring a subsubproject up to the master project
+        - name: search
+          description: search the db by name
+          flags:
+            --allow-insecure: Allow insecure server connections.
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+        - name: status
+          description: show installed and available versions of your projects
+          flags:
+            --allow-insecure: Allow insecure server connections.
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+        - name: update
+          description: Update wrap files from WrapDB (Since 0.63.0)
+          flags:
+            --allow-insecure: Allow insecure server connections.
+            --force: Update wraps that does not seems to come from WrapDB
+            --sourcedir=: Path to source directory
+            --types=: Comma-separated list of subproject types.
+            -j, --num-processes=: How many parallel processes to use (Since 0.59.0).
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
+                force: Update wraps that does not seems to come from WrapDB
+                num-processes: How many parallel processes to use (Since 0.59.0).
+                sourcedir: Path to source directory
+                types: 'Comma-separated list of subproject types. Supported types are: file, git, hg, svn, redirect (default: all)'
+        - name: update-db
+          description: Update list of projects available in WrapDB (Since 0.61.0)
+          flags:
+            --allow-insecure: Allow insecure server connections.
+          documentation:
+            flag:
+                allow-insecure: Allow insecure server connections.
