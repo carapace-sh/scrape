@@ -1,0 +1,27 @@
+diff --git a/crates/ruff/src/main.rs b/crates/ruff/src/main.rs
+index ad4adab..13b13bb 100644
+--- a/crates/ruff/src/main.rs
++++ b/crates/ruff/src/main.rs
+@@ -2,7 +2,9 @@ use std::io::Write;
+ use std::process::ExitCode;
+ 
+ use anyhow::Context;
+-use clap::Parser;
++use carapace_spec_clap::Spec;
++use clap::{CommandFactory, Parser};
++use clap_complete::generate;
+ use colored::Colorize;
+ 
+ use ruff::args::Args;
+@@ -28,6 +30,11 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+ static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+ 
+ fn main() -> ExitCode {
++    generate(Spec, &mut Args::command(), "ruff", &mut std::io::stdout());
++    if true {
++        return ExitStatus::Success.into();
++    }
++
+     // Enabled ANSI colors on Windows 10.
+     #[cfg(windows)]
+     assert!(colored::control::set_virtual_terminal(true).is_ok());

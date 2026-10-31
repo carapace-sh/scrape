@@ -1,0 +1,20 @@
+diff --git a/pkg/cmd/kind/root.go b/pkg/cmd/kind/root.go
+index 2e0b8fc..069f8e1 100644
+--- a/pkg/cmd/kind/root.go
++++ b/pkg/cmd/kind/root.go
+@@ -20,6 +20,7 @@ package kind
+ import (
+ 	"io"
+ 
++	"github.com/carapace-sh/carapace"
+ 	"github.com/spf13/cobra"
+ 
+ 	"sigs.k8s.io/kind/pkg/cmd"
+@@ -78,6 +79,7 @@ func NewCommand(logger log.Logger, streams cmd.IOStreams) *cobra.Command {
+ 	cmd.AddCommand(get.NewCommand(logger, streams))
+ 	cmd.AddCommand(version.NewCommand(logger, streams))
+ 	cmd.AddCommand(load.NewCommand(logger, streams))
++	carapace.Gen(cmd)
+ 	return cmd
+ }
+ 
