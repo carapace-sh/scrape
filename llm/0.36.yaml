@@ -1,0 +1,631 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: llm
+flags:
+    --version: Show the version and exit.
+commands:
+    - name: aliases
+      description: Manage model aliases
+      commands:
+        - name: list
+          description: List current aliases
+          flags:
+            --json: Output as JSON
+          documentation:
+            flag:
+                json: Output as JSON
+        - name: path
+          description: Output the path to the aliases.json file
+        - name: remove
+          description: Remove an alias
+        - name: set
+          description: Set an alias for a model
+          flags:
+            -q, --query=:
+                description: Set alias for model matching these strings
+                nargs: -1
+          documentation:
+            flag:
+                query: Set alias for model matching these strings
+    - name: chat
+      description: Hold an ongoing chat with a model.
+      flags:
+        --chain-limit=: How many chained tool responses to allow, default 5, set 0 for unlimited
+        --conversation=: Continue the conversation with the given ID.
+        --functions=:
+            description: Python code block or file path defining functions to register as tools
+            nargs: -1
+        --key=: API key to use
+        --no-stream: Do not stream output
+        --system-fragment=:
+            description: Fragment to add to system prompt
+            nargs: -1
+        --tools-approve: Manually approve every tool execution
+        --tools-debug: Show full details of tool executions
+        -R, --hide-reasoning: Hide reasoning output
+        -T, --tool=:
+            description: Name of a tool to make available to the model
+            nargs: -1
+        -c, --continue: Continue the most recent conversation.
+        -d, --database=: Path to log database
+        -f, --fragment=:
+            description: Fragment (alias, URL, hash or file path) to add to the prompt
+            nargs: -1
+        -m, --model=: Model to use
+        -o, --option=:
+            description: key/value options for the model
+            nargs: -1
+        -p, --param=:
+            description: Parameters for template
+            nargs: -1
+        -s, --system=: System prompt to use
+        -t, --template=: Template to use
+      documentation:
+        flag:
+            chain-limit: How many chained tool responses to allow, default 5, set 0 for unlimited
+            continue: Continue the most recent conversation.
+            conversation: Continue the conversation with the given ID.
+            database: Path to log database
+            fragment: Fragment (alias, URL, hash or file path) to add to the prompt
+            functions: Python code block or file path defining functions to register as tools
+            hide-reasoning: Hide reasoning output
+            key: API key to use
+            model: Model to use
+            no-stream: Do not stream output
+            option: key/value options for the model
+            param: Parameters for template
+            system: System prompt to use
+            system-fragment: Fragment to add to system prompt
+            template: Template to use
+            tool: Name of a tool to make available to the model
+            tools-approve: Manually approve every tool execution
+            tools-debug: Show full details of tool executions
+    - name: collections
+      description: View and manage collections of embeddings
+      commands:
+        - name: delete
+          description: Delete the specified collection
+          flags:
+            -d, --database=: Path to embeddings database
+          documentation:
+            flag:
+                database: Path to embeddings database
+        - name: list
+          description: View a list of collections
+          flags:
+            --json: Output as JSON
+            -d, --database=: Path to embeddings database
+          documentation:
+            flag:
+                database: Path to embeddings database
+                json: Output as JSON
+        - name: path
+          description: Output the path to the embeddings database
+    - name: embed
+      description: Embed text and store or return the result
+      flags:
+        --binary: Treat input as binary data
+        --key=: API key to use
+        --metadata=: JSON object metadata to store
+        --store: Store the text itself in the database
+        -c, --content=: Content to embed
+        -d, --database=: ""
+        -f, --format=: Output format
+        -i, --input=: File to embed
+        -m, --model=: Embedding model to use
+      completion:
+        flag:
+            format:
+                - json
+                - blob
+                - base64
+                - hex
+      documentation:
+        flag:
+            binary: Treat input as binary data
+            content: Content to embed
+            format: Output format
+            input: File to embed
+            key: API key to use
+            metadata: JSON object metadata to store
+            model: Embedding model to use
+            store: Store the text itself in the database
+    - name: embed-models
+      description: Manage available embedding models
+      commands:
+        - name: default
+          description: Show or set the default embedding model
+          flags:
+            --remove-default: Reset to specifying no default model
+          documentation:
+            flag:
+                remove-default: Reset to specifying no default model
+        - name: list
+          description: List available embedding models
+          flags:
+            -q, --query=:
+                description: Search for embedding models matching these strings
+                nargs: -1
+          documentation:
+            flag:
+                query: Search for embedding models matching these strings
+    - name: embed-multi
+      description: Store embeddings for multiple strings at once in the specified collection.
+      flags:
+        --attach=:
+            description: Additional databases to attach - specify alias and file path
+            nargs: -1
+        --batch-size=: Batch size to use when running embeddings
+        --binary: Treat --files as binary data
+        --encoding=:
+            description: Encodings to try when reading --files
+            nargs: -1
+        --files=:
+            description: Embed files in this directory - specify directory and glob pattern
+            nargs: -1
+        --format=: Format of input file - defaults to auto-detect
+        --key=: API key to use
+        --prefix=: Prefix to add to the IDs
+        --prepend=: Prepend this string to all content before embedding
+        --sql=: Read input using this SQL query
+        --store: Store the text itself in the database
+        -d, --database=: ""
+        -m, --model=: Embedding model to use
+      completion:
+        flag:
+            format:
+                - json
+                - csv
+                - tsv
+                - nl
+      documentation:
+        flag:
+            attach: Additional databases to attach - specify alias and file path
+            batch-size: Batch size to use when running embeddings
+            binary: Treat --files as binary data
+            encoding: Encodings to try when reading --files
+            files: Embed files in this directory - specify directory and glob pattern
+            format: Format of input file - defaults to auto-detect
+            key: API key to use
+            model: Embedding model to use
+            prefix: Prefix to add to the IDs
+            prepend: Prepend this string to all content before embedding
+            sql: Read input using this SQL query
+            store: Store the text itself in the database
+    - name: fragments
+      description: Manage fragments that are stored in the database
+      commands:
+        - name: list
+          description: List current fragments
+          flags:
+            --aliases: Show only fragments with aliases
+            --json: Output as JSON
+            -q, --query=:
+                description: Search for fragments matching these strings
+                nargs: -1
+          documentation:
+            flag:
+                aliases: Show only fragments with aliases
+                json: Output as JSON
+                query: Search for fragments matching these strings
+        - name: loaders
+          description: Show fragment loaders registered by plugins
+        - name: remove
+          description: Remove a fragment alias
+        - name: set
+          description: Set an alias for a fragment
+        - name: show
+          description: Display the fragment stored under an alias or hash
+    - name: install
+      description: Install packages from PyPI into the same environment as LLM
+      flags:
+        --force-reinstall: Reinstall all packages even if they are already up-to-date
+        --no-cache-dir: Disable the cache
+        --pre: Include pre-release and development versions
+        -U, --upgrade: Upgrade packages to latest version
+        -e, --editable=: Install a project in editable mode from this path
+      documentation:
+        flag:
+            editable: Install a project in editable mode from this path
+            force-reinstall: Reinstall all packages even if they are already up-to-date
+            no-cache-dir: Disable the cache
+            pre: Include pre-release and development versions
+            upgrade: Upgrade packages to latest version
+    - name: keys
+      description: Manage stored API keys for different models
+      commands:
+        - name: get
+          description: Return the value of a stored key
+        - name: list
+          description: List names of all stored keys
+        - name: path
+          description: Output the path to the keys.json file
+        - name: set
+          description: Save a key in the keys.json file
+          flags:
+            --value=: Value to set
+          documentation:
+            flag:
+                value: Value to set
+    - name: logs
+      description: Tools for exploring logged prompts and responses
+      commands:
+        - name: backup
+          description: Backup your logs database to this file
+        - name: list
+          description: Show logged prompts and their responses
+          flags:
+            --conversation=: Show logs for this conversation ID
+            --data: Output newline-delimited JSON data for schema
+            --data-array: Output JSON array of data for schema
+            --data-ids: Attach corresponding IDs to JSON objects
+            --data-key=: Return JSON objects from array in this key
+            --extract-last: Extract last fenced code block
+            --id-gt=: Return responses with ID > this
+            --id-gte=: Return responses with ID >= this
+            --json: Output logs as JSON
+            --schema-multi=: JSON schema used for multiple results
+            --schema=: Schema DSL, JSON schema, filepath or ID
+            --tools: Filter for prompts with results from any tools
+            -T, --tool=:
+                description: Filter for prompts with results from these tools
+                nargs: -1
+            -c, --current: Show logs from the current conversation
+            -d, --database=: Path to log database
+            -e, --expand: Expand fragments to show their content
+            -f, --fragment=:
+                description: Filter for prompts using these fragments
+                nargs: -1
+            -l, --latest: Return latest results matching search query
+            -m, --model=: Filter by model or model alias
+            -n, --count=: Number of entries to show - defaults to 3, use 0 for all
+            -p, --path=: Path to log database
+            -q, --query=: Search for logs matching this string
+            -r, --response: Just output the last response
+            -s, --short: Shorter YAML output with truncated prompts
+            -t, --truncate: Truncate long strings in output
+            -u, --usage: Include token usage
+            -x, --extract: Extract first fenced code block
+          documentation:
+            flag:
+                conversation: Show logs for this conversation ID
+                count: Number of entries to show - defaults to 3, use 0 for all
+                current: Show logs from the current conversation
+                data: Output newline-delimited JSON data for schema
+                data-array: Output JSON array of data for schema
+                data-ids: Attach corresponding IDs to JSON objects
+                data-key: Return JSON objects from array in this key
+                database: Path to log database
+                expand: Expand fragments to show their content
+                extract: Extract first fenced code block
+                extract-last: Extract last fenced code block
+                fragment: Filter for prompts using these fragments
+                id-gt: Return responses with ID > this
+                id-gte: Return responses with ID >= this
+                json: Output logs as JSON
+                latest: Return latest results matching search query
+                model: Filter by model or model alias
+                path: Path to log database
+                query: Search for logs matching this string
+                response: Just output the last response
+                schema: Schema DSL, JSON schema, filepath or ID
+                schema-multi: JSON schema used for multiple results
+                short: Shorter YAML output with truncated prompts
+                tool: Filter for prompts with results from these tools
+                tools: Filter for prompts with results from any tools
+                truncate: Truncate long strings in output
+                usage: Include token usage
+        - name: "off"
+          description: Turn off logging for all prompts
+        - name: "on"
+          description: Turn on logging for all prompts
+        - name: path
+          description: Output the path to the logs.db file
+        - name: status
+          description: Show current status of database logging
+    - name: models
+      description: Manage available models
+      commands:
+        - name: default
+          description: Show or set the default model
+        - name: list
+          description: List available models
+          flags:
+            --async: List async models
+            --json: Output as JSON
+            --options: Show options for each model, if available
+            --schemas: List models that support schemas
+            --tools: List models that support tools
+            -m, --model=:
+                description: Specific model IDs
+                nargs: -1
+            -q, --query=:
+                description: Search for models matching these strings
+                nargs: -1
+          documentation:
+            flag:
+                async: List async models
+                json: Output as JSON
+                model: Specific model IDs
+                options: Show options for each model, if available
+                query: Search for models matching these strings
+                schemas: List models that support schemas
+                tools: List models that support tools
+        - name: options
+          description: Manage default options for models
+          commands:
+            - name: clear
+              description: Clear default option(s) for a model
+            - name: list
+              description: List default options for all models
+            - name: set
+              description: Set a default option for a model
+            - name: show
+              description: List default options set for a specific model
+    - name: openai
+      description: Commands for working with OpenAI and OpenAI-compatible APIs
+      commands:
+        - name: endpoint
+          description: Run against an OpenAI-compatible endpoint without logging.
+          flags:
+            --attachment-type=:
+                description: "\b"
+                nargs: -1
+            --chain-limit=: How many chained tool responses to allow, default 5, set 0 for unlimited
+            --chat: Start an interactive chat
+            --functions=:
+                description: Python code block or file path defining functions to register as tools
+                nargs: -1
+            --key=: API key or stored key alias to send
+            --models: List model IDs from the endpoint and exit
+            --no-stream: Do not stream output
+            --responses: Use the Responses API instead of Chat Completions
+            --schema-multi=: JSON schema to use for multiple results
+            --schema=: Schema DSL, JSON schema, filepath or ID
+            --tools-approve: Manually approve every tool execution
+            --tools-debug: Show full details of tool executions
+            -H, --header=:
+                description: Additional HTTP header
+                nargs: -1
+            -R, --hide-reasoning: Hide reasoning output
+            -T, --tool=:
+                description: Name of a tool to make available to the model
+                nargs: -1
+            -a, --attachment=:
+                description: Attachment path or URL or -
+                nargs: -1
+            -m, --model=: Model ID (required unless --models or provided by template)
+            -o, --option=:
+                description: key/value options for the model
+                nargs: -1
+            -p, --param=:
+                description: Parameters for template
+                nargs: -1
+            -s, --system=: System prompt to use
+            -t, --template=: Template to use
+          documentation:
+            flag:
+                attachment: Attachment path or URL or -
+                attachment-type: "\b\nAttachment with explicit mimetype,\n--at image.jpg image/jpeg"
+                chain-limit: How many chained tool responses to allow, default 5, set 0 for unlimited
+                chat: Start an interactive chat
+                functions: Python code block or file path defining functions to register as tools
+                header: Additional HTTP header
+                hide-reasoning: Hide reasoning output
+                key: API key or stored key alias to send
+                model: Model ID (required unless --models or provided by template)
+                models: List model IDs from the endpoint and exit
+                no-stream: Do not stream output
+                option: key/value options for the model
+                param: Parameters for template
+                responses: Use the Responses API instead of Chat Completions
+                schema: Schema DSL, JSON schema, filepath or ID
+                schema-multi: JSON schema to use for multiple results
+                system: System prompt to use
+                template: Template to use
+                tool: Name of a tool to make available to the model
+                tools-approve: Manually approve every tool execution
+                tools-debug: Show full details of tool executions
+        - name: models
+          description: List models available to you from the OpenAI API
+          flags:
+            --json: Output as JSON
+            --key=: OpenAI API key
+          documentation:
+            flag:
+                json: Output as JSON
+                key: OpenAI API key
+    - name: plugins
+      description: List installed plugins
+      flags:
+        --all: Include built-in default plugins
+        --hook=:
+            description: Filter for plugins that implement this hook
+            nargs: -1
+      documentation:
+        flag:
+            all: Include built-in default plugins
+            hook: Filter for plugins that implement this hook
+    - name: prompt
+      description: Execute a prompt
+      flags:
+        --async: Run prompt asynchronously
+        --attachment-type=:
+            description: "\b"
+            nargs: -1
+        --chain-limit=: How many chained tool responses to allow, default 5, set 0 for unlimited
+        --conversation=: Continue the conversation with the given ID.
+        --extract-last: Extract last fenced code block
+        --functions=:
+            description: Python code block or file path defining functions to register as tools
+            nargs: -1
+        --json: Output the response as JSON, same format as llm logs --json
+        --key=: API key to use
+        --log: Log prompt and response to the database
+        --no-stream: Do not stream output
+        --options: Show options for the selected model
+        --save=: Save prompt with this template name
+        --schema-multi=: Schema for multiple results
+        --schema=: Schema DSL, JSON schema, filepath or ID
+        --system-fragment=:
+            description: Fragment to add to system prompt
+            nargs: -1
+        --tools-approve: Manually approve every tool execution
+        --tools-debug: Show full details of tool executions
+        -R, --hide-reasoning: Hide reasoning output
+        -T, --tool=:
+            description: Name of a tool to make available to the model
+            nargs: -1
+        -a, --attachment=:
+            description: Attachment path or URL or -
+            nargs: -1
+        -c, --continue: Continue the most recent conversation.
+        -d, --database=: Path to log database
+        -f, --fragment=:
+            description: Fragment (alias, URL, hash or file path) to add to the prompt
+            nargs: -1
+        -m, --model=: Model to use
+        -n, --no-log: Don't log to database
+        -o, --option=:
+            description: key/value options for the model
+            nargs: -1
+        -p, --param=:
+            description: Parameters for template
+            nargs: -1
+        -q, --query=:
+            description: Use first model matching these strings
+            nargs: -1
+        -s, --system=: System prompt to use
+        -t, --template=:
+            description: Template to use; can be repeated to combine templates
+            nargs: -1
+        -u, --usage: Show token usage
+        -x, --extract: Extract first fenced code block
+      documentation:
+        flag:
+            async: Run prompt asynchronously
+            attachment: Attachment path or URL or -
+            attachment-type: "\b\nAttachment with explicit mimetype,\n--at image.jpg image/jpeg"
+            chain-limit: How many chained tool responses to allow, default 5, set 0 for unlimited
+            continue: Continue the most recent conversation.
+            conversation: Continue the conversation with the given ID.
+            database: Path to log database
+            extract: Extract first fenced code block
+            extract-last: Extract last fenced code block
+            fragment: Fragment (alias, URL, hash or file path) to add to the prompt
+            functions: Python code block or file path defining functions to register as tools
+            hide-reasoning: Hide reasoning output
+            json: Output the response as JSON, same format as llm logs --json
+            key: API key to use
+            log: Log prompt and response to the database
+            model: Model to use
+            no-log: Don't log to database
+            no-stream: Do not stream output
+            option: key/value options for the model
+            options: Show options for the selected model
+            param: Parameters for template
+            query: Use first model matching these strings
+            save: Save prompt with this template name
+            schema: Schema DSL, JSON schema, filepath or ID
+            schema-multi: Schema for multiple results
+            system: System prompt to use
+            system-fragment: Fragment to add to system prompt
+            template: Template to use; can be repeated to combine templates
+            tool: Name of a tool to make available to the model
+            tools-approve: Manually approve every tool execution
+            tools-debug: Show full details of tool executions
+            usage: Show token usage
+    - name: schemas
+      description: Manage stored schemas
+      commands:
+        - name: dsl
+          description: Convert LLM's schema DSL to a JSON schema
+          flags:
+            --multi: Wrap in an array
+          documentation:
+            flag:
+                multi: Wrap in an array
+        - name: list
+          description: List stored schemas
+          flags:
+            --full: Output full schema contents
+            --json: Output as JSON
+            --nl: Output as newline-delimited JSON
+            -d, --database=: Path to log database
+            -p, --path=: Path to log database
+            -q, --query=:
+                description: Search for schemas matching this string
+                nargs: -1
+          documentation:
+            flag:
+                database: Path to log database
+                full: Output full schema contents
+                json: Output as JSON
+                nl: Output as newline-delimited JSON
+                path: Path to log database
+                query: Search for schemas matching this string
+        - name: show
+          description: Show a stored schema
+          flags:
+            -d, --database=: Path to log database
+            -p, --path=: Path to log database
+          documentation:
+            flag:
+                database: Path to log database
+                path: Path to log database
+    - name: similar
+      description: Return top N similar IDs from a collection using cosine similarity.
+      flags:
+        --binary: Treat input as binary data
+        --prefix=: Just IDs with this prefix
+        -c, --content=: Content to embed for comparison
+        -d, --database=: ""
+        -i, --input=: File to embed for comparison
+        -n, --number=: Number of results to return
+        -p, --plain: Output in plain text format
+      documentation:
+        flag:
+            binary: Treat input as binary data
+            content: Content to embed for comparison
+            input: File to embed for comparison
+            number: Number of results to return
+            plain: Output in plain text format
+            prefix: Just IDs with this prefix
+    - name: templates
+      description: Manage stored prompt templates
+      commands:
+        - name: edit
+          description: Edit the specified prompt template using the default $EDITOR
+        - name: list
+          description: List available prompt templates
+        - name: loaders
+          description: Show template loaders registered by plugins
+        - name: path
+          description: Output the path to the templates directory
+        - name: show
+          description: Show the specified prompt template
+    - name: tools
+      description: Manage tools that can be made available to LLMs
+      commands:
+        - name: list
+          description: List available tools, optionally including tools supported by a model
+          flags:
+            --functions=:
+                description: Python code block or file path defining functions to register as tools
+                nargs: -1
+            --json: Output as JSON
+            -m, --model=: List tools supported by this model
+          documentation:
+            flag:
+                functions: Python code block or file path defining functions to register as tools
+                json: Output as JSON
+                model: List tools supported by this model
+    - name: uninstall
+      description: Uninstall Python packages from the LLM environment
+      flags:
+        -y, --yes: Don't ask for confirmation
+      documentation:
+        flag:
+            "yes": Don't ask for confirmation
+documentation:
+    flag:
+        version: Show the version and exit.
