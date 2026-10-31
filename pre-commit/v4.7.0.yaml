@@ -1,0 +1,311 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: pre-commit
+flags:
+    -V, --version=: show program's version number and exit
+commands:
+    - name: autoupdate
+      description: Auto-update pre-commit config to the latest repos' versions.
+      flags:
+        --bleeding-edge: Update to the bleeding edge of `HEAD` instead of the latest tagged version (the default behavior).
+        --color=: Whether to use color in output.
+        --freeze: Store "frozen" hashes in `rev` instead of tag names
+        --repo=: Only update this repository -- may be specified multiple times.
+        -c, --config=: Path to alternate config file
+        -j, --jobs=: Number of threads to use.
+      documentation:
+        flag:
+            bleeding-edge: Update to the bleeding edge of `HEAD` instead of the latest tagged version (the default behavior).
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+            config: Path to alternate config file
+            freeze: Store "frozen" hashes in `rev` instead of tag names
+            jobs: Number of threads to use.  (default %(default)s).
+            repo: Only update this repository -- may be specified multiple times.
+    - name: clean
+      description: Clean out pre-commit files.
+      flags:
+        --color=: Whether to use color in output.
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+    - name: gc
+      description: Clean unused cached repos.
+      flags:
+        --color=: Whether to use color in output.
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+    - name: hazmat
+      flags:
+        --color=: Whether to use color in output.
+      commands:
+        - name: cd
+          description: cd to a subdir and run the command
+        - name: ignore-exit-code
+          description: run the command but ignore the exit code
+        - name: n1
+          description: run the command once per filename
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+    - name: help
+      description: Show help for a specific command.
+    - name: hook-impl
+      flags:
+        --color=: Whether to use color in output.
+        --hook-dir=: ""
+        --hook-type=!: ""
+        --skip-on-missing-config: ""
+        -c, --config=: Path to alternate config file
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+            config: Path to alternate config file
+    - name: init-templatedir
+      description: Install hook script in a directory intended for use with `git config init.templateDir`.
+      flags:
+        --color=: Whether to use color in output.
+        --no-allow-missing-config: Assume cloned repos should have a `pre-commit` config.
+        -c, --config=: Path to alternate config file
+        -t, --hook-type=: ""
+      completion:
+        flag:
+            hook-type:
+                - commit-msg
+                - post-checkout
+                - post-commit
+                - post-merge
+                - post-rewrite
+                - pre-commit
+                - pre-merge-commit
+                - pre-push
+                - pre-rebase
+                - prepare-commit-msg
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+            config: Path to alternate config file
+            no-allow-missing-config: Assume cloned repos should have a `pre-commit` config.
+    - name: install
+      description: Install the pre-commit script.
+      flags:
+        --allow-missing-config: Whether to allow a missing `pre-commit` configuration file or exit with a failure code.
+        --color=: Whether to use color in output.
+        --install-hooks: Whether to install hook environments for all environments in the config file.
+        -c, --config=: Path to alternate config file
+        -f, --overwrite: Overwrite existing hooks / remove migration mode.
+        -t, --hook-type=: ""
+      completion:
+        flag:
+            hook-type:
+                - commit-msg
+                - post-checkout
+                - post-commit
+                - post-merge
+                - post-rewrite
+                - pre-commit
+                - pre-merge-commit
+                - pre-push
+                - pre-rebase
+                - prepare-commit-msg
+      documentation:
+        flag:
+            allow-missing-config: Whether to allow a missing `pre-commit` configuration file or exit with a failure code.
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+            config: Path to alternate config file
+            install-hooks: Whether to install hook environments for all environments in the config file.
+            overwrite: Overwrite existing hooks / remove migration mode.
+    - name: install-hooks
+      description: Install hook environments for all environments in the config file.
+      flags:
+        --color=: Whether to use color in output.
+        -c, --config=: Path to alternate config file
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+            config: Path to alternate config file
+    - name: migrate-config
+      description: Migrate list configuration to new map configuration.
+      flags:
+        --color=: Whether to use color in output.
+        -c, --config=: Path to alternate config file
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+            config: Path to alternate config file
+    - name: run
+      description: Run hooks.
+      flags:
+        --checkout-type=: Indicates whether the checkout was a branch checkout (changing branches, flag=1) or a file checkout (retrieving a file from the index, flag=0).
+        --color=: Whether to use color in output.
+        --commit-msg-filename=: Filename to check when running during `commit-msg`
+        --commit-object-name=: Commit object name (typically the third argument to .git/hooks/prepare-commit-msg)
+        --fail-fast: Stop after the first failing hook.
+        --files=:
+            description: Specific filenames to run hooks on.
+            nargs: -1
+        --hook-stage=: The stage during which the hook is fired.
+        --is-squash-merge=: During a post-merge hook, indicates whether the merge was a squash merge
+        --local-branch=: Local branch ref used by `git push`.
+        --pre-rebase-branch=: The branch being rebased, and is not set when  rebasing the current branch.
+        --pre-rebase-upstream=: The upstream from which the series was forked.
+        --prepare-commit-message-source=: Source of the commit message (typically the second argument to .git/hooks/prepare-commit-msg)
+        --remote-branch=: Remote branch ref used by `git push`.
+        --remote-name=: Remote name used by `git push`.
+        --remote-url=: Remote url used by `git push`.
+        --rewrite-command=: During a post-rewrite hook, specifies the command that invoked the rewrite
+        --show-diff-on-failure: When hooks fail, run `git diff` directly afterward.
+        -a, --all-files: Run on all the files in the repo.
+        -c, --config=: Path to alternate config file
+        -o, --origin=: (for usage with `--from-ref`) -- this option represents the destination ref in a `from_ref...to_ref` diff expression.
+        -s, --source=: (for usage with `--to-ref`) -- this option represents the original ref in a `from_ref...to_ref` diff expression.
+        -v, --verbose: ""
+      completion:
+        flag:
+            hook-stage:
+                - commit-msg
+                - post-checkout
+                - post-commit
+                - post-merge
+                - post-rewrite
+                - pre-commit
+                - pre-merge-commit
+                - pre-push
+                - pre-rebase
+                - prepare-commit-msg
+                - manual
+      documentation:
+        flag:
+            all-files: Run on all the files in the repo.
+            checkout-type: Indicates whether the checkout was a branch checkout (changing branches, flag=1) or a file checkout (retrieving a file from the index, flag=0).
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+            commit-msg-filename: Filename to check when running during `commit-msg`
+            commit-object-name: Commit object name (typically the third argument to .git/hooks/prepare-commit-msg)
+            config: Path to alternate config file
+            fail-fast: Stop after the first failing hook.
+            files: Specific filenames to run hooks on.
+            hook-stage: The stage during which the hook is fired.  One of %(choices)s
+            is-squash-merge: During a post-merge hook, indicates whether the merge was a squash merge
+            local-branch: Local branch ref used by `git push`.
+            origin: (for usage with `--from-ref`) -- this option represents the destination ref in a `from_ref...to_ref` diff expression.  For `pre-push` hooks, this represents the branch being pushed.  For `post-checkout` hooks, this represents the branch that is now checked out.
+            pre-rebase-branch: The branch being rebased, and is not set when  rebasing the current branch.
+            pre-rebase-upstream: The upstream from which the series was forked.
+            prepare-commit-message-source: Source of the commit message (typically the second argument to .git/hooks/prepare-commit-msg)
+            remote-branch: Remote branch ref used by `git push`.
+            remote-name: Remote name used by `git push`.
+            remote-url: Remote url used by `git push`.
+            rewrite-command: During a post-rewrite hook, specifies the command that invoked the rewrite
+            show-diff-on-failure: When hooks fail, run `git diff` directly afterward.
+            source: (for usage with `--to-ref`) -- this option represents the original ref in a `from_ref...to_ref` diff expression.  For `pre-push` hooks, this represents the branch you are pushing to.  For `post-checkout` hooks, this represents the branch that was previously checked out.
+    - name: sample-config
+      description: Produce a sample .pre-commit-config.yaml file
+      flags:
+        --color=: Whether to use color in output.
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+    - name: try-repo
+      description: Try the hooks in a repository, useful for developing new hooks.
+      flags:
+        --checkout-type=: Indicates whether the checkout was a branch checkout (changing branches, flag=1) or a file checkout (retrieving a file from the index, flag=0).
+        --color=: Whether to use color in output.
+        --commit-msg-filename=: Filename to check when running during `commit-msg`
+        --commit-object-name=: Commit object name (typically the third argument to .git/hooks/prepare-commit-msg)
+        --fail-fast: Stop after the first failing hook.
+        --files=:
+            description: Specific filenames to run hooks on.
+            nargs: -1
+        --hook-stage=: The stage during which the hook is fired.
+        --is-squash-merge=: During a post-merge hook, indicates whether the merge was a squash merge
+        --local-branch=: Local branch ref used by `git push`.
+        --pre-rebase-branch=: The branch being rebased, and is not set when  rebasing the current branch.
+        --pre-rebase-upstream=: The upstream from which the series was forked.
+        --prepare-commit-message-source=: Source of the commit message (typically the second argument to .git/hooks/prepare-commit-msg)
+        --remote-branch=: Remote branch ref used by `git push`.
+        --remote-name=: Remote name used by `git push`.
+        --remote-url=: Remote url used by `git push`.
+        --rev=: Manually select a rev to run against, otherwise the `HEAD` revision will be used.
+        --rewrite-command=: During a post-rewrite hook, specifies the command that invoked the rewrite
+        --show-diff-on-failure: When hooks fail, run `git diff` directly afterward.
+        -a, --all-files: Run on all the files in the repo.
+        -c, --config=: Path to alternate config file
+        -o, --origin=: (for usage with `--from-ref`) -- this option represents the destination ref in a `from_ref...to_ref` diff expression.
+        -s, --source=: (for usage with `--to-ref`) -- this option represents the original ref in a `from_ref...to_ref` diff expression.
+        -v, --verbose: ""
+      completion:
+        flag:
+            hook-stage:
+                - commit-msg
+                - post-checkout
+                - post-commit
+                - post-merge
+                - post-rewrite
+                - pre-commit
+                - pre-merge-commit
+                - pre-push
+                - pre-rebase
+                - prepare-commit-msg
+                - manual
+      documentation:
+        flag:
+            all-files: Run on all the files in the repo.
+            checkout-type: Indicates whether the checkout was a branch checkout (changing branches, flag=1) or a file checkout (retrieving a file from the index, flag=0).
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+            commit-msg-filename: Filename to check when running during `commit-msg`
+            commit-object-name: Commit object name (typically the third argument to .git/hooks/prepare-commit-msg)
+            config: Path to alternate config file
+            fail-fast: Stop after the first failing hook.
+            files: Specific filenames to run hooks on.
+            hook-stage: The stage during which the hook is fired.  One of %(choices)s
+            is-squash-merge: During a post-merge hook, indicates whether the merge was a squash merge
+            local-branch: Local branch ref used by `git push`.
+            origin: (for usage with `--from-ref`) -- this option represents the destination ref in a `from_ref...to_ref` diff expression.  For `pre-push` hooks, this represents the branch being pushed.  For `post-checkout` hooks, this represents the branch that is now checked out.
+            pre-rebase-branch: The branch being rebased, and is not set when  rebasing the current branch.
+            pre-rebase-upstream: The upstream from which the series was forked.
+            prepare-commit-message-source: Source of the commit message (typically the second argument to .git/hooks/prepare-commit-msg)
+            remote-branch: Remote branch ref used by `git push`.
+            remote-name: Remote name used by `git push`.
+            remote-url: Remote url used by `git push`.
+            rev: Manually select a rev to run against, otherwise the `HEAD` revision will be used.
+            rewrite-command: During a post-rewrite hook, specifies the command that invoked the rewrite
+            show-diff-on-failure: When hooks fail, run `git diff` directly afterward.
+            source: (for usage with `--to-ref`) -- this option represents the original ref in a `from_ref...to_ref` diff expression.  For `pre-push` hooks, this represents the branch you are pushing to.  For `post-checkout` hooks, this represents the branch that was previously checked out.
+    - name: uninstall
+      description: Uninstall the pre-commit script.
+      flags:
+        --color=: Whether to use color in output.
+        -c, --config=: Path to alternate config file
+        -t, --hook-type=: ""
+      completion:
+        flag:
+            hook-type:
+                - commit-msg
+                - post-checkout
+                - post-commit
+                - post-merge
+                - post-rewrite
+                - pre-commit
+                - pre-merge-commit
+                - pre-push
+                - pre-rebase
+                - prepare-commit-msg
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+            config: Path to alternate config file
+    - name: validate-config
+      description: Validate .pre-commit-config.yaml files
+      flags:
+        --color=: Whether to use color in output.
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+    - name: validate-manifest
+      description: Validate .pre-commit-hooks.yaml files
+      flags:
+        --color=: Whether to use color in output.
+      documentation:
+        flag:
+            color: Whether to use color in output.  Defaults to `%(default)s`.
+documentation:
+    flag:
+        version: show program's version number and exit
