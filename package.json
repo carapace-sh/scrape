@@ -53,7 +53,7 @@
     "kak-lsp": "https://github.com/kak-lsp/kak-lsp#v22.0.0",
     "kind": "https://github.com/kubernetes-sigs/kind#v0.33.0",
     "kubeadm": "https://github.com/kubernetes/kubernetes#v1.37.1",
-    "kubectl": "https://github.com/kubernetes/kubernetes#v1.37.1",
+    "kubectl": "https://github.com/kubernetes/kubernetes#v1.37.2",
     "procs": "https://github.com/dalance/procs#v0.14.12",
     "qmk": "https://github.com/qmk/qmk_cli#1.2.0",
     "llm": "https://github.com/simonw/llm#0.36",
