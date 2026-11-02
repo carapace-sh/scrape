@@ -57,7 +57,7 @@
     "procs": "https://github.com/dalance/procs#v0.14.12",
     "qmk": "https://github.com/qmk/qmk_cli#1.2.0",
     "llm": "https://github.com/simonw/llm#0.36",
-    "lore": "https://github.com/EpicGames/lore#v0.11.0",
+    "lore": "https://github.com/EpicGames/lore#v0.12.0",
     "mdbook": "https://github.com/rust-lang/mdbook#v0.5.4",
     "meson": "https://github.com/mesonbuild/meson#1.12.1",
     "minikube": "https://github.com/kubernetes/minikube#v1.39.0",
