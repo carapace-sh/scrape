@@ -1,17 +1,17 @@
 diff --git a/Cargo.toml b/Cargo.toml
-index 8cfa21f..a8a7baf 100644
+index 7b1677e..a12380a 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -30,6 +30,7 @@ assert_cmd = "2.2.2"
+@@ -35,6 +35,7 @@ assert_cmd = "2.2.2"
  async-trait = "0.1.89"
  blake2 = "0.11.0"
  bstr = { version = "1.12.1", features = ["serde"] }
 +carapace_spec_clap = "1.2.3"
- chrono = { version = "0.4.44", default-features = false, features = [
-     "std",
-     "clock",
+ clap = { version = "4.6.1", features = [
+     "derive",
+     "deprecated",
 diff --git a/cli/Cargo.toml b/cli/Cargo.toml
-index a71dc11..a1bb488 100644
+index eee2ab0..ce450b3 100644
 --- a/cli/Cargo.toml
 +++ b/cli/Cargo.toml
 @@ -67,6 +67,7 @@ harness = false
@@ -19,11 +19,11 @@ index a71dc11..a1bb488 100644
  ansi-to-tui = { workspace = true }
  bstr = { workspace = true }
 +carapace_spec_clap = { workspace = true }
- chrono = { workspace = true }
  clap = { workspace = true }
  clap-markdown = { workspace = true }
+ clap_complete = { workspace = true }
 diff --git a/cli/src/commands/mod.rs b/cli/src/commands/mod.rs
-index e2a55b8..6c937f8 100644
+index c018ef7..7ba6485 100644
 --- a/cli/src/commands/mod.rs
 +++ b/cli/src/commands/mod.rs
 @@ -80,6 +80,9 @@ use crate::cli_util::CommandHelper;
