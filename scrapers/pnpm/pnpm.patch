@@ -1,22 +1,22 @@
 diff --git a/pnpm/crates/cli/src/lib.rs b/pnpm/crates/cli/src/lib.rs
-index 8fc6cd0..ffd9e6d 100644
+index 381eb94..e791cf5 100644
 --- a/pnpm/crates/cli/src/lib.rs
 +++ b/pnpm/crates/cli/src/lib.rs
-@@ -53,6 +53,9 @@ mod with_current;
+@@ -54,7 +54,9 @@ mod virtual_terminal;
+ mod with_current;
  
  use boolean_negations::with_boolean_negations;
- use clap::{CommandFactory, FromArgMatches};
 +use carapace_spec_clap::Spec;
+ use clap::{CommandFactory, FromArgMatches};
 +use clap_complete::generate;
-+use std::io;
- use cli_args::CliArgs;
- use config_overrides::ConfigOverrides;
- use flag_relocation::relocate_pre_subcommand_flags;
-@@ -63,6 +66,8 @@ use state::State;
- use std::{ffi::OsString, future::Future, path::Path, process::ExitCode};
- 
+ use cli_args::{
+     CliArgs,
+     pre_command::{EntryPoint, Invocation},
+@@ -72,6 +74,8 @@ use std::{ffi::OsString, future::Future, path::Path, process::ExitCode};
+ // It is correct anyway: dropping the code would always exit 0.
+ #[must_use]
  pub fn main() -> ExitCode {
-+    generate(Spec, &mut CliArgs::command(), "pnpm", &mut io::stdout());
++    generate(Spec, &mut CliArgs::command(), "pnpm", &mut std::io::stdout());
 +    return ExitCode::SUCCESS;
      #[cfg(target_family = "wasm")]
      if let Err(error) = initialize_wasm_paths() {

@@ -1,9 +1,9 @@
 diff --git a/grit-cli/src/main.rs b/grit-cli/src/main.rs
-index 72e1861..38e3c19 100644
+index 6d60cdb..4b8db41 100644
 --- a/grit-cli/src/main.rs
 +++ b/grit-cli/src/main.rs
-@@ -48,9 +48,13 @@ mod terminal_progress;
- mod ui;
+@@ -57,9 +57,13 @@ mod usage_hints;
+ use std::ffi::OsString;
  
  use anyhow::{bail, Result};
 -use clap::{Parser, Subcommand};
@@ -15,9 +15,9 @@ index 72e1861..38e3c19 100644
 +use std::io;
 +
  use exit_status::ExitStatus;
+ use grit_lib::command_runner::hooks::HookStdio;
  use output::{emit, OutputMode, OutputOptions, RenderContext};
- 
-@@ -1777,6 +1781,11 @@ fn normalize_tag_verify_argv(mut args: Vec<String>) -> Vec<String> {
+@@ -2359,6 +2363,11 @@ fn parse_cli(argv: &[OsString]) -> Result<Cli, clap::Error> {
  }
  
  fn main() {
