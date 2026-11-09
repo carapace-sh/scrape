@@ -1,0 +1,223 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: syft [SOURCE]
+description: Generate an SBOM
+flags:
+  --base-path=: base directory for scanning, no links will be followed above this directory, and all paths will be reported relative to this directory
+  --catalogers=*&: enable one or more package catalogers
+  --enrich=*: 'enable package data enrichment from local and online sources (options: all, golang, java, javascript, python, vcpkg)'
+  --exclude=*: exclude paths from being scanned using a glob expression
+  --file=: file to write the default report output to (default is STDOUT)
+  --from=*: specify the source behavior to use (e.g. docker, registry, oci-dir, ...)
+  --override-default-catalogers=*: set the base set of catalogers to use (defaults to 'image' or 'directory' depending on the scan source)
+  --parallelism=: number of cataloger workers to run in parallel
+  --platform=: an optional platform specifier for container image sources (e.g. 'linux/arm64', 'linux/arm64/v8', 'arm64', 'linux')
+  --select-catalogers=*: add, remove, and filter the catalogers to be used
+  --source-name=: set the name of the target being analyzed
+  --source-supplier=: the organization that supplied the component, which often may be the manufacturer, distributor, or repackager
+  --source-version=: set the version of the target being analyzed
+  -o, --output=*:
+    description: report output format (<format>=<file> to output to a file), formats=[cyclonedx-json cyclonedx-xml github-json purls spdx-json spdx-tag-value syft-json syft-table syft-text template]
+    default: '[syft-table]'
+  -s, --scope=:
+    description: selection of layers to catalog, options=[squashed all-layers deep-squashed]
+    default: squashed
+  -t, --template=: specify the path to a Go template file
+persistentflags:
+  --profile=*: configuration profiles to use
+  -c, --config=*: syft configuration file(s) to use
+  -q, --quiet: suppress all logging output
+  -v, --verbose*: increase verbosity (-v = info, -vv = debug)
+commands:
+  - name: attest --output [FORMAT] <IMAGE>
+    description: Generate an SBOM as an attestation for the given [SOURCE] container image
+    flags:
+      --base-path=: base directory for scanning, no links will be followed above this directory, and all paths will be reported relative to this directory
+      --catalogers=*&: enable one or more package catalogers
+      --enrich=*: 'enable package data enrichment from local and online sources (options: all, golang, java, javascript, python, vcpkg)'
+      --exclude=*: exclude paths from being scanned using a glob expression
+      --from=*: specify the source behavior to use (e.g. docker, registry, oci-dir, ...)
+      --override-default-catalogers=*: set the base set of catalogers to use (defaults to 'image' or 'directory' depending on the scan source)
+      --parallelism=: number of cataloger workers to run in parallel
+      --platform=: an optional platform specifier for container image sources (e.g. 'linux/arm64', 'linux/arm64/v8', 'arm64', 'linux')
+      --select-catalogers=*: add, remove, and filter the catalogers to be used
+      --source-name=: set the name of the target being analyzed
+      --source-supplier=: the organization that supplied the component, which often may be the manufacturer, distributor, or repackager
+      --source-version=: set the version of the target being analyzed
+      -k, --key=: the key to use for the attestation
+      -o, --output=*:
+        description: report output format (<format>=<file> to output to a file), formats=[cyclonedx-json cyclonedx-xml github-json purls spdx-json spdx-tag-value syft-json syft-table syft-text template]
+        default: '[syft-json]'
+      -s, --scope=:
+        description: selection of layers to catalog, options=[squashed all-layers deep-squashed]
+        default: squashed
+    documentation:
+      command: Generate a packaged-based Software Bill Of Materials (SBOM) from a container image as the predicate of an in-toto attestation that will be uploaded to the image registry
+  - name: cataloger
+    description: Show available catalogers and configuration
+    commands:
+      - name: list [OPTIONS]
+        description: List available catalogers
+        flags:
+          --catalogers=*&: enable one or more package catalogers
+          --override-default-catalogers=*:
+            description: set the base set of catalogers to use (defaults to 'image' or 'directory' depending on the scan source)
+            default: '[all]'
+          --select-catalogers=*: add, remove, and filter the catalogers to be used
+          -o, --output=: 'format to output the cataloger list (available: table, json)'
+          -s, --show-hidden: show catalogers that have been de-selected
+  - name: completion
+    description: Generate the autocompletion script for the specified shell
+    commands:
+      - name: bash
+        description: Generate the autocompletion script for bash
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the bash shell.
+
+            This script depends on the 'bash-completion' package.
+            If it is not installed already, you can install it via your OS's package manager.
+
+            To load completions in your current shell session:
+
+            	source <(syft completion bash)
+
+            To load completions for every new session, execute once:
+
+            #### Linux:
+
+            	syft completion bash > /etc/bash_completion.d/syft
+
+            #### macOS:
+
+            	syft completion bash > $(brew --prefix)/etc/bash_completion.d/syft
+
+            You will need to start a new shell for this setup to take effect.
+      - name: fish
+        description: Generate the autocompletion script for fish
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the fish shell.
+
+            To load completions in your current shell session:
+
+            	syft completion fish | source
+
+            To load completions for every new session, execute once:
+
+            	syft completion fish > ~/.config/fish/completions/syft.fish
+
+            You will need to start a new shell for this setup to take effect.
+      - name: powershell
+        description: Generate the autocompletion script for powershell
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for powershell.
+
+            To load completions in your current shell session:
+
+            	syft completion powershell | Out-String | Invoke-Expression
+
+            To load completions for every new session, add the output of the above command
+            to your powershell profile.
+      - name: zsh
+        description: Generate the autocompletion script for zsh
+        flags:
+          --no-descriptions: disable completion descriptions
+        documentation:
+          command: |
+            Generate the autocompletion script for the zsh shell.
+
+            If shell completion is not already enabled in your environment you will need
+            to enable it.  You can execute the following once:
+
+            	echo "autoload -U compinit; compinit" >> ~/.zshrc
+
+            To load completions in your current shell session:
+
+            	source <(syft completion zsh)
+
+            To load completions for every new session, execute once:
+
+            #### Linux:
+
+            	syft completion zsh > "${fpath[1]}/_syft"
+
+            #### macOS:
+
+            	syft completion zsh > $(brew --prefix)/share/zsh/site-functions/_syft
+
+            You will need to start a new shell for this setup to take effect.
+    documentation:
+      command: |
+        Generate the autocompletion script for syft for the specified shell.
+        See each sub-command's help for details on how to use the generated script.
+  - name: config
+    description: show the syft configuration
+    flags:
+      --load: load and validate the syft configuration
+    commands:
+      - name: locations
+        description: shows all locations and the order in which syft will look for a configuration file
+        flags:
+          --all: include every file extension supported
+  - name: convert [SOURCE-SBOM] -o [FORMAT]
+    description: Convert between SBOM formats
+    flags:
+      --file=: file to write the default report output to (default is STDOUT)
+      -o, --output=*:
+        description: report output format (<format>=<file> to output to a file), formats=[cyclonedx-json cyclonedx-xml github-json purls spdx-json spdx-tag-value syft-json syft-table syft-text template]
+        default: '[syft-table]'
+      -t, --template=: specify the path to a Go template file
+    documentation:
+      command: '[Experimental] Convert SBOM files to, and from, SPDX, CycloneDX and Syft''s format. For more info about data loss between formats see https://github.com/anchore/syft/wiki/format-conversion'
+  - name: help [command]
+    description: Help about any command
+    documentation:
+      command: |-
+        Help provides help for any command in the application.
+        Simply type syft help [path to command] for full details.
+  - name: login [OPTIONS] [SERVER]
+    description: Log in to a registry
+    flags:
+      --password-stdin: Take the password from stdin
+      -p, --password=: Password
+      -u, --username=: Username
+  - name: scan [SOURCE]
+    description: Generate an SBOM
+    flags:
+      --base-path=: base directory for scanning, no links will be followed above this directory, and all paths will be reported relative to this directory
+      --catalogers=*&: enable one or more package catalogers
+      --enrich=*: 'enable package data enrichment from local and online sources (options: all, golang, java, javascript, python, vcpkg)'
+      --exclude=*: exclude paths from being scanned using a glob expression
+      --file=: file to write the default report output to (default is STDOUT)
+      --from=*: specify the source behavior to use (e.g. docker, registry, oci-dir, ...)
+      --override-default-catalogers=*: set the base set of catalogers to use (defaults to 'image' or 'directory' depending on the scan source)
+      --parallelism=: number of cataloger workers to run in parallel
+      --platform=: an optional platform specifier for container image sources (e.g. 'linux/arm64', 'linux/arm64/v8', 'arm64', 'linux')
+      --select-catalogers=*: add, remove, and filter the catalogers to be used
+      --source-name=: set the name of the target being analyzed
+      --source-supplier=: the organization that supplied the component, which often may be the manufacturer, distributor, or repackager
+      --source-version=: set the version of the target being analyzed
+      -o, --output=*:
+        description: report output format (<format>=<file> to output to a file), formats=[cyclonedx-json cyclonedx-xml github-json purls spdx-json spdx-tag-value syft-json syft-table syft-text template]
+        default: '[syft-table]'
+      -s, --scope=:
+        description: selection of layers to catalog, options=[squashed all-layers deep-squashed]
+        default: squashed
+      -t, --template=: specify the path to a Go template file
+    documentation:
+      command: Generate a packaged-based Software Bill Of Materials (SBOM) from container images and filesystems
+  - name: version
+    description: show version information
+    flags:
+      -o, --output=:
+        description: 'the format to show the results (allowable: [text json])'
+        default: text
+documentation:
+  command: Generate a packaged-based Software Bill Of Materials (SBOM) from container images and filesystems
