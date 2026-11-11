@@ -65,7 +65,7 @@
     "nfpm": "https://github.com/goreleaser/nfpm#v2.48.0",
     "ollama": "https://github.com/ollama/ollama#v0.40.13",
     "openstack": "https://github.com/openstack/python-openstackclient#10.5.0",
-    "pixi": "https://github.com/prefix-dev/pixi#v0.83.0",
+    "pixi": "https://github.com/prefix-dev/pixi#v0.84.1",
     "pnpm": "https://github.com/pnpm/pnpm#v12.18.0",
     "pre-commit": "https://github.com/pre-commit/pre-commit#v4.7.0",
     "restic": "https://github.com/restic/restic#v0.19.1",
