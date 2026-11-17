@@ -30,7 +30,7 @@
     "fury": "https://github.com/gemfury/cli#v1.0.0",
     "gdu": "https://github.com/dundee/gdu#v5.39.0",
     "gh": "https://github.com/cli/cli#v2.104.0",
-    "gh-dash": "https://github.com/dlvhdr/gh-dash#v4.26.2",
+    "gh-dash": "https://github.com/dlvhdr/gh-dash#v4.26.3",
     "gh-stack": "https://github.com/github/gh-stack#v0.3.0",
     "glab": "https://gitlab.com/gitlab-org/cli#v1.124.0",
     "glow": "https://github.com/charmbracelet/glow#v3.0.0",
