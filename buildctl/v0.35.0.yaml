@@ -1,0 +1,230 @@
+name: buildctl
+description: build utility
+flags:
+  --addr=:
+    description: buildkitd address
+    default: unix:///run/buildkit/buildkitd.sock
+  --debug: enable debug output in logs
+  --log-format=:
+    description: 'log formatter: json or text'
+    default: text
+  --profile-block=: ""
+  --profile-cpu=: ""
+  --profile-memory=: ""
+  --profile-memoryrate=:
+    default: "524288"
+  --profile-mutex=: ""
+  --profile-trace=: ""
+  --timeout=:
+    description: timeout backend connection after value seconds
+    default: "5"
+  --tlscacert=: CA certificate for validation
+  --tlscert=: client certificate
+  --tlsdir=: directory containing CA certificate, client certificate, and client key.
+    Supported file names are (ca.pem, cert.pem, key.pem) or (ca.crt, tls.crt, tls.key)
+  --tlskey=: client key
+  --tlsservername=: buildkitd server name for certificate validation
+  --wait: block RPCs until the connection becomes available
+  -h, --help: show help
+  -v, --version: print the version
+commands:
+- name: du
+  description: disk usage
+  flags:
+    --format=: Format the output using the given Go template, e.g, '{{json .}}'
+    -f, --filter=: Filter records
+    -h, --help: show help
+    -v, --verbose: Verbose output
+  commands:
+  - name: help
+    aliases:
+    - h
+    description: Shows a list of commands or help for one command
+- name: prune
+  description: clean up build cache
+  flags:
+    --all: Include internal/frontend references
+    --format=: Format the output using the given Go template, e.g, '{{json .}}'
+    --free-storage=:
+      description: Keep free data below this limit (in MB)
+      default: "0"
+    --keep-duration=:
+      description: Keep data newer than this limit
+      default: 0s
+    --keep-storage-min=:
+      description: Always allow data above this limit (in MB)
+      default: "0"
+    --keep-storage=:
+      description: Keep data below this limit (in MB)
+      default: "0"
+    -f, --filter=: Filter records
+    -h, --help: show help
+    -v, --verbose: Verbose output
+  commands:
+  - name: help
+    aliases:
+    - h
+    description: Shows a list of commands or help for one command
+- name: prune-histories
+  description: clean up build histories
+  flags:
+    --format=: Format the output using the given Go template, e.g, '{{json .}}'
+    -h, --help: show help
+  commands:
+  - name: help
+    aliases:
+    - h
+    description: Shows a list of commands or help for one command
+- name: build
+  aliases:
+  - b
+  description: build
+  flags:
+    --allow=: Allow extra privileged entitlement, e.g. network.host, security.insecure,
+      device
+    --debug-json-cache-metrics=: Where to output json cache metrics, use 'stdout'
+      or 'stderr' for standard (error) output.
+    --export-cache=: Export build cache, e.g. --export-cache type=registry,ref=example.com/foo/bar,
+      or --export-cache type=local,dest=path/to/dir
+    --frontend=: Define frontend used for build
+    --import-cache=: Import build cache, e.g. --import-cache type=registry,ref=example.com/foo/bar,
+      or --import-cache type=local,src=path/to/dir
+    --local=: Allow build access to the local directory
+    --metadata-file=: Output build metadata (e.g., image digest) to a file as JSON
+    --no-cache: Disable cache for all the vertices
+    --oci-layout=: Allow build access to the local OCI layout
+    --opt=: Define custom options for frontend, e.g. --opt target=foo --opt build-arg:foo=bar
+    --progress=:
+      description: Set type of progress (auto, plain, tty, rawjson). Use plain to
+        show container output
+      default: auto
+    --proxy-network: Run build with proxy network enforcement
+    --ref-file=: Write build ref to a file
+    --registry-auth-tlscontext=: Overwrite TLS configuration when authenticating with
+      registries, e.g. --registry-auth-tlscontext host=https://myserver:2376,insecure=false,ca=/path/to/my/ca.crt,cert=/path/to/my/cert.crt,key=/path/to/my/key.crt
+    --secret=: Secret value exposed to the build. Format id=secretname,src=filepath
+    --source-policy-file=: Read source policy file from a JSON file
+    --ssh=: Allow forwarding SSH agent or a raw Unix socket to the builder. Format
+      default|<id>[=<socket>[,raw=false]|<key>[,<key>]]
+    --trace=: Path to trace file. Defaults to no tracing.
+    -h, --help: show help
+    -o, --output=: Define exports for build result, e.g. --output type=image,name=docker.io/username/image,push=true
+  commands:
+  - name: help
+    aliases:
+    - h
+    description: Shows a list of commands or help for one command
+- name: debug
+  description: debug utilities
+  flags:
+    -h, --help: show help
+  commands:
+  - name: dump-llb
+    description: dump LLB in human-readable format. LLB can be also passed via stdin.
+      This command does not require the daemon to be running.
+    flags:
+      --dot: Output dot format
+      -h, --help: show help
+    commands:
+    - name: help
+      aliases:
+      - h
+      description: Shows a list of commands or help for one command
+  - name: dump-metadata
+    description: dump the meta in human-readable format.  This command requires the
+      daemon NOT to be running.
+    flags:
+      --root=:
+        description: path to state directory
+        default: /var/lib/buildkit
+      -h, --help: show help
+    commands:
+    - name: help
+      aliases:
+      - h
+      description: Shows a list of commands or help for one command
+  - name: workers
+    description: list workers
+    flags:
+      --format=: Format the output using the given Go template, e.g, '{{json .}}'
+      -f, --filter=: containerd-style filter string slice
+      -h, --help: show help
+      -v, --verbose: Verbose output
+    commands:
+    - name: help
+      aliases:
+      - h
+      description: Shows a list of commands or help for one command
+  - name: info
+    description: display internal information
+    flags:
+      --format=: Format the output using the given Go template, e.g, '{{json .}}'
+      -h, --help: show help
+    commands:
+    - name: help
+      aliases:
+      - h
+      description: Shows a list of commands or help for one command
+  - name: monitor
+    description: display build events
+    flags:
+      --completed: show completed builds
+      --ref=: show events for a specific build
+      -h, --help: show help
+    commands:
+    - name: help
+      aliases:
+      - h
+      description: Shows a list of commands or help for one command
+  - name: logs
+    description: display build logs
+    flags:
+      --progress=:
+        description: progress output type
+        default: auto
+      --trace: show opentelemetry trace
+      -h, --help: show help
+    commands:
+    - name: help
+      aliases:
+      - h
+      description: Shows a list of commands or help for one command
+  - name: ctl
+    description: control build records
+    flags:
+      --delete: Delete build record
+      --pin: Pin build so it will not be garbage collected
+      --unpin: Unpin build so it will be garbage collected
+      -h, --help: show help
+    commands:
+    - name: help
+      aliases:
+      - h
+      description: Shows a list of commands or help for one command
+  - name: get
+    description: retrieve a blob from contentstore
+    flags:
+      -h, --help: show help
+    commands:
+    - name: help
+      aliases:
+      - h
+      description: Shows a list of commands or help for one command
+  - name: histories
+    description: list build records
+    flags:
+      --format=: Format the output using the given Go template, e.g, '{{json .}}'
+      -h, --help: show help
+    commands:
+    - name: help
+      aliases:
+      - h
+      description: Shows a list of commands or help for one command
+  - name: help
+    aliases:
+    - h
+    description: Shows a list of commands or help for one command
+- name: help
+  aliases:
+  - h
+  description: Shows a list of commands or help for one command
