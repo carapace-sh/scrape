@@ -1,18 +1,22 @@
 diff --git a/src/main.rs b/src/main.rs
-index 80e380f..482e165 100644
+index 8c59e79..416290f 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -20,6 +20,9 @@ use std::sync::Arc;
+@@ -24,10 +24,13 @@ use std::path::Path;
+ use std::sync::Arc;
  
  use anyhow::{Context, Result, anyhow, bail};
- use clap::{CommandFactory, Parser};
 +use carapace_spec_clap::Spec;
+ use clap::{CommandFactory, Parser};
 +use clap_complete::generate;
-+use std::io;
- use globset::GlobBuilder;
  use lscolors::LsColors;
- use regex::bytes::{Regex, RegexBuilder, RegexSetBuilder};
-@@ -59,6 +62,10 @@ ow=0:or=0;38;5;16;48;5;203:no=0:ex=1;38;5;203:cd=0;38;5;203;48;5;236:mi=0;38;5;1
+ use patterns::PatternType;
+ use regex::bytes::RegexSetBuilder;
++use std::io;
+ 
+ use crate::cli::{ColorWhen, HyperlinkWhen, Opts};
+ use crate::config::Config;
+@@ -66,6 +69,10 @@ ow=0:or=0;38;5;16;48;5;203:no=0:ex=1;38;5;203:cd=0;38;5;203;48;5;236:mi=0;38;5;1
  ";
  
  fn main() {

@@ -1,8 +1,8 @@
 diff --git a/pnpm/crates/cli/src/lib.rs b/pnpm/crates/cli/src/lib.rs
-index 381eb94..e791cf5 100644
+index 8167c89..8fbbe69 100644
 --- a/pnpm/crates/cli/src/lib.rs
 +++ b/pnpm/crates/cli/src/lib.rs
-@@ -54,7 +54,9 @@ mod virtual_terminal;
+@@ -51,7 +51,9 @@ mod virtual_terminal;
  mod with_current;
  
  use boolean_negations::with_boolean_negations;
@@ -12,9 +12,9 @@ index 381eb94..e791cf5 100644
  use cli_args::{
      CliArgs,
      pre_command::{EntryPoint, Invocation},
-@@ -72,6 +74,8 @@ use std::{ffi::OsString, future::Future, path::Path, process::ExitCode};
- // It is correct anyway: dropping the code would always exit 0.
- #[must_use]
+@@ -65,6 +67,8 @@ use state::State;
+ use std::{ffi::OsString, future::Future, path::Path, process::ExitCode};
+ 
  pub fn main() -> ExitCode {
 +    generate(Spec, &mut CliArgs::command(), "pnpm", &mut std::io::stdout());
 +    return ExitCode::SUCCESS;
@@ -22,7 +22,7 @@ index 381eb94..e791cf5 100644
      if let Err(error) = initialize_wasm_paths() {
          pnpm_diagnostics::eprintln!("Failed to initialize pnpm host paths: {error}");
 diff --git a/pnpm/crates/deps-restorer/src/cas.rs b/pnpm/crates/deps-restorer/src/cas.rs
-index 34aebff..3f706e3 100644
+index 0a1ba32..3e3c68a 100644
 --- a/pnpm/crates/deps-restorer/src/cas.rs
 +++ b/pnpm/crates/deps-restorer/src/cas.rs
 @@ -20,7 +20,7 @@ mod bin_state;
