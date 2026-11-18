@@ -1,18 +1,19 @@
 diff --git a/crates/pixi_cli/src/lib.rs b/crates/pixi_cli/src/lib.rs
-index eb9c311..d7fa734 100644
+index e2c1a3e..55ef149 100644
 --- a/crates/pixi_cli/src/lib.rs
 +++ b/crates/pixi_cli/src/lib.rs
-@@ -8,6 +8,9 @@
+@@ -8,8 +8,10 @@
  //! - The [`execute_command`] function matches on [`Command`] and calls the corresponding logic.
  #![deny(clippy::dbg_macro, clippy::unwrap_used)]
  
 +use carapace_spec_clap::Spec;
-+use clap_complete::generate;
-+
  use clap::builder::styling::{AnsiColor, Color, Style};
- use clap::{CommandFactory, Parser};
+ use clap::{CommandFactory, Parser, ValueEnum};
++use clap_complete::generate;
  use indicatif::ProgressDrawTarget;
-@@ -248,6 +251,10 @@ impl LockFileUsageConfig {
+ use miette::IntoDiagnostic;
+ use pixi_consts::consts;
+@@ -252,6 +254,10 @@ impl LockFileUsageConfig {
  }
  
  pub async fn execute() -> miette::Result<ExitCode> {

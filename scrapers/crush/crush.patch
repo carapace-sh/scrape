@@ -1,17 +1,17 @@
 diff --git a/internal/cmd/root.go b/internal/cmd/root.go
-index 77d73c3..3b697d2 100644
+index ce03d6e..59e08d9 100644
 --- a/internal/cmd/root.go
 +++ b/internal/cmd/root.go
-@@ -23,6 +23,7 @@ import (
- 	tea "charm.land/bubbletea/v2"
+@@ -25,6 +25,7 @@ import (
  	fang "charm.land/fang/v2"
  	"charm.land/lipgloss/v2"
+ 	"charm.land/tone"
 +	"github.com/carapace-sh/carapace"
  	"github.com/charmbracelet/colorprofile"
  	"github.com/charmbracelet/crush/internal/app"
  	"github.com/charmbracelet/crush/internal/client"
-@@ -185,6 +186,8 @@ const defaultVersionTemplate = `{{with .DisplayName}}{{printf "%s " .}}{{end}}{{
- `
+@@ -217,6 +218,8 @@ func hasTerminal(isTerminal func(uintptr) bool, stdin, stdout uintptr) bool {
+ }
  
  func Execute() {
 +	carapace.Gen(rootCmd)

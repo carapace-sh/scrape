@@ -1,10 +1,10 @@
 diff --git a/crates/but/src/lib.rs b/crates/but/src/lib.rs
-index 01fe4b9..4a9e389 100644
+index 9e42f45..ac92fbe 100644
 --- a/crates/but/src/lib.rs
 +++ b/crates/but/src/lib.rs
-@@ -64,6 +64,10 @@ mod retired_syntax;
- pub mod theme;
+@@ -69,6 +69,10 @@ pub mod theme;
  mod tui;
+ mod unknown_commands;
  
 +use carapace_spec_clap::Spec;
 +use clap_complete::generate;
@@ -13,7 +13,7 @@ index 01fe4b9..4a9e389 100644
  const CLI_DATE: CustomFormat = gix::date::time::format::ISO8601;
  
  /// The format for help output printed before clap parses arguments.
-@@ -203,6 +207,11 @@ pub(crate) fn app_settings() -> Result<&'static AppSettings> {
+@@ -218,6 +222,11 @@ pub(crate) fn app_settings() -> Result<&'static AppSettings> {
  
  /// Handle `args` which must be what's passed by `std::env::args_os()`.
  pub async fn handle_args(args: impl Iterator<Item = OsString>) -> Result<()> {
