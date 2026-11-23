@@ -1,0 +1,1096 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: restic
+description: Backup and restore files
+persistentflags:
+  --cacert=*: '`file` to load root certificates from (default: use system certificates or $RESTIC_CACERT)'
+  --cache-dir=: 'set the cache `directory`. (default: use system default cache directory or $RESTIC_CACHE_DIR)'
+  --cleanup-cache: auto remove old cache directories
+  --compression=:
+    description: 'compression mode (only available for repository format version 2), one of (auto|off|fastest|better|max) (default: $RESTIC_COMPRESSION)'
+    default: auto
+  --http-user-agent=: 'set a http user agent for outgoing http requests (default: $RESTIC_HTTP_USER_AGENT)'
+  --insecure-no-password: use an empty password for the repository, must be passed to every restic command (insecure)
+  --insecure-tls: skip TLS certificate verification when connecting to the repository (insecure)
+  --json: set output mode to JSON for commands that support it
+  --key-hint=: '`key` ID of key to try decrypting first (default: $RESTIC_KEY_HINT)'
+  --limit-download=: 'limits downloads to a maximum `rate` in KiB/s. (default: unlimited)'
+  --limit-upload=: 'limits uploads to a maximum `rate` in KiB/s. (default: unlimited)'
+  --no-cache: do not use a local cache
+  --no-extra-verify: skip additional verification of data before upload (see documentation)
+  --no-lock: do not lock the repository, this allows some operations on read-only repositories
+  --pack-size=: 'set target pack `size` in MiB, created pack files may be larger (default: $RESTIC_PACK_SIZE)'
+  --password-command=: 'shell `command` to obtain the repository password from (default: $RESTIC_PASSWORD_COMMAND)'
+  --repository-file=: '`file` to read the repository location from (default: $RESTIC_REPOSITORY_FILE)'
+  --retry-lock=: 'retry to lock the repository if it is already locked, takes a value like 5m or 2h (default: no retries)'
+  --stuck-request-timeout=:
+    description: '`duration` after which to retry stuck requests'
+    default: 5m0s
+  --tls-client-cert=: 'path to a `file` containing PEM encoded TLS client certificate and private key (default: $RESTIC_TLS_CLIENT_CERT)'
+  -o, --option=*: set extended option (`key=value`, can be specified multiple times)
+  -p, --password-file=: '`file` to read the repository password from (default: $RESTIC_PASSWORD_FILE)'
+  -q, --quiet: do not output comprehensive progress report
+  -r, --repo=: '`repository` to backup to or restore from (default: $RESTIC_REPOSITORY)'
+  -v, --verbose*: be verbose (specify multiple times or a level using --verbose=n``, max level/times is 2)
+commands:
+  - name: backup [flags] [FILE/DIR] ...
+    description: Create a new backup of files and/or directories
+    group: default
+    flags:
+      --exclude-caches: excludes cache directories that are marked with a CACHEDIR.TAG file. See https://bford.info/cachedir/ for the Cache Directory Tagging Standard
+      --exclude-file=*: read exclude patterns from a `file` (can be specified multiple times)
+      --exclude-if-present=*: takes `filename[:header]`, exclude contents of directories containing filename (except filename itself) if header of that file is as provided (can be specified multiple times)
+      --exclude-larger-than=: 'max `size` of the files to be backed up (allowed suffixes: k/K, m/M, g/G, t/T)'
+      --files-from-raw=*: read the files to backup from `file` (can be combined with file args; can be specified multiple times)
+      --files-from-verbatim=*: read the files to backup from `file` (can be combined with file args; can be specified multiple times)
+      --files-from=*: read the files to backup from `file` (can be combined with file args; can be specified multiple times)
+      --hostname=&: set the `hostname` for the snapshot manually
+      --iexclude-file=*: same as --exclude-file but ignores casing of `file`names in patterns
+      --iexclude=*: same as --exclude `pattern` but ignores the casing of filenames
+      --ignore-ctime: 'ignore ctime changes when checking for modified files (default: $RESTIC_IGNORE_CTIME or false)'
+      --ignore-inode: 'ignore inode number and ctime changes when checking for modified files (default: $RESTIC_IGNORE_INODE or false)'
+      --no-scan: do not run scanner to estimate size of backup
+      --parent=: 'use this parent `snapshot` (default: latest snapshot in the group determined by --group-by and not newer than the timestamp determined by --time)'
+      --read-concurrency=: 'read `n` files concurrently (default: $RESTIC_READ_CONCURRENCY or 2)'
+      --skip-if-unchanged: skip snapshot creation if identical to parent snapshot
+      --stdin: read backup from stdin
+      --stdin-filename=:
+        description: '`filename` to use when reading from stdin'
+        default: stdin
+      --stdin-from-command: interpret arguments as command to execute and store its stdout
+      --tag=:
+        description: add `tags` for the new snapshot in the format `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      --time=: '`time` of the backup (ex. ''2012-11-01 22:08:41'') (default: now)'
+      --with-atime: store the atime for all files and directories
+      -H, --host=: 'set the `hostname` for the snapshot manually (default: $RESTIC_HOST). To prevent an expensive rescan use the "parent" flag'
+      -e, --exclude=*: exclude a `pattern` (can be specified multiple times)
+      -f, --force: force re-reading the source files/directories (overrides the "parent" flag)
+      -g, --group-by=:
+        description: '`group` snapshots by host, paths and/or tags, separated by comma (disable grouping with '''')'
+        default: host,paths
+      -n, --dry-run: do not upload or write any data, just show what would be done
+      -x, --one-file-system: exclude other file systems, don't cross filesystem boundaries and subvolumes
+    documentation:
+      command: |2
+
+        The "backup" command creates a new snapshot and saves the files and directories
+        given as the arguments.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was a fatal error (no snapshot created).
+        Exit status is 3 if some source data could not be read (incomplete snapshot created).
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: cache
+    description: Operate on local cache directories
+    group: default
+    flags:
+      --cleanup: remove old cache directories
+      --max-age=:
+        description: max age in `days` for cache directories to be considered old
+        default: "30"
+      --no-size: do not output the size of the cache directories
+    documentation:
+      command: |2
+
+        The "cache" command allows listing and cleaning local cache directories.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+  - name: cat [flags] [masterkey|config|pack ID|blob ID|snapshot ID|index ID|key ID|lock ID|tree snapshot:subfolder]
+    description: Print internal objects to stdout
+    group: default
+    documentation:
+      command: |2
+
+        The "cat" command is used to print internal objects to stdout.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: check [flags]
+    description: Check the repository for errors
+    group: default
+    flags:
+      --check-unused&: find unused blobs
+      --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+      --read-data: read all data blobs
+      --read-data-subset=: read a `subset` of data packs, specified as 'n/t' for specific part, or either 'x%' or 'x.y%' or a size in bytes with suffixes k/K, m/M, g/G, t/T for a random subset
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      --with-cache: use existing cache, only read uncached data from repository
+      -H, --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    documentation:
+      command: |2
+
+        The "check" command tests the repository for errors and reports any errors it
+        finds.
+
+        By default, check verifies the structural consistency and integrity of
+        snapshots, trees and pack files. To also verify the integrity of the actual
+        backed-up data, use the --read-data or --read-data-subset flags.
+
+        By default, check creates a new temporary cache directory to verify data.
+        To reuse the existing cache, use the --with-cache flag.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: copy [flags] [snapshotID ...]
+    description: Copy snapshots from one repository to another
+    group: default
+    flags:
+      --from-insecure-no-password: use an empty password for the source repository (insecure)
+      --from-key-hint=: 'key ID of key to try decrypting the source repository first (default: $RESTIC_FROM_KEY_HINT)'
+      --from-password-command=: 'shell `command` to obtain the source repository password from (default: $RESTIC_FROM_PASSWORD_COMMAND)'
+      --from-password-file=: '`file` to read the source repository password from (default: $RESTIC_FROM_PASSWORD_FILE)'
+      --from-repo=: 'source `repository` to copy snapshots from (default: $RESTIC_FROM_REPOSITORY)'
+      --from-repository-file=: '`file` from which to read the source repository location to copy snapshots from (default: $RESTIC_FROM_REPOSITORY_FILE)'
+      --key-hint2=&: 'key ID of key to try decrypting the destination repository first (default: $RESTIC_KEY_HINT2)'
+      --password-command2=&: 'shell `command` to obtain the destination repository password from (default: $RESTIC_PASSWORD_COMMAND2)'
+      --password-file2=&: '`file` to read the destination repository password from (default: $RESTIC_PASSWORD_FILE2)'
+      --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+      --repo2=&: 'destination `repository` to copy snapshots from (default: $RESTIC_REPOSITORY2)'
+      --repository-file2=&: '`file` from which to read the destination repository location to copy snapshots from (default: $RESTIC_REPOSITORY_FILE2)'
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      -H, --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    documentation:
+      command: |2
+
+        The "copy" command copies one or more snapshots from one repository to another.
+
+        NOTE: This process will have to both download (read) and upload (write) the
+        entire snapshot(s) due to the different encryption keys used in the source and
+        destination repositories. This /may incur higher bandwidth usage and costs/ than
+        expected during normal backup runs.
+
+        NOTE: The copying process does not re-chunk files, which may break deduplication
+        between the files copied and files already stored in the destination repository.
+        This means that copied files, which existed in both the source and destination
+        repository, /may occupy up to twice their space/ in the destination repository.
+        This can be mitigated by the "--copy-chunker-params" option when initializing a
+        new destination repository using the "init" command.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: diff [flags] snapshotID snapshotID
+    description: Show differences between two snapshots
+    group: default
+    flags:
+      --metadata: print changes in metadata
+    documentation:
+      command: |2
+
+        The "diff" command shows differences from the first to the second snapshot. The
+        first characters in each line display what has happened to a particular file or
+        directory:
+
+        * +  The item was added
+        * -  The item was removed
+        * U  The metadata (access mode, timestamps, ...) for the item was updated
+        * M  The file's content was modified
+        * T  The type was changed, e.g. a file was made a symlink
+        * ?  Bitrot detected: The file's content has changed but all metadata is the same
+
+        Metadata comparison will likely not work if a backup was created using the
+        '--ignore-inode' or '--ignore-ctime' option.
+
+        To only compare files in specific subfolders, you can use the
+        "snapshotID:subfolder" syntax, where "subfolder" is a path within the
+        snapshot tree as shown by "restic ls".
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: dump [flags] snapshotID file
+    description: Print backed-up files or folders to stdout
+    group: default
+    flags:
+      --path=*: only consider snapshots including this (absolute) `path`, when snapshot ID "latest" is given (can be specified multiple times, snapshots must include all specified paths)
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]`, when snapshot ID "latest" is given (can be specified multiple times)
+        default: '[]'
+      -H, --host=*: 'only consider snapshots for this `host`, when snapshot ID "latest" is given (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+      -a, --archive=:
+        description: set archive `format` as "tar" or "zip"
+        default: tar
+      -t, --target=: write the output to target `path`
+    documentation:
+      command: |2
+
+        The "dump" command extracts files from a snapshot from the repository. If a
+        single file is selected, it prints its contents to stdout. Folders are output
+        as a tar (default) or zip file containing the contents of the specified folder.
+        Pass "/" as file name to dump the whole snapshot as an archive file.
+
+        The special snapshotID "latest" can be used to use the latest snapshot in the
+        repository.
+
+        To include the folder content at the root of the archive, you can use the
+        "snapshotID:subfolder" syntax, where "subfolder" is a path within the
+        snapshot tree as shown by "restic ls".
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: features
+    description: Print list of feature flags
+    group: advanced
+    documentation:
+      command: |2
+
+        The "features" command prints a list of supported feature flags.
+
+        To pass feature flags to restic, set the RESTIC_FEATURES environment variable
+        to "featureA=true,featureB=false". Specifying an unknown feature flag is an error.
+
+        A feature can either be in alpha, beta, stable or deprecated state.
+        An _alpha_ feature is disabled by default and may change in arbitrary ways between restic versions or be removed.
+        A _beta_ feature is enabled by default, but still can change in minor ways or be removed.
+        A _stable_ feature is always enabled and cannot be disabled. The flag will be removed in a future restic version.
+        A _deprecated_ feature is always disabled and cannot be enabled. The flag will be removed in a future restic version.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+  - name: find [flags] PATTERN...
+    description: Find a file, a directory or restic IDs
+    group: default
+    flags:
+      --blob: pattern is a blob-ID
+      --human-readable: print sizes in human readable format
+      --pack: pattern is a pack-ID
+      --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+      --show-pack-id: display the pack-ID the blobs belong to (with --blob or --tree)
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      --tree: pattern is a tree-ID
+      -H, --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+      -N, --newest=: newest modification date/time
+      -O, --oldest=: oldest modification date/time
+      -R, --reverse: reverse sort order oldest to newest
+      -i, --ignore-case: ignore case for pattern
+      -l, --long: use a long listing format showing size and mode
+      -s, --snapshot=*: snapshot `id` to search in (can be given multiple times)
+    documentation:
+      command: |2
+
+        The "find" command searches for files or directories in snapshots stored in the
+        repository. It can also be used to search for restic blobs, trees or pack
+        files for troubleshooting.
+
+        The default sort option for the snapshots is youngest to oldest. To sort the
+        output from oldest to youngest specify --reverse.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: forget [flags] [snapshot ID] [...]
+    description: Remove snapshots from the repository
+    group: default
+    flags:
+      --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+      --hostname=*&: only consider snapshots with the given `hostname` (can be specified multiple times)
+      --keep-tag=:
+        description: keep snapshots with this `taglist` (can be specified multiple times)
+        default: '[]'
+      --keep-within-daily=: keep daily snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+      --keep-within-hourly=: keep hourly snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+      --keep-within-monthly=: keep monthly snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+      --keep-within-weekly=: keep weekly snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+      --keep-within-yearly=: keep yearly snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+      --keep-within=: keep snapshots that are newer than `duration` (eg. 1y5m7d2h) relative to the latest snapshot
+      --max-repack-size=: 'stop after repacking this much data in total (allowed suffixes for `size`: k/K, m/M, g/G, t/T)'
+      --max-unused=:
+        description: tolerate given `limit` of unused data (absolute value in bytes with suffixes k/K, m/M, g/G, t/T, a value in % or the word 'unlimited')
+        default: 5%
+      --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+      --prune: automatically run the 'prune' command if snapshots have been removed
+      --repack-cacheable-only: only repack packs which are cacheable
+      --repack-small&: deprecated. Use --repack-smaller-than to specify a minimum size
+      --repack-smaller-than=: 'pack `below-limit` packfiles (allowed suffixes: k/K, m/M, g/G, t/T)'
+      --repack-uncompressed: repack all uncompressed data
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      --unsafe-allow-remove-all: allow deleting all snapshots of a snapshot group
+      -H, --keep-hourly=:
+        description: keep the last `n` hourly snapshots (use 'unlimited' to keep all hourly snapshots)
+        default: "0"
+      -c, --compact: use compact output format
+      -d, --keep-daily=:
+        description: keep the last `n` daily snapshots (use 'unlimited' to keep all daily snapshots)
+        default: "0"
+      -g, --group-by=:
+        description: '`group` snapshots by host, paths and/or tags, separated by comma (disable grouping with '''')'
+        default: host,paths
+      -l, --keep-last=:
+        description: keep the last `n` snapshots (use 'unlimited' to keep all snapshots)
+        default: "0"
+      -m, --keep-monthly=:
+        description: keep the last `n` monthly snapshots (use 'unlimited' to keep all monthly snapshots)
+        default: "0"
+      -n, --dry-run: do not delete anything, just print what would be done
+      -w, --keep-weekly=:
+        description: keep the last `n` weekly snapshots (use 'unlimited' to keep all weekly snapshots)
+        default: "0"
+      -y, --keep-yearly=:
+        description: keep the last `n` yearly snapshots (use 'unlimited' to keep all yearly snapshots)
+        default: "0"
+    documentation:
+      command: |2
+
+        The "forget" command removes snapshots according to a policy. All snapshots are
+        first divided into groups according to "--group-by", and after that the policy
+        specified by the "--keep-*" options is applied to each group individually.
+        If there are not enough snapshots to keep one for each duration related
+        "--keep-{within-,}*" option, the oldest snapshot in the group is kept
+        additionally.
+
+        Please note that this command really only deletes the snapshot object in the
+        repository, which is a reference to data stored there. In order to remove the
+        unreferenced data after "forget" was run successfully, see the "prune" command.
+
+        Please also read the documentation for "forget" to learn about some important
+        security considerations.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 3 if there was an error removing one or more snapshots.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: generate [flags]
+    description: Generate manual pages and auto-completion files (bash, fish, zsh, powershell)
+    flags:
+      --bash-completion=: write bash completion `file` (`-` for stdout)
+      --fish-completion=: write fish completion `file` (`-` for stdout)
+      --man=: write man pages to `directory`
+      --powershell-completion=: write powershell completion `file` (`-` for stdout)
+      --zsh-completion=: write zsh completion `file` (`-` for stdout)
+    documentation:
+      command: |2
+
+        The "generate" command writes automatically generated files (like the man pages
+        and the auto-completion files for bash, fish, powershell and zsh).
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+  - name: help [command]
+    description: Help about any command
+    documentation:
+      command: |-
+        Help provides help for any command in the application.
+        Simply type restic help [path to command] for full details.
+  - name: init
+    description: Initialize a new repository
+    group: default
+    flags:
+      --copy-chunker-params: copy chunker parameters from the secondary repository (useful with the copy command)
+      --from-insecure-no-password: use an empty password for the source repository (insecure)
+      --from-key-hint=: 'key ID of key to try decrypting the source repository first (default: $RESTIC_FROM_KEY_HINT)'
+      --from-password-command=: 'shell `command` to obtain the source repository password from (default: $RESTIC_FROM_PASSWORD_COMMAND)'
+      --from-password-file=: '`file` to read the source repository password from (default: $RESTIC_FROM_PASSWORD_FILE)'
+      --from-repo=: 'source `repository` to copy chunker parameters from (default: $RESTIC_FROM_REPOSITORY)'
+      --from-repository-file=: '`file` from which to read the source repository location to copy chunker parameters from (default: $RESTIC_FROM_REPOSITORY_FILE)'
+      --key-hint2=&: 'key ID of key to try decrypting the secondary repository first (default: $RESTIC_KEY_HINT2)'
+      --password-command2=&: 'shell `command` to obtain the secondary repository password from (default: $RESTIC_PASSWORD_COMMAND2)'
+      --password-file2=&: '`file` to read the secondary repository password from (default: $RESTIC_PASSWORD_FILE2)'
+      --repo2=&: 'secondary `repository` to copy chunker parameters from (default: $RESTIC_REPOSITORY2)'
+      --repository-file2=&: '`file` from which to read the secondary repository location to copy chunker parameters from (default: $RESTIC_REPOSITORY_FILE2)'
+      --repository-version=:
+        description: repository format version to use, allowed values are a format version, 'latest' and 'stable'
+        default: stable
+    documentation:
+      command: |2
+
+        The "init" command initializes a new repository.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+  - name: key
+    description: Manage keys (passwords)
+    group: default
+    commands:
+      - name: add
+        description: Add a new key (password) to the repository; returns the new key ID
+        flags:
+          --host=: the hostname for new key
+          --new-insecure-no-password: add an empty password for the repository (insecure)
+          --new-password-file=: '`file` from which to read the new password'
+          --user=: the username for new key
+        documentation:
+          command: |2-
+
+            The "key add" command creates a new key and validates the key. Returns the new key ID.
+
+            EXIT STATUS
+            ===========
+
+            Exit status is 0 if the command was successful.
+            Exit status is 1 if there was any error.
+            Exit status is 10 if the repository does not exist.
+            Exit status is 11 if the repository is already locked.
+            Exit status is 12 if the password is incorrect.
+            	
+      - name: list
+        description: List keys (passwords)
+        documentation:
+          command: |2-
+
+            The "key list" command lists all the keys (passwords) associated with the repository.
+            Returns the key ID, username, hostname, created time and if it's the current key being
+            used to access the repository.
+
+            EXIT STATUS
+            ===========
+
+            Exit status is 0 if the command was successful.
+            Exit status is 1 if there was any error.
+            Exit status is 10 if the repository does not exist.
+            Exit status is 11 if the repository is already locked.
+            Exit status is 12 if the password is incorrect.
+            	
+      - name: passwd
+        description: Change key (password); creates a new key ID and removes the old key ID, returns new key ID
+        flags:
+          --host=: the hostname for new key
+          --new-insecure-no-password: add an empty password for the repository (insecure)
+          --new-password-file=: '`file` from which to read the new password'
+          --user=: the username for new key
+        documentation:
+          command: |2-
+
+            The "key passwd" command creates a new key, validates the key and removes the old key ID.
+            Returns the new key ID.
+
+            EXIT STATUS
+            ===========
+
+            Exit status is 0 if the command was successful.
+            Exit status is 1 if there was any error.
+            Exit status is 10 if the repository does not exist.
+            Exit status is 11 if the repository is already locked.
+            Exit status is 12 if the password is incorrect.
+            	
+      - name: remove [ID]
+        description: Remove key ID (password) from the repository
+        documentation:
+          command: |2-
+
+            The "key remove" command removes the selected key ID. It does not allow removing the
+            current key being used to access the repository.
+
+            EXIT STATUS
+            ===========
+
+            Exit status is 0 if the command was successful.
+            Exit status is 1 if there was any error.
+            Exit status is 10 if the repository does not exist.
+            Exit status is 11 if the repository is already locked.
+            Exit status is 12 if the password is incorrect.
+            	
+    documentation:
+      command: |2-
+
+        The "key" command allows you to set multiple access keys or passwords
+        per repository.
+        	
+  - name: list [flags] [blobs|packs|index|snapshots|keys|locks|packs snapshotID]
+    description: List objects in the repository
+    group: default
+    documentation:
+      command: |2
+
+        The "list" command allows listing objects in the repository based on type.
+        The "list packs snapshotID" variant accepts one snapshotID and lists all packfiles
+        used by this snapshot.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: ls [flags] snapshotID [dir...]
+    description: List files in a snapshot
+    group: default
+    flags:
+      --human-readable: print sizes in human readable format
+      --ncdu: output NCDU export format (pipe into 'ncdu -f -')
+      --path=*: only consider snapshots including this (absolute) `path`, when snapshot ID "latest" is given (can be specified multiple times, snapshots must include all specified paths)
+      --recursive: include files in subfolders of the listed directories
+      --reverse: reverse sorted output
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]`, when snapshot ID "latest" is given (can be specified multiple times)
+        default: '[]'
+      -H, --host=*: 'only consider snapshots for this `host`, when snapshot ID "latest" is given (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+      -l, --long: use a long listing format showing size and mode
+      -s, --sort=:
+        description: sort output by (name|size|time=mtime|atime|ctime|extension)
+        default: name
+    documentation:
+      command: |2
+
+        The "ls" command lists files and directories in a snapshot.
+
+        The special snapshot ID "latest" can be used to list files and
+        directories of the latest snapshot in the repository. The
+        --host flag can be used in conjunction to select the latest
+        snapshot originating from a certain host only.
+
+        File listings can optionally be filtered by directories. Any
+        positional arguments after the snapshot ID are interpreted as
+        absolute directory paths, and only files inside those directories
+        will be listed. If the --recursive flag is used, then the filter
+        will allow traversing into matching directories' subfolders.
+        Any directory paths specified must be absolute (starting with
+        a path separator); paths use the forward slash '/' as separator.
+
+        File listings can be sorted by specifying --sort followed by one of the
+        sort specifiers '(name|size|time=mtime|atime|ctime|extension)'.
+        The sorting can be reversed by specifying --reverse.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: migrate [flags] [migration name] [...]
+    description: Apply migrations
+    group: default
+    flags:
+      -f, --force: apply a migration a second time
+    documentation:
+      command: |2
+
+        The "migrate" command checks which migrations can be applied for a repository
+        and prints a list with available migration names. If one or more migration
+        names are specified, these migrations are applied.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: mount [flags] mountpoint
+    description: Mount the repository
+    group: default
+    flags:
+      --allow-other: allow other users to access the data in the mounted directory
+      --no-default-permissions: for 'allow-other', ignore Unix permissions and allow users to read all snapshot files
+      --owner-root: use 'root' as the owner of files and dirs
+      --path-template=*: set `template` for path names (can be specified multiple times)
+      --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+      --snapshot-template=&:
+        description: set `template` to use for snapshot dirs
+        default: 2006-01-02T15:04:05Z07:00
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      --time-template=:
+        description: set `template` to use for times
+        default: 2006-01-02T15:04:05Z07:00
+      -H, --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    documentation:
+      command: |2
+
+        The "mount" command mounts the repository read-only via FUSE at the given
+        mountpoint.
+
+        Snapshot Directories
+        ====================
+
+        If you need a different template for directories that contain snapshots,
+        you can pass a time template via --time-template and path templates via
+        --path-template.
+
+        Example time template without colons:
+
+            --time-template "2006-01-02_15-04-05"
+
+        You need to specify a sample format for exactly the following timestamp:
+
+            Mon Jan 2 15:04:05 -0700 MST 2006
+
+        For details please see the documentation for time.Format() at:
+          https://godoc.org/time#Time.Format
+
+        For path templates, you can use the following patterns which will be replaced:
+            %i by short snapshot ID
+            %I by long snapshot ID
+            %u by username
+            %h by hostname
+            %t by tags
+            %T by timestamp as specified by --time-template
+
+        The default path templates are:
+            "ids/%i"
+            "snapshots/%T"
+            "hosts/%h/%T"
+            "tags/%t/%T"
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: options
+    description: Print list of extended options
+    group: advanced
+    documentation:
+      command: |2
+
+        The "options" command prints a list of extended options.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+  - name: prune [flags]
+    description: Remove unneeded data from the repository
+    group: default
+    flags:
+      --max-repack-size=: 'stop after repacking this much data in total (allowed suffixes for `size`: k/K, m/M, g/G, t/T)'
+      --max-unused=:
+        description: tolerate given `limit` of unused data (absolute value in bytes with suffixes k/K, m/M, g/G, t/T, a value in % or the word 'unlimited')
+        default: 5%
+      --repack-cacheable-only: only repack packs which are cacheable
+      --repack-small&: deprecated. Use --repack-smaller-than to specify a minimum size
+      --repack-smaller-than=: 'pack `below-limit` packfiles (allowed suffixes: k/K, m/M, g/G, t/T)'
+      --repack-uncompressed: repack all uncompressed data
+      --unsafe-recover-no-free-space=: UNSAFE, READ THE DOCUMENTATION BEFORE USING! Try to recover a repository stuck with no free space. Do not use without trying out 'prune --max-repack-size 0' first.
+      -n, --dry-run: do not modify the repository, just print what would be done
+    documentation:
+      command: |2
+
+        The "prune" command checks the repository and removes data that is not
+        referenced and therefore not needed any more.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: recover [flags]
+    description: Recover data from the repository not referenced by snapshots
+    group: default
+    documentation:
+      command: |2
+
+        The "recover" command builds a new snapshot from all directories it can find in
+        the raw data of the repository which are not referenced in an existing snapshot.
+        It can be used if, for example, a snapshot has been removed by accident with "forget".
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: repair
+    description: Repair the repository
+    group: default
+    commands:
+      - name: index [flags]
+        description: Build a new index
+        flags:
+          --read-all-packs: read all pack files to generate new index from scratch
+        documentation:
+          command: |2
+
+            The "repair index" command creates a new index based on the pack files in the
+            repository.
+
+            EXIT STATUS
+            ===========
+
+            Exit status is 0 if the command was successful.
+            Exit status is 1 if there was any error.
+            Exit status is 10 if the repository does not exist.
+            Exit status is 11 if the repository is already locked.
+            Exit status is 12 if the password is incorrect.
+      - name: packs [packIDs...]
+        description: Salvage damaged pack files
+        documentation:
+          command: |2
+
+            The "repair packs" command extracts intact blobs from the specified pack files, rebuilds
+            the index to remove the damaged pack files and removes the pack files from the repository.
+
+            EXIT STATUS
+            ===========
+
+            Exit status is 0 if the command was successful.
+            Exit status is 1 if there was any error.
+            Exit status is 10 if the repository does not exist.
+            Exit status is 11 if the repository is already locked.
+            Exit status is 12 if the password is incorrect.
+      - name: snapshots [flags] [snapshot ID] [...]
+        description: Repair snapshots
+        flags:
+          --forget: remove original snapshots after creating new ones
+          --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+          --tag=:
+            description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+            default: '[]'
+          -H, --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+          -n, --dry-run: do not do anything, just print what would be done
+        documentation:
+          command: |2
+
+            The "repair snapshots" command repairs broken snapshots. It scans the given
+            snapshots and generates new ones with damaged directories and file contents
+            removed. If the broken snapshots are deleted, a prune run will be able to
+            clean up the repository.
+
+            The command depends on a correct index, thus make sure to run "repair index"
+            first!
+
+
+            WARNING
+            =======
+
+            Repairing and deleting broken snapshots causes data loss! It will remove broken
+            directories and modify broken files in the modified snapshots.
+
+            If the contents of directories and files are still available, the better option
+            is to run "backup" which in that case is able to heal existing snapshots. Only
+            use the "repair snapshots" command if you need to recover an old and broken
+            snapshot!
+
+            EXIT STATUS
+            ===========
+
+            Exit status is 0 if the command was successful.
+            Exit status is 1 if there was any error.
+            Exit status is 10 if the repository does not exist.
+            Exit status is 11 if the repository is already locked.
+            Exit status is 12 if the password is incorrect.
+    documentation:
+      command: |2
+
+        The "repair" command repairs damaged repositories. It provides subcommands to
+        rebuild the index, salvage damaged pack files, and repair broken snapshots.
+  - name: restore [flags] snapshotID
+    description: Extract the data from a snapshot
+    group: default
+    flags:
+      --delete: delete files from target directory if they do not exist in snapshot. Use '--dry-run -vv' to check what would be deleted
+      --dry-run: do not write any data, just show what would be done
+      --exclude-file=*: read exclude patterns from a `file` (can be specified multiple times)
+      --exclude-xattr=*: exclude xattr by `pattern` (can be specified multiple times)
+      --iexclude-file=*: same as --exclude-file but ignores casing of `file`names in patterns
+      --iexclude=*: same as --exclude `pattern` but ignores the casing of filenames
+      --iinclude-file=*: same as --include-file but ignores casing of `file`names in patterns
+      --iinclude=*: same as --include `pattern` but ignores the casing of filenames
+      --include-file=*: read include patterns from a `file` (can be specified multiple times)
+      --include-xattr=*: include xattr by `pattern` (can be specified multiple times)
+      --overwrite=:
+        description: overwrite behavior, one of (always|if-changed|if-newer|never)
+        default: always
+      --ownership-by-name: restore file ownership by user name and group name (except POSIX ACLs)
+      --path=*: only consider snapshots including this (absolute) `path`, when snapshot ID "latest" is given (can be specified multiple times, snapshots must include all specified paths)
+      --sparse: restore files as sparse
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]`, when snapshot ID "latest" is given (can be specified multiple times)
+        default: '[]'
+      --verify: verify restored files content
+      -H, --host=*: 'only consider snapshots for this `host`, when snapshot ID "latest" is given (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+      -e, --exclude=*: exclude a `pattern` (can be specified multiple times)
+      -i, --include=*: include a `pattern` (can be specified multiple times)
+      -t, --target=: directory to extract data to
+    documentation:
+      command: |2
+
+        The "restore" command extracts the data from a snapshot from the repository to
+        a directory.
+
+        The special snapshotID "latest" can be used to restore the latest snapshot in the
+        repository.
+
+        To only restore a specific subfolder, you can use the "snapshotID:subfolder"
+        syntax, where "subfolder" is a path within the snapshot tree as shown by
+        "restic ls".
+
+        POSIX ACLs are always restored by their numeric value, while file ownership can optionally be restored by name instead of numeric value.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: rewrite [flags] [snapshotID ...]
+    description: Rewrite snapshots to exclude files or change metadata
+    group: default
+    flags:
+      --exclude-file=*: read exclude patterns from a `file` (can be specified multiple times)
+      --forget: remove original snapshots after creating new ones
+      --iexclude-file=*: same as --exclude-file but ignores casing of `file`names in patterns
+      --iexclude=*: same as --exclude `pattern` but ignores the casing of filenames
+      --iinclude-file=*: same as --include-file but ignores casing of `file`names in patterns
+      --iinclude=*: same as --include `pattern` but ignores the casing of filenames
+      --include-file=*: read include patterns from a `file` (can be specified multiple times)
+      --new-host=: replace hostname
+      --new-time=: replace time of the backup
+      --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      -H, --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+      -e, --exclude=*: exclude a `pattern` (can be specified multiple times)
+      -i, --include=*: include a `pattern` (can be specified multiple times)
+      -n, --dry-run: do not do anything, just print what would be done
+      -s, --snapshot-summary: create snapshot summary record if it does not exist
+    documentation:
+      command: |2
+
+        The "rewrite" command creates new snapshots from existing ones. You can use
+        exclude or include filters to control which files are included in the new
+        snapshots. Unless --new-host or --new-time is specified, metadata (time, host,
+        tags) is preserved.
+
+        The snapshots to rewrite are specified using the --host, --tag and --path options,
+        or by providing a list of snapshot IDs. Please note that specifying neither any of
+        these options nor a snapshot ID will cause the command to rewrite all snapshots.
+
+        The special tag 'rewrite' will be added to the new snapshots to distinguish
+        them from the original ones, unless --forget is used. If the --forget option is
+        used, the original snapshots will instead be directly removed from the repository.
+
+        Please note that the --forget option only removes the snapshots and not the actual
+        data stored in the repository. In order to delete the no longer referenced data,
+        use the "prune" command.
+
+        When rewrite is used with the --snapshot-summary option, a new snapshot is
+        created containing statistics summary data. Only two fields in the summary will
+        be non-zero: TotalFilesProcessed and TotalBytesProcessed.
+
+        When rewrite is called with one of the --exclude or --include options,
+        TotalFilesProcessed and TotalBytesProcessed will be updated in the snapshot summary.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: snapshots [flags] [snapshotID ...]
+    description: List all snapshots
+    group: default
+    flags:
+      --last&: only show the last snapshot for each host and path
+      --latest=: only show the last `n` snapshots for each host and path
+      --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      -H, --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+      -c, --compact: use compact output format
+      -g, --group-by=: '`group` snapshots by host, paths and/or tags, separated by comma'
+    documentation:
+      command: |2
+
+        The "snapshots" command lists all snapshots stored in the repository.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: stats [flags] [snapshot ID] [...]
+    description: Scan the repository and show basic statistics
+    group: default
+    flags:
+      --mode=:
+        description: 'counting mode: restore-size (default), files-by-contents, blobs-per-file or raw-data'
+        default: restore-size
+      --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      -H, --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    documentation:
+      command: |2
+
+        The "stats" command walks one or multiple snapshots in a repository
+        and accumulates statistics about the data stored therein. It reports
+        on the number of unique files and their sizes, according to one of
+        the counting modes as given by the --mode flag.
+
+        It operates on all snapshots matching the selection criteria or all
+        snapshots if nothing is specified. The special snapshot ID "latest"
+        is also supported. Some modes make more sense over
+        just a single snapshot, while others are useful across all snapshots,
+        depending on what you are trying to calculate.
+
+        The modes are:
+
+        * restore-size: (default) Counts the size of the restored files.
+        * files-by-contents: Counts total size of unique files, where a file is
+           considered unique if it has unique contents.
+        * raw-data: Counts the size of blobs in the repository, regardless of
+          how many files reference them.
+        * blobs-per-file: A combination of files-by-contents and raw-data.
+
+        Refer to the online manual for more details about each mode.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: tag [flags] [snapshotID ...]
+    description: Modify tags on snapshots
+    group: default
+    flags:
+      --add=:
+        description: '`tags` which will be added to the existing tags in the format `tag[,tag,...]` (can be given multiple times)'
+        default: '[]'
+      --path=*: only consider snapshots including this (absolute) `path` (can be specified multiple times, snapshots must include all specified paths)
+      --remove=:
+        description: '`tags` which will be removed from the existing tags in the format `tag[,tag,...]` (can be given multiple times)'
+        default: '[]'
+      --set=:
+        description: '`tags` which will replace the existing tags in the format `tag[,tag,...]` (can be given multiple times)'
+        default: '[]'
+      --tag=:
+        description: only consider snapshots including `tag[,tag,...]` (can be specified multiple times)
+        default: '[]'
+      -H, --host=*: 'only consider snapshots for this `host` (can be specified multiple times, use empty string to unset default value) (default: $RESTIC_HOST)'
+    documentation:
+      command: |2
+
+        The "tag" command allows you to modify tags on existing snapshots.
+
+        You can either set/replace the entire set of tags on a snapshot, or
+        add tags to/remove tags from the existing set.
+
+        When no snapshotID is given, all snapshots matching the host, tag and path filter criteria are modified.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+        Exit status is 10 if the repository does not exist.
+        Exit status is 11 if the repository is already locked.
+        Exit status is 12 if the password is incorrect.
+  - name: unlock
+    description: Remove locks other processes created
+    group: default
+    flags:
+      --remove-all: remove all locks, even non-stale ones
+    documentation:
+      command: |2
+
+        The "unlock" command removes stale locks that have been created by other restic processes.
+
+        Removing locks works even with repositories served in append-only mode from restic's rest-server.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+  - name: version
+    description: Print version information
+    documentation:
+      command: |2
+
+        The "version" command prints detailed information about the build environment
+        and the version of this software.
+
+        EXIT STATUS
+        ===========
+
+        Exit status is 0 if the command was successful.
+        Exit status is 1 if there was any error.
+documentation:
+  command: |2
+
+    restic is a backup program which allows saving multiple revisions of files and
+    directories in an encrypted repository stored on different backends.
+
+    The full documentation can be found at https://restic.readthedocs.io/ .
