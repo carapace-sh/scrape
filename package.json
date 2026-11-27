@@ -15,7 +15,7 @@
     "csview": "https://github.com/wfxr/csview#v1.3.4",
     "crush": "https://github.com/charmbracelet/crush#v0.102.0",
     "dagger": "https://github.com/dagger/dagger#v0.21.12",
-    "delta": "https://github.com/dandavison/delta#0.21.2",
+    "delta": "https://github.com/dandavison/delta#0.22.0",
     "devbox": "https://github.com/jetify-com/devbox#0.23.0",
     "dive": "https://github.com/wagoodman/dive#v0.13.1",
     "dlv": "https://github.com/go-delve/delve#v1.27.2",
